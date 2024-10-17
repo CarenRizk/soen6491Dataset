@@ -1,7 +1,9 @@
 #!/bin/bash
 
 # Activate virtual environment (if you have one)
-# source /path/to/your/virtualenv/bin/activate
+# python -m venv venv
+# venv\Scripts\activate
+# pip install -r requirements.txt\\ or C:\Users\carenrizk\repos\soen6491Dataset\apacheSubProjectPython\venv\Scripts\python.exe -m pip install -r requirements.txt
 
 echo "Running tests with coverage..."
 

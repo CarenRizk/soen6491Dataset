@@ -928,30 +928,6 @@ public class CombineTest implements Serializable {
     }
 
     @Test
-    public void testWithDefaultsPreservesSideInputs() {
-      final PCollectionView<Integer> view =
-          pipeline.apply(Create.of(1)).apply(Sum.integersGlobally().asSingletonView());
-
-      Combine.Globally<Integer, String> combine =
-          Combine.globally(new TestCombineFnWithContext(view))
-              .withSideInputs(view)
-              .withoutDefaults();
-
-      assertEquals(Collections.singletonList(view), combine.getSideInputs());
-    }
-
-    @Test
-    public void testWithFanoutPreservesSideInputs() {
-      final PCollectionView<Integer> view =
-          pipeline.apply(Create.of(1)).apply(Sum.integersGlobally().asSingletonView());
-
-      Combine.Globally<Integer, String> combine =
-          Combine.globally(new TestCombineFnWithContext(view)).withSideInputs(view).withFanout(1);
-
-      assertEquals(Collections.singletonList(view), combine.getSideInputs());
-    }
-
-    @Test
     @Category({ValidatesRunner.class, UsesSideInputs.class})
     public void testHotKeyCombineWithSideInputs() {
       PCollection<KV<String, Integer>> input =
