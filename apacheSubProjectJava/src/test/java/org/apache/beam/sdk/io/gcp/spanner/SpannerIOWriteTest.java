@@ -17,7 +17,6 @@
  */
 package org.apache.beam.sdk.io.gcp.spanner;
 
-import static org.apache.beam.sdk.transforms.display.DisplayDataMatchers.hasDisplayItem;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.containsInAnyOrder;
@@ -49,7 +48,6 @@ import com.google.cloud.spanner.Mutation;
 import com.google.cloud.spanner.Options;
 import com.google.cloud.spanner.Options.ReadQueryUpdateTransactionOption;
 import com.google.cloud.spanner.Options.RpcPriority;
-import com.google.cloud.spanner.OptionsImposter;
 import com.google.cloud.spanner.ReadOnlyTransaction;
 import com.google.cloud.spanner.ResultSets;
 import com.google.cloud.spanner.SpannerExceptionFactory;

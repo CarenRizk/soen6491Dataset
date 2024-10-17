@@ -150,7 +150,8 @@
         </dir>
       </dir>
       <dir
-        name="target">
+        name="target"
+        excluded="true">
         <dir
           name="generated-sources">
           <dir
@@ -233,19 +234,41 @@
   <metrics
     declared_in_file_display_mode="no_path"
     file_display_mode="no_path"
+    output_file="./apacheSubProjectJava.csv"
     show_declared_in_file="false"
     show_function_parameter_types="false"
     write_column_titles="true"
     add_uniquename_column="false"
-    metric_filter="28532"/>
+    metric_filter="28532">
+    <metric
+      name="AvgCyclomatic"/>
+    <metric
+      name="MaxCyclomatic"/>
+    <metric
+      name="AvgCountLineCode"/>
+    <metric
+      name="CountLineCode"/>
+    <metric
+      name="RatioCommentToCode"/>
+    <metric
+      name="CountLineComment"/>
+    <metric
+      name="CountDeclClass"/>
+    <metric
+      name="CountDeclMethod"/>
+    <metric
+      name="CountLineCodeExe"/>
+    <metric
+      name="MaxNesting"/>
+  </metrics>
   <reports
     date_stamping="false"
     display_parameters="false"
     index_by_method="false"
     group_by_directory="false"
     filename_mode="short"
-    generation_status="needs_generation"
-    generation_time="0"
+    generation_status="generated"
+    generation_time="19"
     html_clear_directory="false"
     html_generation="true"
     html_mode="alpha"

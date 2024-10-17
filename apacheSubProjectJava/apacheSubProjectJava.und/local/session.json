@@ -4,6 +4,15 @@
         "default": {
             "SessionData": {
                 "2_1920x1080_3840x1600": {
+                    "AnalysisLog": {
+                        "Dock Area": 8,
+                        "Dock In Drawer Mode": false,
+                        "Dock Is Floating": false,
+                        "Dock Tab Group": [
+                            "ProjectMetricsWidget",
+                            "Locator"
+                        ]
+                    },
                     "DockWidgets": {
                         "FloatingWidgetOrder": [
                         ],
@@ -21,21 +30,29 @@
                                 "width": 250
                             },
                             "03ProjectMetricsWidget": {
-                                "height": 227,
-                                "width": 1644
+                                "height": 435,
+                                "width": 820
                             },
                             "04Locator": {
-                                "height": 435,
-                                "width": 1644
+                                "height": 457,
+                                "width": 820
                             },
-                            "05InfoBrowserWidget_0": {
+                            "05AnalysisLog": {
+                                "height": 457,
+                                "width": 820
+                            },
+                            "06InfoBrowserWidget_0": {
                                 "height": 712,
                                 "width": 270
+                            },
+                            "07IssueBrowser": {
+                                "height": 455,
+                                "width": 820
                             }
                         },
                         "TabGroupFrontWidgets": [
                             "ProjectOverviewWidget",
-                            "Locator"
+                            "ProjectMetricsWidget"
                         ]
                     },
                     "EntityFilter": {
@@ -53,12 +70,20 @@
                         "Dock Tab Group": [
                         ]
                     },
+                    "IssueBrowser": {
+                        "Dock Area": 8,
+                        "Dock In Drawer Mode": false,
+                        "Dock Is Floating": false,
+                        "Dock Tab Group": [
+                        ]
+                    },
                     "Locator": {
                         "Dock Area": 8,
                         "Dock In Drawer Mode": false,
                         "Dock Is Floating": false,
                         "Dock Tab Group": [
-                            "ProjectMetricsWidget"
+                            "ProjectMetricsWidget",
+                            "AnalysisLog"
                         ]
                     },
                     "ProjectMetricsWidget": {
@@ -66,7 +91,8 @@
                         "Dock In Drawer Mode": false,
                         "Dock Is Floating": false,
                         "Dock Tab Group": [
-                            "Locator"
+                            "Locator",
+                            "AnalysisLog"
                         ]
                     },
                     "ProjectOverviewWidget": {
@@ -93,9 +119,6 @@
                         ]
                     }
                 },
-                "EditorWindowList": [
-                    "./src/main/java/org/apache/beam/runners/dataflow/DataflowRunner.java"
-                ],
                 "EditorWindowSetting": {
                     "5cb8d7826c5d410b12bedc332156ef90": {
                         "anchor": {
@@ -110,7 +133,7 @@
                         "height": 951,
                         "hscroll": 0,
                         "isMaximized": false,
-                        "vscroll": 21,
+                        "vscroll": 186,
                         "width": 1390,
                         "x": 0,
                         "y": 0
@@ -118,6 +141,49 @@
                 },
                 "EntityFilter": {
                     "LastEntityFilterUsed": "All Entities"
+                },
+                "GraphCustomizerTemporarySets": {
+                    "1": {
+                        "treemap": {
+                            "": {
+                                "1": {
+                                    "CreatedOn": "2024-10-17",
+                                    "FormatVersion": 1,
+                                    "LastModifiedOn": "2024-10-17",
+                                    "architecturecombo": "Directory Structure",
+                                    "colorscalebox": false,
+                                    "cushionbox": true,
+                                    "mapcolortocombo": "MaxCyclomatic",
+                                    "mapsizetocombo": "CountLine",
+                                    "maxcolorwell": "#084594",
+                                    "maxnodesize": 100,
+                                    "maxscaling": 0,
+                                    "mincolorwell": "#9ECAE1",
+                                    "minscaling": 0,
+                                    "mlegroupenum": 0,
+                                    "outliersbox": false,
+                                    "scalingbox": false,
+                                    "window": {
+                                        "2_1920x1080_3840x1600": {
+                                            "container": 1,
+                                            "height": 951,
+                                            "isMaximized": false,
+                                            "width": 1390,
+                                            "x": 0,
+                                            "y": 0
+                                        }
+                                    }
+                                },
+                                "GraphRootName": ""
+                            }
+                        }
+                    }
+                },
+                "GraphWindowList": [
+                    "Treemap:|:Metric:|:Unused:|:1:|:Metrics Treemap : CountLine : MaxCyclomatic"
+                ],
+                "GraphicFilterSettings": {
+                    "Enabled": false
                 },
                 "IBExpansions": {
                     "InfoBrowserWidget": [
@@ -138,19 +204,59 @@
                 },
                 "IBOptions": {
                 },
+                "InfoBrowserWindowManager": {
+                    "InfoBrowserFileSyncInst": -1,
+                    "InfoBrowserSyncInst": [
+                        "0"
+                    ]
+                },
+                "LastAccessedPid": "4592",
+                "LastDisplayGroup": "2_1920x1080_3840x1600",
+                "Locator": {
+                    "LastEntityFilterUsed": "All Entities"
+                },
+                "MaintainEditorHistory": {
+                    "FileRanges": {
+                        "0": {
+                            "ColumnBegin": 0,
+                            "ColumnEnd": 0,
+                            "FilePath": "./src/main/java/org/apache/beam/runners/dataflow/DataflowRunner.java",
+                            "LineBegin": 1,
+                            "LineEnd": 1
+                        },
+                        "size": 1
+                    },
+                    "index": 0
+                },
                 "MiscSaveStates": {
                     "entitySelected": "@lorg.apache.beam.sdk.io.TextIOReadTest.ReadWithCustomDelimiterTest.testReadLinesWithCustomDelimiterAndZeroAndOneLengthReturningChannel.(Anon_1)@kj5org.apache.beam.sdk.io.TextIOReadTest.ReadWithCustomDelimiterTest.testReadLinesWithCustomDelimiterAndZeroAndOneLengthReturningChannel.(Anon_1)@f./src/test/java/org/apache/beam/sdk/io/TextIOReadTest.java",
+                    "ib": "entity:||:@l./src/main/java/org/apache/beam/runners/dataflow/DataflowRunner.java",
+                    "metricsBrowser": true,
+                    "metricsBrowserExpansionAddresses": "Directory Structure",
+                    "metricsBrowserSelectionAddress": "",
+                    "metricsBrowserSplitterState": "AAAA/wAAAAEAAAABAAACAAH/////AQAAAAEA",
                     "projectOverviewCharts": "true",
-                    "projectOverviewChartsSelected": "true"
+                    "projectOverviewChartsPosition": 1,
+                    "projectOverviewChartsSelected": "false",
+                    "projectOverviewChartsWorkspace": 0,
+                    "selection": "(Anon_1)"
                 },
                 "ProjectMetricsBrowser": {
                     "Overwrite": false,
                     "SaveDirectory": "./."
                 },
-                "SplitWorkspace1SelectedTab": "./src/main/java/org/apache/beam/runners/dataflow/DataflowRunner.java",
+                "ProjectUI": {
+                    "projectviewcuritem": "main"
+                },
+                "SplitWorkspace1SelectedTab": "",
                 "SplitWorkspace1Tabs": [
-                    "./src/main/java/org/apache/beam/runners/dataflow/DataflowRunner.java"
-                ]
+                    "Treemap:|:Metric:|:Unused:|:1:|:Metrics Treemap : CountLine : MaxCyclomatic"
+                ],
+                "SplittableWorkspace": {
+                    "active workspace": 0,
+                    "primary ws size": 1390,
+                    "split orientation": -1
+                }
             }
         }
     }

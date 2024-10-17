@@ -261,7 +261,8 @@
         </dir>
       </dir>
       <dir
-        name="target">
+        name="target"
+        excluded="true">
         <dir
           name="generated-sources">
           <dir
