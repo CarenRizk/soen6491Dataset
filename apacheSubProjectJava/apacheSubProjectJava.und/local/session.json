@@ -1,0 +1,157 @@
+{
+    "Session": "default",
+    "Sessions": {
+        "default": {
+            "SessionData": {
+                "2_1920x1080_3840x1600": {
+                    "DockWidgets": {
+                        "FloatingWidgetOrder": [
+                        ],
+                        "OpenWindows": {
+                            "00ProjectOverviewWidget": {
+                                "height": 695,
+                                "width": 250
+                            },
+                            "01SuggestionsBrowser": {
+                                "height": 952,
+                                "width": 250
+                            },
+                            "02EntityFilter": {
+                                "height": 717,
+                                "width": 250
+                            },
+                            "03ProjectMetricsWidget": {
+                                "height": 227,
+                                "width": 1644
+                            },
+                            "04Locator": {
+                                "height": 435,
+                                "width": 1644
+                            },
+                            "05InfoBrowserWidget_0": {
+                                "height": 712,
+                                "width": 270
+                            }
+                        },
+                        "TabGroupFrontWidgets": [
+                            "ProjectOverviewWidget",
+                            "Locator"
+                        ]
+                    },
+                    "EntityFilter": {
+                        "Dock Area": 1,
+                        "Dock In Drawer Mode": false,
+                        "Dock Is Floating": false,
+                        "Dock Tab Group": [
+                            "ProjectOverviewWidget"
+                        ]
+                    },
+                    "InfoBrowserWidget_0": {
+                        "Dock Area": 1,
+                        "Dock In Drawer Mode": false,
+                        "Dock Is Floating": false,
+                        "Dock Tab Group": [
+                        ]
+                    },
+                    "Locator": {
+                        "Dock Area": 8,
+                        "Dock In Drawer Mode": false,
+                        "Dock Is Floating": false,
+                        "Dock Tab Group": [
+                            "ProjectMetricsWidget"
+                        ]
+                    },
+                    "ProjectMetricsWidget": {
+                        "Dock Area": 8,
+                        "Dock In Drawer Mode": false,
+                        "Dock Is Floating": false,
+                        "Dock Tab Group": [
+                            "Locator"
+                        ]
+                    },
+                    "ProjectOverviewWidget": {
+                        "Dock Area": 1,
+                        "Dock In Drawer Mode": false,
+                        "Dock Is Floating": false,
+                        "Dock Tab Group": [
+                            "EntityFilter"
+                        ]
+                    },
+                    "SearchResultsWindow": {
+                        "Dock Area": 8,
+                        "Dock In Drawer Mode": false,
+                        "Dock Is Floating": false,
+                        "Dock Tab Group": [
+                            "ProjectMetricsWidget"
+                        ]
+                    },
+                    "SuggestionsBrowser": {
+                        "Dock Area": 2,
+                        "Dock In Drawer Mode": false,
+                        "Dock Is Floating": false,
+                        "Dock Tab Group": [
+                        ]
+                    }
+                },
+                "EditorWindowList": [
+                    "./src/main/java/org/apache/beam/runners/dataflow/DataflowRunner.java"
+                ],
+                "EditorWindowSetting": {
+                    "5cb8d7826c5d410b12bedc332156ef90": {
+                        "anchor": {
+                            "line": 0,
+                            "offset": 0
+                        },
+                        "caret": {
+                            "line": 0,
+                            "offset": 0
+                        },
+                        "container": 1,
+                        "height": 951,
+                        "hscroll": 0,
+                        "isMaximized": false,
+                        "vscroll": 21,
+                        "width": 1390,
+                        "x": 0,
+                        "y": 0
+                    }
+                },
+                "EntityFilter": {
+                    "LastEntityFilterUsed": "All Entities"
+                },
+                "IBExpansions": {
+                    "InfoBrowserWidget": [
+                        "Jovial References",
+                        "Python References",
+                        "WEB References",
+                        "WEB Possible References",
+                        "Asm References",
+                        "Ada References",
+                        "Ftn References",
+                        "VHDL References",
+                        "c# References",
+                        "C++ References",
+                        "Java References",
+                        "basic References",
+                        "Pascal References"
+                    ]
+                },
+                "IBOptions": {
+                },
+                "MiscSaveStates": {
+                    "entitySelected": "@lorg.apache.beam.sdk.io.TextIOReadTest.ReadWithCustomDelimiterTest.testReadLinesWithCustomDelimiterAndZeroAndOneLengthReturningChannel.(Anon_1)@kj5org.apache.beam.sdk.io.TextIOReadTest.ReadWithCustomDelimiterTest.testReadLinesWithCustomDelimiterAndZeroAndOneLengthReturningChannel.(Anon_1)@f./src/test/java/org/apache/beam/sdk/io/TextIOReadTest.java",
+                    "projectOverviewCharts": "true",
+                    "projectOverviewChartsSelected": "true"
+                },
+                "ProjectMetricsBrowser": {
+                    "Overwrite": false,
+                    "SaveDirectory": "./."
+                },
+                "SplitWorkspace1SelectedTab": "./src/main/java/org/apache/beam/runners/dataflow/DataflowRunner.java",
+                "SplitWorkspace1Tabs": [
+                    "./src/main/java/org/apache/beam/runners/dataflow/DataflowRunner.java"
+                ]
+            }
+        }
+    }
+}
