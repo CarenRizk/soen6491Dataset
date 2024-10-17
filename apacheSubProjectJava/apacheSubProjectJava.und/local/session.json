@@ -18,36 +18,28 @@
                         ],
                         "OpenWindows": {
                             "00ProjectOverviewWidget": {
-                                "height": 695,
+                                "height": 693,
                                 "width": 250
                             },
                             "01SuggestionsBrowser": {
-                                "height": 952,
+                                "height": 953,
                                 "width": 250
                             },
                             "02EntityFilter": {
-                                "height": 717,
+                                "height": 715,
                                 "width": 250
                             },
                             "03ProjectMetricsWidget": {
-                                "height": 435,
-                                "width": 820
+                                "height": 433,
+                                "width": 1644
                             },
                             "04Locator": {
-                                "height": 457,
-                                "width": 820
-                            },
-                            "05AnalysisLog": {
-                                "height": 457,
-                                "width": 820
-                            },
-                            "06InfoBrowserWidget_0": {
-                                "height": 712,
-                                "width": 270
-                            },
-                            "07IssueBrowser": {
                                 "height": 455,
-                                "width": 820
+                                "width": 1644
+                            },
+                            "05InfoBrowserWidget_0": {
+                                "height": 713,
+                                "width": 270
                             }
                         },
                         "TabGroupFrontWidgets": [
@@ -82,8 +74,7 @@
                         "Dock In Drawer Mode": false,
                         "Dock Is Floating": false,
                         "Dock Tab Group": [
-                            "ProjectMetricsWidget",
-                            "AnalysisLog"
+                            "ProjectMetricsWidget"
                         ]
                     },
                     "ProjectMetricsWidget": {
@@ -91,8 +82,7 @@
                         "Dock In Drawer Mode": false,
                         "Dock Is Floating": false,
                         "Dock Tab Group": [
-                            "Locator",
-                            "AnalysisLog"
+                            "Locator"
                         ]
                     },
                     "ProjectOverviewWidget": {
@@ -119,90 +109,11 @@
                         ]
                     }
                 },
-                "EditorWindowSetting": {
-                    "5cb8d7826c5d410b12bedc332156ef90": {
-                        "anchor": {
-                            "line": 0,
-                            "offset": 0
-                        },
-                        "caret": {
-                            "line": 0,
-                            "offset": 0
-                        },
-                        "container": 1,
-                        "height": 951,
-                        "hscroll": 0,
-                        "isMaximized": false,
-                        "vscroll": 186,
-                        "width": 1390,
-                        "x": 0,
-                        "y": 0
-                    }
-                },
                 "EntityFilter": {
                     "LastEntityFilterUsed": "All Entities"
                 },
-                "GraphCustomizerTemporarySets": {
-                    "1": {
-                        "treemap": {
-                            "": {
-                                "1": {
-                                    "CreatedOn": "2024-10-17",
-                                    "FormatVersion": 1,
-                                    "LastModifiedOn": "2024-10-17",
-                                    "architecturecombo": "Directory Structure",
-                                    "colorscalebox": false,
-                                    "cushionbox": true,
-                                    "mapcolortocombo": "MaxCyclomatic",
-                                    "mapsizetocombo": "CountLine",
-                                    "maxcolorwell": "#084594",
-                                    "maxnodesize": 100,
-                                    "maxscaling": 0,
-                                    "mincolorwell": "#9ECAE1",
-                                    "minscaling": 0,
-                                    "mlegroupenum": 0,
-                                    "outliersbox": false,
-                                    "scalingbox": false,
-                                    "window": {
-                                        "2_1920x1080_3840x1600": {
-                                            "container": 1,
-                                            "height": 951,
-                                            "isMaximized": false,
-                                            "width": 1390,
-                                            "x": 0,
-                                            "y": 0
-                                        }
-                                    }
-                                },
-                                "GraphRootName": ""
-                            }
-                        }
-                    }
-                },
-                "GraphWindowList": [
-                    "Treemap:|:Metric:|:Unused:|:1:|:Metrics Treemap : CountLine : MaxCyclomatic"
-                ],
                 "GraphicFilterSettings": {
                     "Enabled": false
-                },
-                "IBExpansions": {
-                    "InfoBrowserWidget": [
-                        "Jovial References",
-                        "Python References",
-                        "WEB References",
-                        "WEB Possible References",
-                        "Asm References",
-                        "Ada References",
-                        "Ftn References",
-                        "VHDL References",
-                        "c# References",
-                        "C++ References",
-                        "Java References",
-                        "basic References",
-                        "Pascal References"
-                    ]
-                },
-                "IBOptions": {
                 },
                 "InfoBrowserWindowManager": {
                     "InfoBrowserFileSyncInst": -1,
@@ -210,34 +121,26 @@
                         "0"
                     ]
                 },
-                "LastAccessedPid": "4592",
+                "LastAccessedPid": "11360",
                 "LastDisplayGroup": "2_1920x1080_3840x1600",
                 "Locator": {
                     "LastEntityFilterUsed": "All Entities"
                 },
                 "MaintainEditorHistory": {
                     "FileRanges": {
-                        "0": {
-                            "ColumnBegin": 0,
-                            "ColumnEnd": 0,
-                            "FilePath": "./src/main/java/org/apache/beam/runners/dataflow/DataflowRunner.java",
-                            "LineBegin": 1,
-                            "LineEnd": 1
-                        },
-                        "size": 1
+                        "size": 0
                     },
-                    "index": 0
+                    "index": -1
                 },
                 "MiscSaveStates": {
-                    "entitySelected": "@lorg.apache.beam.sdk.io.TextIOReadTest.ReadWithCustomDelimiterTest.testReadLinesWithCustomDelimiterAndZeroAndOneLengthReturningChannel.(Anon_1)@kj5org.apache.beam.sdk.io.TextIOReadTest.ReadWithCustomDelimiterTest.testReadLinesWithCustomDelimiterAndZeroAndOneLengthReturningChannel.(Anon_1)@f./src/test/java/org/apache/beam/sdk/io/TextIOReadTest.java",
-                    "ib": "entity:||:@l./src/main/java/org/apache/beam/runners/dataflow/DataflowRunner.java",
+                    "entitySelected": "@lorg.apache.beam.sdk.coders.Coder.getEncodedTypeDescriptor.(Anon_1)@kj5org.apache.beam.sdk.coders.Coder.getEncodedTypeDescriptor.(Anon_1)@f./src/main/java/org/apache/beam/sdk/coders/Coder.java",
                     "metricsBrowser": true,
-                    "metricsBrowserExpansionAddresses": "Directory Structure",
+                    "metricsBrowserExpansionAddresses": "",
                     "metricsBrowserSelectionAddress": "",
                     "metricsBrowserSplitterState": "AAAA/wAAAAEAAAABAAACAAH/////AQAAAAEA",
                     "projectOverviewCharts": "true",
                     "projectOverviewChartsPosition": 1,
-                    "projectOverviewChartsSelected": "false",
+                    "projectOverviewChartsSelected": "true",
                     "projectOverviewChartsWorkspace": 0,
                     "selection": "(Anon_1)"
                 },
@@ -246,12 +149,8 @@
                     "SaveDirectory": "./."
                 },
                 "ProjectUI": {
-                    "projectviewcuritem": "main"
+                    "projectviewcuritem": "src"
                 },
-                "SplitWorkspace1SelectedTab": "",
-                "SplitWorkspace1Tabs": [
-                    "Treemap:|:Metric:|:Unused:|:1:|:Metrics Treemap : CountLine : MaxCyclomatic"
-                ],
                 "SplittableWorkspace": {
                     "active workspace": 0,
                     "primary ws size": 1390,

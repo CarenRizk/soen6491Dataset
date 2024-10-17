@@ -52,6 +52,20 @@
                             name="AvroIO.java"/>
                         </dir>
                       </dir>
+                      <dir
+                        name="euphoria">
+                        <dir
+                          name="core">
+                          <dir
+                            name="annotation">
+                            <dir
+                              name="audience">
+                              <auto
+                                name="Audience.java"/>
+                            </dir>
+                          </dir>
+                        </dir>
+                      </dir>
                     </dir>
                     <dir
                       name="io">
@@ -84,11 +98,6 @@
                             name="SpannerIO.java"/>
                         </dir>
                       </dir>
-                      <dir
-                        name="mongodb">
-                        <auto
-                          name="MongoDbIO.java"/>
-                      </dir>
                     </dir>
                     <dir
                       name="schemas">
@@ -101,6 +110,8 @@
                         name="ApproximateQuantiles.java"/>
                       <auto
                         name="ApproximateUnique.java"/>
+                      <auto
+                        name="Combine.java"/>
                       <auto
                         name="Flatten.java"/>
                       <dir
@@ -166,9 +177,22 @@
                           <dir
                             name="client">
                             <dir
+                              name="accumulators">
+                              <auto
+                                name="Accumulator.java"/>
+                              <auto
+                                name="Counter.java"/>
+                              <auto
+                                name="Histogram.java"/>
+                              <auto
+                                name="Timer.java"/>
+                            </dir>
+                            <dir
                               name="io">
                               <auto
                                 name="Context.java"/>
+                              <auto
+                                name="Environment.java"/>
                             </dir>
                           </dir>
                         </dir>
@@ -216,11 +240,6 @@
                             name="SpannerIOWriteTest.java"/>
                         </dir>
                       </dir>
-                      <dir
-                        name="mongodb">
-                        <auto
-                          name="MongoDbIOTest.java"/>
-                      </dir>
                     </dir>
                     <dir
                       name="schemas">
@@ -238,6 +257,8 @@
                         name="ApproximateQuantilesTest.java"/>
                       <auto
                         name="ApproximateUniqueTest.java"/>
+                      <auto
+                        name="CombineTest.java"/>
                       <auto
                         name="FlattenTest.java"/>
                       <dir
@@ -261,8 +282,7 @@
         </dir>
       </dir>
       <dir
-        name="target"
-        excluded="true">
+        name="target">
         <dir
           name="generated-sources">
           <dir
@@ -381,6 +401,35 @@
                         name="windowing">
                         <auto
                           name="AutoValue_Window.java"/>
+                      </dir>
+                    </dir>
+                  </dir>
+                </dir>
+              </dir>
+            </dir>
+          </dir>
+        </dir>
+        <dir
+          name="generated-test-sources">
+          <dir
+            name="test-annotations">
+            <dir
+              name="org">
+              <dir
+                name="apache">
+                <dir
+                  name="beam">
+                  <dir
+                    name="sdk">
+                    <dir
+                      name="io">
+                      <dir
+                        name="gcp">
+                        <dir
+                          name="bigtable">
+                          <auto
+                            name="AutoValue_BigtableIOTest_FailureOptions.java"/>
+                        </dir>
                       </dir>
                     </dir>
                   </dir>

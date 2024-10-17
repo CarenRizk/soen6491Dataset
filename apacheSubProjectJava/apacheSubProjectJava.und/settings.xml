@@ -42,6 +42,17 @@
                         <dir
                           name="io"/>
                       </dir>
+                      <dir
+                        name="euphoria">
+                        <dir
+                          name="core">
+                          <dir
+                            name="annotation">
+                            <dir
+                              name="audience"/>
+                          </dir>
+                        </dir>
+                      </dir>
                     </dir>
                     <dir
                       name="io">
@@ -56,8 +67,6 @@
                         <dir
                           name="spanner"/>
                       </dir>
-                      <dir
-                        name="mongodb"/>
                     </dir>
                     <dir
                       name="schemas"/>
@@ -107,6 +116,8 @@
                           <dir
                             name="client">
                             <dir
+                              name="accumulators"/>
+                            <dir
                               name="io"/>
                           </dir>
                         </dir>
@@ -128,8 +139,6 @@
                         <dir
                           name="spanner"/>
                       </dir>
-                      <dir
-                        name="mongodb"/>
                     </dir>
                     <dir
                       name="schemas"/>
@@ -150,8 +159,7 @@
         </dir>
       </dir>
       <dir
-        name="target"
-        excluded="true">
+        name="target">
         <dir
           name="generated-sources">
           <dir
@@ -197,6 +205,32 @@
                       name="transforms">
                       <dir
                         name="windowing"/>
+                    </dir>
+                  </dir>
+                </dir>
+              </dir>
+            </dir>
+          </dir>
+        </dir>
+        <dir
+          name="generated-test-sources">
+          <dir
+            name="test-annotations">
+            <dir
+              name="org">
+              <dir
+                name="apache">
+                <dir
+                  name="beam">
+                  <dir
+                    name="sdk">
+                    <dir
+                      name="io">
+                      <dir
+                        name="gcp">
+                        <dir
+                          name="bigtable"/>
+                      </dir>
                     </dir>
                   </dir>
                 </dir>
@@ -267,8 +301,8 @@
     index_by_method="false"
     group_by_directory="false"
     filename_mode="short"
-    generation_status="generated"
-    generation_time="19"
+    generation_status="needs_generation"
+    generation_time="0"
     html_clear_directory="false"
     html_generation="true"
     html_mode="alpha"
