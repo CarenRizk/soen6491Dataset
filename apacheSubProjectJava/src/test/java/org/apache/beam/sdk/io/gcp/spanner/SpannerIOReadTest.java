@@ -32,8 +32,6 @@ import com.google.cloud.Timestamp;
 import com.google.cloud.spanner.BatchReadOnlyTransaction;
 import com.google.cloud.spanner.BatchTransactionId;
 import com.google.cloud.spanner.ErrorCode;
-import com.google.cloud.spanner.FakeBatchTransactionId;
-import com.google.cloud.spanner.FakePartitionFactory;
 import com.google.cloud.spanner.InstanceConfigId;
 import com.google.cloud.spanner.KeySet;
 import com.google.cloud.spanner.Options.ReadAndQueryOption;

@@ -1,0 +1,20 @@
+{
+    "fileMetrics": "file,Code Lines\napacheSubProjectPython/textio.py,564\napacheSubProjectPython/direct_runner.py,411\napacheSubProjectPython/approximatequantiles_test.py,8\napacheSubProjectPython/window.py,353\napacheSubProjectPython/fileio_test.py,419\napacheSubProjectPython/approximatequantiles.py,12\napacheSubProjectPython/dataflow_runner.py,549\napacheSubProjectPython/combiners_test.py,538\napacheSubProjectPython/spanner.py,453\napacheSubProjectPython/fileio.py,574\napacheSubProjectPython/flatten.py,11\napacheSubProjectPython/window_test.py,113\napacheSubProjectPython/dataflow_runner_test.py,512\napacheSubProjectPython/trigger.py,1097\napacheSubProjectPython/flatten_test.py,19\napacheSubProjectPython/trigger_test.py,890\napacheSubProjectPython/bigtableio_test.py,274\napacheSubProjectPython/filesystems_test.py,173\napacheSubProjectPython/bigtableio.py,225\napacheSubProjectPython/approximateunique.py,13\napacheSubProjectPython/coders.py,968\napacheSubProjectPython/coders_test.py,161\napacheSubProjectPython/pipeline.py,945\napacheSubProjectPython/pubsub_test.py,836\napacheSubProjectPython/pipeline_test.py,875\napacheSubProjectPython/spannerio_test.py,529\napacheSubProjectPython/combiners.py,651\napacheSubProjectPython/textio_test.py,1355\napacheSubProjectPython/schemas.py,129\napacheSubProjectPython/approximateunique_test.py,10\napacheSubProjectPython/pubsub.py,371\napacheSubProjectPython/schemas_test.py,238\napacheSubProjectPython/direct_runner_test.py,163\napacheSubProjectPython/filesystems.py,173",
+    "funcTop10": "function,cyclomatic\ndataflow_runner.DataflowRunner.poll_for_job_completion,23\ndataflow_runner.DataflowRunner.run_pipeline,23\npipeline.Pipeline._replace.TransformUpdater._replace_if_needed,19\npipeline.Pipeline.apply,18\npipeline.Pipeline._replace.InputOutputUpdater.visit_transform,16\ntrigger.GeneralTriggerDriver.process_elements,15\ntrigger_test.BaseTestStreamTranscriptTest._execute,14\npipeline.AppliedPTransform.from_runner_api,13\npipeline.AppliedPTransform.visit,13\ntrigger_test.BatchTranscriptTest._execute,13",
+    "languages": "Python",
+    "metricsVersion": 3,
+    "parsetime": 1729179679,
+    "summaryMetric/CountAnalysisError": 0,
+    "summaryMetric/CountAnalysisWarning": 0,
+    "summaryMetric/CountDeclClass": 353,
+    "summaryMetric/CountDeclFile": 34,
+    "summaryMetric/CountDeclFunction": 1609,
+    "summaryMetric/CountLine": 23319,
+    "summaryMetric/CountLineBlank": 3648,
+    "summaryMetric/CountLineCode": 14612,
+    "summaryMetric/CountLineComment": 5225,
+    "summaryMetric/CountStmtDecl": 5150,
+    "summaryMetric/CountStmtExe": 6728,
+    "summaryMetric/RatioCommentToCode": 0.36,
+    "summaryMetrics": "Name,Value\nClasses,353\nFiles,34\nFunctions,1609\nLines,23319\nBlank Lines,3648\nCode Lines,14612\nComment Lines,5225\nDeclarative Statements,5150\nExecutable Statements,6728\nComment to Code Ratio,0.36\n"
+}

@@ -1,0 +1,172 @@
+{
+    "Session": "default",
+    "Sessions": {
+        "default": {
+            "SessionData": {
+                "1_3840x1600": {
+                    "EntityFilter": {
+                        "Dock Area": 1,
+                        "Dock In Drawer Mode": false,
+                        "Dock Is Floating": false,
+                        "Dock Tab Group": [
+                            "ProjectOverviewWidget"
+                        ]
+                    },
+                    "Locator": {
+                        "Dock Area": 8,
+                        "Dock In Drawer Mode": false,
+                        "Dock Is Floating": false,
+                        "Dock Tab Group": [
+                            "ProjectMetricsWidget"
+                        ]
+                    },
+                    "ProjectMetricsWidget": {
+                        "Dock Area": 8,
+                        "Dock In Drawer Mode": false,
+                        "Dock Is Floating": false,
+                        "Dock Tab Group": [
+                            "Locator"
+                        ]
+                    },
+                    "ProjectOverviewWidget": {
+                        "Dock Area": 1,
+                        "Dock In Drawer Mode": false,
+                        "Dock Is Floating": false,
+                        "Dock Tab Group": [
+                            "EntityFilter"
+                        ]
+                    }
+                },
+                "2_1920x1080_3840x1600": {
+                    "AnalysisLog": {
+                        "Dock Area": 8,
+                        "Dock In Drawer Mode": false,
+                        "Dock Is Floating": false,
+                        "Dock Tab Group": [
+                            "ProjectMetricsWidget",
+                            "Locator"
+                        ]
+                    },
+                    "DockWidgets": {
+                        "FloatingWidgetOrder": [
+                        ],
+                        "OpenWindows": {
+                            "00ProjectOverviewWidget": {
+                                "height": 694,
+                                "width": 250
+                            },
+                            "01SuggestionsBrowser": {
+                                "height": 952,
+                                "width": 250
+                            },
+                            "02EntityFilter": {
+                                "height": 716,
+                                "width": 250
+                            },
+                            "03ProjectMetricsWidget": {
+                                "height": 434,
+                                "width": 1644
+                            },
+                            "04Locator": {
+                                "height": 456,
+                                "width": 1644
+                            },
+                            "05AnalysisLog": {
+                                "height": 457,
+                                "width": 820
+                            },
+                            "06InfoBrowserWidget_0": {
+                                "height": 712,
+                                "width": 270
+                            },
+                            "07IssueBrowser": {
+                                "height": 455,
+                                "width": 820
+                            }
+                        },
+                        "TabGroupFrontWidgets": [
+                            "ProjectOverviewWidget",
+                            "ProjectMetricsWidget"
+                        ]
+                    },
+                    "EntityFilter": {
+                        "Dock Area": 1,
+                        "Dock In Drawer Mode": false,
+                        "Dock Is Floating": false,
+                        "Dock Tab Group": [
+                            "ProjectOverviewWidget"
+                        ]
+                    },
+                    "InfoBrowserWidget_0": {
+                        "Dock Area": 1,
+                        "Dock In Drawer Mode": false,
+                        "Dock Is Floating": false,
+                        "Dock Tab Group": [
+                        ]
+                    },
+                    "IssueBrowser": {
+                        "Dock Area": 8,
+                        "Dock In Drawer Mode": false,
+                        "Dock Is Floating": false,
+                        "Dock Tab Group": [
+                        ]
+                    },
+                    "Locator": {
+                        "Dock Area": 8,
+                        "Dock In Drawer Mode": false,
+                        "Dock Is Floating": false,
+                        "Dock Tab Group": [
+                            "ProjectMetricsWidget"
+                        ]
+                    },
+                    "ProjectMetricsWidget": {
+                        "Dock Area": 8,
+                        "Dock In Drawer Mode": false,
+                        "Dock Is Floating": false,
+                        "Dock Tab Group": [
+                            "Locator"
+                        ]
+                    },
+                    "ProjectOverviewWidget": {
+                        "Dock Area": 1,
+                        "Dock In Drawer Mode": false,
+                        "Dock Is Floating": false,
+                        "Dock Tab Group": [
+                            "EntityFilter"
+                        ]
+                    },
+                    "SearchResultsWindow": {
+                        "Dock Area": 8,
+                        "Dock In Drawer Mode": false,
+                        "Dock Is Floating": false,
+                        "Dock Tab Group": [
+                            "ProjectMetricsWidget"
+                        ]
+                    },
+                    "SuggestionsBrowser": {
+                        "Dock Area": 2,
+                        "Dock In Drawer Mode": false,
+                        "Dock Is Floating": false,
+                        "Dock Tab Group": [
+                        ]
+                    }
+                },
+                "EntityFilter": {
+                    "LastEntityFilterUsed": "All Entities"
+                },
+                "Locator": {
+                    "LastEntityFilterUsed": "All Entities"
+                },
+                "MiscSaveStates": {
+                    "entitySelected": "@ldataflow_runner_test.DataflowRunnerTest._test_flatten_input_visitor._@p@ldataflow_runner_test.DataflowRunnerTest._test_flatten_input_visitor@kydataflow_runner_test.DataflowRunnerTest._test_flatten_input_visitor:./dataflow_runner_test.py@f./dataflow_runner_test.py",
+                    "projectOverviewCharts": "true",
+                    "projectOverviewChartsSelected": "true"
+                },
+                "ProjectMetricsBrowser": {
+                    "Overwrite": false,
+                    "SaveDirectory": "./."
+                }
+            }
+        }
+    }
+}
