@@ -42,6 +42,7 @@ for test_file in "${TEST_FILES[@]}"
 # deactivate
 
 
+# pip install apache-beam
 # pip install pyyaml
 # pip install PyHamcrest
 # pip install pandas
