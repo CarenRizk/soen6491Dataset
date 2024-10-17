@@ -1,16 +1,55 @@
 Kind,Name,AvgCyclomatic,MaxCyclomatic,AvgCountLineCode,CountLineCode,RatioCommentToCode,CountLineComment,CountDeclClass,CountDeclMethod,CountLineCodeExe,MaxNesting
+File,"Accumulator.java",0,0,0,5,5.00,25,1,0,0,0
 File,"ApproximateQuantiles.java",2,5,8,426,0.53,227,6,43,203,2
 File,"ApproximateQuantilesTest.java",1,3,8,295,0.11,31,6,27,140,2
 File,"ApproximateUnique.java",2,5,6,218,0.81,177,5,26,96,2
 File,"ApproximateUniqueTest.java",1,2,10,144,0.17,24,4,9,60,1
+File,"Audience.java",0,0,0,18,1.28,23,2,3,0,0
 Unknown Annotation,"AutoValue.Builder",,,,,0.00,,,,,
+File,"AutoValue_AvroIO_Parse.java",2,5,8,156,0.00,0,2,17,71,2
+File,"AutoValue_AvroIO_ParseAll.java",2,5,8,137,0.00,0,2,15,62,2
+File,"AutoValue_AvroIO_ParseFiles.java",2,6,8,159,0.00,0,2,17,74,2
+File,"AutoValue_AvroIO_Read.java",1,1,0,37,0.00,0,1,1,0,0
+File,"AutoValue_AvroIO_ReadAll.java",2,5,8,150,0.00,0,2,17,69,2
+File,"AutoValue_AvroIO_ReadFiles.java",1,1,0,36,0.00,0,1,1,0,0
+File,"AutoValue_AvroIO_Sink.java",1,1,0,26,0.00,0,1,1,0,0
+File,"AutoValue_AvroIO_TypedWrite.java",1,1,18,68,0.00,0,1,1,0,0
+File,"AutoValue_BigtableIOTest_FailureOptions.java",2,6,9,138,0.00,0,2,14,68,2
+File,"AutoValue_BigtableIO_Read.java",2,5,8,117,0.00,0,2,13,53,2
+File,"AutoValue_BigtableIO_ReadChangeStream.java",1,1,12,44,0.00,0,1,1,0,0
+File,"AutoValue_BigtableIO_Write.java",2,7,9,170,0.00,0,2,17,81,2
+File,"AutoValue_DataflowRunner_EnvironmentInfo.java",2,4,9,70,0.00,0,1,7,33,1
+File,"AutoValue_FileIO_Match.java",2,4,6,81,0.00,0,2,11,32,1
+File,"AutoValue_FileIO_MatchAll.java",1,3,6,61,0.00,0,2,9,23,1
+File,"AutoValue_FileIO_MatchConfiguration.java",1,1,0,24,0.00,0,1,1,0,0
+File,"AutoValue_FileIO_ReadMatches.java",2,4,7,89,0.00,0,2,11,39,2
+File,"AutoValue_FileIO_Write.java",1,1,20,74,0.00,0,1,1,0,0
+File,"AutoValue_MongoDbIO_Read.java",2,9,9,269,0.00,0,2,27,126,2
+File,"AutoValue_PubsubIO_Read.java",2,15,8,417,0.00,0,2,43,204,2
+File,"AutoValue_PubsubIO_Write.java",2,10,8,297,0.00,0,2,31,144,2
+File,"AutoValue_Schema_Field.java",2,6,8,122,0.00,0,2,14,54,2
+File,"AutoValue_Schema_FieldType.java",1,1,0,34,0.00,0,1,1,0,0
+File,"AutoValue_SpannerIO_CreateTransaction.java",2,4,6,81,0.00,0,2,11,32,1
+File,"AutoValue_SpannerIO_Read.java",1,1,10,41,0.00,0,1,1,0,0
+File,"AutoValue_SpannerIO_ReadAll.java",2,5,7,128,0.00,0,2,15,57,2
+File,"AutoValue_SpannerIO_ReadChangeStream.java",1,1,10,38,0.00,0,1,1,0,0
+File,"AutoValue_SpannerIO_Write.java",2,7,8,217,0.00,0,2,23,105,2
+File,"AutoValue_TextIO_Read.java",2,6,8,176,0.00,0,2,19,83,2
+File,"AutoValue_TextIO_ReadAll.java",2,5,8,135,0.00,0,2,15,62,2
+File,"AutoValue_TextIO_ReadFiles.java",1,4,7,107,0.00,0,2,13,46,2
+File,"AutoValue_TextIO_Sink.java",2,5,6,80,0.00,0,2,12,31,1
+File,"AutoValue_TextIO_TypedWrite.java",1,1,23,82,0.00,0,1,1,0,0
+File,"AutoValue_Window.java",1,1,8,32,0.00,0,1,1,0,0
 File,"AvroIO.java",1,4,7,335,1.32,441,3,50,142,1
-File,"AvroIOTest.java",1,1,6,145,0.14,20,2,5,14,0
+File,"AvroIOTest.java",1,1,6,144,0.14,20,2,5,14,0
 File,"BigtableIO.java",2,14,9,1466,0.59,860,13,188,778,4
-File,"BigtableIOTest.java",1,4,12,1468,0.13,193,16,120,903,2
+File,"BigtableIOTest.java",1,4,12,1464,0.13,193,16,120,903,2
 File,"Coder.java",1,3,5,141,1.26,178,4,25,50,2
 File,"CoderTest.java",1,1,8,67,0.30,20,1,6,24,0
+File,"Combine.java",1,5,5,627,0.78,489,21,111,200,4
+File,"CombineTest.java",1,3,10,1113,0.06,72,27,97,599,2
 File,"Context.java",0,0,0,5,4.40,22,1,0,0,0
+File,"Counter.java",0,0,0,8,3.50,28,1,2,0,0
 File,"DataflowRunner.java",2,47,16,2098,0.13,271,34,118,1262,4
 File,"DataflowRunnerTest.java",1,5,14,1746,0.05,91,23,107,1150,3
 Unknown Annotation,"Default.String",,,,,0.00,,,,,
@@ -18,6 +57,7 @@ Unknown Annotation,"Deprecated",,,,,0.00,,,,,
 File,"DirectRunner.java",2,7,10,294,0.27,79,6,23,155,4
 File,"DirectRunnerTest.java",1,3,10,726,0.10,69,29,81,420,2
 Unknown Annotation,"Element",,,,,0.00,,,,,
+File,"Environment.java",0,0,0,12,3.42,41,1,3,0,0
 File,"ErrorHandlingTestUtils.java",2,2,8,35,0.49,17,3,2,7,1
 File,"ExpectedLogs.java",1,3,5,173,0.62,108,5,37,72,2
 File,"FakeServiceFactory.java",1,1,6,78,0.28,22,1,7,31,0
@@ -28,8 +68,7 @@ File,"FileSystemsTest.java",1,2,12,227,0.16,36,1,14,141,1
 Unknown Annotation,"FinishBundle",,,,,0.00,,,,,
 File,"Flatten.java",2,6,9,76,1.05,80,4,7,41,3
 File,"FlattenTest.java",1,2,13,273,0.09,24,8,18,133,1
-File,"MongoDbIO.java",2,9,9,675,0.38,258,8,100,335,4
-File,"MongoDbIOTest.java",1,3,19,193,0.11,22,2,7,112,2
+File,"Histogram.java",0,0,0,8,4.13,33,1,2,0,0
 File,"NetworkTestHelper.java",1,1,5,10,1.90,19,1,1,2,1
 Unknown Annotation,"Override",,,,,0.00,,,,,
 Unknown Annotation,"Parameterized.Parameter",,,,,0.00,,,,,
@@ -38,14 +77,14 @@ File,"Pipeline.java",1,5,8,454,0.48,217,12,58,199,2
 File,"PipelineTest.java",1,2,9,420,0.12,51,19,43,191,1
 Unknown Annotation,"ProcessElement",,,,,0.00,,,,,
 File,"PubsubIO.java",1,7,8,1009,0.50,509,18,156,522,3
-File,"PubsubIOTest.java",1,2,13,602,0.04,24,6,32,377,2
+File,"PubsubIOTest.java",1,2,13,600,0.04,24,6,32,377,2
 File,"Schema.java",1,12,6,1025,0.19,191,13,181,495,3
 File,"SchemaTest.java",1,1,14,469,0.07,31,2,30,325,0
 Unknown Annotation,"Setup",,,,,0.00,,,,,
 File,"SpannerIO.java",1,6,7,1517,0.36,552,30,231,762,4
 File,"SpannerIOReadChangeStreamTest.java",1,1,21,93,0.32,30,1,3,54,0
-File,"SpannerIOReadTest.java",1,2,10,209,0.09,19,1,11,104,1
-File,"SpannerIOWriteTest.java",1,2,20,705,0.15,105,5,32,477,1
+File,"SpannerIOReadTest.java",1,2,10,207,0.09,19,1,11,104,1
+File,"SpannerIOWriteTest.java",1,2,20,703,0.15,105,5,32,477,1
 Unknown Annotation,"StartBundle",,,,,0.00,,,,,
 Unknown Annotation,"StateId",,,,,0.00,,,,,
 Unknown Annotation,"SuppressWarnings",,,,,0.00,,,,,
@@ -54,6 +93,7 @@ File,"TestCredential.java",1,1,4,31,0.58,18,1,6,5,0
 File,"TextIO.java",1,13,5,792,0.63,497,14,192,314,3
 File,"TextIOReadTest.java",2,6,12,695,0.14,96,11,50,393,3
 File,"TextIOWriteTest.java",1,7,9,378,0.07,26,10,34,157,3
+File,"Timer.java",1,1,3,12,2.83,34,1,2,1,0
 Unknown Annotation,"Timestamp",,,,,0.00,,,,,
 File,"Trigger.java",2,7,7,110,1.13,124,2,15,43,2
 File,"TriggerTest.java",1,1,5,65,0.28,18,3,10,20,0
@@ -64,6 +104,10 @@ Unknown Annotation,"com.fasterxml.jackson.databind.annotation.JsonDeserialize",,
 Unknown Annotation,"com.fasterxml.jackson.databind.annotation.JsonSerialize",,,,,0.00,,,,,
 Unknown Annotation,"com.google.auto.value.AutoValue",,,,,0.00,,,,,
 Unknown Annotation,"edu.umd.cs.findbugs.annotations.SuppressFBWarnings",,,,,0.00,,,,,
+Unknown Annotation,"java.lang.annotation.Documented",,,,,0.00,,,,,
+Unknown Annotation,"java.lang.annotation.Retention",,,,,0.00,,,,,
+Unknown Annotation,"java.lang.annotation.Target",,,,,0.00,,,,,
+Unknown Annotation,"javax.annotation.Generated",,,,,0.00,,,,,
 Unknown Annotation,"javax.annotation.Nonnull",,,,,0.00,,,,,
 Unknown Annotation,"javax.annotation.Nullable",,,,,0.00,,,,,
 Unknown Annotation,"javax.annotation.concurrent.GuardedBy",,,,,0.00,,,,,
@@ -74,7 +118,15 @@ Package,"org.apache",0,0,0,0,0.00,0,0,0,0,0
 Unknown Annotation,"org.apache.avro.reflect.AvroSchema",,,,,0.00,,,,,
 Package,"org.apache.beam",0,0,0,0,0.00,0,0,0,0,0
 Package,"org.apache.beam.runners",0,0,0,0,0.00,0,0,0,0,0
-Package,"org.apache.beam.runners.dataflow",2,47,15,3844,0.09,362,57,225,2412,4
+Package,"org.apache.beam.runners.dataflow",2,47,15,3914,0.09,362,58,232,2445,4
+Final Class,"org.apache.beam.runners.dataflow.AutoValue_DataflowRunner_EnvironmentInfo",2,4,9,67,0.00,0,,7,33,1
+Constructor,"org.apache.beam.runners.dataflow.AutoValue_DataflowRunner_EnvironmentInfo.AutoValue_DataflowRunner_EnvironmentInfo",,,,17,0.00,0,,,9,1
+Method,"org.apache.beam.runners.dataflow.AutoValue_DataflowRunner_EnvironmentInfo.capabilities",,,,4,0.00,0,,,1,0
+Method,"org.apache.beam.runners.dataflow.AutoValue_DataflowRunner_EnvironmentInfo.containerUrl",,,,4,0.00,0,,,1,0
+Method,"org.apache.beam.runners.dataflow.AutoValue_DataflowRunner_EnvironmentInfo.environmentId",,,,4,0.00,0,,,1,0
+Public Method,"org.apache.beam.runners.dataflow.AutoValue_DataflowRunner_EnvironmentInfo.equals",,,,13,0.00,0,,,8,1
+Public Method,"org.apache.beam.runners.dataflow.AutoValue_DataflowRunner_EnvironmentInfo.hashCode",,,,11,0.00,0,,,8,0
+Public Method,"org.apache.beam.runners.dataflow.AutoValue_DataflowRunner_EnvironmentInfo.toString",,,,8,0.00,0,,,5,0
 Public Class,"org.apache.beam.runners.dataflow.DataflowRunner",4,47,31,1930,0.13,254,,42,1262,4
 Private Static Generic Class,"org.apache.beam.runners.dataflow.DataflowRunner.AlwaysCreateViaRead",1,1,6,15,0.00,0,,2,3,0
 Generic Parameter,"org.apache.beam.runners.dataflow.DataflowRunner.AlwaysCreateViaRead.T",0,0,0,,,,,0,,0
@@ -751,7 +803,103 @@ Public Method,"org.apache.beam.sdk.coders.CoderTest.testNonDeterministicExceptio
 Public Method,"org.apache.beam.sdk.coders.CoderTest.testTypeIsPreserved",,,,4,0.00,0,,,1,0
 Package,"org.apache.beam.sdk.extensions",0,0,0,0,0.00,0,0,0,0,0
 Package,"org.apache.beam.sdk.extensions.avro",0,0,0,0,0.00,0,0,0,0,0
-Package,"org.apache.beam.sdk.extensions.avro.io",1,4,7,480,0.96,461,5,55,156,1
+Package,"org.apache.beam.sdk.extensions.avro.io",1,6,7,1248,0.37,461,17,125,432,2
+Final Generic Class,"org.apache.beam.sdk.extensions.avro.io.AutoValue_AvroIO_Parse",2,5,7,148,0.00,0,,9,71,1
+Private Constructor,"org.apache.beam.sdk.extensions.avro.io.AutoValue_AvroIO_Parse.AutoValue_AvroIO_Parse",,,,12,0.00,0,,,5,0
+Static Final Generic Class,"org.apache.beam.sdk.extensions.avro.io.AutoValue_AvroIO_Parse.Builder",2,5,8,74,0.00,0,,8,38,2
+Constructor,"org.apache.beam.sdk.extensions.avro.io.AutoValue_AvroIO_Parse.Builder.Builder",,,,2,0.00,0,,,0,0
+Constructor,"org.apache.beam.sdk.extensions.avro.io.AutoValue_AvroIO_Parse.Builder.Builder",,,,8,0.00,0,,,6,0
+Generic Parameter,"org.apache.beam.sdk.extensions.avro.io.AutoValue_AvroIO_Parse.Builder.T",0,0,0,,,,,0,,0
+Method,"org.apache.beam.sdk.extensions.avro.io.AutoValue_AvroIO_Parse.Builder.build",,,,24,0.00,0,,,17,2
+Method,"org.apache.beam.sdk.extensions.avro.io.AutoValue_AvroIO_Parse.Builder.setCoder",,,,5,0.00,0,,,2,0
+Method,"org.apache.beam.sdk.extensions.avro.io.AutoValue_AvroIO_Parse.Builder.setFilepattern",,,,5,0.00,0,,,2,0
+Method,"org.apache.beam.sdk.extensions.avro.io.AutoValue_AvroIO_Parse.Builder.setHintMatchesManyFiles",,,,6,0.00,0,,,3,0
+Method,"org.apache.beam.sdk.extensions.avro.io.AutoValue_AvroIO_Parse.Builder.setMatchConfiguration",,,,8,0.00,0,,,4,1
+Method,"org.apache.beam.sdk.extensions.avro.io.AutoValue_AvroIO_Parse.Builder.setParseFn",,,,8,0.00,0,,,4,1
+Generic Parameter,"org.apache.beam.sdk.extensions.avro.io.AutoValue_AvroIO_Parse.T",0,0,0,,,,,0,,0
+Public Method,"org.apache.beam.sdk.extensions.avro.io.AutoValue_AvroIO_Parse.equals",,,,15,0.00,0,,,10,1
+Method,"org.apache.beam.sdk.extensions.avro.io.AutoValue_AvroIO_Parse.getCoder",,,,4,0.00,0,,,1,0
+Method,"org.apache.beam.sdk.extensions.avro.io.AutoValue_AvroIO_Parse.getFilepattern",,,,4,0.00,0,,,1,0
+Method,"org.apache.beam.sdk.extensions.avro.io.AutoValue_AvroIO_Parse.getHintMatchesManyFiles",,,,4,0.00,0,,,1,0
+Method,"org.apache.beam.sdk.extensions.avro.io.AutoValue_AvroIO_Parse.getMatchConfiguration",,,,4,0.00,0,,,1,0
+Method,"org.apache.beam.sdk.extensions.avro.io.AutoValue_AvroIO_Parse.getParseFn",,,,4,0.00,0,,,1,0
+Public Method,"org.apache.beam.sdk.extensions.avro.io.AutoValue_AvroIO_Parse.hashCode",,,,15,0.00,0,,,12,0
+Method,"org.apache.beam.sdk.extensions.avro.io.AutoValue_AvroIO_Parse.toBuilder",,,,4,0.00,0,,,1,0
+Final Generic Class,"org.apache.beam.sdk.extensions.avro.io.AutoValue_AvroIO_ParseAll",2,4,7,130,0.00,0,,8,62,1
+Private Constructor,"org.apache.beam.sdk.extensions.avro.io.AutoValue_AvroIO_ParseAll.AutoValue_AvroIO_ParseAll",,,,10,0.00,0,,,4,0
+Static Final Generic Class,"org.apache.beam.sdk.extensions.avro.io.AutoValue_AvroIO_ParseAll.Builder",2,5,8,66,0.00,0,,7,34,2
+Constructor,"org.apache.beam.sdk.extensions.avro.io.AutoValue_AvroIO_ParseAll.Builder.Builder",,,,2,0.00,0,,,0,0
+Constructor,"org.apache.beam.sdk.extensions.avro.io.AutoValue_AvroIO_ParseAll.Builder.Builder",,,,7,0.00,0,,,5,0
+Generic Parameter,"org.apache.beam.sdk.extensions.avro.io.AutoValue_AvroIO_ParseAll.Builder.T",0,0,0,,,,,0,,0
+Method,"org.apache.beam.sdk.extensions.avro.io.AutoValue_AvroIO_ParseAll.Builder.build",,,,23,0.00,0,,,16,2
+Method,"org.apache.beam.sdk.extensions.avro.io.AutoValue_AvroIO_ParseAll.Builder.setCoder",,,,5,0.00,0,,,2,0
+Method,"org.apache.beam.sdk.extensions.avro.io.AutoValue_AvroIO_ParseAll.Builder.setDesiredBundleSizeBytes",,,,6,0.00,0,,,3,0
+Method,"org.apache.beam.sdk.extensions.avro.io.AutoValue_AvroIO_ParseAll.Builder.setMatchConfiguration",,,,8,0.00,0,,,4,1
+Method,"org.apache.beam.sdk.extensions.avro.io.AutoValue_AvroIO_ParseAll.Builder.setParseFn",,,,8,0.00,0,,,4,1
+Generic Parameter,"org.apache.beam.sdk.extensions.avro.io.AutoValue_AvroIO_ParseAll.T",0,0,0,,,,,0,,0
+Public Method,"org.apache.beam.sdk.extensions.avro.io.AutoValue_AvroIO_ParseAll.equals",,,,14,0.00,0,,,9,1
+Method,"org.apache.beam.sdk.extensions.avro.io.AutoValue_AvroIO_ParseAll.getCoder",,,,4,0.00,0,,,1,0
+Method,"org.apache.beam.sdk.extensions.avro.io.AutoValue_AvroIO_ParseAll.getDesiredBundleSizeBytes",,,,4,0.00,0,,,1,0
+Method,"org.apache.beam.sdk.extensions.avro.io.AutoValue_AvroIO_ParseAll.getMatchConfiguration",,,,4,0.00,0,,,1,0
+Method,"org.apache.beam.sdk.extensions.avro.io.AutoValue_AvroIO_ParseAll.getParseFn",,,,4,0.00,0,,,1,0
+Public Method,"org.apache.beam.sdk.extensions.avro.io.AutoValue_AvroIO_ParseAll.hashCode",,,,13,0.00,0,,,10,0
+Method,"org.apache.beam.sdk.extensions.avro.io.AutoValue_AvroIO_ParseAll.toBuilder",,,,4,0.00,0,,,1,0
+Final Generic Class,"org.apache.beam.sdk.extensions.avro.io.AutoValue_AvroIO_ParseFiles",2,4,7,152,0.00,0,,9,74,1
+Private Constructor,"org.apache.beam.sdk.extensions.avro.io.AutoValue_AvroIO_ParseFiles.AutoValue_AvroIO_ParseFiles",,,,12,0.00,0,,,5,0
+Static Final Generic Class,"org.apache.beam.sdk.extensions.avro.io.AutoValue_AvroIO_ParseFiles.Builder",2,6,9,78,0.00,0,,8,41,2
+Constructor,"org.apache.beam.sdk.extensions.avro.io.AutoValue_AvroIO_ParseFiles.Builder.Builder",,,,2,0.00,0,,,0,0
+Constructor,"org.apache.beam.sdk.extensions.avro.io.AutoValue_AvroIO_ParseFiles.Builder.Builder",,,,8,0.00,0,,,6,0
+Generic Parameter,"org.apache.beam.sdk.extensions.avro.io.AutoValue_AvroIO_ParseFiles.Builder.T",0,0,0,,,,,0,,0
+Method,"org.apache.beam.sdk.extensions.avro.io.AutoValue_AvroIO_ParseFiles.Builder.build",,,,27,0.00,0,,,19,2
+Method,"org.apache.beam.sdk.extensions.avro.io.AutoValue_AvroIO_ParseFiles.Builder.setCoder",,,,5,0.00,0,,,2,0
+Method,"org.apache.beam.sdk.extensions.avro.io.AutoValue_AvroIO_ParseFiles.Builder.setDesiredBundleSizeBytes",,,,6,0.00,0,,,3,0
+Method,"org.apache.beam.sdk.extensions.avro.io.AutoValue_AvroIO_ParseFiles.Builder.setFileExceptionHandler",,,,8,0.00,0,,,4,1
+Method,"org.apache.beam.sdk.extensions.avro.io.AutoValue_AvroIO_ParseFiles.Builder.setParseFn",,,,8,0.00,0,,,4,1
+Method,"org.apache.beam.sdk.extensions.avro.io.AutoValue_AvroIO_ParseFiles.Builder.setUsesReshuffle",,,,6,0.00,0,,,3,0
+Generic Parameter,"org.apache.beam.sdk.extensions.avro.io.AutoValue_AvroIO_ParseFiles.T",0,0,0,,,,,0,,0
+Public Method,"org.apache.beam.sdk.extensions.avro.io.AutoValue_AvroIO_ParseFiles.equals",,,,15,0.00,0,,,10,1
+Method,"org.apache.beam.sdk.extensions.avro.io.AutoValue_AvroIO_ParseFiles.getCoder",,,,4,0.00,0,,,1,0
+Method,"org.apache.beam.sdk.extensions.avro.io.AutoValue_AvroIO_ParseFiles.getDesiredBundleSizeBytes",,,,4,0.00,0,,,1,0
+Method,"org.apache.beam.sdk.extensions.avro.io.AutoValue_AvroIO_ParseFiles.getFileExceptionHandler",,,,4,0.00,0,,,1,0
+Method,"org.apache.beam.sdk.extensions.avro.io.AutoValue_AvroIO_ParseFiles.getParseFn",,,,4,0.00,0,,,1,0
+Method,"org.apache.beam.sdk.extensions.avro.io.AutoValue_AvroIO_ParseFiles.getUsesReshuffle",,,,4,0.00,0,,,1,0
+Public Method,"org.apache.beam.sdk.extensions.avro.io.AutoValue_AvroIO_ParseFiles.hashCode",,,,15,0.00,0,,,12,0
+Method,"org.apache.beam.sdk.extensions.avro.io.AutoValue_AvroIO_ParseFiles.toBuilder",,,,4,0.00,0,,,1,0
+Final Generic Class,"org.apache.beam.sdk.extensions.avro.io.AutoValue_AvroIO_Read",1,1,0,28,0.00,0,,1,0,0
+Private Constructor,"org.apache.beam.sdk.extensions.avro.io.AutoValue_AvroIO_Read.AutoValue_AvroIO_Read",,,,0,0.00,0,,,0,0
+Generic Parameter,"org.apache.beam.sdk.extensions.avro.io.AutoValue_AvroIO_Read.T",0,0,0,,,,,0,,0
+Final Generic Class,"org.apache.beam.sdk.extensions.avro.io.AutoValue_AvroIO_ReadAll",2,5,7,145,0.00,0,,9,69,1
+Private Constructor,"org.apache.beam.sdk.extensions.avro.io.AutoValue_AvroIO_ReadAll.AutoValue_AvroIO_ReadAll",,,,12,0.00,0,,,5,0
+Static Final Generic Class,"org.apache.beam.sdk.extensions.avro.io.AutoValue_AvroIO_ReadAll.Builder",2,5,8,71,0.00,0,,8,36,2
+Constructor,"org.apache.beam.sdk.extensions.avro.io.AutoValue_AvroIO_ReadAll.Builder.Builder",,,,2,0.00,0,,,0,0
+Constructor,"org.apache.beam.sdk.extensions.avro.io.AutoValue_AvroIO_ReadAll.Builder.Builder",,,,8,0.00,0,,,6,0
+Generic Parameter,"org.apache.beam.sdk.extensions.avro.io.AutoValue_AvroIO_ReadAll.Builder.T",0,0,0,,,,,0,,0
+Method,"org.apache.beam.sdk.extensions.avro.io.AutoValue_AvroIO_ReadAll.Builder.build",,,,23,0.00,0,,,16,2
+Method,"org.apache.beam.sdk.extensions.avro.io.AutoValue_AvroIO_ReadAll.Builder.setDesiredBundleSizeBytes",,,,6,0.00,0,,,3,0
+Method,"org.apache.beam.sdk.extensions.avro.io.AutoValue_AvroIO_ReadAll.Builder.setInferBeamSchema",,,,6,0.00,0,,,3,0
+Method,"org.apache.beam.sdk.extensions.avro.io.AutoValue_AvroIO_ReadAll.Builder.setMatchConfiguration",,,,8,0.00,0,,,4,1
+Method,"org.apache.beam.sdk.extensions.avro.io.AutoValue_AvroIO_ReadAll.Builder.setRecordClass",,,,5,0.00,0,,,2,0
+Method,"org.apache.beam.sdk.extensions.avro.io.AutoValue_AvroIO_ReadAll.Builder.setSchema",,,,5,0.00,0,,,2,0
+Generic Parameter,"org.apache.beam.sdk.extensions.avro.io.AutoValue_AvroIO_ReadAll.T",0,0,0,,,,,0,,0
+Public Method,"org.apache.beam.sdk.extensions.avro.io.AutoValue_AvroIO_ReadAll.equals",,,,15,0.00,0,,,10,1
+Method,"org.apache.beam.sdk.extensions.avro.io.AutoValue_AvroIO_ReadAll.getDesiredBundleSizeBytes",,,,4,0.00,0,,,1,0
+Method,"org.apache.beam.sdk.extensions.avro.io.AutoValue_AvroIO_ReadAll.getInferBeamSchema",,,,4,0.00,0,,,1,0
+Method,"org.apache.beam.sdk.extensions.avro.io.AutoValue_AvroIO_ReadAll.getMatchConfiguration",,,,4,0.00,0,,,1,0
+Method,"org.apache.beam.sdk.extensions.avro.io.AutoValue_AvroIO_ReadAll.getRecordClass",,,,4,0.00,0,,,1,0
+Method,"org.apache.beam.sdk.extensions.avro.io.AutoValue_AvroIO_ReadAll.getSchema",,,,4,0.00,0,,,1,0
+Public Method,"org.apache.beam.sdk.extensions.avro.io.AutoValue_AvroIO_ReadAll.hashCode",,,,15,0.00,0,,,12,0
+Method,"org.apache.beam.sdk.extensions.avro.io.AutoValue_AvroIO_ReadAll.toBuilder",,,,4,0.00,0,,,1,0
+Final Generic Class,"org.apache.beam.sdk.extensions.avro.io.AutoValue_AvroIO_ReadFiles",1,1,0,28,0.00,0,,1,0,0
+Private Constructor,"org.apache.beam.sdk.extensions.avro.io.AutoValue_AvroIO_ReadFiles.AutoValue_AvroIO_ReadFiles",,,,0,0.00,0,,,0,0
+Generic Parameter,"org.apache.beam.sdk.extensions.avro.io.AutoValue_AvroIO_ReadFiles.T",0,0,0,,,,,0,,0
+Final Generic Class,"org.apache.beam.sdk.extensions.avro.io.AutoValue_AvroIO_Sink",1,1,0,19,0.00,0,,1,0,0
+Private Constructor,"org.apache.beam.sdk.extensions.avro.io.AutoValue_AvroIO_Sink.AutoValue_AvroIO_Sink",,,,0,0.00,0,,,0,0
+Generic Parameter,"org.apache.beam.sdk.extensions.avro.io.AutoValue_AvroIO_Sink.ElementT",0,0,0,,,,,0,,0
+Final Generic Class,"org.apache.beam.sdk.extensions.avro.io.AutoValue_AvroIO_TypedWrite",1,1,18,55,0.00,0,,1,0,0
+Private Constructor,"org.apache.beam.sdk.extensions.avro.io.AutoValue_AvroIO_TypedWrite.AutoValue_AvroIO_TypedWrite",,,,18,0.00,0,,,0,0
+Generic Parameter,"org.apache.beam.sdk.extensions.avro.io.AutoValue_AvroIO_TypedWrite.DestinationT",0,0,0,,,,,0,,0
+Generic Parameter,"org.apache.beam.sdk.extensions.avro.io.AutoValue_AvroIO_TypedWrite.OutputT",0,0,0,,,,,0,,0
+Generic Parameter,"org.apache.beam.sdk.extensions.avro.io.AutoValue_AvroIO_TypedWrite.UserT",0,0,0,,,,,0,,0
 Public Class,"org.apache.beam.sdk.extensions.avro.io.AvroIO",1,1,7,268,1.58,424,,20,142,0
 Public Static Abstract Generic Class,"org.apache.beam.sdk.extensions.avro.io.AvroIO.Read",1,4,6,122,0.34,42,,21,52,1
 Static Abstract Generic Class,"org.apache.beam.sdk.extensions.avro.io.AvroIO.Read.Builder",0,0,0,12,0.00,0,,9,0,0
@@ -831,10 +979,31 @@ Public Method,"org.apache.beam.sdk.extensions.avro.io.AvroIOTest.SimpleTests.tes
 Public Method,"org.apache.beam.sdk.extensions.avro.io.AvroIOTest.SimpleTests.testWriteWithSerDeCustomXZCodec",,,,8,0.00,0,,,4,0
 Package,"org.apache.beam.sdk.extensions.euphoria",0,0,0,0,0.00,0,0,0,0,0
 Package,"org.apache.beam.sdk.extensions.euphoria.core",0,0,0,0,0.00,0,0,0,0,0
-Unknown Annotation,"org.apache.beam.sdk.extensions.euphoria.core.annotation.audience.Audience",,,,,0.00,,,,,
+Package,"org.apache.beam.sdk.extensions.euphoria.core.annotation",0,0,0,0,0.00,0,0,0,0,0
+Package,"org.apache.beam.sdk.extensions.euphoria.core.annotation.audience",0,0,0,18,1.28,23,2,3,0,0
+Public Annotation,"org.apache.beam.sdk.extensions.euphoria.core.annotation.audience.Audience",0,0,0,12,0.42,5,,1,0,0
+Enum Type,"org.apache.beam.sdk.extensions.euphoria.core.annotation.audience.Audience.Type",0,0,0,6,0.83,5,,2,0,0
+Public Implicit Method,"org.apache.beam.sdk.extensions.euphoria.core.annotation.audience.Audience.Type.valueOf",,,,,0.00,,,,,
+Public Implicit Method,"org.apache.beam.sdk.extensions.euphoria.core.annotation.audience.Audience.Type.values",,,,,0.00,,,,,
+Abstract Method,"org.apache.beam.sdk.extensions.euphoria.core.annotation.audience.Audience.value",,,,1,0.00,0,,,0,0
 Package,"org.apache.beam.sdk.extensions.euphoria.core.client",0,0,0,0,0.00,0,0,0,0,0
-Package,"org.apache.beam.sdk.extensions.euphoria.core.client.io",0,0,0,5,4.40,22,1,0,0,0
+Package,"org.apache.beam.sdk.extensions.euphoria.core.client.accumulators",1,1,3,33,3.64,120,4,6,1,0
+Public Interface,"org.apache.beam.sdk.extensions.euphoria.core.client.accumulators.Accumulator",0,0,0,3,2.67,8,,0,0,0
+Public Interface,"org.apache.beam.sdk.extensions.euphoria.core.client.accumulators.Counter",0,0,0,6,1.00,6,,2,0,0
+Abstract Method,"org.apache.beam.sdk.extensions.euphoria.core.client.accumulators.Counter.increment",,,,1,5.00,5,,,0,0
+Abstract Method,"org.apache.beam.sdk.extensions.euphoria.core.client.accumulators.Counter.increment",,,,1,1.00,1,,,0,0
+Public Interface,"org.apache.beam.sdk.extensions.euphoria.core.client.accumulators.Histogram",0,0,0,6,1.83,11,,2,0,0
+Abstract Method,"org.apache.beam.sdk.extensions.euphoria.core.client.accumulators.Histogram.add",,,,1,5.00,5,,,0,0
+Abstract Method,"org.apache.beam.sdk.extensions.euphoria.core.client.accumulators.Histogram.add",,,,1,6.00,6,,,0,0
+Public Interface,"org.apache.beam.sdk.extensions.euphoria.core.client.accumulators.Timer",1,1,3,8,1.38,11,,2,1,0
+Abstract Method,"org.apache.beam.sdk.extensions.euphoria.core.client.accumulators.Timer.add",,,,1,5.00,5,,,0,0
+Method,"org.apache.beam.sdk.extensions.euphoria.core.client.accumulators.Timer.add",,,,3,2.00,6,,,1,0
+Package,"org.apache.beam.sdk.extensions.euphoria.core.client.io",0,0,0,17,3.71,63,2,3,0,0
 Public Interface,"org.apache.beam.sdk.extensions.euphoria.core.client.io.Context",0,0,0,3,1.67,5,,0,0,0
+Public Interface,"org.apache.beam.sdk.extensions.euphoria.core.client.io.Environment",0,0,0,7,2.71,19,,3,0,0
+Abstract Method,"org.apache.beam.sdk.extensions.euphoria.core.client.io.Environment.getCounter",,,,1,6.00,6,,,0,0
+Abstract Method,"org.apache.beam.sdk.extensions.euphoria.core.client.io.Environment.getHistogram",,,,1,6.00,6,,,0,0
+Abstract Method,"org.apache.beam.sdk.extensions.euphoria.core.client.io.Environment.getTimer",,,,1,6.00,6,,,0,0
 Package,"org.apache.beam.sdk.extensions.gcp",0,0,0,0,0.00,0,0,0,0,0
 Package,"org.apache.beam.sdk.extensions.gcp.auth",1,1,4,31,0.58,18,1,6,5,0
 Public Class,"org.apache.beam.sdk.extensions.gcp.auth.TestCredential",1,1,4,24,0.04,1,,6,5,0
@@ -844,7 +1013,121 @@ Public Method,"org.apache.beam.sdk.extensions.gcp.auth.TestCredential.getRequest
 Public Method,"org.apache.beam.sdk.extensions.gcp.auth.TestCredential.hasRequestMetadata",,,,4,0.00,0,,,1,0
 Public Method,"org.apache.beam.sdk.extensions.gcp.auth.TestCredential.hasRequestMetadataOnly",,,,4,0.00,0,,,1,0
 Public Method,"org.apache.beam.sdk.extensions.gcp.auth.TestCredential.refresh",,,,2,0.00,0,,,0,0
-Package,"org.apache.beam.sdk.io",1,13,9,3782,0.36,1374,69,503,1882,3
+Package,"org.apache.beam.sdk.io",1,13,8,4691,0.29,1374,86,596,2198,3
+Final Class,"org.apache.beam.sdk.io.AutoValue_FileIO_Match",2,4,7,77,0.00,0,,6,32,1
+Private Constructor,"org.apache.beam.sdk.io.AutoValue_FileIO_Match.AutoValue_FileIO_Match",,,,6,0.00,0,,,2,0
+Static Final Class,"org.apache.beam.sdk.io.AutoValue_FileIO_Match.Builder",1,2,6,33,0.00,0,,5,14,1
+Constructor,"org.apache.beam.sdk.io.AutoValue_FileIO_Match.Builder.Builder",,,,2,0.00,0,,,0,0
+Constructor,"org.apache.beam.sdk.io.AutoValue_FileIO_Match.Builder.Builder",,,,4,0.00,0,,,2,0
+Method,"org.apache.beam.sdk.io.AutoValue_FileIO_Match.Builder.build",,,,10,0.00,0,,,6,1
+Method,"org.apache.beam.sdk.io.AutoValue_FileIO_Match.Builder.setConfiguration",,,,8,0.00,0,,,4,1
+Method,"org.apache.beam.sdk.io.AutoValue_FileIO_Match.Builder.setFilepattern",,,,5,0.00,0,,,2,0
+Public Method,"org.apache.beam.sdk.io.AutoValue_FileIO_Match.equals",,,,12,0.00,0,,,7,1
+Method,"org.apache.beam.sdk.io.AutoValue_FileIO_Match.getConfiguration",,,,4,0.00,0,,,1,0
+Method,"org.apache.beam.sdk.io.AutoValue_FileIO_Match.getFilepattern",,,,4,0.00,0,,,1,0
+Public Method,"org.apache.beam.sdk.io.AutoValue_FileIO_Match.hashCode",,,,9,0.00,0,,,6,0
+Method,"org.apache.beam.sdk.io.AutoValue_FileIO_Match.toBuilder",,,,4,0.00,0,,,1,0
+Final Class,"org.apache.beam.sdk.io.AutoValue_FileIO_MatchAll",1,3,6,59,0.00,0,,5,23,1
+Private Constructor,"org.apache.beam.sdk.io.AutoValue_FileIO_MatchAll.AutoValue_FileIO_MatchAll",,,,4,0.00,0,,,1,0
+Static Final Class,"org.apache.beam.sdk.io.AutoValue_FileIO_MatchAll.Builder",2,2,6,25,0.00,0,,4,10,1
+Constructor,"org.apache.beam.sdk.io.AutoValue_FileIO_MatchAll.Builder.Builder",,,,2,0.00,0,,,0,0
+Constructor,"org.apache.beam.sdk.io.AutoValue_FileIO_MatchAll.Builder.Builder",,,,3,0.00,0,,,1,0
+Method,"org.apache.beam.sdk.io.AutoValue_FileIO_MatchAll.Builder.build",,,,9,0.00,0,,,5,1
+Method,"org.apache.beam.sdk.io.AutoValue_FileIO_MatchAll.Builder.setConfiguration",,,,8,0.00,0,,,4,1
+Public Method,"org.apache.beam.sdk.io.AutoValue_FileIO_MatchAll.equals",,,,11,0.00,0,,,6,1
+Method,"org.apache.beam.sdk.io.AutoValue_FileIO_MatchAll.getConfiguration",,,,4,0.00,0,,,1,0
+Public Method,"org.apache.beam.sdk.io.AutoValue_FileIO_MatchAll.hashCode",,,,7,0.00,0,,,4,0
+Method,"org.apache.beam.sdk.io.AutoValue_FileIO_MatchAll.toBuilder",,,,4,0.00,0,,,1,0
+Final Class,"org.apache.beam.sdk.io.AutoValue_FileIO_MatchConfiguration",1,1,0,16,0.00,0,,1,0,0
+Private Constructor,"org.apache.beam.sdk.io.AutoValue_FileIO_MatchConfiguration.AutoValue_FileIO_MatchConfiguration",,,,0,0.00,0,,,0,0
+Final Class,"org.apache.beam.sdk.io.AutoValue_FileIO_ReadMatches",1,3,7,87,0.00,0,,6,39,1
+Private Constructor,"org.apache.beam.sdk.io.AutoValue_FileIO_ReadMatches.AutoValue_FileIO_ReadMatches",,,,6,0.00,0,,,2,0
+Static Final Class,"org.apache.beam.sdk.io.AutoValue_FileIO_ReadMatches.Builder",2,4,8,43,0.00,0,,5,21,2
+Constructor,"org.apache.beam.sdk.io.AutoValue_FileIO_ReadMatches.Builder.Builder",,,,2,0.00,0,,,0,0
+Constructor,"org.apache.beam.sdk.io.AutoValue_FileIO_ReadMatches.Builder.Builder",,,,4,0.00,0,,,2,0
+Method,"org.apache.beam.sdk.io.AutoValue_FileIO_ReadMatches.Builder.build",,,,17,0.00,0,,,11,2
+Method,"org.apache.beam.sdk.io.AutoValue_FileIO_ReadMatches.Builder.setCompression",,,,8,0.00,0,,,4,1
+Method,"org.apache.beam.sdk.io.AutoValue_FileIO_ReadMatches.Builder.setDirectoryTreatment",,,,8,0.00,0,,,4,1
+Public Method,"org.apache.beam.sdk.io.AutoValue_FileIO_ReadMatches.equals",,,,12,0.00,0,,,7,1
+Method,"org.apache.beam.sdk.io.AutoValue_FileIO_ReadMatches.getCompression",,,,4,0.00,0,,,1,0
+Method,"org.apache.beam.sdk.io.AutoValue_FileIO_ReadMatches.getDirectoryTreatment",,,,4,0.00,0,,,1,0
+Public Method,"org.apache.beam.sdk.io.AutoValue_FileIO_ReadMatches.hashCode",,,,9,0.00,0,,,6,0
+Method,"org.apache.beam.sdk.io.AutoValue_FileIO_ReadMatches.toBuilder",,,,4,0.00,0,,,1,0
+Final Generic Class,"org.apache.beam.sdk.io.AutoValue_FileIO_Write",1,1,20,61,0.00,0,,1,0,0
+Private Constructor,"org.apache.beam.sdk.io.AutoValue_FileIO_Write.AutoValue_FileIO_Write",,,,20,0.00,0,,,0,0
+Generic Parameter,"org.apache.beam.sdk.io.AutoValue_FileIO_Write.DestinationT",0,0,0,,,,,0,,0
+Generic Parameter,"org.apache.beam.sdk.io.AutoValue_FileIO_Write.UserT",0,0,0,,,,,0,,0
+Final Class,"org.apache.beam.sdk.io.AutoValue_TextIO_Read",2,5,8,171,0.00,0,,10,83,1
+Private Constructor,"org.apache.beam.sdk.io.AutoValue_TextIO_Read.AutoValue_TextIO_Read",,,,14,0.00,0,,,6,0
+Static Final Class,"org.apache.beam.sdk.io.AutoValue_TextIO_Read.Builder",2,6,9,86,0.00,0,,9,45,2
+Constructor,"org.apache.beam.sdk.io.AutoValue_TextIO_Read.Builder.Builder",,,,2,0.00,0,,,0,0
+Constructor,"org.apache.beam.sdk.io.AutoValue_TextIO_Read.Builder.Builder",,,,9,0.00,0,,,7,0
+Method,"org.apache.beam.sdk.io.AutoValue_TextIO_Read.Builder.build",,,,28,0.00,0,,,20,2
+Method,"org.apache.beam.sdk.io.AutoValue_TextIO_Read.Builder.setCompression",,,,8,0.00,0,,,4,1
+Method,"org.apache.beam.sdk.io.AutoValue_TextIO_Read.Builder.setDelimiter",,,,5,0.00,0,,,2,0
+Method,"org.apache.beam.sdk.io.AutoValue_TextIO_Read.Builder.setFilepattern",,,,5,0.00,0,,,2,0
+Method,"org.apache.beam.sdk.io.AutoValue_TextIO_Read.Builder.setHintMatchesManyFiles",,,,6,0.00,0,,,3,0
+Method,"org.apache.beam.sdk.io.AutoValue_TextIO_Read.Builder.setMatchConfiguration",,,,8,0.00,0,,,4,1
+Method,"org.apache.beam.sdk.io.AutoValue_TextIO_Read.Builder.setSkipHeaderLines",,,,6,0.00,0,,,3,0
+Public Method,"org.apache.beam.sdk.io.AutoValue_TextIO_Read.equals",,,,16,0.00,0,,,11,1
+Method,"org.apache.beam.sdk.io.AutoValue_TextIO_Read.getCompression",,,,4,0.00,0,,,1,0
+Method,"org.apache.beam.sdk.io.AutoValue_TextIO_Read.getDelimiter",,,,5,0.00,0,,,1,0
+Method,"org.apache.beam.sdk.io.AutoValue_TextIO_Read.getFilepattern",,,,4,0.00,0,,,1,0
+Method,"org.apache.beam.sdk.io.AutoValue_TextIO_Read.getHintMatchesManyFiles",,,,4,0.00,0,,,1,0
+Method,"org.apache.beam.sdk.io.AutoValue_TextIO_Read.getMatchConfiguration",,,,4,0.00,0,,,1,0
+Method,"org.apache.beam.sdk.io.AutoValue_TextIO_Read.getSkipHeaderLines",,,,4,0.00,0,,,1,0
+Public Method,"org.apache.beam.sdk.io.AutoValue_TextIO_Read.hashCode",,,,17,0.00,0,,,14,0
+Method,"org.apache.beam.sdk.io.AutoValue_TextIO_Read.toBuilder",,,,4,0.00,0,,,1,0
+Final Class,"org.apache.beam.sdk.io.AutoValue_TextIO_ReadAll",1,4,7,131,0.00,0,,8,62,1
+Private Constructor,"org.apache.beam.sdk.io.AutoValue_TextIO_ReadAll.AutoValue_TextIO_ReadAll",,,,10,0.00,0,,,4,0
+Static Final Class,"org.apache.beam.sdk.io.AutoValue_TextIO_ReadAll.Builder",2,5,8,66,0.00,0,,7,34,2
+Constructor,"org.apache.beam.sdk.io.AutoValue_TextIO_ReadAll.Builder.Builder",,,,2,0.00,0,,,0,0
+Constructor,"org.apache.beam.sdk.io.AutoValue_TextIO_ReadAll.Builder.Builder",,,,7,0.00,0,,,5,0
+Method,"org.apache.beam.sdk.io.AutoValue_TextIO_ReadAll.Builder.build",,,,23,0.00,0,,,16,2
+Method,"org.apache.beam.sdk.io.AutoValue_TextIO_ReadAll.Builder.setCompression",,,,8,0.00,0,,,4,1
+Method,"org.apache.beam.sdk.io.AutoValue_TextIO_ReadAll.Builder.setDelimiter",,,,5,0.00,0,,,2,0
+Method,"org.apache.beam.sdk.io.AutoValue_TextIO_ReadAll.Builder.setMatchConfiguration",,,,8,0.00,0,,,4,1
+Method,"org.apache.beam.sdk.io.AutoValue_TextIO_ReadAll.Builder.setSkipHeaderLines",,,,6,0.00,0,,,3,0
+Public Method,"org.apache.beam.sdk.io.AutoValue_TextIO_ReadAll.equals",,,,14,0.00,0,,,9,1
+Method,"org.apache.beam.sdk.io.AutoValue_TextIO_ReadAll.getCompression",,,,4,0.00,0,,,1,0
+Method,"org.apache.beam.sdk.io.AutoValue_TextIO_ReadAll.getDelimiter",,,,5,0.00,0,,,1,0
+Method,"org.apache.beam.sdk.io.AutoValue_TextIO_ReadAll.getMatchConfiguration",,,,4,0.00,0,,,1,0
+Method,"org.apache.beam.sdk.io.AutoValue_TextIO_ReadAll.getSkipHeaderLines",,,,4,0.00,0,,,1,0
+Public Method,"org.apache.beam.sdk.io.AutoValue_TextIO_ReadAll.hashCode",,,,13,0.00,0,,,10,0
+Method,"org.apache.beam.sdk.io.AutoValue_TextIO_ReadAll.toBuilder",,,,4,0.00,0,,,1,0
+Final Class,"org.apache.beam.sdk.io.AutoValue_TextIO_ReadFiles",1,4,7,103,0.00,0,,7,46,1
+Private Constructor,"org.apache.beam.sdk.io.AutoValue_TextIO_ReadFiles.AutoValue_TextIO_ReadFiles",,,,8,0.00,0,,,3,0
+Static Final Class,"org.apache.beam.sdk.io.AutoValue_TextIO_ReadFiles.Builder",2,4,7,48,0.00,0,,6,23,2
+Constructor,"org.apache.beam.sdk.io.AutoValue_TextIO_ReadFiles.Builder.Builder",,,,2,0.00,0,,,0,0
+Constructor,"org.apache.beam.sdk.io.AutoValue_TextIO_ReadFiles.Builder.Builder",,,,6,0.00,0,,,4,0
+Method,"org.apache.beam.sdk.io.AutoValue_TextIO_ReadFiles.Builder.build",,,,17,0.00,0,,,11,2
+Method,"org.apache.beam.sdk.io.AutoValue_TextIO_ReadFiles.Builder.setDelimiter",,,,5,0.00,0,,,2,0
+Method,"org.apache.beam.sdk.io.AutoValue_TextIO_ReadFiles.Builder.setDesiredBundleSizeBytes",,,,6,0.00,0,,,3,0
+Method,"org.apache.beam.sdk.io.AutoValue_TextIO_ReadFiles.Builder.setSkipHeaderLines",,,,6,0.00,0,,,3,0
+Public Method,"org.apache.beam.sdk.io.AutoValue_TextIO_ReadFiles.equals",,,,13,0.00,0,,,8,1
+Method,"org.apache.beam.sdk.io.AutoValue_TextIO_ReadFiles.getDelimiter",,,,5,0.00,0,,,1,0
+Method,"org.apache.beam.sdk.io.AutoValue_TextIO_ReadFiles.getDesiredBundleSizeBytes",,,,4,0.00,0,,,1,0
+Method,"org.apache.beam.sdk.io.AutoValue_TextIO_ReadFiles.getSkipHeaderLines",,,,4,0.00,0,,,1,0
+Public Method,"org.apache.beam.sdk.io.AutoValue_TextIO_ReadFiles.hashCode",,,,11,0.00,0,,,8,0
+Method,"org.apache.beam.sdk.io.AutoValue_TextIO_ReadFiles.toBuilder",,,,4,0.00,0,,,1,0
+Final Class,"org.apache.beam.sdk.io.AutoValue_TextIO_Sink",2,5,7,77,0.00,0,,7,31,1
+Private Constructor,"org.apache.beam.sdk.io.AutoValue_TextIO_Sink.AutoValue_TextIO_Sink",,,,6,0.00,0,,,2,0
+Static Final Class,"org.apache.beam.sdk.io.AutoValue_TextIO_Sink.Builder",1,1,4,26,0.00,0,,5,9,0
+Constructor,"org.apache.beam.sdk.io.AutoValue_TextIO_Sink.Builder.Builder",,,,2,0.00,0,,,0,0
+Constructor,"org.apache.beam.sdk.io.AutoValue_TextIO_Sink.Builder.Builder",,,,4,0.00,0,,,2,0
+Method,"org.apache.beam.sdk.io.AutoValue_TextIO_Sink.Builder.build",,,,6,0.00,0,,,3,0
+Method,"org.apache.beam.sdk.io.AutoValue_TextIO_Sink.Builder.setFooter",,,,5,0.00,0,,,2,0
+Method,"org.apache.beam.sdk.io.AutoValue_TextIO_Sink.Builder.setHeader",,,,5,0.00,0,,,2,0
+Public Method,"org.apache.beam.sdk.io.AutoValue_TextIO_Sink.equals",,,,12,0.00,0,,,7,1
+Method,"org.apache.beam.sdk.io.AutoValue_TextIO_Sink.getFooter",,,,4,0.00,0,,,1,0
+Method,"org.apache.beam.sdk.io.AutoValue_TextIO_Sink.getHeader",,,,4,0.00,0,,,1,0
+Public Method,"org.apache.beam.sdk.io.AutoValue_TextIO_Sink.hashCode",,,,9,0.00,0,,,6,0
+Method,"org.apache.beam.sdk.io.AutoValue_TextIO_Sink.toBuilder",,,,4,0.00,0,,,1,0
+Public Method,"org.apache.beam.sdk.io.AutoValue_TextIO_Sink.toString",,,,7,0.00,0,,,4,0
+Final Generic Class,"org.apache.beam.sdk.io.AutoValue_TextIO_TypedWrite",1,1,23,70,0.00,0,,1,0,0
+Private Constructor,"org.apache.beam.sdk.io.AutoValue_TextIO_TypedWrite.AutoValue_TextIO_TypedWrite",,,,23,0.00,0,,,0,0
+Generic Parameter,"org.apache.beam.sdk.io.AutoValue_TextIO_TypedWrite.DestinationT",0,0,0,,,,,0,,0
+Generic Parameter,"org.apache.beam.sdk.io.AutoValue_TextIO_TypedWrite.UserT",0,0,0,,,,,0,,0
 Public Class,"org.apache.beam.sdk.io.FileIO",1,1,7,875,0.56,489,,5,438,0
 Public Static Abstract Class,"org.apache.beam.sdk.io.FileIO.Match",1,1,5,49,0.35,17,,11,15,0
 Static Abstract Class,"org.apache.beam.sdk.io.FileIO.Match.Builder",0,0,0,6,0.00,0,,3,0,0
@@ -1461,7 +1744,59 @@ Package,"org.apache.beam.sdk.io.common",1,1,5,10,1.90,19,1,1,2,1
 Public Class,"org.apache.beam.sdk.io.common.NetworkTestHelper",1,1,5,7,0.29,2,,1,2,1
 Public Static Method,"org.apache.beam.sdk.io.common.NetworkTestHelper.getAvailableLocalPort",,,,5,0.20,1,,,2,1
 Package,"org.apache.beam.sdk.io.gcp",0,0,0,0,0.00,0,0,0,0,0
-Package,"org.apache.beam.sdk.io.gcp.bigtable",1,14,10,2934,0.36,1053,29,308,1681,4
+Package,"org.apache.beam.sdk.io.gcp.bigtable",1,14,10,3399,0.31,1053,36,353,1883,4
+Final Class,"org.apache.beam.sdk.io.gcp.bigtable.AutoValue_BigtableIOTest_FailureOptions",1,3,8,136,0.00,0,,8,68,1
+Private Constructor,"org.apache.beam.sdk.io.gcp.bigtable.AutoValue_BigtableIOTest_FailureOptions.AutoValue_BigtableIOTest_FailureOptions",,,,10,0.00,0,,,4,0
+Static Final Class,"org.apache.beam.sdk.io.gcp.bigtable.AutoValue_BigtableIOTest_FailureOptions.Builder",3,6,10,67,0.00,0,,6,35,2
+Constructor,"org.apache.beam.sdk.io.gcp.bigtable.AutoValue_BigtableIOTest_FailureOptions.Builder.Builder",,,,2,0.00,0,,,0,0
+Method,"org.apache.beam.sdk.io.gcp.bigtable.AutoValue_BigtableIOTest_FailureOptions.Builder.build",,,,27,0.00,0,,,19,2
+Method,"org.apache.beam.sdk.io.gcp.bigtable.AutoValue_BigtableIOTest_FailureOptions.Builder.setFailAtAdvance",,,,8,0.00,0,,,4,1
+Method,"org.apache.beam.sdk.io.gcp.bigtable.AutoValue_BigtableIOTest_FailureOptions.Builder.setFailAtSplit",,,,8,0.00,0,,,4,1
+Method,"org.apache.beam.sdk.io.gcp.bigtable.AutoValue_BigtableIOTest_FailureOptions.Builder.setFailAtStart",,,,8,0.00,0,,,4,1
+Method,"org.apache.beam.sdk.io.gcp.bigtable.AutoValue_BigtableIOTest_FailureOptions.Builder.setFailAtWriteRecord",,,,8,0.00,0,,,4,1
+Public Method,"org.apache.beam.sdk.io.gcp.bigtable.AutoValue_BigtableIOTest_FailureOptions.equals",,,,14,0.00,0,,,9,1
+Method,"org.apache.beam.sdk.io.gcp.bigtable.AutoValue_BigtableIOTest_FailureOptions.getFailAtAdvance",,,,4,0.00,0,,,1,0
+Method,"org.apache.beam.sdk.io.gcp.bigtable.AutoValue_BigtableIOTest_FailureOptions.getFailAtSplit",,,,4,0.00,0,,,1,0
+Method,"org.apache.beam.sdk.io.gcp.bigtable.AutoValue_BigtableIOTest_FailureOptions.getFailAtStart",,,,4,0.00,0,,,1,0
+Method,"org.apache.beam.sdk.io.gcp.bigtable.AutoValue_BigtableIOTest_FailureOptions.getFailAtWriteRecord",,,,4,0.00,0,,,1,0
+Public Method,"org.apache.beam.sdk.io.gcp.bigtable.AutoValue_BigtableIOTest_FailureOptions.hashCode",,,,13,0.00,0,,,10,0
+Public Method,"org.apache.beam.sdk.io.gcp.bigtable.AutoValue_BigtableIOTest_FailureOptions.toString",,,,9,0.00,0,,,6,0
+Final Class,"org.apache.beam.sdk.io.gcp.bigtable.AutoValue_BigtableIO_Read",1,3,7,113,0.00,0,,7,53,1
+Private Constructor,"org.apache.beam.sdk.io.gcp.bigtable.AutoValue_BigtableIO_Read.AutoValue_BigtableIO_Read",,,,8,0.00,0,,,3,0
+Static Final Class,"org.apache.beam.sdk.io.gcp.bigtable.AutoValue_BigtableIO_Read.Builder",2,5,9,58,0.00,0,,6,30,2
+Constructor,"org.apache.beam.sdk.io.gcp.bigtable.AutoValue_BigtableIO_Read.Builder.Builder",,,,2,0.00,0,,,0,0
+Constructor,"org.apache.beam.sdk.io.gcp.bigtable.AutoValue_BigtableIO_Read.Builder.Builder",,,,5,0.00,0,,,3,0
+Method,"org.apache.beam.sdk.io.gcp.bigtable.AutoValue_BigtableIO_Read.Builder.build",,,,22,0.00,0,,,15,2
+Method,"org.apache.beam.sdk.io.gcp.bigtable.AutoValue_BigtableIO_Read.Builder.setBigtableConfig",,,,8,0.00,0,,,4,1
+Method,"org.apache.beam.sdk.io.gcp.bigtable.AutoValue_BigtableIO_Read.Builder.setBigtableReadOptions",,,,8,0.00,0,,,4,1
+Method,"org.apache.beam.sdk.io.gcp.bigtable.AutoValue_BigtableIO_Read.Builder.setServiceFactory",,,,8,0.00,0,,,4,1
+Public Method,"org.apache.beam.sdk.io.gcp.bigtable.AutoValue_BigtableIO_Read.equals",,,,13,0.00,0,,,8,1
+Method,"org.apache.beam.sdk.io.gcp.bigtable.AutoValue_BigtableIO_Read.getBigtableConfig",,,,4,0.00,0,,,1,0
+Method,"org.apache.beam.sdk.io.gcp.bigtable.AutoValue_BigtableIO_Read.getBigtableReadOptions",,,,4,0.00,0,,,1,0
+Method,"org.apache.beam.sdk.io.gcp.bigtable.AutoValue_BigtableIO_Read.getServiceFactory",,,,5,0.00,0,,,1,0
+Public Method,"org.apache.beam.sdk.io.gcp.bigtable.AutoValue_BigtableIO_Read.hashCode",,,,11,0.00,0,,,8,0
+Method,"org.apache.beam.sdk.io.gcp.bigtable.AutoValue_BigtableIO_Read.toBuilder",,,,4,0.00,0,,,1,0
+Final Class,"org.apache.beam.sdk.io.gcp.bigtable.AutoValue_BigtableIO_ReadChangeStream",1,1,12,37,0.00,0,,1,0,0
+Private Constructor,"org.apache.beam.sdk.io.gcp.bigtable.AutoValue_BigtableIO_ReadChangeStream.AutoValue_BigtableIO_ReadChangeStream",,,,12,0.00,0,,,0,0
+Final Class,"org.apache.beam.sdk.io.gcp.bigtable.AutoValue_BigtableIO_Write",1,3,7,163,0.00,0,,9,81,1
+Private Constructor,"org.apache.beam.sdk.io.gcp.bigtable.AutoValue_BigtableIO_Write.AutoValue_BigtableIO_Write",,,,12,0.00,0,,,5,0
+Static Final Class,"org.apache.beam.sdk.io.gcp.bigtable.AutoValue_BigtableIO_Write.Builder",2,7,10,88,0.00,0,,8,48,2
+Constructor,"org.apache.beam.sdk.io.gcp.bigtable.AutoValue_BigtableIO_Write.Builder.Builder",,,,2,0.00,0,,,0,0
+Constructor,"org.apache.beam.sdk.io.gcp.bigtable.AutoValue_BigtableIO_Write.Builder.Builder",,,,7,0.00,0,,,5,0
+Method,"org.apache.beam.sdk.io.gcp.bigtable.AutoValue_BigtableIO_Write.Builder.build",,,,32,0.00,0,,,23,2
+Method,"org.apache.beam.sdk.io.gcp.bigtable.AutoValue_BigtableIO_Write.Builder.setBadRecordErrorHandler",,,,8,0.00,0,,,4,1
+Method,"org.apache.beam.sdk.io.gcp.bigtable.AutoValue_BigtableIO_Write.Builder.setBadRecordRouter",,,,8,0.00,0,,,4,1
+Method,"org.apache.beam.sdk.io.gcp.bigtable.AutoValue_BigtableIO_Write.Builder.setBigtableConfig",,,,8,0.00,0,,,4,1
+Method,"org.apache.beam.sdk.io.gcp.bigtable.AutoValue_BigtableIO_Write.Builder.setBigtableWriteOptions",,,,8,0.00,0,,,4,1
+Method,"org.apache.beam.sdk.io.gcp.bigtable.AutoValue_BigtableIO_Write.Builder.setServiceFactory",,,,8,0.00,0,,,4,1
+Public Method,"org.apache.beam.sdk.io.gcp.bigtable.AutoValue_BigtableIO_Write.equals",,,,15,0.00,0,,,10,1
+Method,"org.apache.beam.sdk.io.gcp.bigtable.AutoValue_BigtableIO_Write.getBadRecordErrorHandler",,,,4,0.00,0,,,1,0
+Method,"org.apache.beam.sdk.io.gcp.bigtable.AutoValue_BigtableIO_Write.getBadRecordRouter",,,,4,0.00,0,,,1,0
+Method,"org.apache.beam.sdk.io.gcp.bigtable.AutoValue_BigtableIO_Write.getBigtableConfig",,,,4,0.00,0,,,1,0
+Method,"org.apache.beam.sdk.io.gcp.bigtable.AutoValue_BigtableIO_Write.getBigtableWriteOptions",,,,4,0.00,0,,,1,0
+Method,"org.apache.beam.sdk.io.gcp.bigtable.AutoValue_BigtableIO_Write.getServiceFactory",,,,5,0.00,0,,,1,0
+Public Method,"org.apache.beam.sdk.io.gcp.bigtable.AutoValue_BigtableIO_Write.hashCode",,,,15,0.00,0,,,12,0
+Method,"org.apache.beam.sdk.io.gcp.bigtable.AutoValue_BigtableIO_Write.toBuilder",,,,4,0.00,0,,,1,0
 Public Class,"org.apache.beam.sdk.io.gcp.bigtable.BigtableIO",1,3,6,1377,0.61,843,,6,778,2
 Private Constructor,"org.apache.beam.sdk.io.gcp.bigtable.BigtableIO.BigtableIO",,,,1,1.00,1,,,0,0
 Private Static Class,"org.apache.beam.sdk.io.gcp.bigtable.BigtableIO.BigtableReader",2,4,10,98,0.03,3,,9,53,1
@@ -1806,7 +2141,89 @@ Public Method,"org.apache.beam.sdk.io.gcp.bigtable.BigtableIOTest.testWritingEmi
 Public Method,"org.apache.beam.sdk.io.gcp.bigtable.BigtableIOTest.testWritingEmitsResultsWhenDoneInGlobalWindow",,,,14,0.07,1,,,10,0
 Public Method,"org.apache.beam.sdk.io.gcp.bigtable.BigtableIOTest.testWritingFailsBadElement",,,,13,0.08,1,,,10,0
 Public Method,"org.apache.beam.sdk.io.gcp.bigtable.BigtableIOTest.testWritingFailsTableDoesNotExist",,,,12,0.17,2,,,8,0
-Package,"org.apache.beam.sdk.io.gcp.pubsub",1,7,10,1611,0.33,533,24,188,899,3
+Package,"org.apache.beam.sdk.io.gcp.pubsub",2,15,9,2323,0.23,533,28,262,1247,3
+Final Generic Class,"org.apache.beam.sdk.io.gcp.pubsub.AutoValue_PubsubIO_Read",2,15,8,404,0.00,0,,22,204,1
+Private Constructor,"org.apache.beam.sdk.io.gcp.pubsub.AutoValue_PubsubIO_Read.AutoValue_PubsubIO_Read",,,,38,0.00,0,,,18,0
+Static Final Generic Class,"org.apache.beam.sdk.io.gcp.pubsub.AutoValue_PubsubIO_Read.Builder",2,9,9,200,0.00,0,,21,106,2
+Constructor,"org.apache.beam.sdk.io.gcp.pubsub.AutoValue_PubsubIO_Read.Builder.Builder",,,,2,0.00,0,,,0,0
+Constructor,"org.apache.beam.sdk.io.gcp.pubsub.AutoValue_PubsubIO_Read.Builder.Builder",,,,21,0.00,0,,,19,0
+Generic Parameter,"org.apache.beam.sdk.io.gcp.pubsub.AutoValue_PubsubIO_Read.Builder.T",0,0,0,,,,,0,,0
+Method,"org.apache.beam.sdk.io.gcp.pubsub.AutoValue_PubsubIO_Read.Builder.build",,,,51,0.00,0,,,40,2
+Method,"org.apache.beam.sdk.io.gcp.pubsub.AutoValue_PubsubIO_Read.Builder.setBadRecordErrorHandler",,,,8,0.00,0,,,4,1
+Method,"org.apache.beam.sdk.io.gcp.pubsub.AutoValue_PubsubIO_Read.Builder.setBadRecordRouter",,,,8,0.00,0,,,4,1
+Method,"org.apache.beam.sdk.io.gcp.pubsub.AutoValue_PubsubIO_Read.Builder.setBeamSchema",,,,5,0.00,0,,,2,0
+Method,"org.apache.beam.sdk.io.gcp.pubsub.AutoValue_PubsubIO_Read.Builder.setClock",,,,5,0.00,0,,,2,0
+Method,"org.apache.beam.sdk.io.gcp.pubsub.AutoValue_PubsubIO_Read.Builder.setCoder",,,,8,0.00,0,,,4,1
+Method,"org.apache.beam.sdk.io.gcp.pubsub.AutoValue_PubsubIO_Read.Builder.setDeadLetterTopicProvider",,,,5,0.00,0,,,2,0
+Method,"org.apache.beam.sdk.io.gcp.pubsub.AutoValue_PubsubIO_Read.Builder.setFromRowFn",,,,5,0.00,0,,,2,0
+Method,"org.apache.beam.sdk.io.gcp.pubsub.AutoValue_PubsubIO_Read.Builder.setIdAttribute",,,,5,0.00,0,,,2,0
+Method,"org.apache.beam.sdk.io.gcp.pubsub.AutoValue_PubsubIO_Read.Builder.setNeedsAttributes",,,,6,0.00,0,,,3,0
+Method,"org.apache.beam.sdk.io.gcp.pubsub.AutoValue_PubsubIO_Read.Builder.setNeedsMessageId",,,,6,0.00,0,,,3,0
+Method,"org.apache.beam.sdk.io.gcp.pubsub.AutoValue_PubsubIO_Read.Builder.setNeedsOrderingKey",,,,6,0.00,0,,,3,0
+Method,"org.apache.beam.sdk.io.gcp.pubsub.AutoValue_PubsubIO_Read.Builder.setParseFn",,,,5,0.00,0,,,2,0
+Method,"org.apache.beam.sdk.io.gcp.pubsub.AutoValue_PubsubIO_Read.Builder.setPubsubClientFactory",,,,8,0.00,0,,,4,1
+Method,"org.apache.beam.sdk.io.gcp.pubsub.AutoValue_PubsubIO_Read.Builder.setSubscriptionProvider",,,,5,0.00,0,,,2,0
+Method,"org.apache.beam.sdk.io.gcp.pubsub.AutoValue_PubsubIO_Read.Builder.setTimestampAttribute",,,,5,0.00,0,,,2,0
+Method,"org.apache.beam.sdk.io.gcp.pubsub.AutoValue_PubsubIO_Read.Builder.setToRowFn",,,,5,0.00,0,,,2,0
+Method,"org.apache.beam.sdk.io.gcp.pubsub.AutoValue_PubsubIO_Read.Builder.setTopicProvider",,,,5,0.00,0,,,2,0
+Method,"org.apache.beam.sdk.io.gcp.pubsub.AutoValue_PubsubIO_Read.Builder.setTypeDescriptor",,,,5,0.00,0,,,2,0
+Generic Parameter,"org.apache.beam.sdk.io.gcp.pubsub.AutoValue_PubsubIO_Read.T",0,0,0,,,,,0,,0
+Public Method,"org.apache.beam.sdk.io.gcp.pubsub.AutoValue_PubsubIO_Read.equals",,,,28,0.00,0,,,23,1
+Method,"org.apache.beam.sdk.io.gcp.pubsub.AutoValue_PubsubIO_Read.getBadRecordErrorHandler",,,,4,0.00,0,,,1,0
+Method,"org.apache.beam.sdk.io.gcp.pubsub.AutoValue_PubsubIO_Read.getBadRecordRouter",,,,4,0.00,0,,,1,0
+Method,"org.apache.beam.sdk.io.gcp.pubsub.AutoValue_PubsubIO_Read.getBeamSchema",,,,4,0.00,0,,,1,0
+Method,"org.apache.beam.sdk.io.gcp.pubsub.AutoValue_PubsubIO_Read.getClock",,,,4,0.00,0,,,1,0
+Method,"org.apache.beam.sdk.io.gcp.pubsub.AutoValue_PubsubIO_Read.getCoder",,,,4,0.00,0,,,1,0
+Method,"org.apache.beam.sdk.io.gcp.pubsub.AutoValue_PubsubIO_Read.getDeadLetterTopicProvider",,,,4,0.00,0,,,1,0
+Method,"org.apache.beam.sdk.io.gcp.pubsub.AutoValue_PubsubIO_Read.getFromRowFn",,,,4,0.00,0,,,1,0
+Method,"org.apache.beam.sdk.io.gcp.pubsub.AutoValue_PubsubIO_Read.getIdAttribute",,,,4,0.00,0,,,1,0
+Method,"org.apache.beam.sdk.io.gcp.pubsub.AutoValue_PubsubIO_Read.getNeedsAttributes",,,,4,0.00,0,,,1,0
+Method,"org.apache.beam.sdk.io.gcp.pubsub.AutoValue_PubsubIO_Read.getNeedsMessageId",,,,4,0.00,0,,,1,0
+Method,"org.apache.beam.sdk.io.gcp.pubsub.AutoValue_PubsubIO_Read.getNeedsOrderingKey",,,,4,0.00,0,,,1,0
+Method,"org.apache.beam.sdk.io.gcp.pubsub.AutoValue_PubsubIO_Read.getParseFn",,,,4,0.00,0,,,1,0
+Method,"org.apache.beam.sdk.io.gcp.pubsub.AutoValue_PubsubIO_Read.getPubsubClientFactory",,,,4,0.00,0,,,1,0
+Method,"org.apache.beam.sdk.io.gcp.pubsub.AutoValue_PubsubIO_Read.getSubscriptionProvider",,,,4,0.00,0,,,1,0
+Method,"org.apache.beam.sdk.io.gcp.pubsub.AutoValue_PubsubIO_Read.getTimestampAttribute",,,,4,0.00,0,,,1,0
+Method,"org.apache.beam.sdk.io.gcp.pubsub.AutoValue_PubsubIO_Read.getToRowFn",,,,4,0.00,0,,,1,0
+Method,"org.apache.beam.sdk.io.gcp.pubsub.AutoValue_PubsubIO_Read.getTopicProvider",,,,4,0.00,0,,,1,0
+Method,"org.apache.beam.sdk.io.gcp.pubsub.AutoValue_PubsubIO_Read.getTypeDescriptor",,,,4,0.00,0,,,1,0
+Public Method,"org.apache.beam.sdk.io.gcp.pubsub.AutoValue_PubsubIO_Read.hashCode",,,,41,0.00,0,,,38,0
+Method,"org.apache.beam.sdk.io.gcp.pubsub.AutoValue_PubsubIO_Read.toBuilder",,,,4,0.00,0,,,1,0
+Final Generic Class,"org.apache.beam.sdk.io.gcp.pubsub.AutoValue_PubsubIO_Write",2,10,8,288,0.00,0,,16,144,1
+Private Constructor,"org.apache.beam.sdk.io.gcp.pubsub.AutoValue_PubsubIO_Write.AutoValue_PubsubIO_Write",,,,26,0.00,0,,,12,0
+Static Final Generic Class,"org.apache.beam.sdk.io.gcp.pubsub.AutoValue_PubsubIO_Write.Builder",2,7,9,144,0.00,0,,15,76,2
+Constructor,"org.apache.beam.sdk.io.gcp.pubsub.AutoValue_PubsubIO_Write.Builder.Builder",,,,2,0.00,0,,,0,0
+Constructor,"org.apache.beam.sdk.io.gcp.pubsub.AutoValue_PubsubIO_Write.Builder.Builder",,,,15,0.00,0,,,13,0
+Generic Parameter,"org.apache.beam.sdk.io.gcp.pubsub.AutoValue_PubsubIO_Write.Builder.T",0,0,0,,,,,0,,0
+Method,"org.apache.beam.sdk.io.gcp.pubsub.AutoValue_PubsubIO_Write.Builder.build",,,,39,0.00,0,,,30,2
+Method,"org.apache.beam.sdk.io.gcp.pubsub.AutoValue_PubsubIO_Write.Builder.setBadRecordErrorHandler",,,,8,0.00,0,,,4,1
+Method,"org.apache.beam.sdk.io.gcp.pubsub.AutoValue_PubsubIO_Write.Builder.setBadRecordRouter",,,,8,0.00,0,,,4,1
+Method,"org.apache.beam.sdk.io.gcp.pubsub.AutoValue_PubsubIO_Write.Builder.setDynamicDestinations",,,,6,0.00,0,,,3,0
+Method,"org.apache.beam.sdk.io.gcp.pubsub.AutoValue_PubsubIO_Write.Builder.setFormatFn",,,,8,0.00,0,,,4,1
+Method,"org.apache.beam.sdk.io.gcp.pubsub.AutoValue_PubsubIO_Write.Builder.setIdAttribute",,,,5,0.00,0,,,2,0
+Method,"org.apache.beam.sdk.io.gcp.pubsub.AutoValue_PubsubIO_Write.Builder.setMaxBatchBytesSize",,,,5,0.00,0,,,2,0
+Method,"org.apache.beam.sdk.io.gcp.pubsub.AutoValue_PubsubIO_Write.Builder.setMaxBatchSize",,,,5,0.00,0,,,2,0
+Method,"org.apache.beam.sdk.io.gcp.pubsub.AutoValue_PubsubIO_Write.Builder.setPubsubClientFactory",,,,8,0.00,0,,,4,1
+Method,"org.apache.beam.sdk.io.gcp.pubsub.AutoValue_PubsubIO_Write.Builder.setPubsubRootUrl",,,,5,0.00,0,,,2,0
+Method,"org.apache.beam.sdk.io.gcp.pubsub.AutoValue_PubsubIO_Write.Builder.setTimestampAttribute",,,,5,0.00,0,,,2,0
+Method,"org.apache.beam.sdk.io.gcp.pubsub.AutoValue_PubsubIO_Write.Builder.setTopicFunction",,,,5,0.00,0,,,2,0
+Method,"org.apache.beam.sdk.io.gcp.pubsub.AutoValue_PubsubIO_Write.Builder.setTopicProvider",,,,5,0.00,0,,,2,0
+Generic Parameter,"org.apache.beam.sdk.io.gcp.pubsub.AutoValue_PubsubIO_Write.T",0,0,0,,,,,0,,0
+Public Method,"org.apache.beam.sdk.io.gcp.pubsub.AutoValue_PubsubIO_Write.equals",,,,22,0.00,0,,,17,1
+Method,"org.apache.beam.sdk.io.gcp.pubsub.AutoValue_PubsubIO_Write.getBadRecordErrorHandler",,,,4,0.00,0,,,1,0
+Method,"org.apache.beam.sdk.io.gcp.pubsub.AutoValue_PubsubIO_Write.getBadRecordRouter",,,,4,0.00,0,,,1,0
+Method,"org.apache.beam.sdk.io.gcp.pubsub.AutoValue_PubsubIO_Write.getDynamicDestinations",,,,4,0.00,0,,,1,0
+Method,"org.apache.beam.sdk.io.gcp.pubsub.AutoValue_PubsubIO_Write.getFormatFn",,,,4,0.00,0,,,1,0
+Method,"org.apache.beam.sdk.io.gcp.pubsub.AutoValue_PubsubIO_Write.getIdAttribute",,,,4,0.00,0,,,1,0
+Method,"org.apache.beam.sdk.io.gcp.pubsub.AutoValue_PubsubIO_Write.getMaxBatchBytesSize",,,,4,0.00,0,,,1,0
+Method,"org.apache.beam.sdk.io.gcp.pubsub.AutoValue_PubsubIO_Write.getMaxBatchSize",,,,4,0.00,0,,,1,0
+Method,"org.apache.beam.sdk.io.gcp.pubsub.AutoValue_PubsubIO_Write.getPubsubClientFactory",,,,4,0.00,0,,,1,0
+Method,"org.apache.beam.sdk.io.gcp.pubsub.AutoValue_PubsubIO_Write.getPubsubRootUrl",,,,4,0.00,0,,,1,0
+Method,"org.apache.beam.sdk.io.gcp.pubsub.AutoValue_PubsubIO_Write.getTimestampAttribute",,,,4,0.00,0,,,1,0
+Method,"org.apache.beam.sdk.io.gcp.pubsub.AutoValue_PubsubIO_Write.getTopicFunction",,,,4,0.00,0,,,1,0
+Method,"org.apache.beam.sdk.io.gcp.pubsub.AutoValue_PubsubIO_Write.getTopicProvider",,,,4,0.00,0,,,1,0
+Public Method,"org.apache.beam.sdk.io.gcp.pubsub.AutoValue_PubsubIO_Write.hashCode",,,,29,0.00,0,,,26,0
+Method,"org.apache.beam.sdk.io.gcp.pubsub.AutoValue_PubsubIO_Write.toBuilder",,,,4,0.00,0,,,1,0
 Public Class,"org.apache.beam.sdk.io.gcp.pubsub.PubsubIO",1,5,8,933,0.53,492,,28,522,1
 Private Static Class,"org.apache.beam.sdk.io.gcp.pubsub.PubsubIO.ParseReadFailuresToBadRecords",1,1,8,19,0.00,0,,2,7,0
 Public Constructor,"org.apache.beam.sdk.io.gcp.pubsub.PubsubIO.ParseReadFailuresToBadRecords.ParseReadFailuresToBadRecords",,,,3,0.00,0,,,1,0
@@ -2059,7 +2476,66 @@ Public Method,"org.apache.beam.sdk.io.gcp.pubsub.PubsubIOTest.testValueProviderS
 Public Method,"org.apache.beam.sdk.io.gcp.pubsub.PubsubIOTest.testValueProviderTopic",,,,12,0.00,0,,,9,0
 Public Method,"org.apache.beam.sdk.io.gcp.pubsub.PubsubIOTest.testWriteMalformedMessagesWithErrorHandler",,,,54,0.04,2,,,44,2
 Lambda Method,"org.apache.beam.sdk.io.gcp.pubsub.PubsubIOTest.testWriteMalformedMessagesWithErrorHandler.(lambda_expr_1)",,,,6,0.00,0,,,4,0
-Package,"org.apache.beam.sdk.io.gcp.spanner",1,6,10,2602,0.28,728,38,284,1428,4
+Package,"org.apache.beam.sdk.io.gcp.spanner",1,7,9,3103,0.23,728,46,335,1622,4
+Final Class,"org.apache.beam.sdk.io.gcp.spanner.AutoValue_SpannerIO_CreateTransaction",2,4,7,77,0.00,0,,6,32,1
+Private Constructor,"org.apache.beam.sdk.io.gcp.spanner.AutoValue_SpannerIO_CreateTransaction.AutoValue_SpannerIO_CreateTransaction",,,,6,0.00,0,,,2,0
+Static Final Class,"org.apache.beam.sdk.io.gcp.spanner.AutoValue_SpannerIO_CreateTransaction.Builder",1,2,6,33,0.00,0,,5,14,1
+Constructor,"org.apache.beam.sdk.io.gcp.spanner.AutoValue_SpannerIO_CreateTransaction.Builder.Builder",,,,2,0.00,0,,,0,0
+Constructor,"org.apache.beam.sdk.io.gcp.spanner.AutoValue_SpannerIO_CreateTransaction.Builder.Builder",,,,4,0.00,0,,,2,0
+Public Method,"org.apache.beam.sdk.io.gcp.spanner.AutoValue_SpannerIO_CreateTransaction.Builder.build",,,,10,0.00,0,,,6,1
+Public Method,"org.apache.beam.sdk.io.gcp.spanner.AutoValue_SpannerIO_CreateTransaction.Builder.setSpannerConfig",,,,8,0.00,0,,,4,1
+Public Method,"org.apache.beam.sdk.io.gcp.spanner.AutoValue_SpannerIO_CreateTransaction.Builder.setTimestampBound",,,,5,0.00,0,,,2,0
+Public Method,"org.apache.beam.sdk.io.gcp.spanner.AutoValue_SpannerIO_CreateTransaction.equals",,,,12,0.00,0,,,7,1
+Method,"org.apache.beam.sdk.io.gcp.spanner.AutoValue_SpannerIO_CreateTransaction.getSpannerConfig",,,,4,0.00,0,,,1,0
+Method,"org.apache.beam.sdk.io.gcp.spanner.AutoValue_SpannerIO_CreateTransaction.getTimestampBound",,,,4,0.00,0,,,1,0
+Public Method,"org.apache.beam.sdk.io.gcp.spanner.AutoValue_SpannerIO_CreateTransaction.hashCode",,,,9,0.00,0,,,6,0
+Method,"org.apache.beam.sdk.io.gcp.spanner.AutoValue_SpannerIO_CreateTransaction.toBuilder",,,,4,0.00,0,,,1,0
+Final Class,"org.apache.beam.sdk.io.gcp.spanner.AutoValue_SpannerIO_Read",1,1,10,31,0.00,0,,1,0,0
+Private Constructor,"org.apache.beam.sdk.io.gcp.spanner.AutoValue_SpannerIO_Read.AutoValue_SpannerIO_Read",,,,10,0.00,0,,,0,0
+Final Class,"org.apache.beam.sdk.io.gcp.spanner.AutoValue_SpannerIO_ReadAll",2,5,7,123,0.00,0,,8,57,1
+Private Constructor,"org.apache.beam.sdk.io.gcp.spanner.AutoValue_SpannerIO_ReadAll.AutoValue_SpannerIO_ReadAll",,,,10,0.00,0,,,4,0
+Static Final Class,"org.apache.beam.sdk.io.gcp.spanner.AutoValue_SpannerIO_ReadAll.Builder",2,4,8,59,0.00,0,,7,29,2
+Constructor,"org.apache.beam.sdk.io.gcp.spanner.AutoValue_SpannerIO_ReadAll.Builder.Builder",,,,2,0.00,0,,,0,0
+Constructor,"org.apache.beam.sdk.io.gcp.spanner.AutoValue_SpannerIO_ReadAll.Builder.Builder",,,,6,0.00,0,,,4,0
+Method,"org.apache.beam.sdk.io.gcp.spanner.AutoValue_SpannerIO_ReadAll.Builder.build",,,,19,0.00,0,,,13,2
+Method,"org.apache.beam.sdk.io.gcp.spanner.AutoValue_SpannerIO_ReadAll.Builder.setBatching",,,,8,0.00,0,,,4,1
+Method,"org.apache.beam.sdk.io.gcp.spanner.AutoValue_SpannerIO_ReadAll.Builder.setSpannerConfig",,,,8,0.00,0,,,4,1
+Method,"org.apache.beam.sdk.io.gcp.spanner.AutoValue_SpannerIO_ReadAll.Builder.setTimestampBound",,,,5,0.00,0,,,2,0
+Method,"org.apache.beam.sdk.io.gcp.spanner.AutoValue_SpannerIO_ReadAll.Builder.setTransaction",,,,5,0.00,0,,,2,0
+Public Method,"org.apache.beam.sdk.io.gcp.spanner.AutoValue_SpannerIO_ReadAll.equals",,,,14,0.00,0,,,9,1
+Method,"org.apache.beam.sdk.io.gcp.spanner.AutoValue_SpannerIO_ReadAll.getBatching",,,,4,0.00,0,,,1,0
+Method,"org.apache.beam.sdk.io.gcp.spanner.AutoValue_SpannerIO_ReadAll.getSpannerConfig",,,,4,0.00,0,,,1,0
+Method,"org.apache.beam.sdk.io.gcp.spanner.AutoValue_SpannerIO_ReadAll.getTimestampBound",,,,4,0.00,0,,,1,0
+Method,"org.apache.beam.sdk.io.gcp.spanner.AutoValue_SpannerIO_ReadAll.getTransaction",,,,4,0.00,0,,,1,0
+Public Method,"org.apache.beam.sdk.io.gcp.spanner.AutoValue_SpannerIO_ReadAll.hashCode",,,,13,0.00,0,,,10,0
+Method,"org.apache.beam.sdk.io.gcp.spanner.AutoValue_SpannerIO_ReadAll.toBuilder",,,,4,0.00,0,,,1,0
+Final Class,"org.apache.beam.sdk.io.gcp.spanner.AutoValue_SpannerIO_ReadChangeStream",1,1,10,31,0.00,0,,1,0,0
+Private Constructor,"org.apache.beam.sdk.io.gcp.spanner.AutoValue_SpannerIO_ReadChangeStream.AutoValue_SpannerIO_ReadChangeStream",,,,10,0.00,0,,,0,0
+Final Class,"org.apache.beam.sdk.io.gcp.spanner.AutoValue_SpannerIO_Write",2,5,8,210,0.00,0,,12,105,1
+Private Constructor,"org.apache.beam.sdk.io.gcp.spanner.AutoValue_SpannerIO_Write.AutoValue_SpannerIO_Write",,,,18,0.00,0,,,8,0
+Static Final Class,"org.apache.beam.sdk.io.gcp.spanner.AutoValue_SpannerIO_Write.Builder",2,7,9,106,0.00,0,,11,57,2
+Constructor,"org.apache.beam.sdk.io.gcp.spanner.AutoValue_SpannerIO_Write.Builder.Builder",,,,2,0.00,0,,,0,0
+Constructor,"org.apache.beam.sdk.io.gcp.spanner.AutoValue_SpannerIO_Write.Builder.Builder",,,,11,0.00,0,,,9,0
+Method,"org.apache.beam.sdk.io.gcp.spanner.AutoValue_SpannerIO_Write.Builder.build",,,,33,0.00,0,,,24,2
+Method,"org.apache.beam.sdk.io.gcp.spanner.AutoValue_SpannerIO_Write.Builder.setBatchSizeBytes",,,,6,0.00,0,,,3,0
+Method,"org.apache.beam.sdk.io.gcp.spanner.AutoValue_SpannerIO_Write.Builder.setDialectView",,,,5,0.00,0,,,2,0
+Method,"org.apache.beam.sdk.io.gcp.spanner.AutoValue_SpannerIO_Write.Builder.setFailureMode",,,,8,0.00,0,,,4,1
+Method,"org.apache.beam.sdk.io.gcp.spanner.AutoValue_SpannerIO_Write.Builder.setGroupingFactor",,,,5,0.00,0,,,2,0
+Method,"org.apache.beam.sdk.io.gcp.spanner.AutoValue_SpannerIO_Write.Builder.setMaxNumMutations",,,,6,0.00,0,,,3,0
+Method,"org.apache.beam.sdk.io.gcp.spanner.AutoValue_SpannerIO_Write.Builder.setMaxNumRows",,,,6,0.00,0,,,3,0
+Method,"org.apache.beam.sdk.io.gcp.spanner.AutoValue_SpannerIO_Write.Builder.setSchemaReadySignal",,,,5,0.00,0,,,2,0
+Method,"org.apache.beam.sdk.io.gcp.spanner.AutoValue_SpannerIO_Write.Builder.setSpannerConfig",,,,8,0.00,0,,,4,1
+Public Method,"org.apache.beam.sdk.io.gcp.spanner.AutoValue_SpannerIO_Write.equals",,,,18,0.00,0,,,13,1
+Method,"org.apache.beam.sdk.io.gcp.spanner.AutoValue_SpannerIO_Write.getBatchSizeBytes",,,,4,0.00,0,,,1,0
+Method,"org.apache.beam.sdk.io.gcp.spanner.AutoValue_SpannerIO_Write.getDialectView",,,,4,0.00,0,,,1,0
+Method,"org.apache.beam.sdk.io.gcp.spanner.AutoValue_SpannerIO_Write.getFailureMode",,,,4,0.00,0,,,1,0
+Method,"org.apache.beam.sdk.io.gcp.spanner.AutoValue_SpannerIO_Write.getGroupingFactor",,,,4,0.00,0,,,1,0
+Method,"org.apache.beam.sdk.io.gcp.spanner.AutoValue_SpannerIO_Write.getMaxNumMutations",,,,4,0.00,0,,,1,0
+Method,"org.apache.beam.sdk.io.gcp.spanner.AutoValue_SpannerIO_Write.getMaxNumRows",,,,4,0.00,0,,,1,0
+Method,"org.apache.beam.sdk.io.gcp.spanner.AutoValue_SpannerIO_Write.getSchemaReadySignal",,,,4,0.00,0,,,1,0
+Method,"org.apache.beam.sdk.io.gcp.spanner.AutoValue_SpannerIO_Write.getSpannerConfig",,,,4,0.00,0,,,1,0
+Public Method,"org.apache.beam.sdk.io.gcp.spanner.AutoValue_SpannerIO_Write.hashCode",,,,21,0.00,0,,,18,0
+Method,"org.apache.beam.sdk.io.gcp.spanner.AutoValue_SpannerIO_Write.toBuilder",,,,4,0.00,0,,,1,0
 Class,"org.apache.beam.sdk.io.gcp.spanner.FakeServiceFactory",1,1,6,61,0.08,5,,7,31,0
 Public Constructor,"org.apache.beam.sdk.io.gcp.spanner.FakeServiceFactory.FakeServiceFactory",,,,16,0.00,0,,,13,0
 Public Method,"org.apache.beam.sdk.io.gcp.spanner.FakeServiceFactory.create",,,,4,0.00,0,,,1,0
@@ -2386,127 +2862,56 @@ Public Method,"org.apache.beam.sdk.io.gcp.spanner.SpannerIOWriteTest.testBatchab
 Public Method,"org.apache.beam.sdk.io.gcp.spanner.SpannerIOWriteTest.testGatherBundleAndSortFn_flushOversizedBundle",,,,69,0.30,21,,,60,1
 Public Method,"org.apache.beam.sdk.io.gcp.spanner.SpannerIOWriteTest.testGatherSortAndBatchFn",,,,58,0.21,12,,,49,1
 Private Method,"org.apache.beam.sdk.io.gcp.spanner.SpannerIOWriteTest.verifyTableWriteRequestMetricWasSet",,,,19,0.00,0,,,14,0
-Package,"org.apache.beam.sdk.io.mongodb",2,9,10,868,0.32,280,10,107,447,4
-Public Class,"org.apache.beam.sdk.io.mongodb.MongoDbIO",2,3,9,617,0.39,238,,2,335,2
-Private Static Class,"org.apache.beam.sdk.io.mongodb.MongoDbIO.BoundedMongoDbReader",2,5,9,68,0.01,1,,7,37,2
-Constructor,"org.apache.beam.sdk.io.mongodb.MongoDbIO.BoundedMongoDbReader.BoundedMongoDbReader",,,,3,0.00,0,,,1,0
-Public Method,"org.apache.beam.sdk.io.mongodb.MongoDbIO.BoundedMongoDbReader.advance",,,,9,0.00,0,,,5,1
-Public Method,"org.apache.beam.sdk.io.mongodb.MongoDbIO.BoundedMongoDbReader.close",,,,17,0.00,0,,,10,2
-Private Method,"org.apache.beam.sdk.io.mongodb.MongoDbIO.BoundedMongoDbReader.createClient",,,,11,0.00,0,,,9,0
-Public Method,"org.apache.beam.sdk.io.mongodb.MongoDbIO.BoundedMongoDbReader.getCurrent",,,,7,0.00,0,,,3,1
-Public Method,"org.apache.beam.sdk.io.mongodb.MongoDbIO.BoundedMongoDbReader.getCurrentSource",,,,4,0.00,0,,,1,0
-Public Method,"org.apache.beam.sdk.io.mongodb.MongoDbIO.BoundedMongoDbReader.start",,,,11,0.09,1,,,8,0
-Static Class,"org.apache.beam.sdk.io.mongodb.MongoDbIO.BoundedMongoDbSource",2,6,17,207,0.38,79,,12,149,4
-Constructor,"org.apache.beam.sdk.io.mongodb.MongoDbIO.BoundedMongoDbSource.BoundedMongoDbSource",,,,4,0.00,0,,,1,0
-Static Method,"org.apache.beam.sdk.io.mongodb.MongoDbIO.BoundedMongoDbSource.buildAutoBuckets",,,,19,0.05,1,,,15,1
-Public Method,"org.apache.beam.sdk.io.mongodb.MongoDbIO.BoundedMongoDbSource.createReader",,,,4,0.00,0,,,1,0
-Method,"org.apache.beam.sdk.io.mongodb.MongoDbIO.BoundedMongoDbSource.getDocumentCount",,,,18,0.28,5,,,15,1
-Private Method,"org.apache.beam.sdk.io.mongodb.MongoDbIO.BoundedMongoDbSource.getDocumentCount",,,,7,0.29,2,,,5,0
-Public Method,"org.apache.beam.sdk.io.mongodb.MongoDbIO.BoundedMongoDbSource.getEstimatedSizeBytes",,,,22,0.00,0,,,17,2
-Private Method,"org.apache.beam.sdk.io.mongodb.MongoDbIO.BoundedMongoDbSource.getEstimatedSizeBytes",,,,8,0.25,2,,,5,0
-Public Method,"org.apache.beam.sdk.io.mongodb.MongoDbIO.BoundedMongoDbSource.getOutputCoder",,,,4,0.00,0,,,1,0
-Public Method,"org.apache.beam.sdk.io.mongodb.MongoDbIO.BoundedMongoDbSource.populateDisplayData",,,,4,0.00,0,,,1,0
-Public Method,"org.apache.beam.sdk.io.mongodb.MongoDbIO.BoundedMongoDbSource.split",,,,53,0.11,6,,,41,4
-Static Method,"org.apache.beam.sdk.io.mongodb.MongoDbIO.BoundedMongoDbSource.splitKeysToFilters",,,,33,1.00,33,,,26,3
-Static Method,"org.apache.beam.sdk.io.mongodb.MongoDbIO.BoundedMongoDbSource.splitKeysToMatch",,,,27,1.07,29,,,21,3
-Lambda Method,"org.apache.beam.sdk.io.mongodb.MongoDbIO.BoundedMongoDbSource.splitKeysToMatch.(lambda_expr_1)",,,,1,0.00,0,,,1,0
-Private Constructor,"org.apache.beam.sdk.io.mongodb.MongoDbIO.MongoDbIO",,,,1,0.00,0,,,0,0
-Public Static Abstract Class,"org.apache.beam.sdk.io.mongodb.MongoDbIO.Read",1,1,5,102,0.42,43,,24,33,0
-Static Abstract Class,"org.apache.beam.sdk.io.mongodb.MongoDbIO.Read.Builder",0,0,0,15,0.00,0,,11,0,0
-Abstract Method,"org.apache.beam.sdk.io.mongodb.MongoDbIO.Read.Builder.build",,,,1,0.00,0,,,0,0
-Abstract Method,"org.apache.beam.sdk.io.mongodb.MongoDbIO.Read.Builder.setBucketAuto",,,,1,0.00,0,,,0,0
-Abstract Method,"org.apache.beam.sdk.io.mongodb.MongoDbIO.Read.Builder.setCollection",,,,1,0.00,0,,,0,0
-Abstract Method,"org.apache.beam.sdk.io.mongodb.MongoDbIO.Read.Builder.setDatabase",,,,1,0.00,0,,,0,0
-Abstract Method,"org.apache.beam.sdk.io.mongodb.MongoDbIO.Read.Builder.setIgnoreSSLCertificate",,,,1,0.00,0,,,0,0
-Abstract Method,"org.apache.beam.sdk.io.mongodb.MongoDbIO.Read.Builder.setMaxConnectionIdleTime",,,,1,0.00,0,,,0,0
-Abstract Method,"org.apache.beam.sdk.io.mongodb.MongoDbIO.Read.Builder.setNumSplits",,,,1,0.00,0,,,0,0
-Abstract Method,"org.apache.beam.sdk.io.mongodb.MongoDbIO.Read.Builder.setQueryFn",,,,2,0.00,0,,,0,0
-Abstract Method,"org.apache.beam.sdk.io.mongodb.MongoDbIO.Read.Builder.setSslEnabled",,,,1,0.00,0,,,0,0
-Abstract Method,"org.apache.beam.sdk.io.mongodb.MongoDbIO.Read.Builder.setSslInvalidHostNameAllowed",,,,1,0.00,0,,,0,0
-Abstract Method,"org.apache.beam.sdk.io.mongodb.MongoDbIO.Read.Builder.setUri",,,,1,0.00,0,,,0,0
-Abstract Method,"org.apache.beam.sdk.io.mongodb.MongoDbIO.Read.bucketAuto",,,,2,0.00,0,,,0,0
-Abstract Method,"org.apache.beam.sdk.io.mongodb.MongoDbIO.Read.builder",,,,2,0.00,0,,,0,0
-Abstract Method,"org.apache.beam.sdk.io.mongodb.MongoDbIO.Read.collection",,,,2,0.00,0,,,0,0
-Abstract Method,"org.apache.beam.sdk.io.mongodb.MongoDbIO.Read.database",,,,2,0.00,0,,,0,0
-Public Method,"org.apache.beam.sdk.io.mongodb.MongoDbIO.Read.expand",,,,7,0.00,0,,,4,0
-Public Method,"org.apache.beam.sdk.io.mongodb.MongoDbIO.Read.getDocumentCount",,,,6,0.00,0,,,4,0
-Abstract Method,"org.apache.beam.sdk.io.mongodb.MongoDbIO.Read.ignoreSSLCertificate",,,,2,0.00,0,,,0,0
-Abstract Method,"org.apache.beam.sdk.io.mongodb.MongoDbIO.Read.maxConnectionIdleTime",,,,2,0.00,0,,,0,0
-Abstract Method,"org.apache.beam.sdk.io.mongodb.MongoDbIO.Read.numSplits",,,,2,0.00,0,,,0,0
-Public Method,"org.apache.beam.sdk.io.mongodb.MongoDbIO.Read.populateDisplayData",,,,14,0.00,0,,,11,0
-Abstract Method,"org.apache.beam.sdk.io.mongodb.MongoDbIO.Read.queryFn",,,,2,0.00,0,,,0,0
-Abstract Method,"org.apache.beam.sdk.io.mongodb.MongoDbIO.Read.sslEnabled",,,,2,0.00,0,,,0,0
-Abstract Method,"org.apache.beam.sdk.io.mongodb.MongoDbIO.Read.sslInvalidHostNameAllowed",,,,2,0.00,0,,,0,0
-Abstract Method,"org.apache.beam.sdk.io.mongodb.MongoDbIO.Read.uri",,,,2,0.00,0,,,0,0
-Public Method,"org.apache.beam.sdk.io.mongodb.MongoDbIO.Read.withBucketAuto",,,,3,0.33,1,,,1,0
-Public Method,"org.apache.beam.sdk.io.mongodb.MongoDbIO.Read.withCollection",,,,4,0.25,1,,,2,0
-Public Method,"org.apache.beam.sdk.io.mongodb.MongoDbIO.Read.withDatabase",,,,4,0.25,1,,,2,0
-Public Method,"org.apache.beam.sdk.io.mongodb.MongoDbIO.Read.withIgnoreSSLCertificate",,,,3,0.33,1,,,1,0
-Public Method,"org.apache.beam.sdk.io.mongodb.MongoDbIO.Read.withMaxConnectionIdleTime",,,,3,0.33,1,,,1,0
-Public Method,"org.apache.beam.sdk.io.mongodb.MongoDbIO.Read.withNumSplits",,,,4,0.25,1,,,2,0
-Public Method,"org.apache.beam.sdk.io.mongodb.MongoDbIO.Read.withQueryFn",,,,4,0.25,1,,,1,0
-Public Method,"org.apache.beam.sdk.io.mongodb.MongoDbIO.Read.withSSLEnabled",,,,3,0.33,1,,,1,0
-Public Method,"org.apache.beam.sdk.io.mongodb.MongoDbIO.Read.withSSLInvalidHostNameAllowed",,,,3,0.33,1,,,1,0
-Public Method,"org.apache.beam.sdk.io.mongodb.MongoDbIO.Read.withUri",,,,4,8.25,33,,,2,0
-Public Static Abstract Class,"org.apache.beam.sdk.io.mongodb.MongoDbIO.Write",1,1,5,220,0.23,50,,23,107,0
-Static Abstract Class,"org.apache.beam.sdk.io.mongodb.MongoDbIO.Write.Builder",0,0,0,14,0.00,0,,11,0,0
-Abstract Method,"org.apache.beam.sdk.io.mongodb.MongoDbIO.Write.Builder.build",,,,1,0.00,0,,,0,0
-Abstract Method,"org.apache.beam.sdk.io.mongodb.MongoDbIO.Write.Builder.setBatchSize",,,,1,0.00,0,,,0,0
-Abstract Method,"org.apache.beam.sdk.io.mongodb.MongoDbIO.Write.Builder.setCollection",,,,1,0.00,0,,,0,0
-Abstract Method,"org.apache.beam.sdk.io.mongodb.MongoDbIO.Write.Builder.setDatabase",,,,1,0.00,0,,,0,0
-Abstract Method,"org.apache.beam.sdk.io.mongodb.MongoDbIO.Write.Builder.setIgnoreSSLCertificate",,,,1,0.00,0,,,0,0
-Abstract Method,"org.apache.beam.sdk.io.mongodb.MongoDbIO.Write.Builder.setMaxConnectionIdleTime",,,,1,0.00,0,,,0,0
-Abstract Method,"org.apache.beam.sdk.io.mongodb.MongoDbIO.Write.Builder.setOrdered",,,,1,0.00,0,,,0,0
-Abstract Method,"org.apache.beam.sdk.io.mongodb.MongoDbIO.Write.Builder.setSslEnabled",,,,1,0.00,0,,,0,0
-Abstract Method,"org.apache.beam.sdk.io.mongodb.MongoDbIO.Write.Builder.setSslInvalidHostNameAllowed",,,,1,0.00,0,,,0,0
-Abstract Method,"org.apache.beam.sdk.io.mongodb.MongoDbIO.Write.Builder.setUpdateConfiguration",,,,1,0.00,0,,,0,0
-Abstract Method,"org.apache.beam.sdk.io.mongodb.MongoDbIO.Write.Builder.setUri",,,,1,0.00,0,,,0,0
-Static Class,"org.apache.beam.sdk.io.mongodb.MongoDbIO.Write.WriteFn",3,9,12,127,0.02,2,,10,79,4
-Constructor,"org.apache.beam.sdk.io.mongodb.MongoDbIO.Write.WriteFn.WriteFn",,,,3,0.00,0,,,1,0
-Public Method,"org.apache.beam.sdk.io.mongodb.MongoDbIO.Write.WriteFn.closeMongoClient",,,,7,0.00,0,,,3,1
-Public Method,"org.apache.beam.sdk.io.mongodb.MongoDbIO.Write.WriteFn.createMongoClient",,,,13,0.00,0,,,10,0
-Public Method,"org.apache.beam.sdk.io.mongodb.MongoDbIO.Write.WriteFn.finishBundle",,,,4,0.00,0,,,1,0
-Private Method,"org.apache.beam.sdk.io.mongodb.MongoDbIO.Write.WriteFn.flush",,,,17,0.00,0,,,13,1
-Private Static Method,"org.apache.beam.sdk.io.mongodb.MongoDbIO.Write.WriteFn.getOperatorFieldsMap",,,,17,0.00,0,,,12,2
-Private Method,"org.apache.beam.sdk.io.mongodb.MongoDbIO.Write.WriteFn.insertDocuments",,,,10,0.00,0,,,6,2
-Public Method,"org.apache.beam.sdk.io.mongodb.MongoDbIO.Write.WriteFn.processElement",,,,8,0.25,2,,,4,1
-Public Method,"org.apache.beam.sdk.io.mongodb.MongoDbIO.Write.WriteFn.startBundle",,,,4,0.00,0,,,1,0
-Private Method,"org.apache.beam.sdk.io.mongodb.MongoDbIO.Write.WriteFn.updateDocuments",,,,39,0.00,0,,,28,4
-Abstract Method,"org.apache.beam.sdk.io.mongodb.MongoDbIO.Write.batchSize",,,,2,0.00,0,,,0,0
-Abstract Method,"org.apache.beam.sdk.io.mongodb.MongoDbIO.Write.builder",,,,2,0.00,0,,,0,0
-Abstract Method,"org.apache.beam.sdk.io.mongodb.MongoDbIO.Write.collection",,,,2,0.00,0,,,0,0
-Abstract Method,"org.apache.beam.sdk.io.mongodb.MongoDbIO.Write.database",,,,2,0.00,0,,,0,0
-Public Method,"org.apache.beam.sdk.io.mongodb.MongoDbIO.Write.expand",,,,8,0.00,0,,,5,0
-Abstract Method,"org.apache.beam.sdk.io.mongodb.MongoDbIO.Write.ignoreSSLCertificate",,,,2,0.00,0,,,0,0
-Abstract Method,"org.apache.beam.sdk.io.mongodb.MongoDbIO.Write.maxConnectionIdleTime",,,,2,0.00,0,,,0,0
-Abstract Method,"org.apache.beam.sdk.io.mongodb.MongoDbIO.Write.ordered",,,,2,0.00,0,,,0,0
-Public Method,"org.apache.beam.sdk.io.mongodb.MongoDbIO.Write.populateDisplayData",,,,12,0.00,0,,,9,0
-Abstract Method,"org.apache.beam.sdk.io.mongodb.MongoDbIO.Write.sslEnabled",,,,2,0.00,0,,,0,0
-Abstract Method,"org.apache.beam.sdk.io.mongodb.MongoDbIO.Write.sslInvalidHostNameAllowed",,,,2,0.00,0,,,0,0
-Abstract Method,"org.apache.beam.sdk.io.mongodb.MongoDbIO.Write.updateConfiguration",,,,2,0.00,0,,,0,0
-Abstract Method,"org.apache.beam.sdk.io.mongodb.MongoDbIO.Write.uri",,,,2,0.00,0,,,0,0
-Public Method,"org.apache.beam.sdk.io.mongodb.MongoDbIO.Write.withBatchSize",,,,4,0.25,1,,,2,0
-Public Method,"org.apache.beam.sdk.io.mongodb.MongoDbIO.Write.withCollection",,,,4,0.25,1,,,2,0
-Public Method,"org.apache.beam.sdk.io.mongodb.MongoDbIO.Write.withDatabase",,,,4,0.25,1,,,2,0
-Public Method,"org.apache.beam.sdk.io.mongodb.MongoDbIO.Write.withIgnoreSSLCertificate",,,,3,0.33,1,,,1,0
-Public Method,"org.apache.beam.sdk.io.mongodb.MongoDbIO.Write.withMaxConnectionIdleTime",,,,3,0.33,1,,,1,0
-Public Method,"org.apache.beam.sdk.io.mongodb.MongoDbIO.Write.withOrdered",,,,3,2.33,7,,,1,0
-Public Method,"org.apache.beam.sdk.io.mongodb.MongoDbIO.Write.withSSLEnabled",,,,3,0.33,1,,,1,0
-Public Method,"org.apache.beam.sdk.io.mongodb.MongoDbIO.Write.withSSLInvalidHostNameAllowed",,,,3,0.33,1,,,1,0
-Public Method,"org.apache.beam.sdk.io.mongodb.MongoDbIO.Write.withUpdateConfiguration",,,,3,0.00,0,,,1,0
-Public Method,"org.apache.beam.sdk.io.mongodb.MongoDbIO.Write.withUri",,,,4,8.25,33,,,2,0
-Private Static Method,"org.apache.beam.sdk.io.mongodb.MongoDbIO.getOptions",,,,16,0.00,0,,,8,2
-Public Class,"org.apache.beam.sdk.io.mongodb.MongoDbIOTest",1,3,21,147,0.03,5,,6,112,2
-Static Class,"org.apache.beam.sdk.io.mongodb.MongoDbIOTest.DocumentToKVFn",1,1,4,6,0.00,0,,1,1,0
-Public Method,"org.apache.beam.sdk.io.mongodb.MongoDbIOTest.DocumentToKVFn.apply",,,,4,0.00,0,,,1,0
-Public Static Method,"org.apache.beam.sdk.io.mongodb.MongoDbIOTest.afterClass",,,,7,0.00,0,,,4,0
-Public Static Method,"org.apache.beam.sdk.io.mongodb.MongoDbIOTest.beforeClass",,,,29,0.00,0,,,25,0
-Private Static Method,"org.apache.beam.sdk.io.mongodb.MongoDbIOTest.countElements",,,,3,0.00,0,,,1,0
-Private Static Method,"org.apache.beam.sdk.io.mongodb.MongoDbIOTest.createDocuments",,,,40,0.00,0,,,32,2
-Public Method,"org.apache.beam.sdk.io.mongodb.MongoDbIOTest.testSplitIntoBucket",,,,29,0.07,2,,,26,0
-Public Method,"org.apache.beam.sdk.io.mongodb.MongoDbIOTest.testSplitIntoFilters",,,,19,0.11,2,,,16,0
+Package,"org.apache.beam.sdk.io.mongodb",2,9,9,269,0.00,0,2,27,126,2
+Final Class,"org.apache.beam.sdk.io.mongodb.AutoValue_MongoDbIO_Read",2,8,9,261,0.00,0,,14,126,1
+Private Constructor,"org.apache.beam.sdk.io.mongodb.AutoValue_MongoDbIO_Read.AutoValue_MongoDbIO_Read",,,,22,0.00,0,,,10,0
+Static Final Class,"org.apache.beam.sdk.io.mongodb.AutoValue_MongoDbIO_Read.Builder",2,9,9,127,0.00,0,,13,68,2
+Constructor,"org.apache.beam.sdk.io.mongodb.AutoValue_MongoDbIO_Read.Builder.Builder",,,,2,0.00,0,,,0,0
+Constructor,"org.apache.beam.sdk.io.mongodb.AutoValue_MongoDbIO_Read.Builder.Builder",,,,13,0.00,0,,,11,0
+Method,"org.apache.beam.sdk.io.mongodb.AutoValue_MongoDbIO_Read.Builder.build",,,,40,0.00,0,,,29,2
+Method,"org.apache.beam.sdk.io.mongodb.AutoValue_MongoDbIO_Read.Builder.setBucketAuto",,,,6,0.00,0,,,3,0
+Method,"org.apache.beam.sdk.io.mongodb.AutoValue_MongoDbIO_Read.Builder.setCollection",,,,5,0.00,0,,,2,0
+Method,"org.apache.beam.sdk.io.mongodb.AutoValue_MongoDbIO_Read.Builder.setDatabase",,,,5,0.00,0,,,2,0
+Method,"org.apache.beam.sdk.io.mongodb.AutoValue_MongoDbIO_Read.Builder.setIgnoreSSLCertificate",,,,6,0.00,0,,,3,0
+Method,"org.apache.beam.sdk.io.mongodb.AutoValue_MongoDbIO_Read.Builder.setMaxConnectionIdleTime",,,,6,0.00,0,,,3,0
+Method,"org.apache.beam.sdk.io.mongodb.AutoValue_MongoDbIO_Read.Builder.setNumSplits",,,,6,0.00,0,,,3,0
+Method,"org.apache.beam.sdk.io.mongodb.AutoValue_MongoDbIO_Read.Builder.setQueryFn",,,,8,0.00,0,,,4,1
+Method,"org.apache.beam.sdk.io.mongodb.AutoValue_MongoDbIO_Read.Builder.setSslEnabled",,,,6,0.00,0,,,3,0
+Method,"org.apache.beam.sdk.io.mongodb.AutoValue_MongoDbIO_Read.Builder.setSslInvalidHostNameAllowed",,,,6,0.00,0,,,3,0
+Method,"org.apache.beam.sdk.io.mongodb.AutoValue_MongoDbIO_Read.Builder.setUri",,,,5,0.00,0,,,2,0
+Method,"org.apache.beam.sdk.io.mongodb.AutoValue_MongoDbIO_Read.bucketAuto",,,,5,0.00,0,,,1,0
+Method,"org.apache.beam.sdk.io.mongodb.AutoValue_MongoDbIO_Read.builder",,,,4,0.00,0,,,1,0
+Method,"org.apache.beam.sdk.io.mongodb.AutoValue_MongoDbIO_Read.collection",,,,5,0.00,0,,,1,0
+Method,"org.apache.beam.sdk.io.mongodb.AutoValue_MongoDbIO_Read.database",,,,5,0.00,0,,,1,0
+Public Method,"org.apache.beam.sdk.io.mongodb.AutoValue_MongoDbIO_Read.equals",,,,20,0.00,0,,,15,1
+Public Method,"org.apache.beam.sdk.io.mongodb.AutoValue_MongoDbIO_Read.hashCode",,,,25,0.00,0,,,22,0
+Method,"org.apache.beam.sdk.io.mongodb.AutoValue_MongoDbIO_Read.ignoreSSLCertificate",,,,5,0.00,0,,,1,0
+Method,"org.apache.beam.sdk.io.mongodb.AutoValue_MongoDbIO_Read.maxConnectionIdleTime",,,,5,0.00,0,,,1,0
+Method,"org.apache.beam.sdk.io.mongodb.AutoValue_MongoDbIO_Read.numSplits",,,,5,0.00,0,,,1,0
+Method,"org.apache.beam.sdk.io.mongodb.AutoValue_MongoDbIO_Read.queryFn",,,,5,0.00,0,,,1,0
+Method,"org.apache.beam.sdk.io.mongodb.AutoValue_MongoDbIO_Read.sslEnabled",,,,5,0.00,0,,,1,0
+Method,"org.apache.beam.sdk.io.mongodb.AutoValue_MongoDbIO_Read.sslInvalidHostNameAllowed",,,,5,0.00,0,,,1,0
+Method,"org.apache.beam.sdk.io.mongodb.AutoValue_MongoDbIO_Read.uri",,,,5,0.00,0,,,1,0
 Unknown Annotation,"org.apache.beam.sdk.options.Description",,,,,0.00,,,,,
-Package,"org.apache.beam.sdk.schemas",1,12,7,1494,0.15,222,15,211,820,3
+Package,"org.apache.beam.sdk.schemas",1,12,7,1650,0.13,222,18,226,874,3
+Final Class,"org.apache.beam.sdk.schemas.AutoValue_Schema_Field",1,1,6,119,0.00,0,,7,54,0
+Private Constructor,"org.apache.beam.sdk.schemas.AutoValue_Schema_Field.AutoValue_Schema_Field",,,,10,0.00,0,,,4,0
+Static Final Class,"org.apache.beam.sdk.schemas.AutoValue_Schema_Field.Builder",2,6,10,73,0.00,0,,7,39,2
+Constructor,"org.apache.beam.sdk.schemas.AutoValue_Schema_Field.Builder.Builder",,,,2,0.00,0,,,0,0
+Constructor,"org.apache.beam.sdk.schemas.AutoValue_Schema_Field.Builder.Builder",,,,6,0.00,0,,,4,0
+Public Method,"org.apache.beam.sdk.schemas.AutoValue_Schema_Field.Builder.build",,,,27,0.00,0,,,19,2
+Public Method,"org.apache.beam.sdk.schemas.AutoValue_Schema_Field.Builder.setDescription",,,,8,0.00,0,,,4,1
+Public Method,"org.apache.beam.sdk.schemas.AutoValue_Schema_Field.Builder.setName",,,,8,0.00,0,,,4,1
+Public Method,"org.apache.beam.sdk.schemas.AutoValue_Schema_Field.Builder.setOptions",,,,8,0.00,0,,,4,1
+Public Method,"org.apache.beam.sdk.schemas.AutoValue_Schema_Field.Builder.setType",,,,8,0.00,0,,,4,1
+Public Method,"org.apache.beam.sdk.schemas.AutoValue_Schema_Field.getDescription",,,,4,0.00,0,,,1,0
+Public Method,"org.apache.beam.sdk.schemas.AutoValue_Schema_Field.getName",,,,4,0.00,0,,,1,0
+Public Method,"org.apache.beam.sdk.schemas.AutoValue_Schema_Field.getOptions",,,,4,0.00,0,,,1,0
+Public Method,"org.apache.beam.sdk.schemas.AutoValue_Schema_Field.getType",,,,4,0.00,0,,,1,0
+Public Method,"org.apache.beam.sdk.schemas.AutoValue_Schema_Field.toBuilder",,,,4,0.00,0,,,1,0
+Public Method,"org.apache.beam.sdk.schemas.AutoValue_Schema_Field.toString",,,,9,0.00,0,,,6,0
+Final Class,"org.apache.beam.sdk.schemas.AutoValue_Schema_FieldType",1,1,0,28,0.00,0,,1,0,0
+Private Constructor,"org.apache.beam.sdk.schemas.AutoValue_Schema_FieldType.AutoValue_Schema_FieldType",,,,0,0.00,0,,,0,0
 Public Static Abstract Class,"org.apache.beam.sdk.schemas.Field",1,2,5,76,0.20,15,,17,31,1
 Public Static Abstract Class,"org.apache.beam.sdk.schemas.Field.Builder",1,1,4,12,0.08,1,,6,2,0
 Public Abstract Method,"org.apache.beam.sdk.schemas.Field.Builder.build",,,,1,0.00,0,,,0,0
@@ -2796,7 +3201,21 @@ Public Method,"org.apache.beam.sdk.testing.ExpectedLogs.verifyTrace",,,,3,1.67,5
 Public Method,"org.apache.beam.sdk.testing.ExpectedLogs.verifyTrace",,,,3,2.00,6,,,1,0
 Public Method,"org.apache.beam.sdk.testing.ExpectedLogs.verifyWarn",,,,3,1.67,5,,,1,0
 Public Method,"org.apache.beam.sdk.testing.ExpectedLogs.verifyWarn",,,,3,2.00,6,,,1,0
-Package,"org.apache.beam.sdk.transforms",1,6,9,1432,0.39,563,33,130,673,3
+Package,"org.apache.beam.sdk.transforms",1,6,8,3172,0.35,1124,81,338,1472,4
+Public Static Abstract Generic Class,"org.apache.beam.sdk.transforms.AccumulatingCombineFn",1,2,6,28,1.71,48,,3,7,1
+Generic Parameter,"org.apache.beam.sdk.transforms.AccumulatingCombineFn.AccumT",0,0,0,,,,,0,,0
+Public Generic Interface,"org.apache.beam.sdk.transforms.AccumulatingCombineFn.Accumulator",0,0,0,5,1.20,6,,3,0,0
+Generic Parameter,"org.apache.beam.sdk.transforms.AccumulatingCombineFn.Accumulator.AccumT",0,0,0,,,,,0,,0
+Generic Parameter,"org.apache.beam.sdk.transforms.AccumulatingCombineFn.Accumulator.InputT",0,0,0,,,,,0,,0
+Generic Parameter,"org.apache.beam.sdk.transforms.AccumulatingCombineFn.Accumulator.OutputT",0,0,0,,,,,0,,0
+Abstract Method,"org.apache.beam.sdk.transforms.AccumulatingCombineFn.Accumulator.addInput",,,,1,1.00,1,,,0,0
+Abstract Method,"org.apache.beam.sdk.transforms.AccumulatingCombineFn.Accumulator.extractOutput",,,,1,4.00,4,,,0,0
+Abstract Method,"org.apache.beam.sdk.transforms.AccumulatingCombineFn.Accumulator.mergeAccumulator",,,,1,1.00,1,,,0,0
+Generic Parameter,"org.apache.beam.sdk.transforms.AccumulatingCombineFn.InputT",0,0,0,,,,,0,,0
+Generic Parameter,"org.apache.beam.sdk.transforms.AccumulatingCombineFn.OutputT",0,0,0,,,,,0,,0
+Public Final Method,"org.apache.beam.sdk.transforms.AccumulatingCombineFn.addInput",,,,5,0.20,1,,,2,0
+Public Final Method,"org.apache.beam.sdk.transforms.AccumulatingCombineFn.extractOutput",,,,4,0.00,0,,,1,0
+Public Final Method,"org.apache.beam.sdk.transforms.AccumulatingCombineFn.mergeAccumulators",,,,8,0.00,0,,,4,1
 Public Class,"org.apache.beam.sdk.transforms.ApproximateQuantiles",1,1,4,393,0.53,210,,5,203,0
 Private Constructor,"org.apache.beam.sdk.transforms.ApproximateQuantiles.ApproximateQuantiles",,,,2,0.50,1,,,0,0
 Public Static Generic Class,"org.apache.beam.sdk.transforms.ApproximateQuantiles.ApproximateQuantilesCombineFn",1,2,6,73,1.14,83,,11,27,1
@@ -2962,6 +3381,269 @@ Private Constructor,"org.apache.beam.sdk.transforms.ApproximateUniqueTest.Verify
 Public Method,"org.apache.beam.sdk.transforms.ApproximateUniqueTest.VerifyEstimatePerKeyFn.apply",,,,7,0.00,0,,,3,1
 Private Static Method,"org.apache.beam.sdk.transforms.ApproximateUniqueTest.estimateIsWithinRangeFor",,,,9,0.00,0,,,5,1
 Private Static Method,"org.apache.beam.sdk.transforms.ApproximateUniqueTest.verifyEstimate",,,,33,0.12,4,,,29,1
+Public Static Abstract Class,"org.apache.beam.sdk.transforms.BinaryCombineDoubleFn",1,3,5,72,0.15,11,,9,22,2
+Private Static Final Class,"org.apache.beam.sdk.transforms.BinaryCombineDoubleFn.FromDoubleCodingFunction",1,1,4,15,0.00,0,,3,3,0
+Public Method,"org.apache.beam.sdk.transforms.BinaryCombineDoubleFn.FromDoubleCodingFunction.apply",,,,4,0.00,0,,,1,0
+Public Method,"org.apache.beam.sdk.transforms.BinaryCombineDoubleFn.FromDoubleCodingFunction.equals",,,,4,0.00,0,,,1,0
+Public Method,"org.apache.beam.sdk.transforms.BinaryCombineDoubleFn.FromDoubleCodingFunction.hashCode",,,,4,0.00,0,,,1,0
+Private Static Final Class,"org.apache.beam.sdk.transforms.BinaryCombineDoubleFn.ToDoubleCodingFunction",1,1,4,15,0.00,0,,3,3,0
+Public Method,"org.apache.beam.sdk.transforms.BinaryCombineDoubleFn.ToDoubleCodingFunction.apply",,,,4,0.00,0,,,1,0
+Public Method,"org.apache.beam.sdk.transforms.BinaryCombineDoubleFn.ToDoubleCodingFunction.equals",,,,4,0.00,0,,,1,0
+Public Method,"org.apache.beam.sdk.transforms.BinaryCombineDoubleFn.ToDoubleCodingFunction.hashCode",,,,4,0.00,0,,,1,0
+Public Method,"org.apache.beam.sdk.transforms.BinaryCombineDoubleFn.addInput",,,,5,0.00,0,,,2,0
+Public Abstract Method,"org.apache.beam.sdk.transforms.BinaryCombineDoubleFn.apply",,,,1,1.00,1,,,0,0
+Public Method,"org.apache.beam.sdk.transforms.BinaryCombineDoubleFn.createAccumulator",,,,4,0.00,0,,,1,0
+Public Method,"org.apache.beam.sdk.transforms.BinaryCombineDoubleFn.extractOutput",,,,4,0.00,0,,,1,0
+Public Method,"org.apache.beam.sdk.transforms.BinaryCombineDoubleFn.getAccumulatorCoder",,,,5,0.00,0,,,2,0
+Public Method,"org.apache.beam.sdk.transforms.BinaryCombineDoubleFn.getDefaultOutputCoder",,,,4,0.00,0,,,1,0
+Public Abstract Method,"org.apache.beam.sdk.transforms.BinaryCombineDoubleFn.identity",,,,1,4.00,4,,,0,0
+Public Method,"org.apache.beam.sdk.transforms.BinaryCombineDoubleFn.mergeAccumulators",,,,13,0.00,0,,,8,2
+Private Static Method,"org.apache.beam.sdk.transforms.BinaryCombineDoubleFn.wrap",,,,3,0.00,0,,,1,0
+Public Static Abstract Generic Class,"org.apache.beam.sdk.transforms.BinaryCombineFn",2,5,8,63,0.16,10,,9,31,4
+Generic Parameter,"org.apache.beam.sdk.transforms.BinaryCombineFn.V",0,0,0,,,,,0,,0
+Public Method,"org.apache.beam.sdk.transforms.BinaryCombineFn.addInput",,,,9,0.00,0,,,5,1
+Public Abstract Method,"org.apache.beam.sdk.transforms.BinaryCombineFn.apply",,,,1,1.00,1,,,0,0
+Public Method,"org.apache.beam.sdk.transforms.BinaryCombineFn.createAccumulator",,,,4,0.00,0,,,1,0
+Public Method,"org.apache.beam.sdk.transforms.BinaryCombineFn.extractOutput",,,,8,0.00,0,,,4,1
+Public Method,"org.apache.beam.sdk.transforms.BinaryCombineFn.getAccumulatorCoder",,,,4,0.00,0,,,1,0
+Public Method,"org.apache.beam.sdk.transforms.BinaryCombineFn.getDefaultOutputCoder",,,,4,0.00,0,,,1,0
+Public Method,"org.apache.beam.sdk.transforms.BinaryCombineFn.identity",,,,3,0.33,1,,,1,0
+Public Method,"org.apache.beam.sdk.transforms.BinaryCombineFn.mergeAccumulators",,,,20,0.00,0,,,13,4
+Public Static Generic Method,"org.apache.beam.sdk.transforms.BinaryCombineFn.of",,,,8,0.50,4,,,5,0
+Anonymous Class,"org.apache.beam.sdk.transforms.BinaryCombineFn.of.(Anon_3)",1,1,4,5,0.00,0,,1,4,0
+Public Method,"org.apache.beam.sdk.transforms.BinaryCombineFn.of.(Anon_3).apply",,,,4,0.00,0,,,3,0
+Generic Parameter,"org.apache.beam.sdk.transforms.BinaryCombineFn.of.V",0,0,0,,,,,0,,0
+Public Static Abstract Class,"org.apache.beam.sdk.transforms.BinaryCombineIntegerFn",1,3,5,72,0.15,11,,9,22,2
+Private Static Final Class,"org.apache.beam.sdk.transforms.BinaryCombineIntegerFn.FromIntegerCodingFunction",1,1,4,15,0.00,0,,3,3,0
+Public Method,"org.apache.beam.sdk.transforms.BinaryCombineIntegerFn.FromIntegerCodingFunction.apply",,,,4,0.00,0,,,1,0
+Public Method,"org.apache.beam.sdk.transforms.BinaryCombineIntegerFn.FromIntegerCodingFunction.equals",,,,4,0.00,0,,,1,0
+Public Method,"org.apache.beam.sdk.transforms.BinaryCombineIntegerFn.FromIntegerCodingFunction.hashCode",,,,4,0.00,0,,,1,0
+Private Static Final Class,"org.apache.beam.sdk.transforms.BinaryCombineIntegerFn.ToIntegerCodingFunction",1,1,4,15,0.00,0,,3,3,0
+Public Method,"org.apache.beam.sdk.transforms.BinaryCombineIntegerFn.ToIntegerCodingFunction.apply",,,,4,0.00,0,,,1,0
+Public Method,"org.apache.beam.sdk.transforms.BinaryCombineIntegerFn.ToIntegerCodingFunction.equals",,,,4,0.00,0,,,1,0
+Public Method,"org.apache.beam.sdk.transforms.BinaryCombineIntegerFn.ToIntegerCodingFunction.hashCode",,,,4,0.00,0,,,1,0
+Public Method,"org.apache.beam.sdk.transforms.BinaryCombineIntegerFn.addInput",,,,5,0.00,0,,,2,0
+Public Abstract Method,"org.apache.beam.sdk.transforms.BinaryCombineIntegerFn.apply",,,,1,1.00,1,,,0,0
+Public Method,"org.apache.beam.sdk.transforms.BinaryCombineIntegerFn.createAccumulator",,,,4,0.00,0,,,1,0
+Public Method,"org.apache.beam.sdk.transforms.BinaryCombineIntegerFn.extractOutput",,,,4,0.00,0,,,1,0
+Public Method,"org.apache.beam.sdk.transforms.BinaryCombineIntegerFn.getAccumulatorCoder",,,,5,0.00,0,,,2,0
+Public Method,"org.apache.beam.sdk.transforms.BinaryCombineIntegerFn.getDefaultOutputCoder",,,,4,0.00,0,,,1,0
+Public Abstract Method,"org.apache.beam.sdk.transforms.BinaryCombineIntegerFn.identity",,,,1,4.00,4,,,0,0
+Public Method,"org.apache.beam.sdk.transforms.BinaryCombineIntegerFn.mergeAccumulators",,,,13,0.00,0,,,8,2
+Private Static Method,"org.apache.beam.sdk.transforms.BinaryCombineIntegerFn.wrap",,,,3,0.00,0,,,1,0
+Public Static Abstract Class,"org.apache.beam.sdk.transforms.BinaryCombineLongFn",1,3,5,71,0.15,11,,9,21,2
+Private Static Final Class,"org.apache.beam.sdk.transforms.BinaryCombineLongFn.FromLongCodingFunction",1,1,4,15,0.00,0,,3,3,0
+Public Method,"org.apache.beam.sdk.transforms.BinaryCombineLongFn.FromLongCodingFunction.apply",,,,4,0.00,0,,,1,0
+Public Method,"org.apache.beam.sdk.transforms.BinaryCombineLongFn.FromLongCodingFunction.equals",,,,4,0.00,0,,,1,0
+Public Method,"org.apache.beam.sdk.transforms.BinaryCombineLongFn.FromLongCodingFunction.hashCode",,,,4,0.00,0,,,1,0
+Private Static Final Class,"org.apache.beam.sdk.transforms.BinaryCombineLongFn.ToLongCodingFunction",1,1,4,15,0.00,0,,3,3,0
+Public Method,"org.apache.beam.sdk.transforms.BinaryCombineLongFn.ToLongCodingFunction.apply",,,,4,0.00,0,,,1,0
+Public Method,"org.apache.beam.sdk.transforms.BinaryCombineLongFn.ToLongCodingFunction.equals",,,,4,0.00,0,,,1,0
+Public Method,"org.apache.beam.sdk.transforms.BinaryCombineLongFn.ToLongCodingFunction.hashCode",,,,4,0.00,0,,,1,0
+Public Method,"org.apache.beam.sdk.transforms.BinaryCombineLongFn.addInput",,,,5,0.00,0,,,2,0
+Public Abstract Method,"org.apache.beam.sdk.transforms.BinaryCombineLongFn.apply",,,,1,1.00,1,,,0,0
+Public Method,"org.apache.beam.sdk.transforms.BinaryCombineLongFn.createAccumulator",,,,4,0.00,0,,,1,0
+Public Method,"org.apache.beam.sdk.transforms.BinaryCombineLongFn.extractOutput",,,,4,0.00,0,,,1,0
+Public Method,"org.apache.beam.sdk.transforms.BinaryCombineLongFn.getAccumulatorCoder",,,,4,0.00,0,,,1,0
+Public Method,"org.apache.beam.sdk.transforms.BinaryCombineLongFn.getDefaultOutputCoder",,,,4,0.00,0,,,1,0
+Public Abstract Method,"org.apache.beam.sdk.transforms.BinaryCombineLongFn.identity",,,,1,4.00,4,,,0,0
+Public Method,"org.apache.beam.sdk.transforms.BinaryCombineLongFn.mergeAccumulators",,,,13,0.00,0,,,8,2
+Private Static Method,"org.apache.beam.sdk.transforms.BinaryCombineLongFn.wrap",,,,3,0.00,0,,,1,0
+Public Class,"org.apache.beam.sdk.transforms.Combine",1,2,4,95,3.19,303,,24,23,1
+Private Constructor,"org.apache.beam.sdk.transforms.Combine.Combine",,,,2,0.50,1,,,0,0
+Public Static Abstract Class,"org.apache.beam.sdk.transforms.Combine.CombineFn",0,0,0,1,109.00,109,,0,0,0
+Public Abstract Method,"org.apache.beam.sdk.transforms.Combine.addInput",,,,1,6.00,6,,,0,0
+Public Method,"org.apache.beam.sdk.transforms.Combine.apply",,,,7,1.00,7,,,4,1
+Public Method,"org.apache.beam.sdk.transforms.Combine.compact",,,,3,3.67,11,,,1,0
+Public Method,"org.apache.beam.sdk.transforms.Combine.defaultValue",,,,4,1.25,5,,,1,0
+Private Static Generic Method,"org.apache.beam.sdk.transforms.Combine.displayDataForFn",,,,3,0.00,0,,,1,0
+Generic Parameter,"org.apache.beam.sdk.transforms.Combine.displayDataForFn.T",0,0,0,,,,,0,,0
+Public Abstract Method,"org.apache.beam.sdk.transforms.Combine.extractOutput",,,,1,6.00,6,,,0,0
+Public Static Generic Method,"org.apache.beam.sdk.transforms.Combine.fewKeys",,,,5,0.40,2,,,1,0
+Private Static Generic Method,"org.apache.beam.sdk.transforms.Combine.fewKeys",,,,5,0.40,2,,,1,0
+Generic Parameter,"org.apache.beam.sdk.transforms.Combine.fewKeys.InputT",0,0,0,,,,,0,,0
+Generic Parameter,"org.apache.beam.sdk.transforms.Combine.fewKeys.InputT",0,0,0,,,,,0,,0
+Generic Parameter,"org.apache.beam.sdk.transforms.Combine.fewKeys.K",0,0,0,,,,,0,,0
+Generic Parameter,"org.apache.beam.sdk.transforms.Combine.fewKeys.K",0,0,0,,,,,0,,0
+Generic Parameter,"org.apache.beam.sdk.transforms.Combine.fewKeys.OutputT",0,0,0,,,,,0,,0
+Generic Parameter,"org.apache.beam.sdk.transforms.Combine.fewKeys.OutputT",0,0,0,,,,,0,,0
+Public Method,"org.apache.beam.sdk.transforms.Combine.getInputType",,,,3,2.33,7,,,1,0
+Anonymous Class,"org.apache.beam.sdk.transforms.Combine.getInputType.(Anon_2)",0,0,0,0,0.00,0,,0,0,0
+Public Method,"org.apache.beam.sdk.transforms.Combine.getOutputType",,,,3,2.33,7,,,1,0
+Anonymous Class,"org.apache.beam.sdk.transforms.Combine.getOutputType.(Anon_1)",0,0,0,0,0.00,0,,0,0,0
+Public Static Generic Method,"org.apache.beam.sdk.transforms.Combine.globally",,,,3,4.33,13,,,1,0
+Public Static Generic Method,"org.apache.beam.sdk.transforms.Combine.globally",,,,3,4.33,13,,,1,0
+Public Static Generic Method,"org.apache.beam.sdk.transforms.Combine.globally",,,,4,3.25,13,,,1,0
+Private Static Generic Method,"org.apache.beam.sdk.transforms.Combine.globally",,,,5,0.00,0,,,1,0
+Generic Parameter,"org.apache.beam.sdk.transforms.Combine.globally.InputT",0,0,0,,,,,0,,0
+Generic Parameter,"org.apache.beam.sdk.transforms.Combine.globally.InputT",0,0,0,,,,,0,,0
+Generic Parameter,"org.apache.beam.sdk.transforms.Combine.globally.OutputT",0,0,0,,,,,0,,0
+Generic Parameter,"org.apache.beam.sdk.transforms.Combine.globally.OutputT",0,0,0,,,,,0,,0
+Generic Parameter,"org.apache.beam.sdk.transforms.Combine.globally.V",0,0,0,,,,,0,,0
+Generic Parameter,"org.apache.beam.sdk.transforms.Combine.globally.V",0,0,0,,,,,0,,0
+Public Static Generic Method,"org.apache.beam.sdk.transforms.Combine.groupedValues",,,,4,4.00,16,,,1,0
+Public Static Generic Method,"org.apache.beam.sdk.transforms.Combine.groupedValues",,,,3,5.33,16,,,1,0
+Public Static Generic Method,"org.apache.beam.sdk.transforms.Combine.groupedValues",,,,4,3.75,15,,,1,0
+Private Static Generic Method,"org.apache.beam.sdk.transforms.Combine.groupedValues",,,,5,0.00,0,,,1,0
+Generic Parameter,"org.apache.beam.sdk.transforms.Combine.groupedValues.InputT",0,0,0,,,,,0,,0
+Generic Parameter,"org.apache.beam.sdk.transforms.Combine.groupedValues.InputT",0,0,0,,,,,0,,0
+Generic Parameter,"org.apache.beam.sdk.transforms.Combine.groupedValues.K",0,0,0,,,,,0,,0
+Generic Parameter,"org.apache.beam.sdk.transforms.Combine.groupedValues.K",0,0,0,,,,,0,,0
+Generic Parameter,"org.apache.beam.sdk.transforms.Combine.groupedValues.K",0,0,0,,,,,0,,0
+Generic Parameter,"org.apache.beam.sdk.transforms.Combine.groupedValues.K",0,0,0,,,,,0,,0
+Generic Parameter,"org.apache.beam.sdk.transforms.Combine.groupedValues.OutputT",0,0,0,,,,,0,,0
+Generic Parameter,"org.apache.beam.sdk.transforms.Combine.groupedValues.OutputT",0,0,0,,,,,0,,0
+Generic Parameter,"org.apache.beam.sdk.transforms.Combine.groupedValues.V",0,0,0,,,,,0,,0
+Generic Parameter,"org.apache.beam.sdk.transforms.Combine.groupedValues.V",0,0,0,,,,,0,,0
+Public Abstract Method,"org.apache.beam.sdk.transforms.Combine.mergeAccumulators",,,,1,8.00,8,,,0,0
+Public Static Generic Method,"org.apache.beam.sdk.transforms.Combine.perKey",,,,3,4.00,12,,,1,0
+Public Static Generic Method,"org.apache.beam.sdk.transforms.Combine.perKey",,,,3,4.00,12,,,1,0
+Public Static Generic Method,"org.apache.beam.sdk.transforms.Combine.perKey",,,,4,3.00,12,,,1,0
+Private Static Generic Method,"org.apache.beam.sdk.transforms.Combine.perKey",,,,5,0.20,1,,,1,0
+Generic Parameter,"org.apache.beam.sdk.transforms.Combine.perKey.InputT",0,0,0,,,,,0,,0
+Generic Parameter,"org.apache.beam.sdk.transforms.Combine.perKey.InputT",0,0,0,,,,,0,,0
+Generic Parameter,"org.apache.beam.sdk.transforms.Combine.perKey.K",0,0,0,,,,,0,,0
+Generic Parameter,"org.apache.beam.sdk.transforms.Combine.perKey.K",0,0,0,,,,,0,,0
+Generic Parameter,"org.apache.beam.sdk.transforms.Combine.perKey.K",0,0,0,,,,,0,,0
+Generic Parameter,"org.apache.beam.sdk.transforms.Combine.perKey.K",0,0,0,,,,,0,,0
+Generic Parameter,"org.apache.beam.sdk.transforms.Combine.perKey.OutputT",0,0,0,,,,,0,,0
+Generic Parameter,"org.apache.beam.sdk.transforms.Combine.perKey.OutputT",0,0,0,,,,,0,,0
+Generic Parameter,"org.apache.beam.sdk.transforms.Combine.perKey.V",0,0,0,,,,,0,,0
+Generic Parameter,"org.apache.beam.sdk.transforms.Combine.perKey.V",0,0,0,,,,,0,,0
+Public Class,"org.apache.beam.sdk.transforms.CombineTest",1,1,5,1038,0.05,55,,1,598,0
+Public Static Class,"org.apache.beam.sdk.transforms.CombineTest.AccumulationTests",1,1,7,16,0.06,1,,2,5,0
+Public Method,"org.apache.beam.sdk.transforms.CombineTest.AccumulationTests.testAccumulatingCombine",,,,8,0.00,0,,,4,0
+Public Method,"org.apache.beam.sdk.transforms.CombineTest.AccumulationTests.testAccumulatingCombineEmpty",,,,5,0.00,0,,,1,0
+Public Static Class,"org.apache.beam.sdk.transforms.CombineTest.BasicTests",1,2,13,207,0.07,14,,16,124,1
+Public Method,"org.apache.beam.sdk.transforms.CombineTest.BasicTests.testBasicCombine",,,,10,0.00,0,,,6,0
+Public Method,"org.apache.beam.sdk.transforms.CombineTest.BasicTests.testBasicCombineEmpty",,,,5,0.00,0,,,1,0
+Public Method,"org.apache.beam.sdk.transforms.CombineTest.BasicTests.testBinaryCombineFn",,,,19,0.00,0,,,12,0
+Public Method,"org.apache.beam.sdk.transforms.CombineTest.BasicTests.testBinaryCombineFnWithNulls",,,,8,0.00,0,,,5,0
+Public Method,"org.apache.beam.sdk.transforms.CombineTest.BasicTests.testBinaryCombinePerKeyInstanceMethodReference",,,,10,0.10,1,,,5,0
+Public Method,"org.apache.beam.sdk.transforms.CombineTest.BasicTests.testBinaryCombinePerKeyLambda",,,,10,0.10,1,,,5,0
+Lambda Method,"org.apache.beam.sdk.transforms.CombineTest.BasicTests.testBinaryCombinePerKeyLambda.(lambda_expr_1)",,,,1,0.00,0,,,1,0
+Public Method,"org.apache.beam.sdk.transforms.CombineTest.BasicTests.testCombineGetName",,,,11,0.00,0,,,8,0
+Public Method,"org.apache.beam.sdk.transforms.CombineTest.BasicTests.testCombinePerKeyInstanceMethodReference",,,,10,0.10,1,,,5,0
+Public Method,"org.apache.beam.sdk.transforms.CombineTest.BasicTests.testCombinePerKeyLambda",,,,18,0.06,1,,,12,1
+Lambda Method,"org.apache.beam.sdk.transforms.CombineTest.BasicTests.testCombinePerKeyLambda.(lambda_expr_1)",,,,7,0.00,0,,,5,0
+Public Method,"org.apache.beam.sdk.transforms.CombineTest.BasicTests.testCombinerNames",,,,11,0.00,0,,,8,0
+Public Method,"org.apache.beam.sdk.transforms.CombineTest.BasicTests.testHotKeyCombining",,,,31,0.00,0,,,22,0
+Public Method,"org.apache.beam.sdk.transforms.CombineTest.BasicTests.testHotKeyCombiningWithAccumulationMode",,,,21,0.00,0,,,16,0
+Lambda Method,"org.apache.beam.sdk.transforms.CombineTest.BasicTests.testHotKeyCombiningWithAccumulationMode.(lambda_expr_1)",,,,4,0.00,0,,,3,0
+Public Method,"org.apache.beam.sdk.transforms.CombineTest.BasicTests.testLambdaDisplayData",,,,6,0.00,0,,,3,0
+Lambda Method,"org.apache.beam.sdk.transforms.CombineTest.BasicTests.testLambdaDisplayData.(lambda_expr_1)",,,,1,0.00,0,,,1,0
+Public Method,"org.apache.beam.sdk.transforms.CombineTest.BasicTests.testLambdaSerialization",,,,17,0.41,7,,,11,1
+Lambda Method,"org.apache.beam.sdk.transforms.CombineTest.BasicTests.testLambdaSerialization.(lambda_expr_1)",,,,1,0.00,0,,,1,0
+Public Method,"org.apache.beam.sdk.transforms.CombineTest.BasicTests.testSimpleCombine",,,,12,0.08,1,,,4,0
+Public Method,"org.apache.beam.sdk.transforms.CombineTest.BasicTests.testSimpleCombineEmpty",,,,5,0.00,0,,,1,0
+Public Static Class,"org.apache.beam.sdk.transforms.CombineTest.CombineWithContextTests",1,1,13,41,0.05,2,,3,19,0
+Public Method,"org.apache.beam.sdk.transforms.CombineTest.CombineWithContextTests.testHotKeyCombineWithSideInputs",,,,20,0.00,0,,,13,0
+Public Method,"org.apache.beam.sdk.transforms.CombineTest.CombineWithContextTests.testSimpleCombineWithContext",,,,13,0.08,1,,,5,0
+Public Method,"org.apache.beam.sdk.transforms.CombineTest.CombineWithContextTests.testSimpleCombineWithContextEmpty",,,,5,0.00,0,,,1,0
+Public Static Abstract Class,"org.apache.beam.sdk.transforms.CombineTest.SharedTestBase",1,1,14,425,0.06,26,,5,192,0
+Lambda Method,"org.apache.beam.sdk.transforms.CombineTest.SharedTestBase.(lambda_expr_1)",,,,1,0.00,0,,,1,0
+Lambda Method,"org.apache.beam.sdk.transforms.CombineTest.SharedTestBase.(lambda_expr_2)",,,,1,0.00,0,,,1,0
+Protected Static Class,"org.apache.beam.sdk.transforms.CombineTest.SharedTestBase.FormatPaneInfo",1,1,4,6,0.17,1,,1,1,0
+Public Method,"org.apache.beam.sdk.transforms.CombineTest.SharedTestBase.FormatPaneInfo.processElement",,,,4,0.00,0,,,1,0
+Protected Static Class,"org.apache.beam.sdk.transforms.CombineTest.SharedTestBase.GetLast",2,2,6,8,0.13,1,,1,2,1
+Public Method,"org.apache.beam.sdk.transforms.CombineTest.SharedTestBase.GetLast.processElement",,,,6,0.00,0,,,2,1
+Protected Static Class,"org.apache.beam.sdk.transforms.CombineTest.SharedTestBase.MeanInts",1,1,5,81,0.02,2,,2,29,0
+Static Class,"org.apache.beam.sdk.transforms.CombineTest.SharedTestBase.MeanInts.CountSum",1,3,5,42,0.00,0,,7,17,1
+Constructor,"org.apache.beam.sdk.transforms.CombineTest.SharedTestBase.MeanInts.CountSum.CountSum",,,,4,0.00,0,,,2,0
+Public Method,"org.apache.beam.sdk.transforms.CombineTest.SharedTestBase.MeanInts.CountSum.addInput",,,,5,0.00,0,,,2,0
+Public Method,"org.apache.beam.sdk.transforms.CombineTest.SharedTestBase.MeanInts.CountSum.equals",,,,11,0.00,0,,,6,1
+Public Method,"org.apache.beam.sdk.transforms.CombineTest.SharedTestBase.MeanInts.CountSum.extractOutput",,,,4,0.00,0,,,1,0
+Public Method,"org.apache.beam.sdk.transforms.CombineTest.SharedTestBase.MeanInts.CountSum.hashCode",,,,4,0.00,0,,,1,0
+Public Method,"org.apache.beam.sdk.transforms.CombineTest.SharedTestBase.MeanInts.CountSum.mergeAccumulator",,,,5,0.00,0,,,2,0
+Public Method,"org.apache.beam.sdk.transforms.CombineTest.SharedTestBase.MeanInts.CountSum.toString",,,,4,0.00,0,,,1,0
+Private Static Class,"org.apache.beam.sdk.transforms.CombineTest.SharedTestBase.MeanInts.CountSumCoder",1,1,5,25,0.04,1,,5,8,0
+Public Method,"org.apache.beam.sdk.transforms.CombineTest.SharedTestBase.MeanInts.CountSumCoder.decode",,,,6,0.00,0,,,3,0
+Public Method,"org.apache.beam.sdk.transforms.CombineTest.SharedTestBase.MeanInts.CountSumCoder.encode",,,,5,0.00,0,,,2,0
+Public Method,"org.apache.beam.sdk.transforms.CombineTest.SharedTestBase.MeanInts.CountSumCoder.isRegisterByteSizeObserverCheap",,,,4,0.00,0,,,1,0
+Public Method,"org.apache.beam.sdk.transforms.CombineTest.SharedTestBase.MeanInts.CountSumCoder.registerByteSizeObserver",,,,6,0.00,0,,,2,0
+Public Method,"org.apache.beam.sdk.transforms.CombineTest.SharedTestBase.MeanInts.CountSumCoder.verifyDeterministic",,,,2,0.00,0,,,0,0
+Public Method,"org.apache.beam.sdk.transforms.CombineTest.SharedTestBase.MeanInts.createAccumulator",,,,4,0.00,0,,,1,0
+Public Method,"org.apache.beam.sdk.transforms.CombineTest.SharedTestBase.MeanInts.getAccumulatorCoder",,,,5,0.00,0,,,1,0
+Protected Static Final Class,"org.apache.beam.sdk.transforms.CombineTest.SharedTestBase.NullCombiner",3,3,4,6,0.17,1,,1,1,0
+Public Method,"org.apache.beam.sdk.transforms.CombineTest.SharedTestBase.NullCombiner.apply",,,,4,0.00,0,,,1,0
+Public Static Class,"org.apache.beam.sdk.transforms.CombineTest.SharedTestBase.SumInts",2,2,8,10,0.10,1,,1,4,1
+Public Method,"org.apache.beam.sdk.transforms.CombineTest.SharedTestBase.SumInts.apply",,,,8,0.00,0,,,4,1
+Protected Static Class,"org.apache.beam.sdk.transforms.CombineTest.SharedTestBase.Summer",2,2,5,12,0.08,1,,2,5,1
+Public Method,"org.apache.beam.sdk.transforms.CombineTest.SharedTestBase.Summer.add",,,,3,0.00,0,,,1,0
+Public Method,"org.apache.beam.sdk.transforms.CombineTest.SharedTestBase.Summer.sum",,,,7,0.00,0,,,4,1
+Public Static Class,"org.apache.beam.sdk.transforms.CombineTest.SharedTestBase.TestCombineFn",1,3,9,69,0.07,5,,5,37,2
+Static Class,"org.apache.beam.sdk.transforms.CombineTest.SharedTestBase.TestCombineFn.Accumulator",1,1,10,23,0.00,0,,2,13,0
+Public Constructor,"org.apache.beam.sdk.transforms.CombineTest.SharedTestBase.TestCombineFn.Accumulator.Accumulator",,,,4,0.00,0,,,2,0
+Public Static Method,"org.apache.beam.sdk.transforms.CombineTest.SharedTestBase.TestCombineFn.Accumulator.getCoder",,,,15,0.00,0,,,11,0
+Anonymous Class,"org.apache.beam.sdk.transforms.CombineTest.SharedTestBase.TestCombineFn.Accumulator.getCoder.(Anon_1)",1,1,6,12,0.00,0,,2,10,0
+Public Method,"org.apache.beam.sdk.transforms.CombineTest.SharedTestBase.TestCombineFn.Accumulator.getCoder.(Anon_1).decode",,,,6,0.00,0,,,5,0
+Public Method,"org.apache.beam.sdk.transforms.CombineTest.SharedTestBase.TestCombineFn.Accumulator.getCoder.(Anon_1).encode",,,,5,0.00,0,,,4,0
+Public Method,"org.apache.beam.sdk.transforms.CombineTest.SharedTestBase.TestCombineFn.addInput",,,,8,0.00,0,,,4,1
+Public Method,"org.apache.beam.sdk.transforms.CombineTest.SharedTestBase.TestCombineFn.createAccumulator",,,,4,0.00,0,,,1,0
+Public Method,"org.apache.beam.sdk.transforms.CombineTest.SharedTestBase.TestCombineFn.extractOutput",,,,6,0.00,0,,,3,0
+Public Method,"org.apache.beam.sdk.transforms.CombineTest.SharedTestBase.TestCombineFn.getAccumulatorCoder",,,,5,0.00,0,,,1,0
+Public Method,"org.apache.beam.sdk.transforms.CombineTest.SharedTestBase.TestCombineFn.mergeAccumulators",,,,20,0.00,0,,,15,2
+Public Static Class,"org.apache.beam.sdk.transforms.CombineTest.SharedTestBase.TestCombineFnWithContext",1,2,8,53,0.08,4,,6,27,1
+Public Constructor,"org.apache.beam.sdk.transforms.CombineTest.SharedTestBase.TestCombineFnWithContext.TestCombineFnWithContext",,,,3,0.00,0,,,1,0
+Public Method,"org.apache.beam.sdk.transforms.CombineTest.SharedTestBase.TestCombineFnWithContext.addInput",,,,14,0.00,0,,,9,1
+Public Method,"org.apache.beam.sdk.transforms.CombineTest.SharedTestBase.TestCombineFnWithContext.createAccumulator",,,,5,0.00,0,,,2,0
+Public Method,"org.apache.beam.sdk.transforms.CombineTest.SharedTestBase.TestCombineFnWithContext.extractOutput",,,,7,0.00,0,,,4,0
+Public Method,"org.apache.beam.sdk.transforms.CombineTest.SharedTestBase.TestCombineFnWithContext.getAccumulatorCoder",,,,5,0.00,0,,,1,0
+Public Method,"org.apache.beam.sdk.transforms.CombineTest.SharedTestBase.TestCombineFnWithContext.mergeAccumulators",,,,15,0.00,0,,,10,1
+Public Static Class,"org.apache.beam.sdk.transforms.CombineTest.SharedTestBase.TestCounter",1,1,4,64,0.06,4,,2,30,0
+Public Static Class,"org.apache.beam.sdk.transforms.CombineTest.SharedTestBase.TestCounter.Counter",1,2,6,53,0.02,1,,7,28,1
+Public Constructor,"org.apache.beam.sdk.transforms.CombineTest.SharedTestBase.TestCounter.Counter.Counter",,,,6,0.00,0,,,4,0
+Public Method,"org.apache.beam.sdk.transforms.CombineTest.SharedTestBase.TestCounter.Counter.addInput",,,,7,0.00,0,,,4,0
+Public Method,"org.apache.beam.sdk.transforms.CombineTest.SharedTestBase.TestCounter.Counter.equals",,,,11,0.00,0,,,7,1
+Public Method,"org.apache.beam.sdk.transforms.CombineTest.SharedTestBase.TestCounter.Counter.extractOutput",,,,5,0.00,0,,,2,0
+Public Method,"org.apache.beam.sdk.transforms.CombineTest.SharedTestBase.TestCounter.Counter.hashCode",,,,4,0.00,0,,,1,0
+Public Method,"org.apache.beam.sdk.transforms.CombineTest.SharedTestBase.TestCounter.Counter.mergeAccumulator",,,,8,0.00,0,,,5,0
+Public Method,"org.apache.beam.sdk.transforms.CombineTest.SharedTestBase.TestCounter.Counter.toString",,,,4,0.00,0,,,1,0
+Public Method,"org.apache.beam.sdk.transforms.CombineTest.SharedTestBase.TestCounter.createAccumulator",,,,4,0.00,0,,,1,0
+Public Method,"org.apache.beam.sdk.transforms.CombineTest.SharedTestBase.TestCounter.getAccumulatorCoder",,,,4,0.50,2,,,1,0
+Protected Static Final Class,"org.apache.beam.sdk.transforms.CombineTest.SharedTestBase.TestProdInt",1,1,4,10,0.10,1,,2,2,0
+Public Method,"org.apache.beam.sdk.transforms.CombineTest.SharedTestBase.TestProdInt.apply",,,,4,0.00,0,,,1,0
+Public Method,"org.apache.beam.sdk.transforms.CombineTest.SharedTestBase.TestProdInt.identity",,,,4,0.00,0,,,1,0
+Protected Static Final Class,"org.apache.beam.sdk.transforms.CombineTest.SharedTestBase.TestProdObj",1,1,4,6,0.17,1,,1,1,0
+Public Method,"org.apache.beam.sdk.transforms.CombineTest.SharedTestBase.TestProdObj.apply",,,,4,0.00,0,,,1,0
+Public Static Class,"org.apache.beam.sdk.transforms.CombineTest.SharedTestBase.UniqueInts",1,2,5,23,0.04,1,,4,8,1
+Public Method,"org.apache.beam.sdk.transforms.CombineTest.SharedTestBase.UniqueInts.addInput",,,,5,0.00,0,,,2,0
+Public Method,"org.apache.beam.sdk.transforms.CombineTest.SharedTestBase.UniqueInts.createAccumulator",,,,4,0.00,0,,,1,0
+Public Method,"org.apache.beam.sdk.transforms.CombineTest.SharedTestBase.UniqueInts.extractOutput",,,,4,0.00,0,,,1,0
+Public Method,"org.apache.beam.sdk.transforms.CombineTest.SharedTestBase.UniqueInts.mergeAccumulators",,,,8,0.00,0,,,4,1
+Protected Static Generic Method,"org.apache.beam.sdk.transforms.CombineTest.SharedTestBase.copy",,,,12,0.00,0,,,8,0
+Anonymous Class,"org.apache.beam.sdk.transforms.CombineTest.SharedTestBase.copy.(Anon_2)",2,2,6,7,0.00,0,,1,5,1
+Public Method,"org.apache.beam.sdk.transforms.CombineTest.SharedTestBase.copy.(Anon_2).processElement",,,,6,0.00,0,,,4,1
+Generic Parameter,"org.apache.beam.sdk.transforms.CombineTest.SharedTestBase.copy.T",0,0,0,,,,,0,,0
+Protected Method,"org.apache.beam.sdk.transforms.CombineTest.SharedTestBase.runTestAccumulatingCombine",,,,10,0.00,0,,,6,0
+Protected Method,"org.apache.beam.sdk.transforms.CombineTest.SharedTestBase.runTestBasicCombine",,,,14,0.00,0,,,6,0
+Protected Method,"org.apache.beam.sdk.transforms.CombineTest.SharedTestBase.runTestSimpleCombine",,,,10,0.00,0,,,6,0
+Protected Method,"org.apache.beam.sdk.transforms.CombineTest.SharedTestBase.runTestSimpleCombineWithContext",,,,23,0.00,0,,,15,0
+Public Static Class,"org.apache.beam.sdk.transforms.CombineTest.WindowingTests",1,1,28,341,0.03,9,,12,255,1
+Public Method,"org.apache.beam.sdk.transforms.CombineTest.WindowingTests.testCombineGloballyAsSingletonView",,,,23,0.00,0,,,16,0
+Anonymous Class,"org.apache.beam.sdk.transforms.CombineTest.WindowingTests.testCombineGloballyAsSingletonView.(Anon_4)",1,1,4,5,0.00,0,,1,4,0
+Public Method,"org.apache.beam.sdk.transforms.CombineTest.WindowingTests.testCombineGloballyAsSingletonView.(Anon_4).processElement",,,,4,0.00,0,,,3,0
+Public Method,"org.apache.beam.sdk.transforms.CombineTest.WindowingTests.testCombineGloballyInstanceMethodReference",,,,8,0.13,1,,,3,0
+Public Method,"org.apache.beam.sdk.transforms.CombineTest.WindowingTests.testCombineGloballyLambda",,,,18,0.06,1,,,12,1
+Lambda Method,"org.apache.beam.sdk.transforms.CombineTest.WindowingTests.testCombineGloballyLambda.(lambda_expr_1)",,,,7,0.00,0,,,5,0
+Public Method,"org.apache.beam.sdk.transforms.CombineTest.WindowingTests.testFixedWindowsCombine",,,,23,0.00,0,,,17,0
+Public Method,"org.apache.beam.sdk.transforms.CombineTest.WindowingTests.testFixedWindowsCombineWithContext",,,,35,0.00,0,,,27,0
+Public Method,"org.apache.beam.sdk.transforms.CombineTest.WindowingTests.testGlobalCombineWithDefaultsAndTriggers",,,,21,0.10,2,,,16,0
+Lambda Method,"org.apache.beam.sdk.transforms.CombineTest.WindowingTests.testGlobalCombineWithDefaultsAndTriggers.(lambda_expr_1)",,,,4,0.00,0,,,3,0
+Public Method,"org.apache.beam.sdk.transforms.CombineTest.WindowingTests.testSessionsCombine",,,,22,0.00,0,,,16,0
+Public Method,"org.apache.beam.sdk.transforms.CombineTest.WindowingTests.testSessionsCombineWithContext",,,,44,0.00,0,,,35,0
+Public Method,"org.apache.beam.sdk.transforms.CombineTest.WindowingTests.testSlidingWindowsCombine",,,,50,0.06,3,,,39,0
+Anonymous Class,"org.apache.beam.sdk.transforms.CombineTest.WindowingTests.testSlidingWindowsCombine.(Anon_3)",1,2,6,25,0.12,3,,4,20,1
+Public Method,"org.apache.beam.sdk.transforms.CombineTest.WindowingTests.testSlidingWindowsCombine.(Anon_3).addInput",,,,5,0.00,0,,,4,0
+Public Method,"org.apache.beam.sdk.transforms.CombineTest.WindowingTests.testSlidingWindowsCombine.(Anon_3).createAccumulator",,,,4,0.00,0,,,3,0
+Public Method,"org.apache.beam.sdk.transforms.CombineTest.WindowingTests.testSlidingWindowsCombine.(Anon_3).extractOutput",,,,6,0.00,0,,,5,0
+Public Method,"org.apache.beam.sdk.transforms.CombineTest.WindowingTests.testSlidingWindowsCombine.(Anon_3).mergeAccumulators",,,,9,0.33,3,,,7,1
+Public Method,"org.apache.beam.sdk.transforms.CombineTest.WindowingTests.testSlidingWindowsCombineWithContext",,,,43,0.02,1,,,35,0
+Public Method,"org.apache.beam.sdk.transforms.CombineTest.WindowingTests.testWindowedCombineEmpty",,,,11,0.00,0,,,6,0
+Public Method,"org.apache.beam.sdk.transforms.CombineTest.WindowingTests.testWindowedCombineGloballyAsSingletonView",,,,40,0.00,0,,,33,0
+Anonymous Class,"org.apache.beam.sdk.transforms.CombineTest.WindowingTests.testWindowedCombineGloballyAsSingletonView.(Anon_5)",1,1,4,5,0.00,0,,1,4,0
+Public Method,"org.apache.beam.sdk.transforms.CombineTest.WindowingTests.testWindowedCombineGloballyAsSingletonView.(Anon_5).processElement",,,,4,0.00,0,,,3,0
+Private Static Method,"org.apache.beam.sdk.transforms.CombineTest.createInput",,,,5,0.00,0,,,2,0
 Public Class,"org.apache.beam.sdk.transforms.Flatten",1,1,3,68,0.93,63,,2,41,0
 Public Static Generic Class,"org.apache.beam.sdk.transforms.Flatten.Iterables",2,2,11,24,0.33,8,,2,14,1
 Private Constructor,"org.apache.beam.sdk.transforms.Flatten.Iterables.Iterables",,,,1,0.00,0,,,0,0
@@ -3006,13 +3688,50 @@ Public Method,"org.apache.beam.sdk.transforms.FlattenTest.testFlattenNoListsNoCo
 Public Method,"org.apache.beam.sdk.transforms.FlattenTest.testFlattenPCollectionsEmpty",,,,10,0.00,0,,,5,0
 Public Method,"org.apache.beam.sdk.transforms.FlattenTest.testFlattenPCollectionsEmptyThenParDo",,,,11,0.00,0,,,6,0
 Public Method,"org.apache.beam.sdk.transforms.FlattenTest.testIncompatibleWindowFnPropagationFailure",,,,17,0.00,0,,,11,1
+Public Static Generic Class,"org.apache.beam.sdk.transforms.Globally",1,5,7,111,0.61,68,,14,56,2
+Private Constructor,"org.apache.beam.sdk.transforms.Globally.Globally",,,,12,0.00,0,,,5,0
+Generic Parameter,"org.apache.beam.sdk.transforms.Globally.InputT",0,0,0,,,,,0,,0
+Generic Parameter,"org.apache.beam.sdk.transforms.Globally.OutputT",0,0,0,,,,,0,,0
+Public Method,"org.apache.beam.sdk.transforms.Globally.asSingletonView",,,,3,2.00,6,,,1,0
+Public Method,"org.apache.beam.sdk.transforms.Globally.expand",,,,26,0.00,0,,,17,2
+Public Method,"org.apache.beam.sdk.transforms.Globally.getAdditionalInputs",,,,4,1.25,5,,,1,0
+Public Method,"org.apache.beam.sdk.transforms.Globally.getFn",,,,3,0.33,1,,,1,0
+Protected Method,"org.apache.beam.sdk.transforms.Globally.getKindString",,,,4,0.00,0,,,1,0
+Public Method,"org.apache.beam.sdk.transforms.Globally.getSideInputs",,,,3,0.33,1,,,1,0
+Private Method,"org.apache.beam.sdk.transforms.Globally.insertDefaultValueIfEmpty",,,,24,0.00,0,,,19,0
+Anonymous Class,"org.apache.beam.sdk.transforms.Globally.insertDefaultValueIfEmpty.(Anon_4)",2,2,7,8,0.00,0,,1,6,1
+Public Method,"org.apache.beam.sdk.transforms.Globally.insertDefaultValueIfEmpty.(Anon_4).processElement",,,,7,0.00,0,,,5,1
+Public Method,"org.apache.beam.sdk.transforms.Globally.isInsertDefault",,,,3,0.33,1,,,1,0
+Public Method,"org.apache.beam.sdk.transforms.Globally.populateDisplayData",,,,6,0.00,0,,,3,0
+Public Method,"org.apache.beam.sdk.transforms.Globally.withFanout",,,,3,2.00,6,,,1,0
+Public Method,"org.apache.beam.sdk.transforms.Globally.withSideInputs",,,,3,1.33,4,,,1,0
+Public Method,"org.apache.beam.sdk.transforms.Globally.withSideInputs",,,,6,0.67,4,,,3,0
+Public Method,"org.apache.beam.sdk.transforms.Globally.withoutDefaults",,,,3,1.67,5,,,1,0
+Public Static Generic Class,"org.apache.beam.sdk.transforms.Holder",1,1,3,16,0.31,5,,4,4,0
+Private Constructor,"org.apache.beam.sdk.transforms.Holder.Holder",,,,1,0.00,0,,,0,0
+Private Constructor,"org.apache.beam.sdk.transforms.Holder.Holder",,,,3,0.00,0,,,1,0
+Generic Parameter,"org.apache.beam.sdk.transforms.Holder.V",0,0,0,,,,,0,,0
+Private Method,"org.apache.beam.sdk.transforms.Holder.set",,,,4,0.00,0,,,2,0
+Public Method,"org.apache.beam.sdk.transforms.Holder.toString",,,,4,0.00,0,,,1,0
+Private Static Generic Class,"org.apache.beam.sdk.transforms.HolderCoder",1,2,6,42,0.02,1,,7,14,1
+Public Constructor,"org.apache.beam.sdk.transforms.HolderCoder.HolderCoder",,,,3,0.00,0,,,1,0
+Generic Parameter,"org.apache.beam.sdk.transforms.HolderCoder.V",0,0,0,,,,,0,,0
+Public Method,"org.apache.beam.sdk.transforms.HolderCoder.decode",,,,4,0.00,0,,,1,0
+Public Method,"org.apache.beam.sdk.transforms.HolderCoder.decode",,,,9,0.00,0,,,4,1
+Public Method,"org.apache.beam.sdk.transforms.HolderCoder.encode",,,,5,0.00,0,,,1,0
+Public Method,"org.apache.beam.sdk.transforms.HolderCoder.encode",,,,10,0.00,0,,,5,1
+Public Method,"org.apache.beam.sdk.transforms.HolderCoder.getCoderArguments",,,,4,0.00,0,,,1,0
+Public Method,"org.apache.beam.sdk.transforms.HolderCoder.verifyDeterministic",,,,4,0.00,0,,,1,0
 Package,"org.apache.beam.sdk.transforms.errorhandling",2,2,8,35,0.49,17,3,2,7,1
 Public Class,"org.apache.beam.sdk.transforms.errorhandling.ErrorHandlingTestUtils",0,0,0,23,0.00,0,,0,7,0
 Public Static Class,"org.apache.beam.sdk.transforms.errorhandling.ErrorHandlingTestUtils.EchoErrorTransform",1,1,4,7,0.00,0,,1,1,0
 Public Method,"org.apache.beam.sdk.transforms.errorhandling.ErrorHandlingTestUtils.EchoErrorTransform.expand",,,,4,0.00,0,,,1,0
 Public Static Class,"org.apache.beam.sdk.transforms.errorhandling.ErrorHandlingTestUtils.ErrorSinkTransform",2,2,11,14,0.00,0,,1,6,1
 Public Method,"org.apache.beam.sdk.transforms.errorhandling.ErrorHandlingTestUtils.ErrorSinkTransform.expand",,,,11,0.00,0,,,6,1
-Package,"org.apache.beam.sdk.transforms.windowing",1,8,7,585,0.68,397,16,79,256,2
+Package,"org.apache.beam.sdk.transforms.windowing",1,8,7,617,0.64,397,17,80,256,2
+Final Generic Class,"org.apache.beam.sdk.transforms.windowing.AutoValue_Window",1,1,8,25,0.00,0,,1,0,0
+Private Constructor,"org.apache.beam.sdk.transforms.windowing.AutoValue_Window.AutoValue_Window",,,,8,0.00,0,,,0,0
+Generic Parameter,"org.apache.beam.sdk.transforms.windowing.AutoValue_Window.T",0,0,0,,,,,0,,0
 Public Abstract Class,"org.apache.beam.sdk.transforms.windowing.Trigger",2,7,8,98,1.09,107,,12,43,2
 Public Static Abstract Class,"org.apache.beam.sdk.transforms.windowing.Trigger.OnceTrigger",1,2,5,18,0.33,6,,3,6,1
 Protected Constructor,"org.apache.beam.sdk.transforms.windowing.Trigger.OnceTrigger.OnceTrigger",,,,3,0.00,0,,,1,0
@@ -3121,10 +3840,7 @@ Unknown Annotation,"org.checkerframework.checker.nullness.qual.NonNull",,,,,0.00
 Unknown Annotation,"org.checkerframework.checker.nullness.qual.Nullable",,,,,0.00,,,,,
 Unknown Annotation,"org.checkerframework.dataflow.qual.Pure",,,,,0.00,,,,,
 Unknown Annotation,"org.junit.After",,,,,0.00,,,,,
-Unknown Annotation,"org.junit.AfterClass",,,,,0.00,,,,,
 Unknown Annotation,"org.junit.Before",,,,,0.00,,,,,
-Unknown Annotation,"org.junit.BeforeClass",,,,,0.00,,,,,
-Unknown Annotation,"org.junit.ClassRule",,,,,0.00,,,,,
 Unknown Annotation,"org.junit.Rule",,,,,0.00,,,,,
 Unknown Annotation,"org.junit.Test",,,,,0.00,,,,,
 Unknown Annotation,"org.junit.experimental.categories.Category",,,,,0.00,,,,,
