@@ -295,7 +295,7 @@
 			    <artifactId>maven-surefire-plugin</artifactId>
 			    <version>3.5.1</version> <!-- Make sure this is the latest version -->
 			    <configuration>
-			        <argLine>--add-opens java.base/java.lang=ALL-UNNAMED</argLine>
+        			<argLine>--add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/java.lang.reflect=ALL-UNNAMED</argLine>
 			    </configuration>
 			</plugin>
         </plugins>
