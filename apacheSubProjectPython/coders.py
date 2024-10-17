@@ -69,11 +69,10 @@ if TYPE_CHECKING:
   from apache_beam.coders.typecoders import CoderRegistry
   from apache_beam.runners.pipeline_context import PipelineContext
 
-# pylint: disable=wrong-import-order, wrong-import-position, ungrouped-imports
 try:
-  from .stream import get_varint_size
+  from apache_beam.coders.stream import get_varint_size
 except ImportError:
-  from .slow_stream import get_varint_size
+  from apache_beam.coders.slow_stream import get_varint_size
 # pylint: enable=wrong-import-order, wrong-import-position, ungrouped-imports
 
 # pylint: disable=wrong-import-order, wrong-import-position

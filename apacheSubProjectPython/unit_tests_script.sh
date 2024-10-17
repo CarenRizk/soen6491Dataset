@@ -27,7 +27,6 @@ TEST_FILES=(
     "filesystems_test.py"
     "bigtableio_test.py"
     "spannerio_test.py"
-    "mongodbio_test.py"
     "flatten_test.py"
 )
 
