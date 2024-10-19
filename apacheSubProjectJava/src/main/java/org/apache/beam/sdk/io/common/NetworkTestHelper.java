@@ -24,7 +24,7 @@ import java.net.ServerSocket;
 public class NetworkTestHelper {
   /** @return Next available port in local interface */
   public static synchronized int getAvailableLocalPort() throws IOException {
-    try (ServerSocket socket = new ServerSocket(0); ) {
+    try (ServerSocket socket = new ServerSocket(0)) {
       return socket.getLocalPort();
     }
   }

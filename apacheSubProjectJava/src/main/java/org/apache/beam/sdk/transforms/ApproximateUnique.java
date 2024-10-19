@@ -23,7 +23,6 @@ import java.util.Iterator;
 import java.util.TreeSet;
 import org.apache.beam.sdk.coders.Coder;
 import org.apache.beam.sdk.coders.Coder.Context;
-import org.apache.beam.sdk.coders.CoderException;
 import org.apache.beam.sdk.coders.CoderRegistry;
 import org.apache.beam.sdk.coders.KvCoder;
 import org.apache.beam.sdk.coders.SerializableCoder;
@@ -296,7 +295,7 @@ public class ApproximateUnique {
 
     /** A heap utility class to efficiently track the largest added elements. */
     public static class LargestUnique implements Serializable {
-      private TreeSet<Long> heap = new TreeSet<>();
+      private final TreeSet<Long> heap = new TreeSet<>();
       private long minHash = Long.MAX_VALUE;
       private final long sampleSize;
 
@@ -312,9 +311,9 @@ public class ApproximateUnique {
       /**
        * Adds a value to the heap, returning whether the value is (large enough to be) in the heap.
        */
-      public boolean add(long value) {
+      public void add(long value) {
         if (heap.size() >= sampleSize && value < minHash) {
-          return false; // Common case as input size increases.
+          return; // Common case as input size increases.
         }
         if (heap.add(value)) {
           if (heap.size() > sampleSize) {
@@ -324,12 +323,11 @@ public class ApproximateUnique {
             minHash = value;
           }
         }
-        return true;
       }
 
       long getEstimate() {
         if (heap.size() < sampleSize) {
-          return (long) heap.size();
+          return heap.size();
         } else {
           double sampleSpaceSize = Long.MAX_VALUE - (double) minHash;
           // This formula takes into account the possibility of hash collisions,
@@ -410,7 +408,7 @@ public class ApproximateUnique {
     }
 
     /** Encodes the given element using the given coder and hashes the encoding. */
-    static <T> long hash(T element, Coder<T> coder) throws CoderException, IOException {
+    static <T> long hash(T element, Coder<T> coder) throws IOException {
       try (HashingOutputStream stream =
           new HashingOutputStream(Hashing.murmur3_128(), ByteStreams.nullOutputStream())) {
         coder.encode(element, stream, Context.OUTER);

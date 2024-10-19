@@ -3,7 +3,6 @@ package org.apache.beam.runners.dataflow;
 import java.util.Map;
 
 import org.apache.beam.sdk.io.Read;
-import org.apache.beam.sdk.io.Read.Unbounded;
 import org.apache.beam.sdk.runners.AppliedPTransform;
 import org.apache.beam.sdk.runners.PTransformOverrideFactory;
 import org.apache.beam.sdk.runners.PTransformOverrideFactory.PTransformReplacement;

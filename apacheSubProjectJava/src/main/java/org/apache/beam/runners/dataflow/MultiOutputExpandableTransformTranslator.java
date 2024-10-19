@@ -5,7 +5,6 @@ import java.util.Map;
 import org.apache.beam.runners.dataflow.TransformTranslator.StepTranslationContext;
 import org.apache.beam.runners.dataflow.TransformTranslator.TranslationContext;
 import org.apache.beam.sdk.util.construction.External;
-import org.apache.beam.sdk.util.construction.External.MultiOutputExpandableTransform;
 import org.apache.beam.sdk.values.PCollection;
 import org.apache.beam.sdk.values.TupleTag;
 

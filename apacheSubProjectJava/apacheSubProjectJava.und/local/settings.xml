@@ -25,7 +25,53 @@
                     <dir
                       name="dataflow">
                       <auto
+                        name="AlwaysCreateViaRead.java"/>
+                      <auto
+                        name="CombineGloballyAsSingletonViewOverrideFactory.java"/>
+                      <auto
+                        name="CombineGroupedValues.java"/>
+                      <auto
                         name="DataflowRunner.java"/>
+                      <auto
+                        name="Deduplicate.java"/>
+                      <auto
+                        name="IdentityMessageFn.java"/>
+                      <auto
+                        name="ImpulseTranslator.java"/>
+                      <auto
+                        name="MultiOutputExpandableTransformTranslator.java"/>
+                      <auto
+                        name="PrimitiveCombineGroupedValuesOverrideFactory.java"/>
+                      <auto
+                        name="ReflectiveOneToOneOverrideFactory.java"/>
+                      <auto
+                        name="ReflectiveViewOverrideFactory.java"/>
+                      <auto
+                        name="SingleOutputExpandableTransformTranslator.java"/>
+                      <auto
+                        name="StreamingBoundedRead.java"/>
+                      <auto
+                        name="StreamingBoundedReadOverrideFactory.java"/>
+                      <auto
+                        name="StreamingPCollectionViewWriterFn.java"/>
+                      <auto
+                        name="StreamingPubsubIORead.java"/>
+                      <auto
+                        name="StreamingPubsubIOReadOverrideFactory.java"/>
+                      <auto
+                        name="StreamingPubsubIOReadTranslator.java"/>
+                      <auto
+                        name="StreamingPubsubIOWrite.java"/>
+                      <auto
+                        name="StreamingPubsubIOWriteOverrideFactory.java"/>
+                      <auto
+                        name="StreamingPubsubSinkTranslators.java"/>
+                      <auto
+                        name="StreamingShardedWriteFactory.java"/>
+                      <auto
+                        name="StreamingUnboundedRead.java"/>
+                      <auto
+                        name="StreamingUnboundedReadOverrideFactory.java"/>
                     </dir>
                     <dir
                       name="direct">

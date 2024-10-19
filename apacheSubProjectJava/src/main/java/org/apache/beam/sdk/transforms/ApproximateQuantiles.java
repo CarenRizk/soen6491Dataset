@@ -35,7 +35,6 @@ import java.util.Objects;
 import java.util.PriorityQueue;
 import org.apache.beam.sdk.coders.BigEndianIntegerCoder;
 import org.apache.beam.sdk.coders.Coder;
-import org.apache.beam.sdk.coders.CoderException;
 import org.apache.beam.sdk.coders.CoderRegistry;
 import org.apache.beam.sdk.coders.CustomCoder;
 import org.apache.beam.sdk.coders.ListCoder;
@@ -105,7 +104,7 @@ public class ApproximateQuantiles {
    */
   public static <T extends Comparable<T>> PTransform<PCollection<T>, PCollection<List<T>>> globally(
       int numQuantiles) {
-    return Combine.globally(ApproximateQuantilesCombineFn.<T>create(numQuantiles));
+    return Combine.globally(ApproximateQuantilesCombineFn.create(numQuantiles));
   }
 
   /**
@@ -155,7 +154,7 @@ public class ApproximateQuantiles {
    */
   public static <K, V extends Comparable<V>>
       PTransform<PCollection<KV<K, V>>, PCollection<KV<K, List<V>>>> perKey(int numQuantiles) {
-    return Combine.perKey(ApproximateQuantilesCombineFn.<V>create(numQuantiles));
+    return Combine.perKey(ApproximateQuantilesCombineFn.create(numQuantiles));
   }
 
   /////////////////////////////////////////////////////////////////////////////
@@ -270,17 +269,6 @@ public class ApproximateQuantiles {
     }
 
     /**
-     * Returns an {@code ApproximateQuantilesCombineFn} that's like this one except that it uses the
-     * specified {@code maxNumElements} value. Does not modify this combiner.
-     *
-     * <p>See {@link #create(int, Comparator, long, double)} for more information about the meaning
-     * of {@code maxNumElements}.
-     */
-    public ApproximateQuantilesCombineFn<T, ComparatorT> withMaxInputSize(long maxNumElements) {
-      return create(numQuantiles, compareFn, maxNumElements, maxNumElements);
-    }
-
-    /**
      * Creates an approximate quantiles combiner with the given {@code compareFn} and desired number
      * of quantiles. A total of {@code numQuantiles} elements will appear in the output list,
      * including the minimum and maximum.
@@ -338,17 +326,17 @@ public class ApproximateQuantiles {
   static class QuantileState<T, ComparatorT extends Comparator<T> & Serializable>
       implements Accumulator<T, QuantileState<T, ComparatorT>, List<T>> {
 
-    private ComparatorT compareFn;
-    private int numQuantiles;
-    private int numBuffers;
-    private int bufferSize;
+    private final ComparatorT compareFn;
+    private final int numQuantiles;
+    private final int numBuffers;
+    private final int bufferSize;
 
     private @Nullable T min;
 
     private @Nullable T max;
 
     /** The set of buffers, ordered by level from smallest to largest. */
-    private PriorityQueue<QuantileBuffer<T>> buffers;
+    private final PriorityQueue<QuantileBuffer<T>> buffers;
 
     /**
      * The algorithm requires that the manipulated buffers always be filled to capacity to perform
@@ -391,20 +379,6 @@ public class ApproximateQuantiles {
           numBuffers,
           bufferSize,
           Collections.emptyList(),
-          Collections.emptyList());
-    }
-
-    public static <T, ComparatorT extends Comparator<T> & Serializable>
-        QuantileState<T, ComparatorT> singleton(
-            ComparatorT compareFn, int numQuantiles, T elem, int numBuffers, int bufferSize) {
-      return new QuantileState<>(
-          compareFn,
-          numQuantiles,
-          elem, /* min */
-          elem, /* max */
-          numBuffers,
-          bufferSize,
-          Collections.singletonList(elem),
           Collections.emptyList());
     }
 
@@ -564,9 +538,9 @@ public class ApproximateQuantiles {
 
   /** A single buffer in the sense of the referenced algorithm. */
   private static class QuantileBuffer<T> {
-    private int level;
-    private long weight;
-    private List<T> elements;
+    private final int level;
+    private final long weight;
+    private final List<T> elements;
 
     public QuantileBuffer(List<T> elements) {
       this(0, 1, elements);
@@ -592,7 +566,7 @@ public class ApproximateQuantiles {
 
     public Iterator<WeightedValue<T>> sizedIterator() {
       return new UnmodifiableIterator<WeightedValue<T>>() {
-        Iterator<T> iter = elements.iterator();
+        final Iterator<T> iter = elements.iterator();
 
         @Override
         public boolean hasNext() {
@@ -623,7 +597,7 @@ public class ApproximateQuantiles {
 
     @Override
     public void encode(QuantileState<T, ComparatorT> state, OutputStream outStream)
-        throws CoderException, IOException {
+        throws IOException {
       intCoder.encode(state.numQuantiles, outStream);
       intCoder.encode(state.bufferSize, outStream);
       elementCoder.encode(state.min, outStream);
@@ -637,7 +611,7 @@ public class ApproximateQuantiles {
 
     @Override
     public QuantileState<T, ComparatorT> decode(InputStream inStream)
-        throws CoderException, IOException {
+        throws IOException {
       int numQuantiles = intCoder.decode(inStream);
       int bufferSize = intCoder.decode(inStream);
       T min = elementCoder.decode(inStream);
@@ -653,7 +627,7 @@ public class ApproximateQuantiles {
     }
 
     private void encodeBuffer(QuantileBuffer<T> buffer, OutputStream outStream)
-        throws CoderException, IOException {
+        throws IOException {
       DataOutputStream outData = new DataOutputStream(outStream);
       outData.writeInt(buffer.level);
       outData.writeLong(buffer.weight);
@@ -661,7 +635,7 @@ public class ApproximateQuantiles {
     }
 
     private QuantileBuffer<T> decodeBuffer(InputStream inStream)
-        throws IOException, CoderException {
+        throws IOException {
       DataInputStream inData = new DataInputStream(inStream);
       return new QuantileBuffer<>(
           inData.readInt(), inData.readLong(), elementListCoder.decode(inStream));

@@ -1098,11 +1098,6 @@ public class PubsubIO {
     }
 
     @VisibleForTesting
-    /**
-     * Set's the internal Clock.
-     *
-     * <p>Only for use by unit tests.
-     */
     Read<T> withClock(Clock clock) {
       return toBuilder().setClock(clock).build();
     }
@@ -1580,7 +1575,7 @@ public class PubsubIO {
      */
     public class PubsubBoundedWriter extends DoFn<PubsubMessage, Void> {
       private class OutgoingData {
-        List<OutgoingMessage> messages;
+        final List<OutgoingMessage> messages;
         long bytes;
 
         OutgoingData() {
@@ -1593,8 +1588,8 @@ public class PubsubIO {
 
       private transient PubsubClient pubsubClient;
 
-      private int maxPublishBatchByteSize;
-      private int maxPublishBatchSize;
+      private final int maxPublishBatchByteSize;
+      private final int maxPublishBatchSize;
 
       PubsubBoundedWriter(int maxPublishBatchSize, int maxPublishBatchByteSize) {
         this.maxPublishBatchSize = maxPublishBatchSize;

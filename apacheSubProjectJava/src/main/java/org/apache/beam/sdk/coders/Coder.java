@@ -25,6 +25,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import org.apache.beam.sdk.PipelineRunner;
 import org.apache.beam.sdk.util.common.ElementByteSizeObserver;
@@ -292,7 +293,7 @@ public abstract class Coder<T> implements Serializable {
   }
 
   /** Returns the size in bytes of the encoded value using this coder. */
-  protected long getEncodedElementByteSize(T value) throws Exception {
+  protected long getEncodedElementByteSize(T value) {
     try (CountingOutputStream os = new CountingOutputStream(ByteStreams.nullOutputStream())) {
       encode(value, os);
       return os.getCount();
@@ -313,16 +314,16 @@ public abstract class Coder<T> implements Serializable {
    * including details of why the encoding is not deterministic.
    */
   public static class NonDeterministicException extends Exception {
-    private Coder<?> coder;
-    private List<String> reasons;
+    private final Coder<?> coder;
+    private final List<String> reasons;
 
     public NonDeterministicException(
         Coder<?> coder, String reason, @Nullable NonDeterministicException e) {
-      this(coder, Arrays.asList(reason), e);
+      this(coder, Collections.singletonList(reason), e);
     }
 
     public NonDeterministicException(Coder<?> coder, String reason) {
-      this(coder, Arrays.asList(reason), null);
+      this(coder, Collections.singletonList(reason), null);
     }
 
     public NonDeterministicException(Coder<?> coder, List<String> reasons) {
@@ -332,7 +333,7 @@ public abstract class Coder<T> implements Serializable {
     public NonDeterministicException(
         Coder<?> coder, List<String> reasons, @Nullable NonDeterministicException cause) {
       super(cause);
-      checkArgument(reasons.size() > 0, "Reasons must not be empty.");
+      checkArgument(!reasons.isEmpty(), "Reasons must not be empty.");
       this.reasons = reasons;
       this.coder = coder;
     }

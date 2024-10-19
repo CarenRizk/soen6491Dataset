@@ -278,6 +278,42 @@
                     "lastSelectedFilterInt": 0
                 },
                 "EditorWindowSetting": {
+                    "276096114745068d5151a2f7915ff1d2": {
+                        "anchor": {
+                            "line": 686,
+                            "offset": 0
+                        },
+                        "caret": {
+                            "line": 686,
+                            "offset": 0
+                        },
+                        "container": 1,
+                        "height": 920,
+                        "hscroll": 0,
+                        "isMaximized": false,
+                        "vscroll": 664,
+                        "width": 1392,
+                        "x": 0,
+                        "y": 0
+                    },
+                    "2fa7b063e8924eb28648aa819b8bb54c": {
+                        "anchor": {
+                            "line": 28,
+                            "offset": 11
+                        },
+                        "caret": {
+                            "line": 28,
+                            "offset": 31
+                        },
+                        "container": 1,
+                        "height": 920,
+                        "hscroll": 0,
+                        "isMaximized": false,
+                        "vscroll": 0,
+                        "width": 1392,
+                        "x": 0,
+                        "y": 0
+                    },
                     "399f1085134a6595c5cc4cb1a69bbac6": {
                         "anchor": {
                             "line": 0,
@@ -292,6 +328,24 @@
                         "hscroll": 0,
                         "isMaximized": false,
                         "vscroll": 347,
+                        "width": 1392,
+                        "x": 0,
+                        "y": 0
+                    },
+                    "4c518af079b458cd527d0a26530f7c56": {
+                        "anchor": {
+                            "line": 156,
+                            "offset": 0
+                        },
+                        "caret": {
+                            "line": 156,
+                            "offset": 0
+                        },
+                        "container": 1,
+                        "height": 920,
+                        "hscroll": 0,
+                        "isMaximized": false,
+                        "vscroll": 128,
                         "width": 1392,
                         "x": 0,
                         "y": 0
@@ -334,18 +388,54 @@
                     },
                     "5cb8d7826c5d410b12bedc332156ef90": {
                         "anchor": {
-                            "line": 1041,
+                            "line": 834,
                             "offset": 0
                         },
                         "caret": {
-                            "line": 1041,
+                            "line": 834,
                             "offset": 0
                         },
                         "container": 1,
                         "height": 920,
                         "hscroll": 0,
                         "isMaximized": false,
-                        "vscroll": 1013,
+                        "vscroll": 870,
+                        "width": 1392,
+                        "x": 0,
+                        "y": 0
+                    },
+                    "a02c5dc4ca01e71dd688203ac78b545f": {
+                        "anchor": {
+                            "line": 9,
+                            "offset": 0
+                        },
+                        "caret": {
+                            "line": 9,
+                            "offset": 0
+                        },
+                        "container": 1,
+                        "height": 920,
+                        "hscroll": 0,
+                        "isMaximized": false,
+                        "vscroll": 0,
+                        "width": 1392,
+                        "x": 0,
+                        "y": 0
+                    },
+                    "cdd84daabb0a7a1f33431c667d40fd4f": {
+                        "anchor": {
+                            "line": 18,
+                            "offset": 0
+                        },
+                        "caret": {
+                            "line": 18,
+                            "offset": 0
+                        },
+                        "container": 1,
+                        "height": 920,
+                        "hscroll": 0,
+                        "isMaximized": false,
+                        "vscroll": 0,
                         "width": 1392,
                         "x": 0,
                         "y": 0
