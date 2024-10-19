@@ -1013,7 +1013,14 @@ private void verifyNonExistentOutputPathThrowsException(DataflowPipelineOptions 
 private void assertDockerEnvironmentOverrides(DataflowPipelineOptions options, String dockerHubPythonContainerUrl,
 		String gcrPythonContainerUrl) {
 	DataflowRunner runner = DataflowRunner.fromOptions(options);
-    RunnerApi.Pipeline pipeline =
+    RunnerApi.Pipeline pipeline = createExpectedPipeline(dockerHubPythonContainerUrl);
+    RunnerApi.Pipeline expectedPipeline = createExpectedPipeline(dockerHubPythonContainerUrl);
+    
+    assertThat(runner.applySdkEnvironmentOverrides(pipeline, options), equalTo(expectedPipeline));
+}
+
+private RunnerApi.Pipeline createExpectedPipeline(String dockerHubPythonContainerUrl) {
+	RunnerApi.Pipeline pipeline =
         RunnerApi.Pipeline.newBuilder()
             .setComponents(
                 RunnerApi.Components.newBuilder()
@@ -1029,23 +1036,7 @@ private void assertDockerEnvironmentOverrides(DataflowPipelineOptions options, S
                                     .toByteString())
                             .build()))
             .build();
-    RunnerApi.Pipeline expectedPipeline =
-        RunnerApi.Pipeline.newBuilder()
-            .setComponents(
-                RunnerApi.Components.newBuilder()
-                    .putEnvironments(
-                        "env",
-                        RunnerApi.Environment.newBuilder()
-                            .setUrn(
-                                BeamUrns.getUrn(RunnerApi.StandardEnvironments.Environments.DOCKER))
-                            .setPayload(
-                                RunnerApi.DockerPayload.newBuilder()
-                                    .setContainerImage(gcrPythonContainerUrl)
-                                    .build()
-                                    .toByteString())
-                            .build()))
-            .build();
-    assertThat(runner.applySdkEnvironmentOverrides(pipeline, options), equalTo(expectedPipeline));
+	return pipeline;
 }
 
   @Test
