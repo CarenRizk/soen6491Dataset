@@ -3,6 +3,93 @@
     "Sessions": {
         "default": {
             "SessionData": {
+                "2_1920x1080_2560x1440": {
+                    "DockWidgets": {
+                        "FloatingWidgetOrder": [
+                        ],
+                        "OpenWindows": {
+                            "00ProjectMetricsWidget": {
+                                "height": 240,
+                                "width": 812
+                            },
+                            "01ProjectOverviewWidget": {
+                                "height": 420,
+                                "width": 250
+                            },
+                            "02SuggestionsBrowser": {
+                                "height": 637,
+                                "width": 250
+                            },
+                            "03EntityFilter": {
+                                "height": 442,
+                                "width": 250
+                            },
+                            "04IssueBrowser": {
+                                "height": 240,
+                                "width": 812
+                            },
+                            "05InfoBrowserWidget_0": {
+                                "height": 457,
+                                "width": 270
+                            }
+                        },
+                        "TabGroupFrontWidgets": [
+                            "ProjectOverviewWidget"
+                        ]
+                    },
+                    "EntityFilter": {
+                        "Dock Area": 1,
+                        "Dock In Drawer Mode": false,
+                        "Dock Is Floating": false,
+                        "Dock Tab Group": [
+                            "ProjectOverviewWidget"
+                        ]
+                    },
+                    "InfoBrowserWidget_0": {
+                        "Dock Area": 1,
+                        "Dock In Drawer Mode": false,
+                        "Dock Is Floating": false,
+                        "Dock Tab Group": [
+                        ]
+                    },
+                    "IssueBrowser": {
+                        "Dock Area": 8,
+                        "Dock In Drawer Mode": false,
+                        "Dock Is Floating": false,
+                        "Dock Tab Group": [
+                        ]
+                    },
+                    "Locator": {
+                        "Dock Area": 8,
+                        "Dock In Drawer Mode": false,
+                        "Dock Is Floating": false,
+                        "Dock Tab Group": [
+                            "ProjectMetricsWidget"
+                        ]
+                    },
+                    "ProjectMetricsWidget": {
+                        "Dock Area": 8,
+                        "Dock In Drawer Mode": false,
+                        "Dock Is Floating": false,
+                        "Dock Tab Group": [
+                        ]
+                    },
+                    "ProjectOverviewWidget": {
+                        "Dock Area": 1,
+                        "Dock In Drawer Mode": false,
+                        "Dock Is Floating": false,
+                        "Dock Tab Group": [
+                            "EntityFilter"
+                        ]
+                    },
+                    "SuggestionsBrowser": {
+                        "Dock Area": 2,
+                        "Dock In Drawer Mode": false,
+                        "Dock Is Floating": false,
+                        "Dock Tab Group": [
+                        ]
+                    }
+                },
                 "2_1920x1080_3840x1600": {
                     "AnalysisLog": {
                         "Dock Area": 8,
@@ -109,11 +196,185 @@
                         ]
                     }
                 },
+                "3_1920x1080_2560x1440_2560x1440": {
+                    "AnalysisLog": {
+                        "Dock Area": 8,
+                        "Dock In Drawer Mode": false,
+                        "Dock Is Floating": false,
+                        "Dock Tab Group": [
+                        ]
+                    },
+                    "DockWidgets": {
+                        "FloatingWidgetOrder": [
+                        ],
+                        "OpenWindows": {
+                            "00SuggestionsBrowser": {
+                                "height": 921,
+                                "width": 250
+                            },
+                            "01ProjectOverviewWidget": {
+                                "height": 463,
+                                "width": 250
+                            },
+                            "02EntityFilter": {
+                                "height": 441,
+                                "width": 250
+                            },
+                            "03InfoBrowserWidget_0": {
+                                "height": 454,
+                                "width": 270
+                            }
+                        },
+                        "TabGroupFrontWidgets": [
+                            "EntityFilter"
+                        ]
+                    },
+                    "EntityFilter": {
+                        "Dock Area": 1,
+                        "Dock In Drawer Mode": false,
+                        "Dock Is Floating": false,
+                        "Dock Tab Group": [
+                            "ProjectOverviewWidget"
+                        ]
+                    },
+                    "InfoBrowserWidget_0": {
+                        "Dock Area": 1,
+                        "Dock In Drawer Mode": false,
+                        "Dock Is Floating": false,
+                        "Dock Tab Group": [
+                        ]
+                    },
+                    "IssueBrowser": {
+                        "Dock Area": 8,
+                        "Dock In Drawer Mode": false,
+                        "Dock Is Floating": false,
+                        "Dock Tab Group": [
+                        ]
+                    },
+                    "ProjectMetricsWidget": {
+                        "Dock Area": 8,
+                        "Dock In Drawer Mode": false,
+                        "Dock Is Floating": false,
+                        "Dock Tab Group": [
+                        ]
+                    },
+                    "ProjectOverviewWidget": {
+                        "Dock Area": 1,
+                        "Dock In Drawer Mode": false,
+                        "Dock Is Floating": false,
+                        "Dock Tab Group": [
+                            "EntityFilter"
+                        ]
+                    },
+                    "SuggestionsBrowser": {
+                        "Dock Area": 2,
+                        "Dock In Drawer Mode": false,
+                        "Dock Is Floating": false,
+                        "Dock Tab Group": [
+                        ]
+                    }
+                },
+                "CodeCheckFiles": {
+                    "lastSelectedFilterInt": 0
+                },
+                "EditorWindowSetting": {
+                    "399f1085134a6595c5cc4cb1a69bbac6": {
+                        "anchor": {
+                            "line": 0,
+                            "offset": 0
+                        },
+                        "caret": {
+                            "line": 0,
+                            "offset": 0
+                        },
+                        "container": 1,
+                        "height": 920,
+                        "hscroll": 0,
+                        "isMaximized": false,
+                        "vscroll": 347,
+                        "width": 1392,
+                        "x": 0,
+                        "y": 0
+                    },
+                    "4cceaa168ca976a483c08238d53442b4": {
+                        "anchor": {
+                            "line": 101,
+                            "offset": 0
+                        },
+                        "caret": {
+                            "line": 101,
+                            "offset": 0
+                        },
+                        "container": 1,
+                        "height": 920,
+                        "hscroll": 0,
+                        "isMaximized": false,
+                        "vscroll": 73,
+                        "width": 1392,
+                        "x": 0,
+                        "y": 0
+                    },
+                    "505e9801cb4a8c85ac711ac0a5ce7acd": {
+                        "anchor": {
+                            "line": 100,
+                            "offset": 0
+                        },
+                        "caret": {
+                            "line": 100,
+                            "offset": 0
+                        },
+                        "container": 1,
+                        "height": 920,
+                        "hscroll": 0,
+                        "isMaximized": false,
+                        "vscroll": 72,
+                        "width": 1392,
+                        "x": 0,
+                        "y": 0
+                    },
+                    "5cb8d7826c5d410b12bedc332156ef90": {
+                        "anchor": {
+                            "line": 1041,
+                            "offset": 0
+                        },
+                        "caret": {
+                            "line": 1041,
+                            "offset": 0
+                        },
+                        "container": 1,
+                        "height": 920,
+                        "hscroll": 0,
+                        "isMaximized": false,
+                        "vscroll": 1013,
+                        "width": 1392,
+                        "x": 0,
+                        "y": 0
+                    }
+                },
                 "EntityFilter": {
                     "LastEntityFilterUsed": "All Entities"
                 },
                 "GraphicFilterSettings": {
                     "Enabled": false
+                },
+                "IBExpansions": {
+                    "InfoBrowserWidget": [
+                        "Jovial References",
+                        "Python References",
+                        "WEB References",
+                        "WEB Possible References",
+                        "Asm References",
+                        "Ada References",
+                        "Ftn References",
+                        "VHDL References",
+                        "c# References",
+                        "C++ References",
+                        "Java References",
+                        "basic References",
+                        "Pascal References"
+                    ]
+                },
+                "IBOptions": {
                 },
                 "InfoBrowserWindowManager": {
                     "InfoBrowserFileSyncInst": -1,
@@ -121,40 +382,103 @@
                         "0"
                     ]
                 },
-                "LastAccessedPid": "11360",
-                "LastDisplayGroup": "2_1920x1080_3840x1600",
+                "LastAccessedPid": "29324",
+                "LastDisplayGroup": "3_1920x1080_2560x1440_2560x1440",
                 "Locator": {
                     "LastEntityFilterUsed": "All Entities"
                 },
                 "MaintainEditorHistory": {
                     "FileRanges": {
-                        "size": 0
+                        "0": {
+                            "ColumnBegin": 0,
+                            "ColumnEnd": 0,
+                            "FilePath": "./src/main/java/org/apache/beam/runners/dataflow/DataflowRunner.java",
+                            "LineBegin": 186,
+                            "LineEnd": 186
+                        },
+                        "1": {
+                            "ColumnBegin": 0,
+                            "ColumnEnd": 0,
+                            "FilePath": "./src/main/java/org/apache/beam/runners/dataflow/DataflowRunner.java",
+                            "LineBegin": 921,
+                            "LineEnd": 921
+                        },
+                        "2": {
+                            "ColumnBegin": 0,
+                            "ColumnEnd": 0,
+                            "FilePath": "./target/generated-sources/annotations/org/apache/beam/sdk/extensions/avro/io/AutoValue_AvroIO_Read.java",
+                            "LineBegin": 102,
+                            "LineEnd": 102
+                        },
+                        "3": {
+                            "ColumnBegin": 0,
+                            "ColumnEnd": 4,
+                            "FilePath": "./src/main/java/org/apache/beam/runners/dataflow/DataflowRunner.java",
+                            "LineBegin": 921,
+                            "LineEnd": 921
+                        },
+                        "4": {
+                            "ColumnBegin": 0,
+                            "ColumnEnd": 0,
+                            "FilePath": "./target/generated-sources/annotations/org/apache/beam/sdk/extensions/avro/io/AutoValue_AvroIO_ReadFiles.java",
+                            "LineBegin": 101,
+                            "LineEnd": 101
+                        },
+                        "size": 5
                     },
-                    "index": -1
+                    "index": 4
                 },
                 "MiscSaveStates": {
                     "entitySelected": "@lorg.apache.beam.sdk.coders.Coder.getEncodedTypeDescriptor.(Anon_1)@kj5org.apache.beam.sdk.coders.Coder.getEncodedTypeDescriptor.(Anon_1)@f./src/main/java/org/apache/beam/sdk/coders/Coder.java",
-                    "metricsBrowser": true,
-                    "metricsBrowserExpansionAddresses": "",
-                    "metricsBrowserSelectionAddress": "",
+                    "ib": "entity:||:@l./target/generated-sources/annotations/org/apache/beam/sdk/extensions/avro/io/AutoValue_AvroIO_ReadFiles.java",
+                    "metricsBrowserExpansionAddresses": "Directory Structure,Directory Structure::src,Directory Structure::src::main,Directory Structure::src::main::java,Directory Structure::src::main::java::org,Directory Structure::src::main::java::org::apache,Directory Structure::src::main::java::org::apache::beam,Directory Structure::src::main::java::org::apache::beam::runners,Directory Structure::src::main::java::org::apache::beam::runners::dataflow",
+                    "metricsBrowserSelectionAddress": "Directory Structure::src::main::java::org::apache::beam::runners::dataflow::DataflowRunner.java (File)",
                     "metricsBrowserSplitterState": "AAAA/wAAAAEAAAABAAACAAH/////AQAAAAEA",
                     "projectOverviewCharts": "true",
                     "projectOverviewChartsPosition": 1,
                     "projectOverviewChartsSelected": "true",
                     "projectOverviewChartsWorkspace": 0,
-                    "selection": "(Anon_1)"
+                    "selection": "AutoValue_AvroIO_ReadFiles.java"
                 },
                 "ProjectMetricsBrowser": {
                     "Overwrite": false,
                     "SaveDirectory": "./."
                 },
                 "ProjectUI": {
-                    "projectviewcuritem": "src"
+                    "projectview": [
+                        "src",
+                        "src/main",
+                        "src/main/java",
+                        "src/main/java/org",
+                        "src/main/java/org/apache",
+                        "src/main/java/org/apache/beam",
+                        "src/main/java/org/apache/beam/runners",
+                        "src/main/java/org/apache/beam/runners/dataflow",
+                        "target",
+                        "target/generated-sources",
+                        "target/generated-sources/annotations",
+                        "target/generated-sources/annotations/org",
+                        "target/generated-sources/annotations/org/apache",
+                        "target/generated-sources/annotations/org/apache/beam",
+                        "target/generated-sources/annotations/org/apache/beam/sdk",
+                        "target/generated-sources/annotations/org/apache/beam/sdk/extensions",
+                        "target/generated-sources/annotations/org/apache/beam/sdk/extensions/avro",
+                        "target/generated-sources/annotations/org/apache/beam/sdk/extensions/avro/io"
+                    ],
+                    "projectviewcuritem": "target/generated-sources/annotations/org/apache/beam/sdk/extensions/avro/io/AutoValue_AvroIO_ReadFiles.java",
+                    "projectviewselection": [
+                        "target/generated-sources/annotations/org/apache/beam/sdk/extensions/avro/io/AutoValue_AvroIO_ReadFiles.java"
+                    ]
                 },
                 "SplittableWorkspace": {
                     "active workspace": 0,
-                    "primary ws size": 1390,
+                    "primary ws size": 1392,
                     "split orientation": -1
+                },
+                "analysis": {
+                    "background": {
+                        "started": true
+                    }
                 }
             }
         }

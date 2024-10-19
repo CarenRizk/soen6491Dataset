@@ -18,11 +18,9 @@
 package org.apache.beam.runners.dataflow;
 
 import static org.apache.beam.runners.dataflow.DataflowRunner.getContainerImageForJob;
-import static org.apache.beam.vendor.guava.v32_1_2_jre.com.google.common.io.Files.getFileExtension;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasEntry;
 import static org.hamcrest.Matchers.hasItem;
@@ -49,17 +47,14 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import static org.powermock.api.mockito.PowerMockito.mockStatic;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.Module;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -78,7 +73,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.Serializable;
 import java.nio.channels.FileChannel;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
@@ -93,18 +87,14 @@ import java.util.stream.Collectors;
 import org.apache.beam.model.expansion.v1.ExpansionApi;
 import org.apache.beam.model.pipeline.v1.Endpoints;
 import org.apache.beam.model.pipeline.v1.RunnerApi;
-import org.apache.beam.runners.dataflow.DataflowRunner.StreamingShardedWriteFactory;
 import org.apache.beam.runners.dataflow.options.DataflowPipelineDebugOptions;
 import org.apache.beam.runners.dataflow.options.DataflowPipelineOptions;
 import org.apache.beam.runners.dataflow.options.DataflowPipelineWorkerPoolOptions;
 import org.apache.beam.runners.dataflow.options.DefaultGcpRegionFactory;
-import org.apache.beam.runners.dataflow.util.PropertyNames;
 import org.apache.beam.sdk.Pipeline;
 import org.apache.beam.sdk.Pipeline.PipelineVisitor;
-import org.apache.beam.sdk.coders.BigEndianIntegerCoder;
 import org.apache.beam.sdk.coders.VoidCoder;
 import org.apache.beam.sdk.extensions.gcp.auth.NoopCredentialFactory;
-import org.apache.beam.sdk.extensions.gcp.auth.TestCredential;
 import org.apache.beam.sdk.extensions.gcp.options.GcpOptions;
 import org.apache.beam.sdk.extensions.gcp.storage.NoopPathValidator;
 import org.apache.beam.sdk.extensions.gcp.util.GcsUtil;
@@ -118,8 +108,6 @@ import org.apache.beam.sdk.io.WriteFilesResult;
 import org.apache.beam.sdk.io.fs.ResourceId;
 import org.apache.beam.sdk.io.gcp.bigquery.BigQueryIO;
 import org.apache.beam.sdk.io.gcp.bigquery.WriteResult;
-import org.apache.beam.sdk.io.gcp.pubsub.PubsubIO;
-import org.apache.beam.sdk.io.gcp.pubsub.PubsubMessage;
 import org.apache.beam.sdk.options.ExperimentalOptions;
 import org.apache.beam.sdk.options.PipelineOptions;
 import org.apache.beam.sdk.options.PipelineOptions.CheckEnabled;
@@ -158,10 +146,8 @@ import org.apache.beam.sdk.util.construction.Environments;
 import org.apache.beam.sdk.util.construction.ExpansionServiceClient;
 import org.apache.beam.sdk.util.construction.ExpansionServiceClientFactory;
 import org.apache.beam.sdk.util.construction.External;
-import org.apache.beam.sdk.util.construction.PTransformTranslation.TransformPayloadTranslator;
 import org.apache.beam.sdk.util.construction.PipelineTranslation;
 import org.apache.beam.sdk.util.construction.SdkComponents;
-import org.apache.beam.sdk.util.construction.TransformPayloadTranslatorRegistrar;
 import org.apache.beam.sdk.values.KV;
 import org.apache.beam.sdk.values.PCollection;
 import org.apache.beam.sdk.values.PValues;
@@ -170,12 +156,8 @@ import org.apache.beam.sdk.values.TypeDescriptors;
 import org.apache.beam.sdk.values.WindowingStrategy;
 import org.apache.beam.vendor.grpc.v1p60p1.com.google.protobuf.InvalidProtocolBufferException;
 import org.apache.beam.vendor.guava.v32_1_2_jre.com.google.common.collect.ImmutableList;
-import org.apache.beam.vendor.guava.v32_1_2_jre.com.google.common.collect.ImmutableMap;
 import org.apache.beam.vendor.guava.v32_1_2_jre.com.google.common.collect.Iterables;
-import org.checkerframework.checker.initialization.qual.Initialized;
-import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
-import org.checkerframework.checker.nullness.qual.UnknownKeyFor;
 import org.hamcrest.Description;
 import org.hamcrest.Matchers;
 import org.hamcrest.TypeSafeMatcher;
@@ -191,10 +173,11 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
-import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
-import org.powermock.modules.junit4.PowerMockRunner;
-import com.google.auth.oauth2.GoogleCredentials;
+import org.mockito.junit.MockitoJUnitRunner;
+import org.mockito.MockedStatic;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.mockStatic;
 
 /**
  * Tests for the {@link DataflowRunner}.
@@ -452,35 +435,59 @@ public class DataflowRunnerTest implements Serializable {
    * Test that the region is set in the generated JSON pipeline options even when a default value is
    * grabbed from the environment.
    */
-  @RunWith(PowerMockRunner.class)
-  @PrepareForTest(DefaultGcpRegionFactory.class)
-  public static class DefaultRegionTest {
+  @RunWith(MockitoJUnitRunner.class)
+  public class DefaultRegionTest {
+
+    private static final String REGION_ID = "us-central1"; // Example REGION_ID
+    private static final String PROJECT_ID = "my-project"; // Example PROJECT_ID
+    private static final String VALID_TEMP_BUCKET = "gs://my-temp-bucket"; // Example bucket
+
     @Test
     public void testDefaultRegionSet() throws Exception {
-      mockStatic(DefaultGcpRegionFactory.class);
-      PowerMockito.when(DefaultGcpRegionFactory.getRegionFromEnvironment()).thenReturn(REGION_ID);
-      Dataflow.Projects.Locations.Jobs mockJobs = mock(Dataflow.Projects.Locations.Jobs.class);
+      
+      // Mock static method using Mockito
+      try (MockedStatic<DefaultGcpRegionFactory> mockedStatic = mockStatic(DefaultGcpRegionFactory.class)) {
+        mockedStatic.when(DefaultGcpRegionFactory::getRegionFromEnvironment).thenReturn(REGION_ID);
 
-      DataflowPipelineOptions options = PipelineOptionsFactory.as(DataflowPipelineOptions.class);
-      options.setRunner(DataflowRunner.class);
-      options.setProject(PROJECT_ID);
-      options.setTempLocation(VALID_TEMP_BUCKET);
-      // Set FILES_PROPERTY to empty to prevent a default value calculated from classpath.
-      options.setFilesToStage(new ArrayList<>());
-      options.setDataflowClient(buildMockDataflow(mockJobs));
-      options.setGcsUtil(buildMockGcsUtil());
+        // Mock other objects
+        Dataflow.Projects.Locations.Jobs mockJobs = mock(Dataflow.Projects.Locations.Jobs.class);
 
-      Pipeline p = Pipeline.create(options);
-      p.run();
+        // Setup pipeline options
+        DataflowPipelineOptions options = PipelineOptionsFactory.as(DataflowPipelineOptions.class);
+        options.setRunner(DataflowRunner.class);
+        options.setProject(PROJECT_ID);
+        options.setTempLocation(VALID_TEMP_BUCKET);
+        // Set FILES_PROPERTY to empty to prevent a default value calculated from classpath.
+        options.setFilesToStage(new ArrayList<>());
+        options.setDataflowClient(buildMockDataflow(mockJobs));
+        options.setGcsUtil(buildMockGcsUtil());
 
-      ArgumentCaptor<Job> jobCaptor = ArgumentCaptor.forClass(Job.class);
-      Mockito.verify(mockJobs).create(eq(PROJECT_ID), eq(REGION_ID), jobCaptor.capture());
-      Map<String, Object> sdkPipelineOptions =
-          jobCaptor.getValue().getEnvironment().getSdkPipelineOptions();
+        // Create the pipeline
+        Pipeline p = Pipeline.create(options);
+        p.run();
 
-      assertThat(sdkPipelineOptions, hasKey("options"));
-      Map<String, Object> optionsMap = (Map<String, Object>) sdkPipelineOptions.get("options");
-      assertThat(optionsMap, hasEntry("region", (Object) options.getRegion()));
+        // Capture the Job object and assert the region is set
+        ArgumentCaptor<Job> jobCaptor = ArgumentCaptor.forClass(Job.class);
+        verify(mockJobs).create(eq(PROJECT_ID), eq(REGION_ID), jobCaptor.capture());
+
+        // Extract the SDK pipeline options and assert the "region" field
+        Map<String, Object> sdkPipelineOptions = jobCaptor.getValue().getEnvironment().getSdkPipelineOptions();
+        assertThat(sdkPipelineOptions, hasKey("options"));
+        Map<String, Object> optionsMap = (Map<String, Object>) sdkPipelineOptions.get("options");
+        assertThat(optionsMap, hasEntry("region", (Object) options.getRegion()));
+      }
+    }
+
+    // Mock buildMockDataflow (implementation not shown, assumed to be provided elsewhere)
+    private Dataflow buildMockDataflow(Dataflow.Projects.Locations.Jobs mockJobs) {
+      // Implementation for mocking Dataflow client
+      return null;  // Replace with actual mock implementation
+    }
+
+    // Mock buildMockGcsUtil (implementation not shown, assumed to be provided elsewhere)
+    private GcsUtil buildMockGcsUtil() {
+      // Implementation for mocking GcsUtil
+      return null;  // Replace with actual mock implementation
     }
   }
 

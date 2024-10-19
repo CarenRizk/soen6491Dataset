@@ -1,0 +1,13 @@
+{
+    "automatic": true,
+    "checks": [
+        "RECOMMENDED_04"
+    ],
+    "excludes": [
+    ],
+    "name": "dup + func too long",
+    "parents": [
+    ],
+    "tags": [
+    ]
+}

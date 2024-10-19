@@ -45,14 +45,6 @@
                     <dir
                       name="extensions">
                       <dir
-                        name="avro">
-                        <dir
-                          name="io">
-                          <auto
-                            name="AvroIO.java"/>
-                        </dir>
-                      </dir>
-                      <dir
                         name="euphoria">
                         <dir
                           name="core">
@@ -162,14 +154,6 @@
                     </dir>
                     <dir
                       name="extensions">
-                      <dir
-                        name="avro">
-                        <dir
-                          name="io">
-                          <auto
-                            name="AvroIOTest.java"/>
-                        </dir>
-                      </dir>
                       <dir
                         name="euphoria">
                         <dir
