@@ -79,7 +79,10 @@ import org.apache.beam.vendor.guava.v32_1_2_jre.com.google.common.base.MoreObjec
 import org.apache.beam.vendor.guava.v32_1_2_jre.com.google.common.collect.ImmutableList;
 import org.apache.beam.vendor.guava.v32_1_2_jre.com.google.common.collect.ImmutableSet;
 import org.apache.beam.vendor.guava.v32_1_2_jre.com.google.common.collect.Iterables;
+import org.checkerframework.checker.initialization.qual.Initialized;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.checkerframework.checker.nullness.qual.UnknownKeyFor;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.joda.time.Duration;
@@ -1151,21 +1154,25 @@ public class CombineTest implements Serializable {
 
       pipeline.run();
     }
+    
+    private PCollection createTimestampedPCollection() {
+        return pipeline
+        .apply(
+            Create.timestamped(
+                    TimestampedValue.of(KV.of("a", 1), new Instant(0L)),
+                    TimestampedValue.of(KV.of("a", 1), new Instant(4L)),
+                    TimestampedValue.of(KV.of("a", 4), new Instant(7L)),
+                    TimestampedValue.of(KV.of("b", 1), new Instant(10L)),
+                    TimestampedValue.of(KV.of("b", 13), new Instant(16L)))
+                .withCoder(KvCoder.of(StringUtf8Coder.of(), BigEndianIntegerCoder.of())));
+    }
 
     @Test
     @Category(ValidatesRunner.class)
     public void testSessionsCombine() {
       PCollection<KV<String, Integer>> input =
-          pipeline
-              .apply(
-                  Create.timestamped(
-                          TimestampedValue.of(KV.of("a", 1), new Instant(0L)),
-                          TimestampedValue.of(KV.of("a", 1), new Instant(4L)),
-                          TimestampedValue.of(KV.of("a", 4), new Instant(7L)),
-                          TimestampedValue.of(KV.of("b", 1), new Instant(10L)),
-                          TimestampedValue.of(KV.of("b", 13), new Instant(16L)))
-                      .withCoder(KvCoder.of(StringUtf8Coder.of(), BigEndianIntegerCoder.of())))
-              .apply(Window.into(Sessions.withGapDuration(Duration.millis(5))));
+    		  (PCollection<KV<String, Integer>>) createTimestampedPCollection()
+	  .apply(Window.into(Sessions.withGapDuration(Duration.millis(5))));
 
       PCollection<Integer> sum =
           input.apply(Values.create()).apply(Combine.globally(new SumInts()).withoutDefaults());
@@ -1182,14 +1189,7 @@ public class CombineTest implements Serializable {
     @Category({ValidatesRunner.class, UsesSideInputs.class})
     public void testSessionsCombineWithContext() {
       PCollection<KV<String, Integer>> perKeyInput =
-          pipeline.apply(
-              Create.timestamped(
-                      TimestampedValue.of(KV.of("a", 1), new Instant(0L)),
-                      TimestampedValue.of(KV.of("a", 1), new Instant(4L)),
-                      TimestampedValue.of(KV.of("a", 4), new Instant(7L)),
-                      TimestampedValue.of(KV.of("b", 1), new Instant(10L)),
-                      TimestampedValue.of(KV.of("b", 13), new Instant(16L)))
-                  .withCoder(KvCoder.of(StringUtf8Coder.of(), BigEndianIntegerCoder.of())));
+    		  createTimestampedPCollection();
 
       PCollection<Integer> globallyInput = perKeyInput.apply(Values.create());
 

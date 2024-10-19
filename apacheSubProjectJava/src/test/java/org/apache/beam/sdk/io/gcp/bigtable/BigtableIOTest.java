@@ -108,7 +108,10 @@ import org.apache.beam.vendor.guava.v32_1_2_jre.com.google.common.base.Predicate
 import org.apache.beam.vendor.guava.v32_1_2_jre.com.google.common.base.Predicates;
 import org.apache.beam.vendor.guava.v32_1_2_jre.com.google.common.collect.ImmutableList;
 import org.apache.beam.vendor.guava.v32_1_2_jre.com.google.common.collect.Lists;
+import org.checkerframework.checker.initialization.qual.Initialized;
+import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.checkerframework.checker.nullness.qual.UnknownKeyFor;
 import org.hamcrest.Matchers;
 import org.hamcrest.collection.IsIterableContainingInAnyOrder;
 import org.joda.time.Duration;
@@ -675,7 +678,12 @@ private BigtableSource extracted(final String table, final int numRows, final in
     final String table = "TEST-MANY-ROWS-SPLITS-TABLE";
     final int numRows = 1500;
     final int numSamples = 10;
-    final long bytesPerRow = 100L;
+    setupAndSplitBigtableSource(table, numRows, numSamples);
+  }
+
+private void setupAndSplitBigtableSource(final String table, final int numRows, final int numSamples)
+		throws Exception, @UnknownKeyFor @NonNull @Initialized Exception {
+	final long bytesPerRow = 100L;
 
     // Set up test table data and sample row keys for size estimation and splitting.
     makeTableData(table, numRows);
@@ -698,7 +706,7 @@ private BigtableSource extracted(final String table, final int numRows, final in
     // Test num splits and split equality.
     assertThat(splits, hasSize(numSamples));
     assertSourcesEqualReferenceSource(source, splits, null /* options */);
-  }
+}
 
   /**
    * Regression test for <a href="https://github.com/apache/beam/issues/28793">[Bug]: BigtableSource
@@ -1008,42 +1016,8 @@ private BigtableSource createBigtableSourceWithKeyRanges(final String table, Byt
   @Test
   public void testReadingWithSubSplitsWithSeveralKeyRanges() throws Exception {
     final String table = "TEST-MANY-ROWS-SPLITS-TABLE-MULTIPLE-RANGES";
-    final int numRows = 1000;
-    final int numSamples = 10;
-    final int numSplits = 20;
-    // We expect 24 splits instead of 20 due to the multiple ranges. For a key of 330 separating
-    // the multiple ranges, first the [300, 330) range is subsplit into two (since numSplits is
-    // twice numSamples), so we get [300, 315) and [315, 330). Then, the [330, 400) range is also
-    // split into two, resulting in [330, 365) and [365, 400). These ranges would instead be
-    // [300, 350) and [350, 400) if this source was one range. Thus, each extra range adds two
-    // resulting splits.
     final int expectedNumSplits = 24;
-    final long bytesPerRow = 100L;
-
-    // Set up test table data and sample row keys for size estimation and splitting.
-    makeTableData(table, numRows);
-    service.setupSampleRowKeys(table, numSamples, bytesPerRow);
-
-    ByteKey splitKey1 = ByteKey.copyFrom("key000000330".getBytes(StandardCharsets.UTF_8));
-    ByteKey splitKey2 = ByteKey.copyFrom("key000000730".getBytes(StandardCharsets.UTF_8));
-
-    BigtableSource source = createBigtableSourceWithKeyRanges(table, splitKey1, splitKey2);
-    BigtableSource referenceSource =
-        new BigtableSource(
-            factory,
-            configId,
-            config,
-            BigtableReadOptions.builder()
-                .setTableId(StaticValueProvider.of(table))
-                .setKeyRanges(
-                    StaticValueProvider.of(ImmutableList.of(service.getTableRange(table))))
-                .build(),
-            null /*size*/);
-    List<BigtableSource> splits = source.split(numRows * bytesPerRow / numSplits, null);
-
-    // Test num splits and split equality.
-    assertThat(splits, hasSize(expectedNumSplits));
-    assertSourcesEqualReferenceSource(referenceSource, splits, null /* options */);
+    setupAndSplitBigtableSource(table, expectedNumSplits, expectedNumSplits);
   }
 
   /** Tests reading all rows from a sub-split table. */

@@ -286,6 +286,15 @@ public class TextIOReadTest {
   private static void verifyReaderInitialStateAndProgress(BoundedSource.BoundedReader<String> reader)
 		throws @UnknownKeyFor @NonNull @Initialized IOException {
 	// Check preconditions before starting
+	assertReaderInitialState(reader);
+
+	// Line 2
+	assertTrue(reader.advance());
+	assertEquals(1, reader.getSplitPointsConsumed());
+}
+
+private static void assertReaderInitialState(BoundedSource.BoundedReader<String> reader)
+		throws @UnknownKeyFor @NonNull @Initialized IOException {
 	assertEquals(0.0, reader.getFractionConsumed(), 1e-6);
 	assertEquals(0, reader.getSplitPointsConsumed());
 	assertEquals(
@@ -296,10 +305,6 @@ public class TextIOReadTest {
 	assertEquals(0, reader.getSplitPointsConsumed());
 	assertEquals(
 	    BoundedSource.BoundedReader.SPLIT_POINTS_UNKNOWN, reader.getSplitPointsRemaining());
-
-	// Line 2
-	assertTrue(reader.advance());
-	assertEquals(1, reader.getSplitPointsConsumed());
 }
 
 /** Tests for reading files with various delimiters. */
@@ -709,17 +714,7 @@ public class TextIOReadTest {
       try (BoundedSource.BoundedReader<String> readerOrig =
           source.createReader(PipelineOptionsFactory.create())) {
         // Preconditions.
-        assertEquals(0.0, readerOrig.getFractionConsumed(), 1e-6);
-        assertEquals(0, readerOrig.getSplitPointsConsumed());
-        assertEquals(
-            BoundedSource.BoundedReader.SPLIT_POINTS_UNKNOWN, readerOrig.getSplitPointsRemaining());
-
-        // First record, before splitting.
-        assertTrue(readerOrig.start());
-        assertEquals(0, readerOrig.getSplitPointsConsumed());
-        assertEquals(
-            BoundedSource.BoundedReader.SPLIT_POINTS_UNKNOWN, readerOrig.getSplitPointsRemaining());
-
+    	assertReaderInitialState(readerOrig);
         // Split. 0.1 is in line1, so should now be able to detect last record.
         remainder = readerOrig.splitAtFraction(0.1);
         assertNotNull(remainder);

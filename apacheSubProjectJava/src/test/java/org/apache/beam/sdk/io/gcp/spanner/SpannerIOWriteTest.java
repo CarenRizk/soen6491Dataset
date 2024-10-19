@@ -280,6 +280,18 @@ public class SpannerIOWriteTest implements Serializable {
   }
 
 private void verifyCapturedBatchableMutationGroups(MutationGroup[] mutationGroups, BatchableMutationFilterFn testFn) {
+	processMutationGroups(mutationGroups, testFn);
+
+    // Verify captured batchable elements.
+    assertThat(
+        mutationGroupCaptor.getAllValues(),
+        containsInAnyOrder(
+            buildMutationGroup(buildUpsertMutation(1L)),
+            buildMutationGroup(buildUpsertMutation(2L), buildUpsertMutation(3L)),
+            buildMutationGroup(buildDeleteMutation(1L))));
+}
+
+private void processMutationGroups(MutationGroup[] mutationGroups, BatchableMutationFilterFn testFn) {
 	BatchableMutationFilterFn.ProcessContext mockProcessContext =
         Mockito.mock(ProcessContext.class);
     when(mockProcessContext.sideInput(any())).thenReturn(getSchema());
@@ -293,14 +305,6 @@ private void verifyCapturedBatchableMutationGroups(MutationGroup[] mutationGroup
       when(mockProcessContext.element()).thenReturn(m);
       testFn.processElement(mockProcessContext);
     }
-
-    // Verify captured batchable elements.
-    assertThat(
-        mutationGroupCaptor.getAllValues(),
-        containsInAnyOrder(
-            buildMutationGroup(buildUpsertMutation(1L)),
-            buildMutationGroup(buildUpsertMutation(2L), buildUpsertMutation(3L)),
-            buildMutationGroup(buildDeleteMutation(1L))));
 }
 
   @Test
@@ -416,19 +420,7 @@ private MutationGroup[] createMutationGroups(Mutation all, Mutation prefix, Muta
 
     BatchableMutationFilterFn testFn = new BatchableMutationFilterFn(null, null, 0, 0, 0);
 
-    BatchableMutationFilterFn.ProcessContext mockProcessContext =
-        Mockito.mock(ProcessContext.class);
-    when(mockProcessContext.sideInput(any())).thenReturn(getSchema());
-
-    // Capture the outputs.
-    doNothing().when(mockProcessContext).output(mutationGroupCaptor.capture());
-    doNothing().when(mockProcessContext).output(any(), mutationGroupListCaptor.capture());
-
-    // Process all elements.
-    for (MutationGroup m : mutationGroups) {
-      when(mockProcessContext.element()).thenReturn(m);
-      testFn.processElement(mockProcessContext);
-    }
+    processMutationGroups(mutationGroups, testFn);
 
     // Verify captured batchable elements.
     assertTrue(mutationGroupCaptor.getAllValues().isEmpty());
