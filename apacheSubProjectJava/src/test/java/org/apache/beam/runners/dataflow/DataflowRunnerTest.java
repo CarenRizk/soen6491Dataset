@@ -345,10 +345,7 @@ public class DataflowRunnerTest implements Serializable {
   }
 
   private DataflowPipelineOptions buildPipelineOptions() throws IOException {
-    DataflowPipelineOptions options = PipelineOptionsFactory.as(DataflowPipelineOptions.class);
-    options.setRunner(DataflowRunner.class);
-    options.setProject(PROJECT_ID);
-    options.setTempLocation(VALID_TEMP_BUCKET);
+    DataflowPipelineOptions options = configureDataflowPipelineOptions();
     options.setRegion(REGION_ID);
     // Set FILES_PROPERTY to empty to prevent a default value calculated from classpath.
     options.setFilesToStage(new ArrayList<>());
@@ -360,6 +357,14 @@ public class DataflowRunnerTest implements Serializable {
 
     return options;
   }
+
+private DataflowPipelineOptions configureDataflowPipelineOptions() {
+	DataflowPipelineOptions options = PipelineOptionsFactory.as(DataflowPipelineOptions.class);
+    options.setRunner(DataflowRunner.class);
+    options.setProject(PROJECT_ID);
+    options.setTempLocation(VALID_TEMP_BUCKET);
+	return options;
+}
 
   @Test
   public void testPathValidation() {
@@ -453,10 +458,7 @@ public class DataflowRunnerTest implements Serializable {
         Dataflow.Projects.Locations.Jobs mockJobs = mock(Dataflow.Projects.Locations.Jobs.class);
 
         // Setup pipeline options
-        DataflowPipelineOptions options = PipelineOptionsFactory.as(DataflowPipelineOptions.class);
-        options.setRunner(DataflowRunner.class);
-        options.setProject(PROJECT_ID);
-        options.setTempLocation(VALID_TEMP_BUCKET);
+        DataflowPipelineOptions options = configureDataflowPipelineOptions();
         // Set FILES_PROPERTY to empty to prevent a default value calculated from classpath.
         options.setFilesToStage(new ArrayList<>());
         options.setDataflowClient(buildMockDataflow(mockJobs));

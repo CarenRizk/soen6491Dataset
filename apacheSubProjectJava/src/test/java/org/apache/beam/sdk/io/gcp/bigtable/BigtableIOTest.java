@@ -1223,10 +1223,7 @@ private BigtableSource createBigtableSourceWithKeyRanges(final String table, Byt
   public void testWritingFailsTableDoesNotExist() throws Exception {
     final String table = "TEST-TABLE";
 
-    PCollection<KV<ByteString, Iterable<Mutation>>> emptyInput =
-        p.apply(
-            Create.empty(
-                KvCoder.of(ByteStringCoder.of(), IterableCoder.of(ProtoCoder.of(Mutation.class)))));
+    PCollection<KV<ByteString, Iterable<Mutation>>> emptyInput = createEmptyInputPCollection();
 
     // Exception will be thrown by write.validate() when writeToDynamic is applied.
     thrown.expect(IllegalArgumentException.class);
@@ -1235,6 +1232,14 @@ private BigtableSource createBigtableSourceWithKeyRanges(final String table, Byt
     emptyInput.apply("write", defaultWrite.withTableId(table));
     p.run();
   }
+
+private PCollection<KV<ByteString, Iterable<Mutation>>> createEmptyInputPCollection() {
+	PCollection<KV<ByteString, Iterable<Mutation>>> emptyInput =
+        p.apply(
+            Create.empty(
+                KvCoder.of(ByteStringCoder.of(), IterableCoder.of(ProtoCoder.of(Mutation.class)))));
+	return emptyInput;
+}
 
   /** Tests that when writing to a non-existent table, the write fails. */
   @Test
@@ -1797,13 +1802,8 @@ private BigtableSource createBigtableSourceWithKeyRanges(final String table, Byt
 
   @Test
   public void testReadChangeStreamFailsValidation() {
-    BigtableIO.ReadChangeStream readChangeStream =
-        BigtableIO.readChangeStream()
-            .withProjectId("project")
-            .withInstanceId("instance")
-            .withTableId("table");
-    // Validating table fails because table does not exist.
-    thrown.expect(IllegalArgumentException.class);
+	BigtableIO.ReadChangeStream readChangeStream = setupReadChangeStream();
+
     readChangeStream.validate(TestPipeline.testingPipelineOptions());
   }
 
@@ -1821,16 +1821,21 @@ private BigtableSource createBigtableSourceWithKeyRanges(final String table, Byt
 
   @Test
   public void testReadChangeStreamValidationFailsDuringApply() {
-    BigtableIO.ReadChangeStream readChangeStream =
+    BigtableIO.ReadChangeStream readChangeStream = setupReadChangeStream();
+
+    p.apply(readChangeStream);
+  }
+
+private BigtableIO.ReadChangeStream setupReadChangeStream() {
+	BigtableIO.ReadChangeStream readChangeStream =
         BigtableIO.readChangeStream()
             .withProjectId("project")
             .withInstanceId("instance")
             .withTableId("table");
     // Validating table fails because resources cannot be found
     thrown.expect(RuntimeException.class);
-
-    p.apply(readChangeStream);
-  }
+	return readChangeStream;
+}
 
   @Test
   public void testReadChangeStreamPassWithoutValidationDuringApply() {

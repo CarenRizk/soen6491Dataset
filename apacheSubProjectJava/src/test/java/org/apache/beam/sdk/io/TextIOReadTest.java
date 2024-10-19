@@ -694,15 +694,20 @@ private static void assertReaderInitialState(BoundedSource.BoundedReader<String>
         // Line 3
         assertTrue(reader.advance());
         assertEquals(2, reader.getSplitPointsConsumed());
-        assertEquals(1, reader.getSplitPointsRemaining());
-
-        // Check postconditions after finishing
-        assertFalse(reader.advance());
-        assertEquals(1.0, reader.getFractionConsumed(), 1e-6);
+        assertReaderStateAfterAdvance(reader);
         assertEquals(3, reader.getSplitPointsConsumed());
         assertEquals(0, reader.getSplitPointsRemaining());
       }
     }
+
+	private void assertReaderStateAfterAdvance(BoundedSource.BoundedReader<String> reader)
+			throws @UnknownKeyFor @NonNull @Initialized IOException {
+		assertEquals(1, reader.getSplitPointsRemaining());
+
+        // Check postconditions after finishing
+        assertFalse(reader.advance());
+        assertEquals(1.0, reader.getFractionConsumed(), 1e-6);
+	}
 
     @Test
     public void testProgressAfterSplitting() throws IOException {
@@ -721,11 +726,7 @@ private static void assertReaderInitialState(BoundedSource.BoundedReader<String>
 
         // First record, after splitting.
         assertEquals(0, readerOrig.getSplitPointsConsumed());
-        assertEquals(1, readerOrig.getSplitPointsRemaining());
-
-        // Finish and postconditions.
-        assertFalse(readerOrig.advance());
-        assertEquals(1.0, readerOrig.getFractionConsumed(), 1e-6);
+        assertReaderStateAfterAdvance(readerOrig);
         assertEquals(1, readerOrig.getSplitPointsConsumed());
         assertEquals(0, readerOrig.getSplitPointsRemaining());
       }
@@ -734,11 +735,7 @@ private static void assertReaderInitialState(BoundedSource.BoundedReader<String>
       try (BoundedSource.BoundedReader<String> reader =
           remainder.createReader(PipelineOptionsFactory.create())) {
         verifyReaderInitialStateAndProgress(reader);
-        assertEquals(1, reader.getSplitPointsRemaining());
-
-        // Check postconditions after finishing
-        assertFalse(reader.advance());
-        assertEquals(1.0, reader.getFractionConsumed(), 1e-6);
+        assertReaderStateAfterAdvance(reader);
         assertEquals(2, reader.getSplitPointsConsumed());
         assertEquals(0, reader.getSplitPointsRemaining());
       }

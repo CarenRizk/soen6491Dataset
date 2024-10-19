@@ -243,9 +243,7 @@ public class FlattenTest implements Serializable {
   @Test
   @Category(NeedsRunner.class)
   public void testEqualWindowFnPropagation() {
-    PCollection<String> input1 =
-        p.apply("CreateInput1", Create.of("Input1"))
-            .apply("Window1", Window.into(FixedWindows.of(Duration.standardMinutes(1))));
+    PCollection<String> input1 = createAndWindowInput1();
     PCollection<String> input2 =
         p.apply("CreateInput2", Create.of("Input2"))
             .apply("Window2", Window.into(FixedWindows.of(Duration.standardMinutes(1))));
@@ -261,6 +259,13 @@ public class FlattenTest implements Serializable {
             .getWindowFn()
             .isCompatible(FixedWindows.of(Duration.standardMinutes(1))));
   }
+
+private PCollection<String> createAndWindowInput1() {
+	PCollection<String> input1 =
+        p.apply("CreateInput1", Create.of("Input1"))
+            .apply("Window1", Window.into(FixedWindows.of(Duration.standardMinutes(1))));
+	return input1;
+}
 
   @Test
   @Category(NeedsRunner.class)
@@ -288,9 +293,8 @@ public class FlattenTest implements Serializable {
   public void testIncompatibleWindowFnPropagationFailure() {
     p.enableAbandonedNodeEnforcement(false);
 
-    PCollection<String> input1 =
-        p.apply("CreateInput1", Create.of("Input1"))
-            .apply("Window1", Window.into(FixedWindows.of(Duration.standardMinutes(1))));
+    PCollection<String> input1 = createAndWindowInput1();
+
     PCollection<String> input2 =
         p.apply("CreateInput2", Create.of("Input2"))
             .apply("Window2", Window.into(FixedWindows.of(Duration.standardMinutes(2))));
