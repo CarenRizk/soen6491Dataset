@@ -36,6 +36,9 @@ import java.util.UUID;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import javax.annotation.concurrent.Immutable;
+
+import org.apache.beam.sdk.Pipeline;
+import org.apache.beam.sdk.util.construction.ExternalTranslationOptions;
 import org.apache.beam.sdk.values.Row;
 import org.apache.beam.vendor.guava.v32_1_2_jre.com.google.common.base.CaseFormat;
 import org.apache.beam.vendor.guava.v32_1_2_jre.com.google.common.base.Preconditions;
@@ -411,9 +414,9 @@ public class Schema implements Serializable {
     Schema other = (Schema) o;
     // If both schemas have a UUID set, we can short-circuit deep comparison if the
     // UUIDs are equal.
-    if (uuid != null && other.uuid != null && Objects.equals(uuid, other.uuid)) {
-      return true;
-    }
+    if (areUuidsEqual(this.uuid, other.uuid)) {
+        return true;
+      }
     // Utilize hash-code pre-calculation for cheap negative comparison.
     if (this.hashCode != other.hashCode) {
       return false;
@@ -422,10 +425,15 @@ public class Schema implements Serializable {
         && Objects.equals(getFields(), other.getFields())
         && Objects.equals(getOptions(), other.getOptions());
   }
+  
+	//Helper method to check UUID equality
+	private boolean areUuidsEqual(UUID uuid1, UUID uuid2) {
+	   return uuid1 != null && uuid2 != null && Objects.equals(uuid1, uuid2);
+	}
 
   /** Returns true if two schemas are equal ignoring field names and descriptions. */
   public boolean typesEqual(Schema other) {
-    if (uuid != null && other.uuid != null && Objects.equals(uuid, other.uuid)) {
+    if (areUuidsEqual(this.uuid, other.uuid)) {
       return true;
     }
     if (getFieldCount() != other.getFieldCount()) {
@@ -469,14 +477,8 @@ public class Schema implements Serializable {
       return false;
     }
 
-    List<Field> otherFields =
-        other.getFields().stream()
-            .sorted(Comparator.comparing(Field::getName))
-            .collect(Collectors.toList());
-    List<Field> actualFields =
-        getFields().stream()
-            .sorted(Comparator.comparing(Field::getName))
-            .collect(Collectors.toList());
+    List<Field> otherFields = other.collectFields();
+    List<Field> actualFields = collectFields();
 
     for (int i = 0; i < otherFields.size(); ++i) {
       Field otherField = otherFields.get(i);
@@ -487,6 +489,12 @@ public class Schema implements Serializable {
     }
     return true;
   }
+
+	private List<Field> collectFields() {
+		return getFields().stream()
+		    .sorted(Comparator.comparing(Field::getName))
+		    .collect(Collectors.toList());
+	}
 
   @Override
   public String toString() {
@@ -1230,7 +1238,16 @@ public class Schema implements Serializable {
   public static class Options implements Serializable {
     private final Map<String, Option> options;
 
-    @Override
+      public static boolean includesTransformUpgrades(Pipeline pipeline) {
+      return (pipeline
+              .getOptions()
+              .as(ExternalTranslationOptions.class)
+              .getTransformsToOverride()
+              .size()
+          > 0);
+    }
+
+      @Override
     public String toString() {
       TreeMap sorted = new TreeMap(options);
       return "{" + sorted + '}';

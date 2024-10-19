@@ -38,11 +38,6 @@
                     <dir
                       name="extensions">
                       <dir
-                        name="avro">
-                        <dir
-                          name="io"/>
-                      </dir>
-                      <dir
                         name="euphoria">
                         <dir
                           name="core">
@@ -104,11 +99,6 @@
                       name="coders"/>
                     <dir
                       name="extensions">
-                      <dir
-                        name="avro">
-                        <dir
-                          name="io"/>
-                      </dir>
                       <dir
                         name="euphoria">
                         <dir

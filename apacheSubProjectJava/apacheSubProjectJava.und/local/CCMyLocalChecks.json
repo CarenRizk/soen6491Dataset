@@ -1,0 +1,18 @@
+{
+    "automatic": false,
+    "checks": [
+        "RECOMMENDED_04",
+        "RECOMMENDED_10",
+        "RECOMMENDED_12",
+        "RECOMMENDED_13",
+        "RECOMMENDED_18",
+        "RECOMMENDED_20"
+    ],
+    "excludes": [
+    ],
+    "name": "Sandbox",
+    "parents": [
+    ],
+    "tags": [
+    ]
+}
