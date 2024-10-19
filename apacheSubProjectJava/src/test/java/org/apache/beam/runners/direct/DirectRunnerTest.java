@@ -139,7 +139,16 @@ public class DirectRunnerTest implements Serializable {
   public void wordCountShouldSucceed() throws Throwable {
     Pipeline p = getPipeline();
 
-    PCollection<KV<String, Long>> counts =
+    PCollection<String> countStrs = countElementsAndFormatResults(p);
+
+    PAssert.that(countStrs).containsInAnyOrder("baz: 1", "bar: 2", "foo: 3");
+
+    DirectPipelineResult result = (DirectPipelineResult) p.run();
+    result.waitUntilFinish();
+  }
+
+private PCollection<String> countElementsAndFormatResults(Pipeline p) {
+	PCollection<KV<String, Long>> counts =
         p.apply(Create.of("foo", "bar", "foo", "baz", "bar", "foo"))
             .apply(
                 MapElements.via(
@@ -159,12 +168,8 @@ public class DirectRunnerTest implements Serializable {
                     return String.format("%s: %s", input.getKey(), input.getValue());
                   }
                 }));
-
-    PAssert.that(countStrs).containsInAnyOrder("baz: 1", "bar: 2", "foo: 3");
-
-    DirectPipelineResult result = (DirectPipelineResult) p.run();
-    result.waitUntilFinish();
-  }
+	return countStrs;
+}
 
   private static AtomicInteger changed;
 
@@ -173,35 +178,8 @@ public class DirectRunnerTest implements Serializable {
     Pipeline p = getPipeline();
 
     changed = new AtomicInteger(0);
-    PCollection<KV<String, Long>> counts =
-        p.apply(Create.of("foo", "bar", "foo", "baz", "bar", "foo"))
-            .apply(
-                MapElements.via(
-                    new SimpleFunction<String, String>() {
-                      @Override
-                      public String apply(String input) {
-                        return input;
-                      }
-                    }))
-            .apply(Count.perElement());
-    PCollection<String> countStrs =
-        counts.apply(
-            MapElements.via(
-                new SimpleFunction<KV<String, Long>, String>() {
-                  @Override
-                  public String apply(KV<String, Long> input) {
-                    return String.format("%s: %s", input.getKey(), input.getValue());
-                  }
-                }));
-
-    counts.apply(
-        ParDo.of(
-            new DoFn<KV<String, Long>, Void>() {
-              @ProcessElement
-              public void updateChanged(ProcessContext c) {
-                changed.getAndIncrement();
-              }
-            }));
+    
+    PCollection<String> countStrs = countElementsAndFormatResults(p);
 
     PAssert.that(countStrs).containsInAnyOrder("baz: 1", "bar: 2", "foo: 3");
 
@@ -393,7 +371,16 @@ public class DirectRunnerTest implements Serializable {
   public void testMutatingOutputThenOutputDoFnError() throws Exception {
     Pipeline pipeline = getPipeline();
 
-    pipeline
+    processAndModifyListOutput(pipeline);
+
+    thrown.expect(IllegalMutationException.class);
+    thrown.expectMessage("output");
+    thrown.expectMessage("must not be mutated");
+    pipeline.run();
+  }
+
+private void processAndModifyListOutput(Pipeline pipeline) {
+	pipeline
         .apply(Create.of(42))
         .apply(
             ParDo.of(
@@ -406,12 +393,7 @@ public class DirectRunnerTest implements Serializable {
                     c.output(outputList);
                   }
                 }));
-
-    thrown.expect(IllegalMutationException.class);
-    thrown.expectMessage("output");
-    thrown.expectMessage("must not be mutated");
-    pipeline.run();
-  }
+}
 
   /**
    * Tests that a {@link DoFn} that mutates an output with a good equals() fails in the {@link
@@ -424,19 +406,7 @@ public class DirectRunnerTest implements Serializable {
     options.as(DirectOptions.class).setEnforceImmutability(false);
     Pipeline pipeline = Pipeline.create(options);
 
-    pipeline
-        .apply(Create.of(42))
-        .apply(
-            ParDo.of(
-                new DoFn<Integer, List<Integer>>() {
-                  @ProcessElement
-                  public void processElement(ProcessContext c) {
-                    List<Integer> outputList = Arrays.asList(1, 2, 3, 4);
-                    c.output(outputList);
-                    outputList.set(0, 37);
-                    c.output(outputList);
-                  }
-                }));
+    processAndModifyListOutput(pipeline);
 
     pipeline.run();
   }

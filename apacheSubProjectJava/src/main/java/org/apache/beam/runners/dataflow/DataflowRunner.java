@@ -17,43 +17,11 @@
  */
 package org.apache.beam.runners.dataflow;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
-import static org.apache.beam.sdk.io.gcp.pubsub.PubsubIO.ENABLE_CUSTOM_PUBSUB_SINK;
-import static org.apache.beam.sdk.io.gcp.pubsub.PubsubIO.ENABLE_CUSTOM_PUBSUB_SOURCE;
-import static org.apache.beam.sdk.util.SerializableUtils.serializeToByteArray;
-import static org.apache.beam.sdk.util.StringUtils.byteArrayToJsonString;
-import static org.apache.beam.sdk.util.construction.resources.PipelineResources.detectClassPathResourcesToStage;
-import static org.apache.beam.vendor.guava.v32_1_2_jre.com.google.common.base.MoreObjects.firstNonNull;
-import static org.apache.beam.vendor.guava.v32_1_2_jre.com.google.common.base.Preconditions.checkArgument;
-import static org.apache.beam.vendor.guava.v32_1_2_jre.com.google.common.base.Preconditions.checkState;
-import static org.apache.beam.vendor.guava.v32_1_2_jre.com.google.common.base.Strings.isNullOrEmpty;
-
 import com.fasterxml.jackson.databind.Module;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.api.client.googleapis.json.GoogleJsonResponseException;
-import com.google.api.services.dataflow.model.DataflowPackage;
-import com.google.api.services.dataflow.model.Job;
-import com.google.api.services.dataflow.model.ListJobsResponse;
-import com.google.api.services.dataflow.model.SdkHarnessContainerImage;
-import com.google.api.services.dataflow.model.WorkerPool;
-
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
-import java.nio.channels.Channels;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
+import com.google.api.services.dataflow.model.*;
+import com.google.auto.value.AutoValue;
 import org.apache.beam.model.pipeline.v1.RunnerApi;
 import org.apache.beam.runners.dataflow.DataflowPipelineTranslator.JobSpecification;
 import org.apache.beam.runners.dataflow.StreamingViewOverrides.StreamingCreatePCollectionViewFactory;
@@ -95,34 +63,15 @@ import org.apache.beam.sdk.schemas.Schema;
 import org.apache.beam.sdk.state.MapState;
 import org.apache.beam.sdk.state.MultimapState;
 import org.apache.beam.sdk.state.SetState;
-import org.apache.beam.sdk.transforms.Combine;
-import org.apache.beam.sdk.transforms.DoFn;
-import org.apache.beam.sdk.transforms.GroupIntoBatches;
-import org.apache.beam.sdk.transforms.Impulse;
-import org.apache.beam.sdk.transforms.PTransform;
-import org.apache.beam.sdk.transforms.View;
+import org.apache.beam.sdk.transforms.*;
 import org.apache.beam.sdk.transforms.reflect.DoFnSignatures;
 import org.apache.beam.sdk.util.MimeTypes;
 import org.apache.beam.sdk.util.ReleaseInfo;
 import org.apache.beam.sdk.util.common.ReflectHelpers;
-import org.apache.beam.sdk.util.construction.BeamUrns;
-import org.apache.beam.sdk.util.construction.DeduplicatedFlattenFactory;
-import org.apache.beam.sdk.util.construction.EmptyFlattenAsCreateFactory;
-import org.apache.beam.sdk.util.construction.Environments;
-import org.apache.beam.sdk.util.construction.External;
-import org.apache.beam.sdk.util.construction.PTransformMatchers;
-import org.apache.beam.sdk.util.construction.PipelineTranslation;
-import org.apache.beam.sdk.util.construction.SdkComponents;
-import org.apache.beam.sdk.util.construction.SplittableParDo;
-import org.apache.beam.sdk.util.construction.SplittableParDoNaiveBounded;
-import org.apache.beam.sdk.util.construction.UnconsumedReads;
+import org.apache.beam.sdk.util.construction.*;
 import org.apache.beam.sdk.util.construction.graph.ProjectionPushdownOptimizer;
-import org.apache.beam.sdk.values.KV;
-import org.apache.beam.sdk.values.PCollection;
+import org.apache.beam.sdk.values.*;
 import org.apache.beam.sdk.values.PCollection.IsBounded;
-import org.apache.beam.sdk.values.PValue;
-import org.apache.beam.sdk.values.TupleTag;
-import org.apache.beam.sdk.values.WindowingStrategy;
 import org.apache.beam.vendor.grpc.v1p60p1.com.google.protobuf.InvalidProtocolBufferException;
 import org.apache.beam.vendor.grpc.v1p60p1.com.google.protobuf.TextFormat;
 import org.apache.beam.vendor.guava.v32_1_2_jre.com.google.common.annotations.VisibleForTesting;
@@ -141,7 +90,23 @@ import org.joda.time.DateTimeZone;
 import org.joda.time.format.DateTimeFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.google.auto.value.AutoValue;
+
+import java.io.*;
+import java.nio.channels.Channels;
+import java.util.*;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static org.apache.beam.sdk.io.gcp.pubsub.PubsubIO.ENABLE_CUSTOM_PUBSUB_SINK;
+import static org.apache.beam.sdk.io.gcp.pubsub.PubsubIO.ENABLE_CUSTOM_PUBSUB_SOURCE;
+import static org.apache.beam.sdk.util.SerializableUtils.serializeToByteArray;
+import static org.apache.beam.sdk.util.StringUtils.byteArrayToJsonString;
+import static org.apache.beam.sdk.util.construction.resources.PipelineResources.detectClassPathResourcesToStage;
+import static org.apache.beam.vendor.guava.v32_1_2_jre.com.google.common.base.MoreObjects.firstNonNull;
+import static org.apache.beam.vendor.guava.v32_1_2_jre.com.google.common.base.Preconditions.checkArgument;
+import static org.apache.beam.vendor.guava.v32_1_2_jre.com.google.common.base.Preconditions.checkState;
+import static org.apache.beam.vendor.guava.v32_1_2_jre.com.google.common.base.Strings.isNullOrEmpty;
 
 /**
  * A {@link PipelineRunner} that executes the operations in the pipeline by first translating them
@@ -460,7 +425,7 @@ public class DataflowRunner extends PipelineRunner<DataflowPipelineJob> {
   }
 
   static void configureSdkHarnessContainerImages(
-      DataflowPipelineOptions options, RunnerApi.Pipeline pipelineProto, Job newJob) {
+      RunnerApi.Pipeline pipelineProto, Job newJob) {
     List<SdkHarnessContainerImage> sdkContainerList =
         getAllEnvironmentInfo(pipelineProto).stream()
             .map(
@@ -686,37 +651,10 @@ public class DataflowRunner extends PipelineRunner<DataflowPipelineJob> {
       RunnerApi.Environment.Builder environmentBuilder = entry.getValue().toBuilder();
       environmentBuilder.clearDependencies();
       for (RunnerApi.ArtifactInformation info : entry.getValue().getDependenciesList()) {
-        if (!BeamUrns.getUrn(RunnerApi.StandardArtifacts.Types.FILE).equals(info.getTypeUrn())) {
-          throw new RuntimeException(
-              String.format("unsupported artifact type %s", info.getTypeUrn()));
-        }
-        RunnerApi.ArtifactFilePayload filePayload;
-        try {
-          filePayload = RunnerApi.ArtifactFilePayload.parseFrom(info.getTypePayload());
-        } catch (InvalidProtocolBufferException e) {
-          throw new RuntimeException("Error parsing artifact file payload.", e);
-        }
-        String stagedName;
-        if (BeamUrns.getUrn(RunnerApi.StandardArtifacts.Roles.STAGING_TO)
-            .equals(info.getRoleUrn())) {
-          try {
-            RunnerApi.ArtifactStagingToRolePayload stagingPayload =
-                RunnerApi.ArtifactStagingToRolePayload.parseFrom(info.getRolePayload());
-            stagedName = stagingPayload.getStagedName();
-          } catch (InvalidProtocolBufferException e) {
-            throw new RuntimeException("Error parsing artifact staging_to role payload.", e);
-          }
-        } else {
-          try {
-            File source = new File(filePayload.getPath());
-            HashCode hashCode = Files.asByteSource(source).hash(Hashing.sha256());
-            stagedName = Environments.createStagingFileName(source, hashCode);
-          } catch (IOException e) {
-            throw new RuntimeException(
-                String.format("Error creating staged name for artifact %s", filePayload.getPath()),
-                e);
-          }
-        }
+        
+    	RunnerApi.ArtifactFilePayload filePayload = validateArtifactTypeAndGetFilePayload(info);
+        
+        String stagedName = getStagedName(info, filePayload);
         environmentBuilder.addDependencies(
             info.toBuilder()
                 .setTypeUrn(BeamUrns.getUrn(RunnerApi.StandardArtifacts.Types.URL))
@@ -736,43 +674,62 @@ public class DataflowRunner extends PipelineRunner<DataflowPipelineJob> {
     return pipelineBuilder.build();
   }
 
+private RunnerApi.ArtifactFilePayload validateArtifactTypeAndGetFilePayload(RunnerApi.ArtifactInformation info) {
+	if (!BeamUrns.getUrn(RunnerApi.StandardArtifacts.Types.FILE).equals(info.getTypeUrn())) {
+	  throw new RuntimeException(
+	      String.format("unsupported artifact type %s", info.getTypeUrn()));
+	}
+	
+	RunnerApi.ArtifactFilePayload filePayload = getFilePayload(info);
+	return filePayload;
+}
+
+private RunnerApi.ArtifactFilePayload getFilePayload(RunnerApi.ArtifactInformation info) {
+	RunnerApi.ArtifactFilePayload filePayload;
+	try {
+	  filePayload = RunnerApi.ArtifactFilePayload.parseFrom(info.getTypePayload());
+	} catch (InvalidProtocolBufferException e) {
+	  throw new RuntimeException("Error parsing artifact file payload.", e);
+	}
+	return filePayload;
+}
+
+private String getStagedName(RunnerApi.ArtifactInformation info, RunnerApi.ArtifactFilePayload filePayload) {
+	String stagedName;
+	if (BeamUrns.getUrn(RunnerApi.StandardArtifacts.Roles.STAGING_TO)
+	    .equals(info.getRoleUrn())) {
+	  try {
+	    RunnerApi.ArtifactStagingToRolePayload stagingPayload =
+	        RunnerApi.ArtifactStagingToRolePayload.parseFrom(info.getRolePayload());
+	    stagedName = stagingPayload.getStagedName();
+	  } catch (InvalidProtocolBufferException e) {
+	    throw new RuntimeException("Error parsing artifact staging_to role payload.", e);
+	  }
+	} else {
+	  try {
+	    File source = new File(filePayload.getPath());
+	    HashCode hashCode = Files.asByteSource(source).hash(Hashing.sha256());
+	    stagedName = Environments.createStagingFileName(source, hashCode);
+	  } catch (IOException e) {
+	    throw new RuntimeException(
+	        String.format("Error creating staged name for artifact %s", filePayload.getPath()),
+	        e);
+	  }
+	}
+	return stagedName;
+}
+
   protected List<DataflowPackage> stageArtifacts(RunnerApi.Pipeline pipeline) {
     ImmutableList.Builder<StagedFile> filesToStageBuilder = ImmutableList.builder();
     Set<String> stagedNames = new HashSet<>();
     for (Map.Entry<String, RunnerApi.Environment> entry :
         pipeline.getComponents().getEnvironmentsMap().entrySet()) {
       for (RunnerApi.ArtifactInformation info : entry.getValue().getDependenciesList()) {
-        if (!BeamUrns.getUrn(RunnerApi.StandardArtifacts.Types.FILE).equals(info.getTypeUrn())) {
-          throw new RuntimeException(
-              String.format("unsupported artifact type %s", info.getTypeUrn()));
-        }
-        RunnerApi.ArtifactFilePayload filePayload;
-        try {
-          filePayload = RunnerApi.ArtifactFilePayload.parseFrom(info.getTypePayload());
-        } catch (InvalidProtocolBufferException e) {
-          throw new RuntimeException("Error parsing artifact file payload.", e);
-        }
-        String stagedName;
-        if (BeamUrns.getUrn(RunnerApi.StandardArtifacts.Roles.STAGING_TO)
-            .equals(info.getRoleUrn())) {
-          try {
-            RunnerApi.ArtifactStagingToRolePayload stagingPayload =
-                RunnerApi.ArtifactStagingToRolePayload.parseFrom(info.getRolePayload());
-            stagedName = stagingPayload.getStagedName();
-          } catch (InvalidProtocolBufferException e) {
-            throw new RuntimeException("Error parsing artifact staging_to role payload.", e);
-          }
-        } else {
-          try {
-            File source = new File(filePayload.getPath());
-            HashCode hashCode = Files.asByteSource(source).hash(Hashing.sha256());
-            stagedName = Environments.createStagingFileName(source, hashCode);
-          } catch (IOException e) {
-            throw new RuntimeException(
-                String.format("Error creating staged name for artifact %s", filePayload.getPath()),
-                e);
-          }
-        }
+    	  
+      	RunnerApi.ArtifactFilePayload filePayload = validateArtifactTypeAndGetFilePayload(info);
+
+        String stagedName = getStagedName(info, filePayload);
+        
         if (stagedNames.contains(stagedName)) {
           continue;
         } else {
@@ -1081,7 +1038,7 @@ public class DataflowRunner extends PipelineRunner<DataflowPipelineJob> {
       workerPool.setWorkerHarnessContainerImage(containerImage);
     }
 
-    configureSdkHarnessContainerImages(options, portablePipelineProto, newJob);
+    configureSdkHarnessContainerImages(portablePipelineProto, newJob);
 
     newJob.getEnvironment().setVersion(getEnvironmentVersion(options));
 

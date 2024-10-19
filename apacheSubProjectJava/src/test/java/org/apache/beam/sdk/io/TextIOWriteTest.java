@@ -311,7 +311,7 @@ public class TextIOWriteTest {
     if (skipIfEmpty && elems.length == 0) {
       String pattern = outputPrefix.toString() + "*";
       MatchResult matches =
-          Iterables.getOnlyElement(FileSystems.match(Collections.singletonList(pattern)));
+          (MatchResult) Iterables.getOnlyElement(FileSystems.match(Collections.singletonList(pattern)));
       assertEquals(NOT_FOUND, matches.status());
     } else if (numShards == 0) {
       String pattern = outputPrefix.toString() + "*";

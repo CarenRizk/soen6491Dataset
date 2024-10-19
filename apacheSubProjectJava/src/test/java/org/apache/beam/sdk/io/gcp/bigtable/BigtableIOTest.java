@@ -624,7 +624,12 @@ public class BigtableIOTest {
     final int numRows = 10;
     final int numSamples = 1;
     final long bytesPerRow = 1L;
-    makeTableData(table, numRows);
+    BigtableSource source = extracted(table, numRows, numSamples, bytesPerRow);
+    assertSplitAtFractionExhaustive(source, null);
+  }
+
+private BigtableSource extracted(final String table, final int numRows, final int numSamples, final long bytesPerRow) {
+	makeTableData(table, numRows);
     service.setupSampleRowKeys(table, numSamples, bytesPerRow);
 
     BigtableSource source =
@@ -638,8 +643,8 @@ public class BigtableIOTest {
                     StaticValueProvider.of(Collections.singletonList(service.getTableRange(table))))
                 .build(),
             null);
-    assertSplitAtFractionExhaustive(source, null);
-  }
+	return source;
+}
 
   /** Unit tests of splitAtFraction. */
   @Test
@@ -648,20 +653,7 @@ public class BigtableIOTest {
     final int numRows = 10;
     final int numSamples = 1;
     final long bytesPerRow = 1L;
-    makeTableData(table, numRows);
-    service.setupSampleRowKeys(table, numSamples, bytesPerRow);
-
-    BigtableSource source =
-        new BigtableSource(
-            factory,
-            configId,
-            config,
-            BigtableReadOptions.builder()
-                .setTableId(StaticValueProvider.of(table))
-                .setKeyRanges(
-                    StaticValueProvider.of(Collections.singletonList(service.getTableRange(table))))
-                .build(),
-            null);
+    BigtableSource source = extracted(table, numRows, numSamples, bytesPerRow);
     // With 0 items read, all split requests will fail.
     assertSplitAtFractionFails(source, 0, 0.1, null /* options */);
     assertSplitAtFractionFails(source, 0, 1.0, null /* options */);
@@ -794,37 +786,7 @@ public class BigtableIOTest {
             ByteKeyRange.of(createByteKey(6), createByteKey(7)),
             ByteKeyRange.of(createByteKey(8), createByteKey(9)));
 
-    // Generate source and split it.
-    BigtableSource source =
-        new BigtableSource(
-            factory,
-            configId,
-            config,
-            BigtableReadOptions.builder()
-                .setTableId(StaticValueProvider.of(table))
-                .setKeyRanges(StaticValueProvider.of(keyRanges))
-                .build(),
-            null /*size*/);
-
-    List<BigtableSource> splits = new ArrayList<>();
-    for (ByteKeyRange range : keyRanges) {
-      splits.add(source.withSingleRange(range));
-    }
-
-    List<BigtableSource> reducedSplits = source.reduceSplits(splits, null, maxSplit);
-
-    List<ByteKeyRange> actualRangesAfterSplit = new ArrayList<>();
-
-    for (BigtableSource splitSource : reducedSplits) {
-      actualRangesAfterSplit.addAll(splitSource.getRanges());
-    }
-
-    assertAllSourcesHaveSingleRanges(reducedSplits);
-
-    assertThat(
-        actualRangesAfterSplit,
-        IsIterableContainingInAnyOrder.containsInAnyOrder(
-            expectedKeyRangesAfterReducedSplits.toArray()));
+    createAndSplitBigtableSource(table, maxSplit, expectedKeyRangesAfterReducedSplits);
   }
 
   /** Tests reduce split with all non adjacent ranges. */
@@ -850,7 +812,12 @@ public class BigtableIOTest {
             ByteKeyRange.of(createByteKey(8), createByteKey(9)));
 
     // Generate source and split it.
-    BigtableSource source =
+    createAndSplitBigtableSource(table, maxSplit, keyRanges);
+  }
+
+private void createAndSplitBigtableSource(final String table, final int maxSplit, List<ByteKeyRange> keyRanges)
+		throws IOException {
+	BigtableSource source =
         new BigtableSource(
             factory,
             configId,
@@ -880,7 +847,7 @@ public class BigtableIOTest {
     assertThat(
         actualRangesAfterSplit,
         IsIterableContainingInAnyOrder.containsInAnyOrder(keyRanges.toArray()));
-  }
+}
 
   /** Tests reduce Splits with all adjacent ranges. */
   @Test
@@ -965,23 +932,7 @@ public class BigtableIOTest {
     ByteKey splitKey1 = ByteKey.copyFrom("key000000500".getBytes(StandardCharsets.UTF_8));
     ByteKey splitKey2 = ByteKey.copyFrom("key000001000".getBytes(StandardCharsets.UTF_8));
 
-    ByteKeyRange tableRange = service.getTableRange(table);
-    List<ByteKeyRange> keyRanges =
-        Arrays.asList(
-            tableRange.withEndKey(splitKey1),
-            tableRange.withStartKey(splitKey1).withEndKey(splitKey2),
-            tableRange.withStartKey(splitKey2));
-    // Generate source and split it.
-    BigtableSource source =
-        new BigtableSource(
-            factory,
-            configId,
-            config,
-            BigtableReadOptions.builder()
-                .setTableId(StaticValueProvider.of(table))
-                .setKeyRanges(StaticValueProvider.of(keyRanges))
-                .build(),
-            null /*size*/);
+    BigtableSource source = createBigtableSourceWithKeyRanges(table, splitKey1, splitKey2);
     BigtableSource referenceSource =
         new BigtableSource(
             factory,
@@ -1000,6 +951,27 @@ public class BigtableIOTest {
     assertThat(splits, hasSize(numSplits));
     assertSourcesEqualReferenceSource(referenceSource, splits, null /* options */);
   }
+
+private BigtableSource createBigtableSourceWithKeyRanges(final String table, ByteKey splitKey1, ByteKey splitKey2) {
+	ByteKeyRange tableRange = service.getTableRange(table);
+    List<ByteKeyRange> keyRanges =
+        Arrays.asList(
+            tableRange.withEndKey(splitKey1),
+            tableRange.withStartKey(splitKey1).withEndKey(splitKey2),
+            tableRange.withStartKey(splitKey2));
+    // Generate source and split it.
+    BigtableSource source =
+        new BigtableSource(
+            factory,
+            configId,
+            config,
+            BigtableReadOptions.builder()
+                .setTableId(StaticValueProvider.of(table))
+                .setKeyRanges(StaticValueProvider.of(keyRanges))
+                .build(),
+            null /*size*/);
+	return source;
+}
 
   /** Tests reading all rows from a sub-split table. */
   @Test
@@ -1055,23 +1027,7 @@ public class BigtableIOTest {
     ByteKey splitKey1 = ByteKey.copyFrom("key000000330".getBytes(StandardCharsets.UTF_8));
     ByteKey splitKey2 = ByteKey.copyFrom("key000000730".getBytes(StandardCharsets.UTF_8));
 
-    ByteKeyRange tableRange = service.getTableRange(table);
-    List<ByteKeyRange> keyRanges =
-        Arrays.asList(
-            tableRange.withEndKey(splitKey1),
-            tableRange.withStartKey(splitKey1).withEndKey(splitKey2),
-            tableRange.withStartKey(splitKey2));
-    // Generate source and split it.
-    BigtableSource source =
-        new BigtableSource(
-            factory,
-            configId,
-            config,
-            BigtableReadOptions.builder()
-                .setTableId(StaticValueProvider.of(table))
-                .setKeyRanges(StaticValueProvider.of(keyRanges))
-                .build(),
-            null /*size*/);
+    BigtableSource source = createBigtableSourceWithKeyRanges(table, splitKey1, splitKey2);
     BigtableSource referenceSource =
         new BigtableSource(
             factory,

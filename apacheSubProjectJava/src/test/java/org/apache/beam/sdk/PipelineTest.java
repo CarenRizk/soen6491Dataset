@@ -251,24 +251,12 @@ public class PipelineTest {
 
   @Test
   public void testStableUniqueNameOff() {
-    pipeline.enableAbandonedNodeEnforcement(false);
-
-    pipeline.getOptions().setStableUniqueNames(CheckEnabled.OFF);
-
-    pipeline.apply(Create.of(5, 6, 7));
-    pipeline.apply(Create.of(5, 6, 7));
-    ((Pipeline) pipeline).validate(pipeline.getOptions());
+    testStableUniqueNameOffextracted(CheckEnabled.OFF);
   }
 
   @Test
   public void testStableUniqueNameWarning() {
-    pipeline.enableAbandonedNodeEnforcement(false);
-
-    pipeline.getOptions().setStableUniqueNames(CheckEnabled.WARNING);
-
-    pipeline.apply(Create.of(5, 6, 7));
-    pipeline.apply(Create.of(5, 6, 7));
-    ((Pipeline) pipeline).validate(pipeline.getOptions());
+    testStableUniqueNameOffextracted(CheckEnabled.WARNING);
   }
 
   @Test
@@ -541,4 +529,12 @@ public class PipelineTest {
               TaggedPValue.of(replacement.getKey(), replacement.getValue())));
     }
   }
+
+private void testStableUniqueNameOffextracted(PipelineOptions.CheckEnabled arg0) {
+	pipeline.enableAbandonedNodeEnforcement(false);
+	pipeline.getOptions().setStableUniqueNames(arg0);
+	pipeline.apply(Create.of(5, 6, 7));
+	pipeline.apply(Create.of(5, 6, 7));
+	((Pipeline) pipeline).validate(pipeline.getOptions());
+}
 }

@@ -691,20 +691,7 @@ public class DataflowRunnerTest implements Serializable {
   @Test
   public void testRunReturnDifferentRequestId() throws IOException {
     DataflowPipelineOptions options = buildPipelineOptions();
-    Dataflow mockDataflowClient = options.getDataflowClient();
-    Dataflow.Projects.Locations.Jobs.Create mockRequest =
-        mock(Dataflow.Projects.Locations.Jobs.Create.class);
-    when(mockDataflowClient
-            .projects()
-            .locations()
-            .jobs()
-            .create(eq(PROJECT_ID), eq(REGION_ID), any(Job.class)))
-        .thenReturn(mockRequest);
-    Job resultJob = new Job();
-    resultJob.setId("newid");
-    // Return a different request id.
-    resultJob.setClientRequestId("different_request_id");
-    when(mockRequest.execute()).thenReturn(resultJob);
+    Job resultJob = setupMockDataflowJobCreation(options);
 
     Pipeline p = buildDataflowPipeline(options);
     try {
@@ -720,6 +707,24 @@ public class DataflowRunnerTest implements Serializable {
     }
   }
 
+private Job setupMockDataflowJobCreation(DataflowPipelineOptions options) throws IOException {
+	Dataflow mockDataflowClient = options.getDataflowClient();
+    Dataflow.Projects.Locations.Jobs.Create mockRequest =
+        mock(Dataflow.Projects.Locations.Jobs.Create.class);
+    when(mockDataflowClient
+            .projects()
+            .locations()
+            .jobs()
+            .create(eq(PROJECT_ID), eq(REGION_ID), any(Job.class)))
+        .thenReturn(mockRequest);
+    Job resultJob = new Job();
+    resultJob.setId("newid");
+    // Return a different request id.
+    resultJob.setClientRequestId("different_request_id");
+    when(mockRequest.execute()).thenReturn(resultJob);
+	return resultJob;
+}
+
   @Test
   public void testUpdateNonExistentPipeline() throws IOException {
     thrown.expect(IllegalArgumentException.class);
@@ -734,23 +739,8 @@ public class DataflowRunnerTest implements Serializable {
 
   @Test
   public void testUpdateAlreadyUpdatedPipeline() throws IOException {
-    DataflowPipelineOptions options = buildPipelineOptions();
-    options.setUpdate(true);
-    options.setJobName("oldJobName");
-    Dataflow mockDataflowClient = options.getDataflowClient();
-    Dataflow.Projects.Locations.Jobs.Create mockRequest =
-        mock(Dataflow.Projects.Locations.Jobs.Create.class);
-    when(mockDataflowClient
-            .projects()
-            .locations()
-            .jobs()
-            .create(eq(PROJECT_ID), eq(REGION_ID), any(Job.class)))
-        .thenReturn(mockRequest);
-    final Job resultJob = new Job();
-    resultJob.setId("newid");
-    // Return a different request id.
-    resultJob.setClientRequestId("different_request_id");
-    when(mockRequest.execute()).thenReturn(resultJob);
+	 DataflowPipelineOptions options = buildPipelineOptions();
+	 Job resultJob = setupMockDataflowJobCreation(options);
 
     Pipeline p = buildDataflowPipeline(options);
 
@@ -891,15 +881,7 @@ public class DataflowRunnerTest implements Serializable {
     DataflowPipelineOptions options = buildPipelineOptions();
     options.setGcpTempLocation(NON_EXISTENT_BUCKET);
 
-    thrown.expect(RuntimeException.class);
-    thrown.expectCause(instanceOf(FileNotFoundException.class));
-    thrown.expectMessage(
-        containsString("Output path does not exist or is not writeable: " + NON_EXISTENT_BUCKET));
-    DataflowRunner.fromOptions(options);
-
-    ArgumentCaptor<Job> jobCaptor = ArgumentCaptor.forClass(Job.class);
-    Mockito.verify(mockJobs).create(eq(PROJECT_ID), eq(REGION_ID), jobCaptor.capture());
-    assertValidJob(jobCaptor.getValue());
+    verifyNonExistentOutputPathThrowsException(options);
   }
 
   @Test
@@ -907,7 +889,11 @@ public class DataflowRunnerTest implements Serializable {
     DataflowPipelineOptions options = buildPipelineOptions();
     options.setStagingLocation(NON_EXISTENT_BUCKET);
 
-    thrown.expect(RuntimeException.class);
+    verifyNonExistentOutputPathThrowsException(options);
+  }
+
+private void verifyNonExistentOutputPathThrowsException(DataflowPipelineOptions options) throws IOException {
+	thrown.expect(RuntimeException.class);
     thrown.expectCause(instanceOf(FileNotFoundException.class));
     thrown.expectMessage(
         containsString("Output path does not exist or is not writeable: " + NON_EXISTENT_BUCKET));
@@ -916,22 +902,14 @@ public class DataflowRunnerTest implements Serializable {
     ArgumentCaptor<Job> jobCaptor = ArgumentCaptor.forClass(Job.class);
     Mockito.verify(mockJobs).create(eq(PROJECT_ID), eq(REGION_ID), jobCaptor.capture());
     assertValidJob(jobCaptor.getValue());
-  }
+}
 
   @Test
   public void testNonExistentProfileLocation() throws IOException {
     DataflowPipelineOptions options = buildPipelineOptions();
     options.setSaveProfilesToGcs(NON_EXISTENT_BUCKET);
 
-    thrown.expect(RuntimeException.class);
-    thrown.expectCause(instanceOf(FileNotFoundException.class));
-    thrown.expectMessage(
-        containsString("Output path does not exist or is not writeable: " + NON_EXISTENT_BUCKET));
-    DataflowRunner.fromOptions(options);
-
-    ArgumentCaptor<Job> jobCaptor = ArgumentCaptor.forClass(Job.class);
-    Mockito.verify(mockJobs).create(eq(PROJECT_ID), eq(REGION_ID), jobCaptor.capture());
-    assertValidJob(jobCaptor.getValue());
+    verifyNonExistentOutputPathThrowsException(options);
   }
 
   @Test
@@ -1021,40 +999,7 @@ public class DataflowRunnerTest implements Serializable {
     String dockerHubPythonContainerUrl = "apache/beam_python3.9_sdk:latest";
     String gcrPythonContainerUrl = "gcr.io/apache-beam-testing/beam-sdk/beam_python3.9_sdk:latest";
     options.setSdkHarnessContainerImageOverrides(".*python.*," + gcrPythonContainerUrl);
-    DataflowRunner runner = DataflowRunner.fromOptions(options);
-    RunnerApi.Pipeline pipeline =
-        RunnerApi.Pipeline.newBuilder()
-            .setComponents(
-                RunnerApi.Components.newBuilder()
-                    .putEnvironments(
-                        "env",
-                        RunnerApi.Environment.newBuilder()
-                            .setUrn(
-                                BeamUrns.getUrn(RunnerApi.StandardEnvironments.Environments.DOCKER))
-                            .setPayload(
-                                RunnerApi.DockerPayload.newBuilder()
-                                    .setContainerImage(dockerHubPythonContainerUrl)
-                                    .build()
-                                    .toByteString())
-                            .build()))
-            .build();
-    RunnerApi.Pipeline expectedPipeline =
-        RunnerApi.Pipeline.newBuilder()
-            .setComponents(
-                RunnerApi.Components.newBuilder()
-                    .putEnvironments(
-                        "env",
-                        RunnerApi.Environment.newBuilder()
-                            .setUrn(
-                                BeamUrns.getUrn(RunnerApi.StandardEnvironments.Environments.DOCKER))
-                            .setPayload(
-                                RunnerApi.DockerPayload.newBuilder()
-                                    .setContainerImage(gcrPythonContainerUrl)
-                                    .build()
-                                    .toByteString())
-                            .build()))
-            .build();
-    assertThat(runner.applySdkEnvironmentOverrides(pipeline, options), equalTo(expectedPipeline));
+    assertDockerEnvironmentOverrides(options, dockerHubPythonContainerUrl, gcrPythonContainerUrl);
   }
 
   @Test
@@ -1062,7 +1007,12 @@ public class DataflowRunnerTest implements Serializable {
     DataflowPipelineOptions options = buildPipelineOptions();
     String dockerHubPythonContainerUrl = "apache/beam_python3.9_sdk:latest";
     String gcrPythonContainerUrl = "gcr.io/cloud-dataflow/v1beta3/beam_python3.9_sdk:latest";
-    DataflowRunner runner = DataflowRunner.fromOptions(options);
+    assertDockerEnvironmentOverrides(options, dockerHubPythonContainerUrl, gcrPythonContainerUrl);
+  }
+
+private void assertDockerEnvironmentOverrides(DataflowPipelineOptions options, String dockerHubPythonContainerUrl,
+		String gcrPythonContainerUrl) {
+	DataflowRunner runner = DataflowRunner.fromOptions(options);
     RunnerApi.Pipeline pipeline =
         RunnerApi.Pipeline.newBuilder()
             .setComponents(
@@ -1096,7 +1046,7 @@ public class DataflowRunnerTest implements Serializable {
                             .build()))
             .build();
     assertThat(runner.applySdkEnvironmentOverrides(pipeline, options), equalTo(expectedPipeline));
-  }
+}
 
   @Test
   public void testStageArtifactWithoutStagedName() throws IOException {
@@ -1443,7 +1393,7 @@ public class DataflowRunnerTest implements Serializable {
                 Collections.emptyList())
             .getJob();
 
-    DataflowRunner.configureSdkHarnessContainerImages(options, pipelineProto, job);
+    DataflowRunner.configureSdkHarnessContainerImages(pipelineProto, job);
     List<SdkHarnessContainerImage> sdks =
         job.getEnvironment().getWorkerPools().get(0).getSdkHarnessContainerImages();
 
@@ -1736,7 +1686,11 @@ public class DataflowRunnerTest implements Serializable {
               assertEquals(0, (int) sums.get("B"));
               return null;
             });
-    p.run();
+    assertBatchingOverrideApplied(p, expectOverriden);
+  }
+
+private void assertBatchingOverrideApplied(Pipeline p, Boolean expectOverriden) {
+	p.run();
 
     AtomicBoolean sawGroupIntoBatchesOverride = new AtomicBoolean(false);
     p.traverseTopologically(
@@ -1766,7 +1720,7 @@ public class DataflowRunnerTest implements Serializable {
     } else {
       assertFalse(sawGroupIntoBatchesOverride.get());
     }
-  }
+}
 
   private void verifyGroupIntoBatchesOverrideBytes(
       Pipeline p, Boolean withShardedKey, Boolean expectOverriden) {
@@ -1810,36 +1764,7 @@ public class DataflowRunnerTest implements Serializable {
               assertEquals(5, Iterables.size(batches));
               return null;
             });
-    p.run();
-
-    AtomicBoolean sawGroupIntoBatchesOverride = new AtomicBoolean(false);
-    p.traverseTopologically(
-        new PipelineVisitor.Defaults() {
-
-          @Override
-          public CompositeBehavior enterCompositeTransform(Node node) {
-            if (p.getOptions().as(StreamingOptions.class).isStreaming()
-                && node.getTransform()
-                    instanceof GroupIntoBatchesOverride.StreamingGroupIntoBatchesWithShardedKey) {
-              sawGroupIntoBatchesOverride.set(true);
-            }
-            if (!p.getOptions().as(StreamingOptions.class).isStreaming()
-                && node.getTransform() instanceof GroupIntoBatchesOverride.BatchGroupIntoBatches) {
-              sawGroupIntoBatchesOverride.set(true);
-            }
-            if (!p.getOptions().as(StreamingOptions.class).isStreaming()
-                && node.getTransform()
-                    instanceof GroupIntoBatchesOverride.BatchGroupIntoBatchesWithShardedKey) {
-              sawGroupIntoBatchesOverride.set(true);
-            }
-            return CompositeBehavior.ENTER_TRANSFORM;
-          }
-        });
-    if (expectOverriden) {
-      assertTrue(sawGroupIntoBatchesOverride.get());
-    } else {
-      assertFalse(sawGroupIntoBatchesOverride.get());
-    }
+    assertBatchingOverrideApplied(p, expectOverriden);
   }
 
   @Test

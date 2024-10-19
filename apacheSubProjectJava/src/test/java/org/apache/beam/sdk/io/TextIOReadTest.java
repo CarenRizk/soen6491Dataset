@@ -96,6 +96,9 @@ import org.apache.beam.vendor.guava.v32_1_2_jre.com.google.common.collect.Iterab
 import org.apache.commons.compress.compressors.bzip2.BZip2CompressorOutputStream;
 import org.apache.commons.compress.compressors.deflate.DeflateCompressorOutputStream;
 import org.apache.commons.lang3.SystemUtils;
+import org.checkerframework.checker.initialization.qual.Initialized;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.UnknownKeyFor;
 import org.joda.time.Duration;
 import org.junit.Rule;
 import org.junit.Test;
@@ -280,7 +283,26 @@ public class TextIOReadTest {
     }
   }
   
-  /** Tests for reading files with various delimiters. */
+  private static void verifyReaderInitialStateAndProgress(BoundedSource.BoundedReader<String> reader)
+		throws @UnknownKeyFor @NonNull @Initialized IOException {
+	// Check preconditions before starting
+	assertEquals(0.0, reader.getFractionConsumed(), 1e-6);
+	assertEquals(0, reader.getSplitPointsConsumed());
+	assertEquals(
+	    BoundedSource.BoundedReader.SPLIT_POINTS_UNKNOWN, reader.getSplitPointsRemaining());
+
+	// Line 1
+	assertTrue(reader.start());
+	assertEquals(0, reader.getSplitPointsConsumed());
+	assertEquals(
+	    BoundedSource.BoundedReader.SPLIT_POINTS_UNKNOWN, reader.getSplitPointsRemaining());
+
+	// Line 2
+	assertTrue(reader.advance());
+	assertEquals(1, reader.getSplitPointsConsumed());
+}
+
+/** Tests for reading files with various delimiters. */
   @RunWith(Parameterized.class)
   public static class ReadWithDefaultDelimiterTest {
     private static final ImmutableList<String> EXPECTED = ImmutableList.of("asdf", "hjkl", "xyz");
@@ -660,21 +682,7 @@ public class TextIOReadTest {
       try (BoundedSource.BoundedReader<String> reader =
           prepareSource(file.getBytes(StandardCharsets.UTF_8))
               .createReader(PipelineOptionsFactory.create())) {
-        // Check preconditions before starting
-        assertEquals(0.0, reader.getFractionConsumed(), 1e-6);
-        assertEquals(0, reader.getSplitPointsConsumed());
-        assertEquals(
-            BoundedSource.BoundedReader.SPLIT_POINTS_UNKNOWN, reader.getSplitPointsRemaining());
-
-        // Line 1
-        assertTrue(reader.start());
-        assertEquals(0, reader.getSplitPointsConsumed());
-        assertEquals(
-            BoundedSource.BoundedReader.SPLIT_POINTS_UNKNOWN, reader.getSplitPointsRemaining());
-
-        // Line 2
-        assertTrue(reader.advance());
-        assertEquals(1, reader.getSplitPointsConsumed());
+        verifyReaderInitialStateAndProgress(reader);
         assertEquals(
             BoundedSource.BoundedReader.SPLIT_POINTS_UNKNOWN, reader.getSplitPointsRemaining());
 
@@ -730,21 +738,7 @@ public class TextIOReadTest {
       // Check the properties of the remainder.
       try (BoundedSource.BoundedReader<String> reader =
           remainder.createReader(PipelineOptionsFactory.create())) {
-        // Preconditions.
-        assertEquals(0.0, reader.getFractionConsumed(), 1e-6);
-        assertEquals(0, reader.getSplitPointsConsumed());
-        assertEquals(
-            BoundedSource.BoundedReader.SPLIT_POINTS_UNKNOWN, reader.getSplitPointsRemaining());
-
-        // First record should be line 2.
-        assertTrue(reader.start());
-        assertEquals(0, reader.getSplitPointsConsumed());
-        assertEquals(
-            BoundedSource.BoundedReader.SPLIT_POINTS_UNKNOWN, reader.getSplitPointsRemaining());
-
-        // Second record is line 3
-        assertTrue(reader.advance());
-        assertEquals(1, reader.getSplitPointsConsumed());
+        verifyReaderInitialStateAndProgress(reader);
         assertEquals(1, reader.getSplitPointsRemaining());
 
         // Check postconditions after finishing
