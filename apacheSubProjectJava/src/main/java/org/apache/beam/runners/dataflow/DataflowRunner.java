@@ -141,6 +141,7 @@ import org.joda.time.DateTimeZone;
 import org.joda.time.format.DateTimeFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import com.google.auto.value.AutoValue;
 
 /**
  * A {@link PipelineRunner} that executes the operations in the pipeline by first translating them
@@ -198,10 +199,10 @@ public class DataflowRunner extends PipelineRunner<DataflowPipelineJob> {
       new ObjectMapper()
           .registerModules(ObjectMapper.findModules(ReflectHelpers.findClassLoader()));
 
-  private final Set<PCollection<?>> pcollectionsRequiringIndexedFormat;
+  private final Set<PCollection> pcollectionsRequiringIndexedFormat;
 
-  private final Set<PCollection<?>> pCollectionsPreservedKeys;
-  private final Set<PCollection<?>> pcollectionsRequiringAutoSharding;
+  private final Set<PCollection> pCollectionsPreservedKeys;
+  private final Set<PCollection> pcollectionsRequiringAutoSharding;
 
   /**
    * Project IDs must contain lowercase letters, digits, or dashes. IDs must start with a letter and
@@ -232,7 +233,7 @@ public class DataflowRunner extends PipelineRunner<DataflowPipelineJob> {
         && isServiceEndpoint(dataflowOptions.getDataflowEndpoint())) {
       missing.add("region");
     }
-    if (missing.size() > 0) {
+    if (!missing.isEmpty()) {
       throw new IllegalArgumentException(
           "Missing required pipeline options: " + Joiner.on(',').join(missing));
     }
@@ -385,7 +386,7 @@ public class DataflowRunner extends PipelineRunner<DataflowPipelineJob> {
     // Check against null - empty string value for workerHarnessContainerImage
     // must be preserved for legacy dataflowWorkerJar to work.
     String sdkContainerOption = workerOptions.getSdkContainerImage();
-    String workerHarnessOption = workerOptions.getWorkerHarnessContainerImage();
+    String workerHarnessOption = workerOptions.getSdkContainerImage();
     Preconditions.checkArgument(
         sdkContainerOption == null
             || workerHarnessOption == null
@@ -394,17 +395,17 @@ public class DataflowRunner extends PipelineRunner<DataflowPipelineJob> {
 
     // Default to new option, which may be null.
     String containerImage = workerOptions.getSdkContainerImage();
-    if (workerOptions.getWorkerHarnessContainerImage() != null
+    if (workerOptions.getSdkContainerImage() != null
         && workerOptions.getSdkContainerImage() == null) {
       // Set image to old option if old option was set but new option is not set.
       LOG.warn(
           "Prefer --sdkContainerImage over deprecated legacy option --workerHarnessContainerImage.");
-      containerImage = workerOptions.getWorkerHarnessContainerImage();
+      containerImage = workerOptions.getSdkContainerImage();
     }
 
     // Make sure both options have same value.
     workerOptions.setSdkContainerImage(containerImage);
-    workerOptions.setWorkerHarnessContainerImage(containerImage);
+    workerOptions.setSdkContainerImage(containerImage);
   }
 
   @VisibleForTesting
@@ -415,10 +416,10 @@ public class DataflowRunner extends PipelineRunner<DataflowPipelineJob> {
 
     GcpOptions gcpOptions = workerOptions.as(GcpOptions.class);
     Preconditions.checkArgument(
-        gcpOptions.getZone() == null || gcpOptions.getWorkerRegion() == null,
+        gcpOptions.getWorkerZone() == null || gcpOptions.getWorkerRegion() == null,
         "Cannot use option zone with workerRegion. Prefer either workerZone or workerRegion.");
     Preconditions.checkArgument(
-        gcpOptions.getZone() == null || gcpOptions.getWorkerZone() == null,
+        gcpOptions.getWorkerZone() == null || gcpOptions.getWorkerZone() == null,
         "Cannot use option zone with workerZone. Prefer workerZone.");
     Preconditions.checkArgument(
         gcpOptions.getWorkerRegion() == null || gcpOptions.getWorkerZone() == null,
@@ -440,10 +441,10 @@ public class DataflowRunner extends PipelineRunner<DataflowPipelineJob> {
         !hasExperimentWorkerRegion || gcpOptions.getWorkerZone() == null,
         "Experiment worker_region and option workerZone are mutually exclusive.");
 
-    if (gcpOptions.getZone() != null) {
+    if (gcpOptions.getWorkerZone() != null) {
       LOG.warn("Option --zone is deprecated. Please use --workerZone instead.");
-      gcpOptions.setWorkerZone(gcpOptions.getZone());
-      gcpOptions.setZone(null);
+      gcpOptions.setWorkerZone(gcpOptions.getWorkerZone());
+      gcpOptions.setWorkerZone(null);
     }
   }
 
@@ -1240,6 +1241,21 @@ public class DataflowRunner extends PipelineRunner<DataflowPipelineJob> {
 
     return dataflowPipelineJob;
   }
+  
+  @AutoValue
+  abstract static class EnvironmentInfo {
+    static EnvironmentInfo create(
+        String environmentId, String containerUrl, List<String> capabilities) {
+      return new AutoValue_DataflowRunner_EnvironmentInfo(
+          environmentId, containerUrl, capabilities);
+    }
+
+    abstract String environmentId();
+
+    abstract String containerUrl();
+
+    abstract List<String> capabilities();
+  }
 
   private static EnvironmentInfo getEnvironmentInfoFromEnvironmentId(
       String environmentId, RunnerApi.Pipeline pipelineProto) {
@@ -1365,7 +1381,7 @@ public class DataflowRunner extends PipelineRunner<DataflowPipelineJob> {
   /////////////////////////////////////////////////////////////////////////////
 
   private void logWarningIfBigqueryDLQUnused(Pipeline pipeline) {
-    Map<PCollection<?>, String> unconsumedDLQ = Maps.newHashMap();
+    Map<PCollection, String> unconsumedDLQ = Maps.newHashMap();
     pipeline.traverseTopologically(
         new PipelineVisitor.Defaults() {
           @Override
@@ -1392,14 +1408,14 @@ public class DataflowRunner extends PipelineRunner<DataflowPipelineJob> {
                 rootBigQueryTransform = node.getEnclosingNode().getEnclosingNode().getFullName();
               }
               if (failedTag != null) {
-                PCollection<?> dlq = node.getOutputs().get(failedTag);
+                PCollection dlq = node.getOutputs().get(failedTag);
                 if (dlq != null) {
                   unconsumedDLQ.put(dlq, rootBigQueryTransform);
                 }
               }
             }
 
-            for (PCollection<?> input : node.getInputs().values()) {
+            for (PCollection input : node.getInputs().values()) {
               unconsumedDLQ.remove(input);
             }
             return CompositeBehavior.ENTER_TRANSFORM;
@@ -1407,16 +1423,13 @@ public class DataflowRunner extends PipelineRunner<DataflowPipelineJob> {
 
           @Override
           public void visitPrimitiveTransform(Node node) {
-            for (PCollection<?> input : node.getInputs().values()) {
+            for (PCollection input : node.getInputs().values()) {
               unconsumedDLQ.remove(input);
             }
           }
         });
     for (String unconsumed : unconsumedDLQ.values()) {
-      LOG.warn(
-          "No transform processes the failed-inserts output from BigQuery sink: "
-              + unconsumed
-              + "! Not processing failed inserts means that those rows will be lost.");
+        LOG.warn("No transform processes the failed-inserts output from BigQuery sink: {}! Not processing failed inserts means that those rows will be lost.", unconsumed);
     }
   }
 
@@ -1429,10 +1442,8 @@ public class DataflowRunner extends PipelineRunner<DataflowPipelineJob> {
       final SortedSet<String> ptransformViewNamesWithNonDeterministicKeyCoders = new TreeSet<>();
       pipeline.traverseTopologically(
           new PipelineVisitor.Defaults() {
-            @Override
-            public void visitValue(PValue value, TransformHierarchy.Node producer) {}
 
-            @Override
+              @Override
             public void visitPrimitiveTransform(TransformHierarchy.Node node) {
               if (ptransformViewsWithNonDeterministicKeyCoders.contains(node.getTransform())) {
                 ptransformViewNamesWithNonDeterministicKeyCoders.add(node.getFullName());
@@ -1458,8 +1469,6 @@ public class DataflowRunner extends PipelineRunner<DataflowPipelineJob> {
               return CompositeBehavior.ENTER_TRANSFORM;
             }
 
-            @Override
-            public void leaveCompositeTransform(TransformHierarchy.Node node) {}
           });
 
       LOG.warn(
@@ -1475,7 +1484,7 @@ public class DataflowRunner extends PipelineRunner<DataflowPipelineJob> {
    * Returns true if the passed in {@link PCollection} needs to be materialized using an indexed
    * format.
    */
-  boolean doesPCollectionRequireIndexedFormat(PCollection<?> pcol) {
+  boolean doesPCollectionRequireIndexedFormat(PCollection pcol) {
     return pcollectionsRequiringIndexedFormat.contains(pcol);
   }
 
@@ -1483,15 +1492,15 @@ public class DataflowRunner extends PipelineRunner<DataflowPipelineJob> {
    * Marks the passed in {@link PCollection} as requiring to be materialized using an indexed
    * format.
    */
-  void addPCollectionRequiringIndexedFormat(PCollection<?> pcol) {
+  void addPCollectionRequiringIndexedFormat(PCollection pcol) {
     pcollectionsRequiringIndexedFormat.add(pcol);
   }
 
-  void maybeRecordPCollectionPreservedKeys(PCollection<?> pcol) {
+  void maybeRecordPCollectionPreservedKeys(PCollection pcol) {
     pCollectionsPreservedKeys.add(pcol);
   }
 
-  void maybeRecordPCollectionWithAutoSharding(PCollection<?> pcol) {
+  void maybeRecordPCollectionWithAutoSharding(PCollection pcol) {
     // Auto-sharding is only supported in Streaming Engine.
     checkArgument(
         options.isEnableStreamingEngine(),
@@ -1502,11 +1511,11 @@ public class DataflowRunner extends PipelineRunner<DataflowPipelineJob> {
     pcollectionsRequiringAutoSharding.add(pcol);
   }
 
-  boolean doesPCollectionPreserveKeys(PCollection<?> pcol) {
+  boolean doesPCollectionPreserveKeys(PCollection pcol) {
     return pCollectionsPreservedKeys.contains(pcol);
   }
 
-  boolean doesPCollectionRequireAutoSharding(PCollection<?> pcol) {
+  boolean doesPCollectionRequireAutoSharding(PCollection pcol) {
     return pcollectionsRequiringAutoSharding.contains(pcol);
   }
 

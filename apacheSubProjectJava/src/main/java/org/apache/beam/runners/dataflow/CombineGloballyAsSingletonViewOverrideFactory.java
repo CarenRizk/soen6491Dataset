@@ -1,7 +1,6 @@
 package org.apache.beam.runners.dataflow;
 
 import org.apache.beam.sdk.runners.AppliedPTransform;
-import org.apache.beam.sdk.runners.PTransformOverrideFactory.PTransformReplacement;
 import org.apache.beam.sdk.transforms.Combine;
 import org.apache.beam.sdk.transforms.PTransform;
 import org.apache.beam.sdk.transforms.Combine.CombineFn;
@@ -14,19 +13,16 @@ import org.apache.beam.sdk.values.PCollectionView;
    * re-applies the {@link CombineFn} and adds a specialization specific to the Dataflow runner.
    */
   class CombineGloballyAsSingletonViewOverrideFactory<InputT, ViewT>
-      extends ReflectiveViewOverrideFactory<InputT, ViewT> {
+      extends ReflectiveViewOverrideFactory<Object, Object> {
 
     CombineGloballyAsSingletonViewOverrideFactory(DataflowRunner runner) {
       super((Class) BatchViewOverrides.BatchViewAsSingleton.class, runner);
     }
 
     @Override
-    public PTransformReplacement<PCollection<InputT>, PCollectionView<ViewT>>
+    public PTransformReplacement<PCollection<Object>, PCollectionView<Object>>
         getReplacementTransform(
-            AppliedPTransform<
-                    PCollection<InputT>,
-                    PCollectionView<ViewT>,
-                    PTransform<PCollection<InputT>, PCollectionView<ViewT>>>
+            AppliedPTransform<PCollection<Object>, PCollectionView<Object>, PTransform<PCollection<Object>, PCollectionView<Object>>>
                 transform) {
       Combine.GloballyAsSingletonView<?, ?> combineTransform =
           (Combine.GloballyAsSingletonView) transform.getTransform();

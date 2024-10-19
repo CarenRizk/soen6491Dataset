@@ -6,11 +6,8 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
 import org.apache.beam.sdk.Pipeline.PipelineVisitor;
-import org.apache.beam.sdk.Pipeline.PipelineVisitor.CompositeBehavior;
 import org.apache.beam.sdk.runners.AppliedPTransform;
 import org.apache.beam.sdk.runners.PTransformOverrideFactory;
-import org.apache.beam.sdk.runners.PTransformOverrideFactory.PTransformReplacement;
-import org.apache.beam.sdk.runners.PTransformOverrideFactory.ReplacementOutput;
 import org.apache.beam.sdk.runners.TransformHierarchy.Node;
 import org.apache.beam.sdk.transforms.PTransform;
 import org.apache.beam.sdk.transforms.View.CreatePCollectionView;
@@ -42,7 +39,7 @@ import org.apache.beam.sdk.values.TupleTag;
       this.runner = runner;
     }
 
-    CreatePCollectionView<ViewT, ViewT> findCreatePCollectionView(
+    CreatePCollectionView findCreatePCollectionView(
         final AppliedPTransform<
                 PCollection<InputT>,
                 PCollectionView<ViewT>,

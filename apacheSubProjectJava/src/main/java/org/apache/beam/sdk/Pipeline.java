@@ -223,7 +223,7 @@ public class Pipeline {
   private void checkNoMoreMatches(final List<PTransformOverride> overrides) {
     traverseTopologically(
         new PipelineVisitor.Defaults() {
-          SetMultimap<Node, PTransformOverride> matched = HashMultimap.create();
+          final SetMultimap<Node, PTransformOverride> matched = HashMultimap.create();
 
           @Override
           public CompositeBehavior enterCompositeTransform(Node node) {
@@ -511,7 +511,7 @@ public class Pipeline {
   // Below here are internal operations, never called by users.
 
   private final TransformHierarchy transforms;
-  private Set<String> usedFullNames = new HashSet<>();
+  private final Set<String> usedFullNames = new HashSet<>();
 
   /** Lazily initialized; access via {@link #getCoderRegistry()}. */
   private @Nullable CoderRegistry coderRegistry;

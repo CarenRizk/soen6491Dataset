@@ -32,7 +32,6 @@ import java.util.concurrent.ThreadLocalRandom;
 import org.apache.beam.sdk.annotations.Internal;
 import org.apache.beam.sdk.coders.CannotProvideCoderException;
 import org.apache.beam.sdk.coders.Coder;
-import org.apache.beam.sdk.coders.CoderException;
 import org.apache.beam.sdk.coders.CoderRegistry;
 import org.apache.beam.sdk.coders.DelegateCoder;
 import org.apache.beam.sdk.coders.IterableCoder;
@@ -606,7 +605,7 @@ public class Combine {
   /** A {@link Coder} for a {@link Holder}. */
   private static class HolderCoder<V> extends StructuredCoder<Holder<V>> {
 
-    private Coder<V> valueCoder;
+    private final Coder<V> valueCoder;
 
     public HolderCoder(Coder<V> valueCoder) {
       this.valueCoder = valueCoder;
@@ -614,13 +613,13 @@ public class Combine {
 
     @Override
     public void encode(Holder<V> accumulator, OutputStream outStream)
-        throws CoderException, IOException {
+        throws IOException {
       encode(accumulator, outStream, Coder.Context.NESTED);
     }
 
     @Override
     public void encode(Holder<V> accumulator, OutputStream outStream, Coder.Context context)
-        throws CoderException, IOException {
+        throws IOException {
       if (accumulator.present) {
         outStream.write(1);
         valueCoder.encode(accumulator.value, outStream, context);
@@ -630,13 +629,13 @@ public class Combine {
     }
 
     @Override
-    public Holder<V> decode(InputStream inStream) throws CoderException, IOException {
+    public Holder<V> decode(InputStream inStream) throws IOException {
       return decode(inStream, Coder.Context.NESTED);
     }
 
     @Override
     public Holder<V> decode(InputStream inStream, Coder.Context context)
-        throws CoderException, IOException {
+        throws IOException {
       if (inStream.read() == 1) {
         return new Holder<>(valueCoder.decode(inStream, context));
       } else {
@@ -1954,7 +1953,7 @@ public class Combine {
                             KV<KV<K, Integer>, AccumT> elem) {
                           return KV.of(
                               elem.getKey().getKey(),
-                              InputOrAccum.<InputT, AccumT>accum(elem.getValue()));
+                              InputOrAccum.accum(elem.getValue()));
                         }
                       }))
               .setCoder(KvCoder.of(inputCoder.getKeyCoder(), inputOrAccumCoder))
@@ -1972,7 +1971,7 @@ public class Combine {
                         public KV<K, InputOrAccum<InputT, AccumT>> apply(KV<K, InputT> element) {
                           return KV.of(
                               element.getKey(),
-                              InputOrAccum.<InputT, AccumT>input(element.getValue()));
+                              InputOrAccum.input(element.getValue()));
                         }
                       }))
               .setCoder(KvCoder.of(inputCoder.getKeyCoder(), inputOrAccumCoder));
@@ -2043,14 +2042,14 @@ public class Combine {
 
         @Override
         public void encode(InputOrAccum<InputT, AccumT> value, OutputStream outStream)
-            throws CoderException, IOException {
+            throws IOException {
           encode(value, outStream, Coder.Context.NESTED);
         }
 
         @Override
         public void encode(
             InputOrAccum<InputT, AccumT> value, OutputStream outStream, Coder.Context context)
-            throws CoderException, IOException {
+            throws IOException {
           if (value.input != null) {
             outStream.write(0);
             inputCoder.encode(value.input, outStream, context);
@@ -2062,13 +2061,13 @@ public class Combine {
 
         @Override
         public InputOrAccum<InputT, AccumT> decode(InputStream inStream)
-            throws CoderException, IOException {
+            throws IOException {
           return decode(inStream, Coder.Context.NESTED);
         }
 
         @Override
         public InputOrAccum<InputT, AccumT> decode(InputStream inStream, Coder.Context context)
-            throws CoderException, IOException {
+            throws IOException {
           if (inStream.read() == 0) {
             return InputOrAccum.input(inputCoder.decode(inStream, context));
           } else {

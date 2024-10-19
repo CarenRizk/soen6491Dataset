@@ -4,7 +4,6 @@ import org.apache.beam.runners.dataflow.TransformTranslator.StepTranslationConte
 import org.apache.beam.runners.dataflow.TransformTranslator.TranslationContext;
 import org.apache.beam.runners.dataflow.util.PropertyNames;
 import org.apache.beam.sdk.util.construction.External;
-import org.apache.beam.sdk.util.construction.External.SingleOutputExpandableTransform;
 import org.apache.beam.sdk.values.PCollection;
 
 class SingleOutputExpandableTransformTranslator

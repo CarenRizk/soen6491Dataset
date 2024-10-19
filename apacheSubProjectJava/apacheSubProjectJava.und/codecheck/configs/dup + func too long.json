@@ -1,7 +1,8 @@
 {
     "automatic": true,
     "checks": [
-        "RECOMMENDED_04"
+        "RECOMMENDED_04",
+        "RECOMMENDED_20"
     ],
     "excludes": [
     ],

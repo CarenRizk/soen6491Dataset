@@ -36,7 +36,7 @@ import org.apache.beam.sdk.values.PCollectionView;
     }
 
     @ProcessElement
-    public void processElement(ProcessContext c, BoundedWindow w) throws Exception {
+    public void processElement(ProcessContext c, BoundedWindow w) {
       throw new UnsupportedOperationException(
           String.format(
               "%s is a marker class only and should never be executed.", getClass().getName()));

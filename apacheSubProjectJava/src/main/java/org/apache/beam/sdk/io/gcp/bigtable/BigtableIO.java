@@ -1520,7 +1520,7 @@ public class BigtableIO {
       String message =
           String.format(
               "At least %d errors occurred writing to Bigtable. First %d errors: %s",
-              i + failures.size(), i, logEntry.toString());
+              i + failures.size(), i, logEntry);
       LOG.error(message);
       IOException exception = new IOException(message);
       for (BigtableWriteException e : suppressed) {
@@ -2009,7 +2009,7 @@ public class BigtableIO {
     }
 
     @Override
-    public void close() throws IOException {
+    public void close() {
       LOG.info("Closing reader after reading {} records.", recordsReturned);
       if (reader != null) {
         reader.close();
@@ -2401,7 +2401,7 @@ public class BigtableIO {
       // Only try to create or update metadata table if option is set to true. Otherwise, just
       // check if the table exists.
       if (shouldCreateOrUpdateMetadataTable && metadataTableAdminDao.createMetadataTable()) {
-        LOG.info("Created metadata table: " + metadataTableId);
+          LOG.info("Created metadata table: {}", metadataTableId);
       }
     }
 
@@ -2581,7 +2581,7 @@ public class BigtableIO {
       // Only try to create or update metadata table if option is set to true. Otherwise, just
       // check if the table exists.
       if (metadataTableAdminDao.createMetadataTable()) {
-        LOG.info("Created metadata table: " + metadataTableAdminDao.getTableId());
+          LOG.info("Created metadata table: {}", metadataTableAdminDao.getTableId());
       }
       return metadataTableAdminDao.doesMetadataTableExist();
     } finally {

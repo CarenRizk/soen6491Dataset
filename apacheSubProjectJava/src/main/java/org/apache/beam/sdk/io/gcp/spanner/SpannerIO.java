@@ -35,7 +35,6 @@ import com.google.auth.Credentials;
 import com.google.auto.value.AutoValue;
 import com.google.cloud.ServiceFactory;
 import com.google.cloud.Timestamp;
-import com.google.cloud.spanner.AbortedException;
 import com.google.cloud.spanner.DatabaseClient;
 import com.google.cloud.spanner.DatabaseId;
 import com.google.cloud.spanner.Dialect;
@@ -55,16 +54,8 @@ import com.google.cloud.spanner.TimestampBound;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Objects;
-import java.util.OptionalInt;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.apache.beam.runners.core.metrics.GcpResourceIdentifiers;
 import org.apache.beam.runners.core.metrics.MonitoringInfoConstants;
@@ -89,7 +80,6 @@ import org.apache.beam.sdk.io.gcp.spanner.changestreams.model.DataChangeRecord;
 import org.apache.beam.sdk.io.gcp.spanner.changestreams.model.PartitionMetadata;
 import org.apache.beam.sdk.metrics.Counter;
 import org.apache.beam.sdk.metrics.Distribution;
-import org.apache.beam.sdk.metrics.Lineage;
 import org.apache.beam.sdk.metrics.Metrics;
 import org.apache.beam.sdk.options.PipelineOptions;
 import org.apache.beam.sdk.options.StreamingOptions;
@@ -959,18 +949,17 @@ public class SpannerIO {
     }
 
     SerializableFunction<Struct, Row> getFormatFn() {
-      return (SerializableFunction<Struct, Row>)
-          input ->
-              Row.withSchema(Schema.builder().addInt64Field("Key").build())
-                  .withFieldValue("Key", 3L)
-                  .build();
+      return input ->
+          Row.withSchema(Schema.builder().addInt64Field("Key").build())
+              .withFieldValue("Key", 3L)
+              .build();
     }
   }
 
   static class ReadRows extends PTransform<PBegin, PCollection<Row>> {
 
-    Read read;
-    Schema schema;
+    final Read read;
+    final Schema schema;
 
     public ReadRows(Read read, Schema schema) {
       super("Read rows");
@@ -1516,7 +1505,7 @@ public class SpannerIO {
               "Write batches to Spanner",
               ParDo.of(
                       new WriteToSpannerFn(
-                          spec.getSpannerConfig(), spec.getFailureMode(), FAILED_MUTATIONS_TAG))
+                          spec.getSpannerConfig(), spec.getFailureMode()))
                   .withOutputTags(MAIN_OUT_TAG, TupleTagList.of(FAILED_MUTATIONS_TAG)));
 
       return new SpannerWriteResult(
@@ -1741,16 +1730,8 @@ public class SpannerIO {
           getDialect(changeStreamSpannerConfig, input.getPipeline().getOptions());
       final Dialect metadataDatabaseDialect =
           getDialect(partitionMetadataSpannerConfig, input.getPipeline().getOptions());
-      LOG.info(
-          "The Spanner database "
-              + changeStreamDatabaseId
-              + " has dialect "
-              + changeStreamDatabaseDialect);
-      LOG.info(
-          "The Spanner database "
-              + fullPartitionMetadataDatabaseId
-              + " has dialect "
-              + metadataDatabaseDialect);
+        LOG.info("The Spanner database {} has dialect {}", changeStreamDatabaseId, changeStreamDatabaseDialect);
+        LOG.info("The Spanner database {} has dialect {}", fullPartitionMetadataDatabaseId, metadataDatabaseDialect);
       final String partitionMetadataTableName =
           MoreObjects.firstNonNull(
               getMetadataTable(), generatePartitionMetadataTableName(partitionMetadataDatabaseId));
@@ -1786,7 +1767,7 @@ public class SpannerIO {
       final PostProcessingMetricsDoFn postProcessingMetricsDoFn =
           new PostProcessingMetricsDoFn(metrics);
 
-      LOG.info("Partition metadata table that will be used is " + partitionMetadataTableName);
+        LOG.info("Partition metadata table that will be used is {}", partitionMetadataTableName);
 
       final PCollection<byte[]> impulseOut = input.apply(Impulse.create());
       final PCollection<PartitionMetadata> partitionsOut =
@@ -1945,12 +1926,11 @@ public class SpannerIO {
     }
 
     @FinishBundle
-    public synchronized void finishBundle(FinishBundleContext c) throws Exception {
+    public synchronized void finishBundle(FinishBundleContext c) {
       sortAndOutputBatches(new OutputReceiverForFinishBundle(c));
     }
 
-    private synchronized void sortAndOutputBatches(OutputReceiver<Iterable<MutationGroup>> out)
-        throws IOException {
+    private synchronized void sortAndOutputBatches(OutputReceiver<Iterable<MutationGroup>> out) {
       try {
         if (mutationsToSort.isEmpty()) {
           // nothing to output.
@@ -2015,7 +1995,7 @@ public class SpannerIO {
 
     @ProcessElement
     public synchronized void processElement(
-        ProcessContext c, OutputReceiver<Iterable<MutationGroup>> out) throws Exception {
+        ProcessContext c, OutputReceiver<Iterable<MutationGroup>> out) {
       SpannerSchema spannerSchema = c.sideInput(schemaView);
       MutationKeyEncoder encoder = new MutationKeyEncoder(spannerSchema);
       MutationGroup mg = c.element();
@@ -2129,7 +2109,7 @@ public class SpannerIO {
       MutationGroup mg = c.element();
       if (mg.primary().getOperation() == Op.DELETE && !isPointDelete(mg.primary())) {
         // Ranged deletes are not batchable.
-        c.output(unbatchableMutationsTag, Arrays.asList(mg));
+        c.output(unbatchableMutationsTag, Collections.singletonList(mg));
         unBatchableMutationGroupsCounter.inc();
         return;
       }
@@ -2140,7 +2120,7 @@ public class SpannerIO {
       long groupRows = Iterables.size(mg);
 
       if (groupSize >= batchSizeBytes || groupCells >= maxNumMutations || groupRows >= maxNumRows) {
-        c.output(unbatchableMutationsTag, Arrays.asList(mg));
+        c.output(unbatchableMutationsTag, Collections.singletonList(mg));
         unBatchableMutationGroupsCounter.inc();
       } else {
         c.output(mg);
@@ -2157,9 +2137,7 @@ public class SpannerIO {
 
     // SpannerAccessor can not be serialized so must be initialized at runtime in setup().
     private transient SpannerAccessor spannerAccessor;
-    // resolved at runtime for metrics report purpose. SpannerConfig may not have projectId set.
-    private transient String projectId;
-    /* Number of times an aborted write to spanner could be retried */
+      /* Number of times an aborted write to spanner could be retried */
     private static final int ABORTED_RETRY_ATTEMPTS = 5;
     /* Error string in Aborted exception during schema change */
     private final String schemaChangeErrString =
@@ -2170,7 +2148,7 @@ public class SpannerIO {
     private final String emulatorErrorString =
         "The emulator only supports one transaction at a time.";
 
-    @VisibleForTesting static Sleeper sleeper = Sleeper.DEFAULT;
+    @VisibleForTesting static final Sleeper sleeper = Sleeper.DEFAULT;
 
     private final Counter mutationGroupBatchesReceived =
         Metrics.counter(WriteGrouped.class, "mutation_group_batches_received");
@@ -2204,10 +2182,10 @@ public class SpannerIO {
     private transient LoadingCache<String, ServiceCallMetric> writeMetricsByTableName;
 
     WriteToSpannerFn(
-        SpannerConfig spannerConfig, FailureMode failureMode, TupleTag<MutationGroup> failedTag) {
+        SpannerConfig spannerConfig, FailureMode failureMode) {
       this.spannerConfig = spannerConfig;
       this.failureMode = failureMode;
-      this.failedTag = failedTag;
+      this.failedTag = WriteGrouped.FAILED_MUTATIONS_TAG;
     }
 
     @Setup
@@ -2232,7 +2210,8 @@ public class SpannerIO {
                     }
                   });
 
-      projectId = resolveSpannerProjectId(spannerConfig);
+        // resolved at runtime for metrics report purpose. SpannerConfig may not have projectId set.
+        String projectId = resolveSpannerProjectId(spannerConfig);
     }
 
     @Teardown
@@ -2274,7 +2253,7 @@ public class SpannerIO {
           mutationGroupsWriteSuccess.inc();
         } catch (SpannerException e) {
           mutationGroupsWriteFail.inc();
-          LOG.warn("Failed to write the mutation group: " + mg, e);
+            LOG.warn("Failed to write the mutation group: {}", mg, e);
           c.output(failedTag, mg);
         }
       }

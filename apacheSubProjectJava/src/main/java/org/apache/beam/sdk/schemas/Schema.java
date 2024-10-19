@@ -56,11 +56,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /** {@link Schema} describes the fields in {@link Row}. */
-@SuppressWarnings({
-  "keyfor",
-  "nullness", // TODO(https://github.com/apache/beam/issues/20497)
-  "rawtypes"
-})
+@SuppressWarnings("ALL")
 public class Schema implements Serializable {
 
   // Helper class that adds proper equality checks to byte arrays.
@@ -115,7 +111,7 @@ public class Schema implements Serializable {
 
   /** Builder class for building {@link Schema} objects. */
   public static class Builder {
-    List<Field> fields;
+    final List<Field> fields;
     Options options = Options.none();
 
     public Builder() {
@@ -565,7 +561,7 @@ public class Schema implements Serializable {
     }
 
     public boolean isNumericType() {
-      return NUMERIC_TYPES.contains(this);
+      return !NUMERIC_TYPES.contains(this);
     }
 
     public boolean isStringType() {
@@ -603,7 +599,7 @@ public class Schema implements Serializable {
       }
 
       // defined only for numeric types
-      if (!isNumericType() || !other.isNumericType()) {
+      if (isNumericType() || other.isNumericType()) {
         return false;
       }
 
@@ -1019,10 +1015,7 @@ public class Schema implements Serializable {
               || !getMapKeyType().typesEqual(other.getMapKeyType()))) {
         return false;
       }
-      if (getTypeName() == TypeName.ROW && !getRowSchema().typesEqual(other.getRowSchema())) {
-        return false;
-      }
-      return true;
+        return getTypeName() != TypeName.ROW || getRowSchema().typesEqual(other.getRowSchema());
     }
 
     /** Check whether two types are equivalent. */
@@ -1239,12 +1232,10 @@ public class Schema implements Serializable {
     private final Map<String, Option> options;
 
       public static boolean includesTransformUpgrades(Pipeline pipeline) {
-      return (pipeline
+      return (!pipeline
               .getOptions()
               .as(ExternalTranslationOptions.class)
-              .getTransformsToOverride()
-              .size()
-          > 0);
+              .getTransformsToOverride().isEmpty());
     }
 
       @Override
@@ -1262,7 +1253,7 @@ public class Schema implements Serializable {
     }
 
     public boolean hasOptions() {
-      return options.size() > 0;
+      return !options.isEmpty();
     }
 
     public boolean hasOption(String name) {
@@ -1302,8 +1293,8 @@ public class Schema implements Serializable {
         this.value = value;
       }
 
-      private FieldType type;
-      private Object value;
+      private final FieldType type;
+      private final Object value;
 
       @SuppressWarnings("TypeParameterUnusedInFormals")
       <T> T getValue() {
@@ -1339,7 +1330,7 @@ public class Schema implements Serializable {
     }
 
     public static class Builder {
-      private Map<String, Option> options;
+      private final Map<String, Option> options;
 
       Builder(Map<String, Option> init) {
         this.options = new HashMap<>(init);

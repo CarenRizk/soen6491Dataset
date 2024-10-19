@@ -282,7 +282,7 @@ public abstract class Window<T> extends PTransform<PCollection<T>, PCollection<T
    * elements will be added to a window (because this duration has passed) any state associated with
    * the window will be cleaned up.
    *
-   * <p>Depending on the trigger this may not produce a pane with {@link PaneInfo#isLast}. See
+   * <p>Depending on the trigger this may not produce a pane with . See
    * {@link ClosingBehavior#FIRE_IF_NON_EMPTY} for more details.
    */
   public Window<T> withAllowedLateness(Duration allowedLateness) {

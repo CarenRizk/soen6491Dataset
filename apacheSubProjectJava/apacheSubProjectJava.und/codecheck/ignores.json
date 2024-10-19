@@ -1,0 +1,16 @@
+{
+    "FalsePositives": [
+        {
+            "baseLineIgnore": "0",
+            "checkName": "SciTools' Recommended Checks\\Duplicate Code",
+            "entityName": "@l./src/main/java/org/apache/beam/runners/dataflow/StreamingBoundedReadOverrideFactory.java",
+            "fileName": "./src/main/java/org/apache/beam/runners/dataflow/StreamingBoundedReadOverrideFactory.java",
+            "noteString": "Trying to remove import\n",
+            "overrideString": "",
+            "violationCheckID": "RECOMMENDED_20",
+            "violationID": "Duplicate code found in file: %1 line: %2",
+            "violationLines": "",
+            "violationText": "Duplicate code found in file: C:\\Users\\carenrizk\\repos\\soen6491Dataset\\apacheSubProjectJava\\src\\main\\java\\org\\apache\\beam\\runners\\dataflow\\StreamingUnboundedReadOverrideFactory.java line: 10"
+        }
+    ]
+}
