@@ -1501,8 +1501,7 @@ public class Schema implements Serializable {
               FieldType innerType = field.getType();
               if (innerType.getRowSchema() != null) {
                 Schema innerSnakeCaseSchema = innerType.getRowSchema().toSnakeCase();
-                innerType = innerType.toBuilder().setRowSchema(innerSnakeCaseSchema).build();
-                field = field.toBuilder().setType(innerType).build();
+                field = updateInnerTypeWithSnakeCaseSchema(field, innerType, innerSnakeCaseSchema);
               }
               return field
                   .toBuilder()
@@ -1512,6 +1511,12 @@ public class Schema implements Serializable {
         .collect(toSchema());
   }
 
+private Field updateInnerTypeWithSnakeCaseSchema(Field field, FieldType innerType, Schema innerSnakeCaseSchema) {
+	innerType = innerType.toBuilder().setRowSchema(innerSnakeCaseSchema).build();
+	field = field.toBuilder().setType(innerType).build();
+	return field;
+}
+
   /** Recursively converts all field names to `lowerCamelCase`. */
   public Schema toCamelCase() {
     return this.getFields().stream()
@@ -1520,8 +1525,7 @@ public class Schema implements Serializable {
               FieldType innerType = field.getType();
               if (innerType.getRowSchema() != null) {
                 Schema innerCamelCaseSchema = innerType.getRowSchema().toCamelCase();
-                innerType = innerType.toBuilder().setRowSchema(innerCamelCaseSchema).build();
-                field = field.toBuilder().setType(innerType).build();
+                field = updateInnerTypeWithSnakeCaseSchema(field, innerType, innerCamelCaseSchema);
               }
               return field
                   .toBuilder()

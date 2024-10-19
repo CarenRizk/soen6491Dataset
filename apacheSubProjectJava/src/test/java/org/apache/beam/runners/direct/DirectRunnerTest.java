@@ -139,13 +139,17 @@ public class DirectRunnerTest implements Serializable {
   public void wordCountShouldSucceed() throws Throwable {
     Pipeline p = getPipeline();
 
-    PCollection<String> countStrs = countElementsAndFormatResults(p);
+    validateCountStrs(p);
+  }
+
+private void validateCountStrs(Pipeline p) {
+	PCollection<String> countStrs = countElementsAndFormatResults(p);
 
     PAssert.that(countStrs).containsInAnyOrder("baz: 1", "bar: 2", "foo: 3");
 
     DirectPipelineResult result = (DirectPipelineResult) p.run();
     result.waitUntilFinish();
-  }
+}
 
 private PCollection<String> countElementsAndFormatResults(Pipeline p) {
 	PCollection<KV<String, Long>> counts =
@@ -179,12 +183,7 @@ private PCollection<String> countElementsAndFormatResults(Pipeline p) {
 
     changed = new AtomicInteger(0);
     
-    PCollection<String> countStrs = countElementsAndFormatResults(p);
-
-    PAssert.that(countStrs).containsInAnyOrder("baz: 1", "bar: 2", "foo: 3");
-
-    DirectPipelineResult result = (DirectPipelineResult) p.run();
-    result.waitUntilFinish();
+    validateCountStrs(p);
 
     DirectPipelineResult otherResult = (DirectPipelineResult) p.run();
     otherResult.waitUntilFinish();

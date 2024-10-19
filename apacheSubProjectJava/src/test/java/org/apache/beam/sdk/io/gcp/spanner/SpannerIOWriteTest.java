@@ -54,6 +54,7 @@ import com.google.cloud.spanner.SpannerExceptionFactory;
 import com.google.cloud.spanner.SpannerOptions;
 import com.google.cloud.spanner.Statement;
 import com.google.cloud.spanner.Struct;
+import com.google.cloud.spanner.Struct.Builder;
 import com.google.cloud.spanner.Type;
 import java.io.Serializable;
 import java.util.Arrays;
@@ -156,11 +157,7 @@ public class SpannerIOWriteTest implements Serializable {
 
   static Struct columnMetadata(
       String tableName, String columnName, String type, long cellsMutated) {
-    return Struct.newBuilder()
-        .set("table_name")
-        .to(tableName)
-        .set("column_name")
-        .to(columnName)
+    return buildStructWithTableAndColumnNames(tableName, columnName)
         .set("spanner_type")
         .to(type)
         .set("cells_mutated")
@@ -168,12 +165,16 @@ public class SpannerIOWriteTest implements Serializable {
         .build();
   }
 
-  static Struct pkMetadata(String tableName, String columnName, String ordering) {
-    return Struct.newBuilder()
+private static Builder buildStructWithTableAndColumnNames(String tableName, String columnName) {
+	return Struct.newBuilder()
         .set("table_name")
         .to(tableName)
         .set("column_name")
-        .to(columnName)
+        .to(columnName);
+}
+
+  static Struct pkMetadata(String tableName, String columnName, String ordering) {
+    return buildStructWithTableAndColumnNames(tableName, columnName)
         .set("column_ordering")
         .to(ordering)
         .build();

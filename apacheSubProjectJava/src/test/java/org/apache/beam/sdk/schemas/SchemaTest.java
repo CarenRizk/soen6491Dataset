@@ -111,29 +111,27 @@ public class SchemaTest {
   @Test
   public void testArraySchema() {
     FieldType arrayType = FieldType.array(FieldType.STRING);
-    Schema schema = Schema.of(Field.of("f_array", arrayType));
+    createSchemaAndValidateField(arrayType);
+  }
+
+private void createSchemaAndValidateField(FieldType arrayType) {
+	Schema schema = Schema.of(Field.of("f_array", arrayType));
     Field field = schema.getField("f_array");
     assertEquals("f_array", field.getName());
     assertEquals(arrayType, field.getType());
-  }
+}
 
   @Test
   public void testArrayOfRowSchema() {
     Schema nestedSchema = Schema.of(Field.of("f1_str", FieldType.STRING));
     FieldType arrayType = FieldType.array(FieldType.row(nestedSchema));
-    Schema schema = Schema.of(Field.of("f_array", arrayType));
-    Field field = schema.getField("f_array");
-    assertEquals("f_array", field.getName());
-    assertEquals(arrayType, field.getType());
+    createSchemaAndValidateField(arrayType);
   }
 
   @Test
   public void testNestedArraySchema() {
     FieldType arrayType = FieldType.array(FieldType.array(FieldType.STRING));
-    Schema schema = Schema.of(Field.of("f_array", arrayType));
-    Field field = schema.getField("f_array");
-    assertEquals("f_array", field.getName());
-    assertEquals(arrayType, field.getType());
+    createSchemaAndValidateField(arrayType);
   }
 
   @Test
@@ -403,19 +401,21 @@ public class SchemaTest {
   public void testPrimitiveNotEquivalent() {
     Schema schema1 = Schema.builder().addInt64Field("foo").build();
     Schema schema2 = Schema.builder().addStringField("foo").build();
-    assertNotEquals(schema1, schema2);
-    assertFalse(schema1.equivalent(schema2));
-
-    schema1 = Schema.builder().addInt64Field("foo").build();
+    schema1 = assertSchemasAreNotEquivalent(schema1, schema2);
     schema2 = Schema.builder().addInt64Field("bar").build();
-    assertNotEquals(schema1, schema2);
-    assertFalse(schema1.equivalent(schema2));
-
-    schema1 = Schema.builder().addInt64Field("foo").build();
+    schema1 = assertSchemasAreNotEquivalent(schema1, schema2);
     schema2 = Schema.builder().addNullableField("foo", FieldType.INT64).build();
     assertNotEquals(schema1, schema2);
     assertFalse(schema1.equivalent(schema2));
   }
+
+private Schema assertSchemasAreNotEquivalent(Schema schema1, Schema schema2) {
+	assertNotEquals(schema1, schema2);
+    assertFalse(schema1.equivalent(schema2));
+
+    schema1 = Schema.builder().addInt64Field("foo").build();
+	return schema1;
+}
 
   @Test
   public void testFieldsWithDifferentMetadataAreEquivalent() {
