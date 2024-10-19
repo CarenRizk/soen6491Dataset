@@ -29,6 +29,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.Writer;
 import java.nio.channels.Channels;
 import java.nio.charset.StandardCharsets;
@@ -143,12 +144,16 @@ public class FileSystemsTest {
 
     assertTrue(srcPath1.toFile().exists());
     assertTrue(srcPath3.toFile().exists());
-    assertThat(
+    assertFileContentsAndNonExistence(srcPath1, srcPath3, destPath2);
+  }
+
+private void assertFileContentsAndNonExistence(Path srcPath1, Path srcPath3, Path destPath2) throws IOException {
+	assertThat(
         Files.readLines(srcPath1.toFile(), StandardCharsets.UTF_8), containsInAnyOrder("content1"));
     assertFalse(destPath2.toFile().exists());
     assertThat(
         Files.readLines(srcPath3.toFile(), StandardCharsets.UTF_8), containsInAnyOrder("content3"));
-  }
+}
 
   @Test
   public void testRenameThrowsNoSuchFileException() throws Exception {
@@ -215,13 +220,7 @@ public class FileSystemsTest {
 
     assertFalse(srcPath1.toFile().exists());
     assertFalse(srcPath3.toFile().exists());
-    assertThat(
-        Files.readLines(destPath1.toFile(), StandardCharsets.UTF_8),
-        containsInAnyOrder("content1"));
-    assertFalse(destPath2.toFile().exists());
-    assertThat(
-        Files.readLines(destPath3.toFile(), StandardCharsets.UTF_8),
-        containsInAnyOrder("content3"));
+    assertFileContentsAndNonExistence(destPath1, destPath3, destPath2);
   }
 
   @Test

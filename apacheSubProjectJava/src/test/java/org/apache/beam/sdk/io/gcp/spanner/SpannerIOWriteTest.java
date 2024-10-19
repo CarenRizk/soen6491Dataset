@@ -59,6 +59,7 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.function.Function;
 import org.apache.beam.runners.core.metrics.GcpResourceIdentifiers;
 import org.apache.beam.runners.core.metrics.MetricsContainerImpl;
 import org.apache.beam.runners.core.metrics.MonitoringInfoConstants;
@@ -179,50 +180,12 @@ public class SpannerIOWriteTest implements Serializable {
   }
 
   static void prepareColumnMetadata(ReadOnlyTransaction tx, List<Struct> rows) {
-    Type type =
-        Type.struct(
-            Type.StructField.of("table_name", Type.string()),
-            Type.StructField.of("column_name", Type.string()),
-            Type.StructField.of("spanner_type", Type.string()),
-            Type.StructField.of("cells_mutated", Type.int64()));
-    when(tx.executeQuery(
-            argThat(
-                new ArgumentMatcher<Statement>() {
-
-                  @Override
-                  public boolean matches(Statement argument) {
-                    if (!(argument instanceof Statement)) {
-                      return false;
-                    }
-                    Statement st = (Statement) argument;
-                    return st.getSql().contains("information_schema.columns");
-                  }
-                })))
-        .thenReturn(ResultSets.forRows(type, rows));
+    createTableSchemaType(tx, rows, (Statement st) -> st.getSql().contains("information_schema.columns"));
   }
 
   static void preparePgColumnMetadata(ReadOnlyTransaction tx, List<Struct> rows) {
-    Type type =
-        Type.struct(
-            Type.StructField.of("table_name", Type.string()),
-            Type.StructField.of("column_name", Type.string()),
-            Type.StructField.of("spanner_type", Type.string()),
-            Type.StructField.of("cells_mutated", Type.int64()));
-    when(tx.executeQuery(
-            argThat(
-                new ArgumentMatcher<Statement>() {
-
-                  @Override
-                  public boolean matches(Statement argument) {
-                    if (!(argument instanceof Statement)) {
-                      return false;
-                    }
-                    Statement st = (Statement) argument;
-                    return st.getSql().contains("information_schema.columns")
-                        && st.getSql().contains("'public'");
-                  }
-                })))
-        .thenReturn(ResultSets.forRows(type, rows));
+    createTableSchemaType(tx, rows,
+			(Statement st) -> st.getSql().contains("information_schema.columns") && st.getSql().contains("'public'"));
   }
 
   static void preparePkMetadata(ReadOnlyTransaction tx, List<Struct> rows) {
@@ -297,7 +260,27 @@ public class SpannerIOWriteTest implements Serializable {
     BatchableMutationFilterFn testFn =
         new BatchableMutationFilterFn(null, null, 10000000, 3 * CELLS_PER_KEY, 1000);
 
-    BatchableMutationFilterFn.ProcessContext mockProcessContext =
+    verifyCapturedBatchableMutationGroups(mutationGroups, testFn);
+
+    // Verify captured unbatchable mutations
+    Iterable<MutationGroup> unbatchableMutations =
+        Iterables.concat(mutationGroupListCaptor.getAllValues());
+    assertThat(
+        unbatchableMutations,
+        containsInAnyOrder(
+            buildMutationGroup(
+                buildUpsertMutation(2L),
+                buildUpsertMutation(3L),
+                buildUpsertMutation(4L),
+                buildUpsertMutation(5L)), // not batchable - too big.
+            buildMutationGroup(buildDeleteMutation(5L, 6L)), // not point delete.
+            buildMutationGroup(all),
+            buildMutationGroup(prefix),
+            buildMutationGroup(range)));
+  }
+
+private void verifyCapturedBatchableMutationGroups(MutationGroup[] mutationGroups, BatchableMutationFilterFn testFn) {
+	BatchableMutationFilterFn.ProcessContext mockProcessContext =
         Mockito.mock(ProcessContext.class);
     when(mockProcessContext.sideInput(any())).thenReturn(getSchema());
 
@@ -318,23 +301,7 @@ public class SpannerIOWriteTest implements Serializable {
             buildMutationGroup(buildUpsertMutation(1L)),
             buildMutationGroup(buildUpsertMutation(2L), buildUpsertMutation(3L)),
             buildMutationGroup(buildDeleteMutation(1L))));
-
-    // Verify captured unbatchable mutations
-    Iterable<MutationGroup> unbatchableMutations =
-        Iterables.concat(mutationGroupListCaptor.getAllValues());
-    assertThat(
-        unbatchableMutations,
-        containsInAnyOrder(
-            buildMutationGroup(
-                buildUpsertMutation(2L),
-                buildUpsertMutation(3L),
-                buildUpsertMutation(4L),
-                buildUpsertMutation(5L)), // not batchable - too big.
-            buildMutationGroup(buildDeleteMutation(5L, 6L)), // not point delete.
-            buildMutationGroup(all),
-            buildMutationGroup(prefix),
-            buildMutationGroup(range)));
-  }
+}
 
   @Test
   public void testBatchableMutationFilterFn_size() {
@@ -343,21 +310,7 @@ public class SpannerIOWriteTest implements Serializable {
     Mutation range =
         Mutation.delete(
             TABLE_NAME, KeySet.range(KeyRange.openOpen(Key.of(1L), Key.newBuilder().build())));
-    MutationGroup[] mutationGroups =
-        new MutationGroup[] {
-          buildMutationGroup(buildUpsertMutation(1L)),
-          buildMutationGroup(buildUpsertMutation(2L), buildUpsertMutation(3L)),
-          buildMutationGroup(
-              buildUpsertMutation(1L),
-              buildUpsertMutation(3L),
-              buildUpsertMutation(4L),
-              buildUpsertMutation(5L)), // not batchable - too big.
-          buildMutationGroup(buildDeleteMutation(1L)),
-          buildMutationGroup(buildDeleteMutation(5L, 6L)), // not point delete.
-          buildMutationGroup(all),
-          buildMutationGroup(prefix),
-          buildMutationGroup(range)
-        };
+    MutationGroup[] mutationGroups = createMutationGroups(all, prefix, range);
 
     long mutationSize = MutationSizeEstimator.sizeOf(buildUpsertMutation(1L));
     BatchableMutationFilterFn testFn =
@@ -409,45 +362,11 @@ public class SpannerIOWriteTest implements Serializable {
     Mutation range =
         Mutation.delete(
             TABLE_NAME, KeySet.range(KeyRange.openOpen(Key.of(1L), Key.newBuilder().build())));
-    MutationGroup[] mutationGroups =
-        new MutationGroup[] {
-          buildMutationGroup(buildUpsertMutation(1L)),
-          buildMutationGroup(buildUpsertMutation(2L), buildUpsertMutation(3L)),
-          buildMutationGroup(
-              buildUpsertMutation(1L),
-              buildUpsertMutation(3L),
-              buildUpsertMutation(4L),
-              buildUpsertMutation(5L)), // not batchable - too many rows.
-          buildMutationGroup(buildDeleteMutation(1L)),
-          buildMutationGroup(buildDeleteMutation(5L, 6L)), // not point delete.
-          buildMutationGroup(all),
-          buildMutationGroup(prefix),
-          buildMutationGroup(range)
-        };
+    MutationGroup[] mutationGroups = createMutationGroups(all, prefix, range);
 
     BatchableMutationFilterFn testFn = new BatchableMutationFilterFn(null, null, 1000, 1000, 3);
 
-    BatchableMutationFilterFn.ProcessContext mockProcessContext =
-        Mockito.mock(ProcessContext.class);
-    when(mockProcessContext.sideInput(any())).thenReturn(getSchema());
-
-    // Capture the outputs.
-    doNothing().when(mockProcessContext).output(mutationGroupCaptor.capture());
-    doNothing().when(mockProcessContext).output(any(), mutationGroupListCaptor.capture());
-
-    // Process all elements.
-    for (MutationGroup m : mutationGroups) {
-      when(mockProcessContext.element()).thenReturn(m);
-      testFn.processElement(mockProcessContext);
-    }
-
-    // Verify captured batchable elements.
-    assertThat(
-        mutationGroupCaptor.getAllValues(),
-        containsInAnyOrder(
-            buildMutationGroup(buildUpsertMutation(1L)),
-            buildMutationGroup(buildUpsertMutation(2L), buildUpsertMutation(3L)),
-            buildMutationGroup(buildDeleteMutation(1L))));
+    verifyCapturedBatchableMutationGroups(mutationGroups, testFn);
 
     // Verify captured unbatchable mutations
     Iterable<MutationGroup> unbatchableMutations =
@@ -465,6 +384,25 @@ public class SpannerIOWriteTest implements Serializable {
             buildMutationGroup(prefix),
             buildMutationGroup(range)));
   }
+
+private MutationGroup[] createMutationGroups(Mutation all, Mutation prefix, Mutation range) {
+	MutationGroup[] mutationGroups =
+        new MutationGroup[] {
+          buildMutationGroup(buildUpsertMutation(1L)),
+          buildMutationGroup(buildUpsertMutation(2L), buildUpsertMutation(3L)),
+          buildMutationGroup(
+              buildUpsertMutation(1L),
+              buildUpsertMutation(3L),
+              buildUpsertMutation(4L),
+              buildUpsertMutation(5L)), // not batchable - too many rows.
+          buildMutationGroup(buildDeleteMutation(1L)),
+          buildMutationGroup(buildDeleteMutation(5L, 6L)), // not point delete.
+          buildMutationGroup(all),
+          buildMutationGroup(prefix),
+          buildMutationGroup(range)
+        };
+	return mutationGroups;
+}
 
   @Test
   public void testBatchableMutationFilterFn_batchingDisabled() {
@@ -862,4 +800,21 @@ public class SpannerIOWriteTest implements Serializable {
         MonitoringInfoConstants.Labels.SPANNER_DATABASE_ID, config.getDatabaseId().get());
     return baseLabels;
   }
+
+private static void createTableSchemaType(ReadOnlyTransaction tx, List<Struct> rows,
+		Function<Statement, Boolean> arg0) {
+	Type type = Type.struct(Type.StructField.of("table_name", Type.string()),
+			Type.StructField.of("column_name", Type.string()), Type.StructField.of("spanner_type", Type.string()),
+			Type.StructField.of("cells_mutated", Type.int64()));
+	when(tx.executeQuery(argThat(new ArgumentMatcher<Statement>() {
+		@Override
+		public boolean matches(Statement argument) {
+			if (!(argument instanceof Statement)) {
+				return false;
+			}
+			Statement st = (Statement) argument;
+			return (boolean) arg0.apply(st);
+		}
+	}))).thenReturn(ResultSets.forRows(type, rows));
+}
 }

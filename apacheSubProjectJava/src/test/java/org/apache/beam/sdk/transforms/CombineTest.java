@@ -954,17 +954,7 @@ public class CombineTest implements Serializable {
     @Test
     @Category({ValidatesRunner.class})
     public void testFixedWindowsCombine() {
-      PCollection<KV<String, Integer>> input =
-          pipeline
-              .apply(
-                  Create.timestamped(
-                          TimestampedValue.of(KV.of("a", 1), new Instant(0L)),
-                          TimestampedValue.of(KV.of("a", 1), new Instant(1L)),
-                          TimestampedValue.of(KV.of("a", 4), new Instant(6L)),
-                          TimestampedValue.of(KV.of("b", 1), new Instant(7L)),
-                          TimestampedValue.of(KV.of("b", 13), new Instant(8L)))
-                      .withCoder(KvCoder.of(StringUtf8Coder.of(), BigEndianIntegerCoder.of())))
-              .apply(Window.into(FixedWindows.of(Duration.millis(2))));
+      PCollection<KV<String, Integer>> input = createTimestampedKeyValuePCollection();
 
       PCollection<Integer> sum =
           input.apply(Values.create()).apply(Combine.globally(new SumInts()).withoutDefaults());
@@ -981,17 +971,7 @@ public class CombineTest implements Serializable {
     @Test
     @Category({ValidatesRunner.class, UsesSideInputs.class})
     public void testFixedWindowsCombineWithContext() {
-      PCollection<KV<String, Integer>> perKeyInput =
-          pipeline
-              .apply(
-                  Create.timestamped(
-                          TimestampedValue.of(KV.of("a", 1), new Instant(0L)),
-                          TimestampedValue.of(KV.of("a", 1), new Instant(1L)),
-                          TimestampedValue.of(KV.of("a", 4), new Instant(6L)),
-                          TimestampedValue.of(KV.of("b", 1), new Instant(7L)),
-                          TimestampedValue.of(KV.of("b", 13), new Instant(8L)))
-                      .withCoder(KvCoder.of(StringUtf8Coder.of(), BigEndianIntegerCoder.of())))
-              .apply(Window.into(FixedWindows.of(Duration.millis(2))));
+      PCollection<KV<String, Integer>> perKeyInput = createTimestampedKeyValuePCollection();
 
       PCollection<Integer> globallyInput = perKeyInput.apply(Values.create());
 
@@ -1019,6 +999,21 @@ public class CombineTest implements Serializable {
       PAssert.that(combineGloballyWithContext).containsInAnyOrder("2:11", "5:14", "13:13");
       pipeline.run();
     }
+
+	private PCollection<KV<String, Integer>> createTimestampedKeyValuePCollection() {
+		PCollection<KV<String, Integer>> perKeyInput =
+		      pipeline
+		          .apply(
+		              Create.timestamped(
+		                      TimestampedValue.of(KV.of("a", 1), new Instant(0L)),
+		                      TimestampedValue.of(KV.of("a", 1), new Instant(1L)),
+		                      TimestampedValue.of(KV.of("a", 4), new Instant(6L)),
+		                      TimestampedValue.of(KV.of("b", 1), new Instant(7L)),
+		                      TimestampedValue.of(KV.of("b", 13), new Instant(8L)))
+		                  .withCoder(KvCoder.of(StringUtf8Coder.of(), BigEndianIntegerCoder.of())))
+		          .apply(Window.into(FixedWindows.of(Duration.millis(2))));
+		return perKeyInput;
+	}
 
     @Test
     @Category({ValidatesRunner.class, UsesSideInputs.class})
