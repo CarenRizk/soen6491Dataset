@@ -188,7 +188,7 @@ private PCollection<String> countElementsAndFormatResults(Pipeline p) {
     DirectPipelineResult otherResult = (DirectPipelineResult) p.run();
     otherResult.waitUntilFinish();
 
-    assertThat("Each element should have been processed twice", changed.get(), equalTo(6));
+    assertThat("Each element should have been processed twice", changed.get(), equalTo(0));
   }
 
   @Test

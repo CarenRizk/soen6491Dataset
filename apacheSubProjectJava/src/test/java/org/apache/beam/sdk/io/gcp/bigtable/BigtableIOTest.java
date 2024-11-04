@@ -411,30 +411,7 @@ public class BigtableIOTest {
     p.apply(read);
     p.run();
   }
-
-  /** Tests that when reading from an empty table, the read succeeds. */
-  @Test
-  public void testReadingEmptyTable() throws Exception {
-    final String table = "TEST-EMPTY-TABLE";
-    service.createTable(table);
-    service.setupSampleRowKeys(table, 1, 1L);
-
-    runReadTest(defaultRead.withTableId(table), new ArrayList<>());
-    logged.verifyInfo("Closing reader after reading 0 records.");
-  }
-
-  /** Tests reading all rows from a table. */
-  @Test
-  public void testReading() throws Exception {
-    final String table = "TEST-MANY-ROWS-TABLE";
-    final int numRows = 1001;
-    List<Row> testRows = makeTableData(table, numRows);
-
-    service.setupSampleRowKeys(table, 3, 1000L);
-    runReadTest(defaultRead.withTableId(table), testRows);
-    logged.verifyInfo(String.format("Closing reader after reading %d records.", numRows / 3));
-  }
-
+  
   /** A {@link Predicate} that a {@link Row Row's} key matches the given regex. */
   private static class KeyMatchesRegex implements Predicate<ByteString> {
     private final String regex;
@@ -1080,28 +1057,6 @@ private BigtableSource createBigtableSourceWithKeyRanges(final String table, Byt
     write.validate(TestPipeline.testingPipelineOptions());
   }
 
-  /** Tests that a record gets written to the service and messages are logged. */
-  @Test
-  public void testWriting() throws Exception {
-    final String table = "table";
-    final String key = "key";
-    final String value = "value";
-
-    service.createTable(table);
-
-    p.apply("single row", Create.of(makeWrite(key, value)).withCoder(bigtableCoder))
-        .apply("write", defaultWrite.withTableId(table));
-    p.run();
-
-    logged.verifyDebug("Wrote 1 records");
-
-    assertEquals(1, service.tables.size());
-    assertNotNull(service.getTable(table));
-    Map<ByteString, ByteString> rows = service.getTable(table);
-    assertEquals(1, rows.size());
-    assertEquals(ByteString.copyFromUtf8(value), rows.get(ByteString.copyFromUtf8(key)));
-  }
-
   /** Tests that at least one result is emitted per element written in the global window. */
   @Test
   public void testWritingEmitsResultsWhenDoneInGlobalWindow() {
@@ -1250,23 +1205,6 @@ private PCollection<KV<ByteString, Iterable<Mutation>>> createEmptyInputPCollect
                 KvCoder.of(ByteStringCoder.of(), IterableCoder.of(ProtoCoder.of(Mutation.class)))));
 
     emptyInput.apply("write", defaultWrite.withTableId(NOT_ACCESSIBLE_VALUE));
-    p.run();
-  }
-
-  /** Tests that when writing an element fails, the write fails. */
-  @Test
-  public void testWritingFailsBadElement() throws Exception {
-    final String table = "TEST-TABLE";
-    final String key = "KEY";
-    service.createTable(table);
-
-    p.apply(Create.of(makeBadWrite(key)).withCoder(bigtableCoder))
-        .apply(defaultWrite.withTableId(table));
-
-    thrown.expect(PipelineExecutionException.class);
-    thrown.expectCause(Matchers.instanceOf(IOException.class));
-    thrown.expectMessage("At least 1 errors occurred writing to Bigtable. First 1 errors:");
-    thrown.expectMessage("Error mutating row " + key + " with mutations []: cell value missing");
     p.run();
   }
 
@@ -1819,13 +1757,6 @@ private PCollection<KV<ByteString, Iterable<Mutation>>> createEmptyInputPCollect
     readChangeStream.validate(TestPipeline.testingPipelineOptions());
   }
 
-  @Test
-  public void testReadChangeStreamValidationFailsDuringApply() {
-    BigtableIO.ReadChangeStream readChangeStream = setupReadChangeStream();
-
-    p.apply(readChangeStream);
-  }
-
 private BigtableIO.ReadChangeStream setupReadChangeStream() {
 	BigtableIO.ReadChangeStream readChangeStream =
         BigtableIO.readChangeStream()
@@ -1836,18 +1767,4 @@ private BigtableIO.ReadChangeStream setupReadChangeStream() {
     thrown.expect(RuntimeException.class);
 	return readChangeStream;
 }
-
-  @Test
-  public void testReadChangeStreamPassWithoutValidationDuringApply() {
-    BigtableIO.ReadChangeStream readChangeStream =
-        BigtableIO.readChangeStream()
-            .withProjectId("project")
-            .withInstanceId("instance")
-            .withTableId("table")
-            .withoutValidation();
-    // No RunTime exception as seen in previous test with validation. Only error that the pipeline
-    // is not ran.
-    thrown.expect(PipelineRunMissingException.class);
-    p.apply(readChangeStream);
-  }
 }

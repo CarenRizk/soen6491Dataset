@@ -10,30 +10,33 @@ def remove_commented_code(file_path):
     is_javadoc = False
 
     for line in lines:
-        # Check for Javadoc comments (/** ... */)
+        # Check for Javadoc comment start (/**)
         if line.strip().startswith("/**"):
             is_javadoc = True
 
-        # Check for end of a Javadoc comment or block comment
+        # End of Javadoc comment (*/)
         if is_javadoc and "*/" in line:
             is_javadoc = False
-            new_lines.append(line)  # Keep the closing line of Javadoc
+            new_lines.append(line)
             continue
 
-        # Skip lines if inside a regular block comment, but not Javadoc
-        if in_block_comment and not is_javadoc:
-            if "*/" in line:
-                in_block_comment = False
+        # Regular block comment start (/*) but not inline comments
+        if re.match(r'^\s*/\*', line) and not in_block_comment:
+            if "*/" not in line:  # Only start block if it doesn't close on the same line
+                in_block_comment = True
+            continue  # Skip this line
+
+        # End of regular block comment (*/)
+        if in_block_comment and "*/" in line:
+            in_block_comment = False
             continue
 
-        # Detect the start of a regular block comment (not Javadoc)
-        if "/*" in line and not is_javadoc:
-            in_block_comment = True
+        # Ignore all lines inside a block comment
+        if in_block_comment:
             continue
 
-        # Remove single-line comments (//) that look like code
-        single_line_comment = re.match(r'^\s*//', line)
-        if not single_line_comment or is_javadoc:
+        # Skip single-line comments that start with // but retain lines with mixed code
+        if not re.match(r'^\s*//', line) or is_javadoc:
             new_lines.append(line)
 
     # Write the cleaned lines back to the file

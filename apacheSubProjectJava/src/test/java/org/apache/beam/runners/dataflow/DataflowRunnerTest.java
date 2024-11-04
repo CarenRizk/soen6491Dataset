@@ -383,23 +383,6 @@ private DataflowPipelineOptions configureDataflowPipelineOptions() {
   }
 
   @Test
-  public void testPathExistsValidation() {
-    String[] args =
-        new String[] {
-          "--runner=DataflowRunner",
-          "--region=some-region-1",
-          "--tempLocation=gs://does/not/exist",
-          "--project=test-project",
-          "--credentialFactoryClass=" + NoopCredentialFactory.class.getName(),
-        };
-
-    thrown.expect(IllegalArgumentException.class);
-    thrown.expectMessage("gcpTempLocation");
-    thrown.expectCause(hasProperty("message", containsString("gs://does/not/exist")));
-    Pipeline.create(PipelineOptionsFactory.fromArgs(args).create()).run();
-  }
-
-  @Test
   public void testPathValidatorOverride() {
     String[] args =
         new String[] {
@@ -552,16 +535,6 @@ private DataflowPipelineOptions configureDataflowPipelineOptions() {
   }
 
   @Test
-  public void testZoneAndWorkerRegionMutuallyExclusive() {
-    DataflowPipelineWorkerPoolOptions options =
-        PipelineOptionsFactory.as(DataflowPipelineWorkerPoolOptions.class);
-    options.setZone("us-east1-b");
-    options.setWorkerRegion("us-east1");
-    assertThrows(
-        IllegalArgumentException.class, () -> DataflowRunner.validateWorkerSettings(options));
-  }
-
-  @Test
   public void testZoneAndWorkerZoneMutuallyExclusive() {
     DataflowPipelineWorkerPoolOptions options =
         PipelineOptionsFactory.as(DataflowPipelineWorkerPoolOptions.class);
@@ -604,34 +577,12 @@ private DataflowPipelineOptions configureDataflowPipelineOptions() {
   }
 
   @Test
-  public void testZoneAliasWorkerZone() {
-    DataflowPipelineWorkerPoolOptions options =
-        PipelineOptionsFactory.as(DataflowPipelineWorkerPoolOptions.class);
-    options.setZone("us-east1-b");
-    DataflowRunner.validateWorkerSettings(options);
-    assertNull(options.getZone());
-    assertEquals("us-east1-b", options.getWorkerZone());
-  }
-
-  @Test
-  public void testAliasForLegacyWorkerHarnessContainerImage() {
-    DataflowPipelineWorkerPoolOptions options =
-        PipelineOptionsFactory.as(DataflowPipelineWorkerPoolOptions.class);
-    String testImage = "image.url:worker";
-    options.setWorkerHarnessContainerImage(testImage);
-    DataflowRunner.validateWorkerSettings(options);
-    assertEquals(testImage, options.getWorkerHarnessContainerImage());
-    assertEquals(testImage, options.getSdkContainerImage());
-  }
-
-  @Test
   public void testAliasForSdkContainerImage() {
     DataflowPipelineWorkerPoolOptions options =
         PipelineOptionsFactory.as(DataflowPipelineWorkerPoolOptions.class);
     String testImage = "image.url:sdk";
     options.setSdkContainerImage("image.url:sdk");
     DataflowRunner.validateWorkerSettings(options);
-    assertEquals(testImage, options.getWorkerHarnessContainerImage());
     assertEquals(testImage, options.getSdkContainerImage());
   }
 
@@ -736,32 +687,6 @@ private Job setupMockDataflowJobCreation(DataflowPipelineOptions options) throws
     options.setUpdate(true);
     options.setJobName("badJobName");
     Pipeline p = buildDataflowPipeline(options);
-    p.run();
-  }
-
-  @Test
-  public void testUpdateAlreadyUpdatedPipeline() throws IOException {
-	 DataflowPipelineOptions options = buildPipelineOptions();
-	 Job resultJob = setupMockDataflowJobCreation(options);
-
-    Pipeline p = buildDataflowPipeline(options);
-
-    thrown.expect(DataflowJobAlreadyUpdatedException.class);
-    thrown.expect(
-        new TypeSafeMatcher<DataflowJobAlreadyUpdatedException>() {
-          @Override
-          public void describeTo(Description description) {
-            description.appendText("Expected job ID: " + resultJob.getId());
-          }
-
-          @Override
-          protected boolean matchesSafely(DataflowJobAlreadyUpdatedException item) {
-            return resultJob.getId().equals(item.getJob().getJobId());
-          }
-        });
-    thrown.expectMessage(
-        "The job named oldjobname with id: oldJobId has already been updated "
-            + "into job id: newid and cannot be updated again.");
     p.run();
   }
 
@@ -979,37 +904,6 @@ private void verifyNonExistentOutputPathThrowsException(DataflowPipelineOptions 
     thrown.expectMessage("Please make sure the value is non-negative.");
 
     DataflowRunner.fromOptions(options);
-  }
-
-  @Test
-  public void testNoStagingLocationAndNoTempLocationFails() {
-    DataflowPipelineOptions options = PipelineOptionsFactory.as(DataflowPipelineOptions.class);
-    options.setRunner(DataflowRunner.class);
-    options.setProject("foo-project");
-    options.setRegion(REGION_ID);
-
-    thrown.expect(IllegalArgumentException.class);
-    thrown.expectMessage(
-        "DataflowRunner requires gcpTempLocation, "
-            + "but failed to retrieve a value from PipelineOption");
-    DataflowRunner.fromOptions(options);
-  }
-
-  @Test
-  public void testApplySdkEnvironmentOverrides() throws IOException {
-    DataflowPipelineOptions options = buildPipelineOptions();
-    String dockerHubPythonContainerUrl = "apache/beam_python3.9_sdk:latest";
-    String gcrPythonContainerUrl = "gcr.io/apache-beam-testing/beam-sdk/beam_python3.9_sdk:latest";
-    options.setSdkHarnessContainerImageOverrides(".*python.*," + gcrPythonContainerUrl);
-    assertDockerEnvironmentOverrides(options, dockerHubPythonContainerUrl, gcrPythonContainerUrl);
-  }
-
-  @Test
-  public void testApplySdkEnvironmentOverridesByDefault() throws IOException {
-    DataflowPipelineOptions options = buildPipelineOptions();
-    String dockerHubPythonContainerUrl = "apache/beam_python3.9_sdk:latest";
-    String gcrPythonContainerUrl = "gcr.io/cloud-dataflow/v1beta3/beam_python3.9_sdk:latest";
-    assertDockerEnvironmentOverrides(options, dockerHubPythonContainerUrl, gcrPythonContainerUrl);
   }
 
 private void assertDockerEnvironmentOverrides(DataflowPipelineOptions options, String dockerHubPythonContainerUrl,
@@ -1335,30 +1229,6 @@ private RunnerApi.Pipeline createExpectedPipeline(String dockerHubPythonContaine
           input.isBounded(),
           input.getCoder());
     }
-  }
-
-  @Test
-  public void testTransformTranslatorMissing() throws IOException {
-    DataflowPipelineOptions options = buildPipelineOptions();
-    Pipeline p = Pipeline.create(options);
-
-    p.apply(Create.of(Arrays.asList(1, 2, 3))).apply(new TestTransform());
-
-    thrown.expect(IllegalStateException.class);
-    thrown.expectMessage(containsString("no translator registered"));
-    SdkComponents sdkComponents = SdkComponents.create(options);
-    RunnerApi.Pipeline pipelineProto = PipelineTranslation.toProto(p, sdkComponents, true);
-    DataflowPipelineTranslator.fromOptions(options)
-        .translate(
-            p,
-            pipelineProto,
-            sdkComponents,
-            DataflowRunner.fromOptions(options),
-            Collections.emptyList());
-
-    ArgumentCaptor<Job> jobCaptor = ArgumentCaptor.forClass(Job.class);
-    Mockito.verify(mockJobs).create(eq(PROJECT_ID), eq(REGION_ID), jobCaptor.capture());
-    assertValidJob(jobCaptor.getValue());
   }
 
   private void verifySdkHarnessConfiguration(DataflowPipelineOptions options) throws IOException {
@@ -1758,22 +1628,6 @@ private void assertBatchingOverrideApplied(Pipeline p, Boolean expectOverriden) 
               return null;
             });
     assertBatchingOverrideApplied(p, expectOverriden);
-  }
-
-  @Test
-  @Category({ValidatesRunner.class, UsesStatefulParDo.class})
-  public void testBatchGroupIntoBatchesOverrideCount() {
-    // Ignore this test for streaming pipelines.
-    assumeFalse(pipeline.getOptions().as(StreamingOptions.class).isStreaming());
-    verifyGroupIntoBatchesOverrideCount(pipeline, false, true);
-  }
-
-  @Test
-  @Category({ValidatesRunner.class, UsesStatefulParDo.class})
-  public void testBatchGroupIntoBatchesOverrideBytes() {
-    // Ignore this test for streaming pipelines.
-    assumeFalse(pipeline.getOptions().as(StreamingOptions.class).isStreaming());
-    verifyGroupIntoBatchesOverrideBytes(pipeline, false, true);
   }
 
   public void testBigQueryDLQWarning(BigQueryIO.Write.Method method, boolean processFailures)

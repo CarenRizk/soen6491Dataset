@@ -122,6 +122,25 @@
 		    <artifactId>mockito-inline</artifactId>
 		    <version>3.12.4</version>
 		</dependency>
+		
+		<dependency>
+		    <groupId>org.slf4j</groupId>
+		    <artifactId>slf4j-reload4j</artifactId>
+		    <version>2.1.0-alpha1</version>
+		</dependency>
+		
+		<dependency>
+		    <groupId>org.apache.logging.log4j</groupId>
+		    <artifactId>log4j-slf4j-impl</artifactId>
+		    <version>3.0.0-beta2</version>
+		</dependency>
+
+		<dependency>
+		    <groupId>io.grpc</groupId>
+		    <artifactId>grpc-context</artifactId>
+		    <version>1.68.1</version>
+		    <scope>test</scope>
+		</dependency>
 
         <dependency>
             <groupId>org.apache.beam</groupId>
@@ -129,12 +148,6 @@
             <version>2.45.0</version>
             <scope>test</scope>
         </dependency>
-		
-		<dependency>
-		    <groupId>com.google.cloud</groupId>
-		    <artifactId>google-cloud-spanner</artifactId>
-		    <version>6.17.0</version>
-		</dependency>
 		
 		<dependency>
 		    <groupId>com.google.auto.value</groupId>
