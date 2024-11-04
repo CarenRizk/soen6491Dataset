@@ -109,7 +109,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.junit.runners.Parameterized;
 
-/** Tests for {@link TextIO.Read}. */
+
 @RunWith(Enclosed.class)
 public class TextIOReadTest {
   private static final int LINES_NUMBER_FOR_LARGE = 1000;
@@ -148,10 +148,7 @@ public class TextIOReadTest {
     return file;
   }
 
-  /**
-   * Helper that writes the given lines (adding a newline in between) to a stream, then closes the
-   * stream.
-   */
+  
   private static void writeToStreamAndClose(List<String> lines, OutputStream outputStream) {
     try (PrintStream writer = new PrintStream(outputStream)) {
       for (String line : lines) {
@@ -160,7 +157,7 @@ public class TextIOReadTest {
     }
   }
 
-  /** Helper to make an array of compressible strings. Returns ["word"i] for i in range(0,n). */
+  
   private static List<String> makeLines(int n) {
     List<String> ret = new ArrayList<>();
     for (int i = 0; i < n; ++i) {
@@ -169,19 +166,7 @@ public class TextIOReadTest {
     return ret;
   }
 
-  /**
-   * Helper method that runs a variety of ways to read a single file using TextIO and checks that
-   * they all match the given expected output.
-   *
-   * <p>The transforms being verified are:
-   *
-   * <ul>
-   *   <li>TextIO.read().from(filename).withCompression(compressionType)
-   *   <li>TextIO.read().from(filename).withCompression(compressionType) .withHintMatchesManyFiles()
-   *   <li>TextIO.readFiles().withCompression(compressionType)
-   *   <li>TextIO.readAll().withCompression(compressionType)
-   * </ul>
-   */
+  
   private static void assertReadingCompressedFileMatchesExpected(
       File file, Compression compression, List<String> expected, Pipeline p) {
 
@@ -210,16 +195,7 @@ public class TextIOReadTest {
         .containsInAnyOrder(expected);
   }
 
-  /**
-   * Create a zip file with the given lines.
-   *
-   * @param expected A list of expected lines, populated in the zip file.
-   * @param folder A temporary folder used to create files.
-   * @param filename Optionally zip file name (can be null).
-   * @param fieldsEntries Fields to write in zip entries.
-   * @return The zip filename.
-   * @throws Exception In case of a failure during zip file creation.
-   */
+  
   private static File createZipFile(
       List<String> expected, TemporaryFolder folder, String filename, String[]... fieldsEntries)
       throws Exception {
@@ -307,7 +283,7 @@ private static void assertReaderInitialState(BoundedSource.BoundedReader<String>
 	    BoundedSource.BoundedReader.SPLIT_POINTS_UNKNOWN, reader.getSplitPointsRemaining());
 }
 
-/** Tests for reading files with various delimiters. */
+
   @RunWith(Parameterized.class)
   public static class ReadWithDefaultDelimiterTest {
     private static final ImmutableList<String> EXPECTED = ImmutableList.of("asdf", "hjkl", "xyz");
@@ -449,7 +425,7 @@ private static void assertReaderInitialState(BoundedSource.BoundedReader<String>
     }
   }
 
-  /** Tests for reading files with/without header. */
+  
   @RunWith(Parameterized.class)
   public static class SkippingHeaderTest {
     private static final ImmutableList<String> EXPECTED = ImmutableList.of("asdf", "hjkl", "xyz");
@@ -491,7 +467,7 @@ private static void assertReaderInitialState(BoundedSource.BoundedReader<String>
     }
   }
 
-  /** Tests for reading files with various delimiters. */
+  
   @RunWith(Parameterized.class)
   public static class ReadWithCustomDelimiterTest {
     @Rule public TemporaryFolder tempFolder = new TemporaryFolder();
@@ -582,7 +558,7 @@ private static void assertReaderInitialState(BoundedSource.BoundedReader<String>
     }
   }
 
-  /** Tests for some basic operations in {@link TextIO.Read}. */
+  
   @RunWith(JUnit4.class)
   public static class BasicIOTest {
     @Rule public TemporaryFolder tempFolder = new TemporaryFolder();
@@ -627,7 +603,7 @@ private static void assertReaderInitialState(BoundedSource.BoundedReader<String>
           startsWith("MyRead/Read"));
     }
 
-    /** Options for testing. */
+    
     public interface RuntimeTestOptions extends PipelineOptions {
       ValueProvider<String> getInput();
 
@@ -766,7 +742,7 @@ private static void assertReaderInitialState(BoundedSource.BoundedReader<String>
     }
   }
 
-  /** Tests for TextSource class. */
+  
   @RunWith(JUnit4.class)
   public static class TextSourceTest {
     @Rule public transient TestPipeline pipeline = TestPipeline.create();
@@ -852,7 +828,7 @@ private static void assertReaderInitialState(BoundedSource.BoundedReader<String>
       }
     }
 
-    /** A transform that reads CSV file records. */
+    
     private static class TextFileReadTransform
         extends PTransform<PCollection<String>, PCollection<String>> {
       public TextFileReadTransform() {}

@@ -54,7 +54,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.junit.runners.Parameterized;
 
-/** Tests for the ApproximateUnique transform. */
+
 public class ApproximateUniqueTest implements Serializable {
   // implements Serializable just to make it easy to use anonymous inner DoFn subclasses
 
@@ -76,10 +76,7 @@ public class ApproximateUniqueTest implements Serializable {
     }
   }
 
-  /**
-   * Checks that the estimation error, i.e., the difference between {@code uniqueCount} and {@code
-   * estimate} is less than {@code 2 / sqrt(sampleSize}).
-   */
+  
   private static void verifyEstimate(
       final long uniqueCount, final int sampleSize, final long estimate) {
     if (uniqueCount < sampleSize) {
@@ -145,7 +142,7 @@ public class ApproximateUniqueTest implements Serializable {
     }
   }
 
-  /** Tests for ApproximateUnique with duplicates. */
+  
   @RunWith(Parameterized.class)
   public static class ApproximateUniqueWithDuplicatesTest extends ApproximateUniqueTest {
 

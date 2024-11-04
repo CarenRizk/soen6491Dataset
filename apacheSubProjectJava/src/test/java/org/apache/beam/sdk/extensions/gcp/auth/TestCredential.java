@@ -24,7 +24,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-/** Fake credential, for use in testing. */
+
 public class TestCredential extends Credentials {
   @Override
   public String getAuthenticationType() {

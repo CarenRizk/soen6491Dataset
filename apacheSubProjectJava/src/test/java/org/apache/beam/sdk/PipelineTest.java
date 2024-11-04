@@ -78,7 +78,7 @@ import org.junit.rules.Timeout;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-/** Tests for Pipeline. */
+
 @RunWith(JUnit4.class)
 @SuppressWarnings({
   "rawtypes", // TODO(https://github.com/apache/beam/issues/20447)
@@ -270,7 +270,7 @@ public class PipelineTest {
     ((Pipeline) pipeline).validate(pipeline.getOptions());
   }
 
-  /** Tests that Pipeline supports a pass-through identity function. */
+  
   @Test
   @Category(ValidatesRunner.class)
   public void testIdentityTransform() {
@@ -289,7 +289,7 @@ public class PipelineTest {
     }
   }
 
-  /** Tests that Pipeline supports pulling an element out of a tuple as a transform. */
+  
   @Test
   @Category(ValidatesRunner.class)
   public void testTupleProjectionTransform() throws Exception {
@@ -318,7 +318,7 @@ public class PipelineTest {
     }
   }
 
-  /** Tests that Pipeline supports putting an element into a tuple as a transform. */
+  
   @Test
   @Category(ValidatesRunner.class)
   public void testTupleInjectionTransform() throws Exception {
@@ -346,7 +346,7 @@ public class PipelineTest {
     }
   }
 
-  /** Tests that an empty pipeline runs. */
+  
   @Test
   @Category(NeedsRunner.class)
   public void testEmptyPipeline() throws Exception {
@@ -380,10 +380,7 @@ public class PipelineTest {
         });
   }
 
-  /**
-   * Tests that {@link Pipeline#replaceAll(List)} succeeds when one of the PTransformOverride still
-   * matches.
-   */
+  
   @Test
   public void testReplaceAllIncomplete() {
     pipeline.enableAbandonedNodeEnforcement(false);

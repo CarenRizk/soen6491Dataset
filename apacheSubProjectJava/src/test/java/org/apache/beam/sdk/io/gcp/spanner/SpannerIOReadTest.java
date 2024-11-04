@@ -79,7 +79,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.mockito.Mockito;
 
-/** Unit tests for {@link SpannerIO}. */
+
 @RunWith(JUnit4.class)
 public class SpannerIOReadTest implements Serializable {
 

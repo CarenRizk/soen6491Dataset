@@ -19,22 +19,14 @@ package org.apache.beam.sdk.extensions.euphoria.core.client.accumulators;
 
 import org.apache.beam.sdk.extensions.euphoria.core.annotation.audience.Audience;
 
-/**
- * Counter is a type of accumulator making a sum from integral numbers.
- *
- * @deprecated Use Java SDK directly, Euphoria is scheduled for removal in a future release.
- */
+
 @Audience(Audience.Type.CLIENT)
 @Deprecated
 public interface Counter extends Accumulator {
 
-  /**
-   * Increment counter by given value.
-   *
-   * @param value Value to be added to the counter.
-   */
+  
   void increment(long value);
 
-  /** Increment counter by one. */
+  
   void increment();
 }

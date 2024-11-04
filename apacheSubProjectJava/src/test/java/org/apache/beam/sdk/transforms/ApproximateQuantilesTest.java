@@ -52,10 +52,10 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 import org.junit.runners.Parameterized;
 
-/** Tests for {@link ApproximateQuantiles}. */
+
 public class ApproximateQuantilesTest {
 
-  /** Tests for the overall combiner behavior. */
+  
   @RunWith(JUnit4.class)
   public static class CombinerTests {
     static final List<KV<String, Integer>> TABLE =
@@ -276,7 +276,7 @@ public class ApproximateQuantilesTest {
     }
   }
 
-  /** Tests to ensure we are calculating the optimal buffers. */
+  
   @RunWith(Parameterized.class)
   public static class BufferTests {
 
@@ -286,12 +286,7 @@ public class ApproximateQuantilesTest {
     private final int expectedBufferSize;
     private final ApproximateQuantilesCombineFn<?, ?> combineFn;
 
-    /**
-     * Test data taken from "Munro-Paterson Algorithm" reference values table of "Approximate
-     * Medians and other Quantiles in One Pass and with Limited Memory" paper.
-     *
-     * @see ApproximateQuantilesCombineFn for paper reference.
-     */
+    
     private static final double[] epsilons = new double[] {0.1, 0.05, 0.01, 0.005, 0.001};
 
     private static final int[] maxElementExponents = new int[] {5, 6, 7, 8, 9};
@@ -343,14 +338,14 @@ public class ApproximateQuantilesTest {
           ApproximateQuantilesCombineFn.create(10, new Top.Natural<Long>(), maxInputSize, epsilon);
     }
 
-    /** Verify the buffers are efficiently calculated according to the reference table values. */
+    
     @Test
     public void testEfficiency() {
       assertEquals("Number of buffers", expectedNumBuffers, combineFn.getNumBuffers());
       assertEquals("Buffer size", expectedBufferSize, combineFn.getBufferSize());
     }
 
-    /** Verify that buffers are correct according to the two constraint equations. */
+    
     @Test
     public void testCorrectness() {
       int b = combineFn.getNumBuffers();

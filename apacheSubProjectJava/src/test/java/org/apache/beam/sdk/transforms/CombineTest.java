@@ -95,12 +95,12 @@ import org.junit.rules.Timeout;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-/** Tests for {@link Combine} transforms. */
+
 public class CombineTest implements Serializable {
   // This test is Serializable, just so that it's easy to have
   // anonymous inner classes inside the non-static test methods.
 
-  /** Base class to share setup/teardown and helpers. */
+  
   public abstract static class SharedTestBase {
     @Rule public final transient TestPipeline pipeline = TestPipeline.create();
 
@@ -188,11 +188,11 @@ public class CombineTest implements Serializable {
     ////////////////////////////////////////////////////////////////////////////
     // Test classes, for different kinds of combining fns.
 
-    /** Another example AccumulatingCombineFn. */
+    
     public static class TestCounter
         extends Combine.AccumulatingCombineFn<Integer, TestCounter.Counter, Iterable<Long>> {
 
-      /** An accumulator that observes its merges and outputs. */
+      
       public static class Counter
           implements Combine.AccumulatingCombineFn.Accumulator<Integer, Counter, Iterable<Long>>,
               Serializable {
@@ -271,10 +271,7 @@ public class CombineTest implements Serializable {
       }
     }
 
-    /**
-     * A {@link CombineFn} that results in a sorted list of all characters occurring in the key and
-     * the decimal representations of each value.
-     */
+    
     public static class TestCombineFn
         extends CombineFn<Integer, TestCombineFn.Accumulator, String> {
 
@@ -355,10 +352,7 @@ public class CombineTest implements Serializable {
       }
     }
 
-    /**
-     * A {@link CombineFnWithContext} that produces a sorted list of all characters occurring in the
-     * key and the decimal representations of main and side inputs values.
-     */
+    
     public static class TestCombineFnWithContext
         extends CombineFnWithContext<Integer, Accumulator, String> {
       private final PCollectionView<Integer> view;
@@ -419,7 +413,7 @@ public class CombineTest implements Serializable {
       }
     }
 
-    /** Sample DoFn for testing combine. */
+    
     protected static class FormatPaneInfo extends DoFn<Integer, String> {
       @ProcessElement
       public void processElement(ProcessContext c) {
@@ -433,7 +427,7 @@ public class CombineTest implements Serializable {
     protected static final SerializableFunction<String, Integer> SPLIT_HOT_KEY_FANOUT =
         input -> Math.random() < 0.5 ? 3 : 0;
 
-    /** Sample DoFn for testing hot keys. */
+    
     protected static class GetLast extends DoFn<Integer, Integer> {
       @ProcessElement
       public void processElement(ProcessContext c) {
@@ -443,7 +437,7 @@ public class CombineTest implements Serializable {
       }
     }
 
-    /** Sample BinaryCombineFn for testing int inputs. */
+    
     protected static final class TestProdInt extends Combine.BinaryCombineIntegerFn {
       @Override
       public int apply(int left, int right) {
@@ -456,7 +450,7 @@ public class CombineTest implements Serializable {
       }
     }
 
-    /** Sample BinaryCombineFn for testing Integer inputs. */
+    
     protected static final class TestProdObj extends Combine.BinaryCombineFn<Integer> {
       @Override
       public Integer apply(Integer left, Integer right) {
@@ -464,7 +458,7 @@ public class CombineTest implements Serializable {
       }
     }
 
-    /** Computes the product, considering null values to be 2. */
+    
     protected static final class NullCombiner extends Combine.BinaryCombineFn<Integer> {
       @Override
       public Integer apply(Integer left, Integer right) {
@@ -472,7 +466,7 @@ public class CombineTest implements Serializable {
       }
     }
 
-    /** Example SerializableFunction combiner. */
+    
     public static class SumInts implements SerializableFunction<Iterable<Integer>, Integer> {
       @Override
       public Integer apply(Iterable<Integer> input) {
@@ -484,7 +478,7 @@ public class CombineTest implements Serializable {
       }
     }
 
-    /** Example CombineFn. */
+    
     public static class UniqueInts extends Combine.CombineFn<Integer, Set<Integer>, Set<Integer>> {
 
       @Override
@@ -513,7 +507,7 @@ public class CombineTest implements Serializable {
       }
     }
 
-    /** Example AccumulatingCombineFn. */
+    
     protected static class MeanInts
         extends Combine.AccumulatingCombineFn<Integer, MeanInts.CountSum, Double> {
       private static final Coder<Long> LONG_CODER = BigEndianLongCoder.of();
@@ -580,7 +574,7 @@ public class CombineTest implements Serializable {
         return new CountSumCoder();
       }
 
-      /** A {@link Coder} for {@link CountSum}. */
+      
       private static class CountSumCoder extends AtomicCoder<CountSum> {
         @Override
         public void encode(CountSum value, OutputStream outStream) throws IOException {
@@ -625,7 +619,7 @@ public class CombineTest implements Serializable {
               }));
     }
 
-    /** Class for use in testing use of Java 8 method references. */
+    
     protected static class Summer implements Serializable {
       public int sum(Iterable<Integer> integers) {
         int sum = 0;
@@ -649,7 +643,7 @@ public class CombineTest implements Serializable {
         Create.of(table).withCoder(KvCoder.of(StringUtf8Coder.of(), BigEndianIntegerCoder.of())));
   }
 
-  /** Tests validating basic Combine transform scenarios. */
+  
   @RunWith(JUnit4.class)
   public static class BasicTests extends SharedTestBase {
     @Test
@@ -805,7 +799,7 @@ public class CombineTest implements Serializable {
           Combine.perKey(new TestCombineFn()).withHotKeyFanout(10).getName());
     }
 
-    /** Tests creation of a per-key {@link Combine} via a Java 8 lambda. */
+    
     @Test
     @Category(ValidatesRunner.class)
     public void testCombinePerKeyLambda() {
@@ -827,7 +821,7 @@ public class CombineTest implements Serializable {
       pipeline.run();
     }
 
-    /** Tests creation of a per-key binary {@link Combine} via a Java 8 lambda. */
+    
     @Test
     @Category(ValidatesRunner.class)
     public void testBinaryCombinePerKeyLambda() {
@@ -841,7 +835,7 @@ public class CombineTest implements Serializable {
       pipeline.run();
     }
 
-    /** Tests creation of a per-key {@link Combine} via a Java 8 method reference. */
+    
     @Test
     @Category(ValidatesRunner.class)
     public void testCombinePerKeyInstanceMethodReference() {
@@ -855,7 +849,7 @@ public class CombineTest implements Serializable {
       pipeline.run();
     }
 
-    /** Tests creation of a per-key binary {@link Combine} via a Java 8 method reference. */
+    
     @Test
     @Category(ValidatesRunner.class)
     public void testBinaryCombinePerKeyInstanceMethodReference() {
@@ -869,11 +863,7 @@ public class CombineTest implements Serializable {
       pipeline.run();
     }
 
-    /**
-     * Tests that we can serialize {@link Combine.CombineFn CombineFns} constructed from a lambda.
-     * Lambdas can be problematic because the {@link Class} object is synthetic and cannot be
-     * deserialized.
-     */
+    
     @Test
     public void testLambdaSerialization() {
       SerializableFunction<Iterable<Object>, Object> combiner = xs -> Iterables.getFirst(xs, 0);
@@ -903,7 +893,7 @@ public class CombineTest implements Serializable {
     }
   }
 
-  /** Tests validating CombineWithContext behaviors. */
+  
   @RunWith(JUnit4.class)
   public static class CombineWithContextTests extends SharedTestBase {
     @Test
@@ -951,7 +941,7 @@ public class CombineTest implements Serializable {
     }
   }
 
-  /** Tests validating windowing behaviors. */
+  
   @RunWith(JUnit4.class)
   public static class WindowingTests extends SharedTestBase implements Serializable {
     @Test
@@ -1312,7 +1302,7 @@ public class CombineTest implements Serializable {
       pipeline.run();
     }
 
-    /** Tests creation of a global {@link Combine} via Java 8 lambda. */
+    
     @Test
     @Category({ValidatesRunner.class, UsesSideInputs.class})
     public void testCombineGloballyLambda() {
@@ -1334,7 +1324,7 @@ public class CombineTest implements Serializable {
       pipeline.run();
     }
 
-    /** Tests creation of a global {@link Combine} via a Java 8 method reference. */
+    
     @Test
     @Category({ValidatesRunner.class, UsesSideInputs.class})
     public void testCombineGloballyInstanceMethodReference() {
@@ -1347,7 +1337,7 @@ public class CombineTest implements Serializable {
     }
   }
 
-  /** Tests validating accumulation scenarios. */
+  
   @RunWith(JUnit4.class)
   public static class AccumulationTests extends SharedTestBase {
     @Test

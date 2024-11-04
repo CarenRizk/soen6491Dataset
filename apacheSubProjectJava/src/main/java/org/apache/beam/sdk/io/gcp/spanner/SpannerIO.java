@@ -133,292 +133,7 @@ import org.joda.time.Instant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- *
- *
- * <h3>Reading from Cloud Spanner</h3>
- *
- * <h4>Bulk reading of a single query or table</h4>
- *
- * <p>To perform a single read from Cloud Spanner, construct a {@link Read} transform using {@link
- * SpannerIO#read() SpannerIO.read()}. It will return a {@link PCollection} of {@link Struct
- * Structs}, where each element represents an individual row returned from the read operation. Both
- * Query and Read APIs are supported. See more information about <a
- * href="https://cloud.google.com/spanner/docs/reads">reading from Cloud Spanner</a>
- *
- * <p>To execute a <strong>Query</strong>, specify a {@link Read#withQuery(Statement)} or {@link
- * Read#withQuery(String)} during the construction of the transform.
- *
- * <pre>{@code
- * PCollection<Struct> rows = p.apply(
- *     SpannerIO.read()
- *         .withInstanceId(instanceId)
- *         .withDatabaseId(dbId)
- *         .withQuery("SELECT id, name, email FROM users"));
- * }</pre>
- *
- * <p>Reads by default use the <a
- * href="https://cloud.google.com/spanner/docs/reads#read_data_in_parallel">PartitionQuery API</a>
- * which enforces some limitations on the type of queries that can be used so that the data can be
- * read in parallel. If the query is not supported by the PartitionQuery API, then you can specify a
- * non-partitioned read by setting {@link Read#withBatching(boolean) withBatching(false)}. If the
- * amount of data being read by a non-partitioned read is very large, it may be useful to add a
- * {@link Reshuffle#viaRandomKey()} transform on the output so that the downstream transforms can
- * run in parallel.
- *
- * <p>To read an entire <strong>Table</strong>, use {@link Read#withTable(String)} and optionally
- * specify a {@link Read#withColumns(List) list of columns}.
- *
- * <pre>{@code
- * PCollection<Struct> rows = p.apply(
- *    SpannerIO.read()
- *        .withInstanceId(instanceId)
- *        .withDatabaseId(dbId)
- *        .withTable("users")
- *        .withColumns("id", "name", "email"));
- * }</pre>
- *
- * <p>To read using an <strong>Index</strong>, specify the index name using {@link
- * Read#withIndex(String)}.
- *
- * <pre>{@code
- * PCollection<Struct> rows = p.apply(
- *    SpannerIO.read()
- *        .withInstanceId(instanceId)
- *        .withDatabaseId(dbId)
- *        .withTable("users")
- *        .withIndex("users_by_name")
- *        .withColumns("id", "name", "email"));
- * }</pre>
- *
- * <h4>Read consistency</h4>
- *
- * <p>The transform is guaranteed to be executed on a consistent snapshot of data, utilizing the
- * power of read only transactions. Staleness of data can be controlled using {@link
- * Read#withTimestampBound} or {@link Read#withTimestamp(Timestamp)} methods. <a
- * href="https://cloud.google.com/spanner/docs/transactions#read-only_transactions">Read more</a>
- * about transactions in Cloud Spanner.
- *
- * <p>It is possible to read several {@link PCollection PCollections} within a single transaction.
- * Apply {@link SpannerIO#createTransaction()} transform, that lazily creates a transaction. The
- * result of this transformation can be passed to read operation using {@link
- * Read#withTransaction(PCollectionView)}.
- *
- * <pre>{@code
- * SpannerConfig spannerConfig = ...
- *
- * PCollectionView<Transaction> tx = p.apply(
- *    SpannerIO.createTransaction()
- *        .withSpannerConfig(spannerConfig)
- *        .withTimestampBound(TimestampBound.strong()));
- *
- * PCollection<Struct> users = p.apply(
- *    SpannerIO.read()
- *        .withSpannerConfig(spannerConfig)
- *        .withQuery("SELECT name, email FROM users")
- *        .withTransaction(tx));
- *
- * PCollection<Struct> tweets = p.apply(
- *    SpannerIO.read()
- *        .withSpannerConfig(spannerConfig)
- *        .withQuery("SELECT user, tweet, date FROM tweets")
- *        .withTransaction(tx));
- * }</pre>
- *
- * <h4>Bulk reading of multiple queries or tables</h4>
- *
- * You can perform multiple consistent reads on a set of tables or using a set of queries by
- * constructing a {@link ReadAll} transform using {@link SpannerIO#readAll() SpannerIO.readAll()}.
- * This transform takes a {@link PCollection} of {@link ReadOperation} elements, and performs the
- * partitioned read on each of them using the same Read Only Transaction for consistent results.
- *
- * <p>Note that this transform should <strong>not</strong> be used in Streaming pipelines. This is
- * because the same Read Only Transaction, which is created once when the pipeline is first
- * executed, will be used for all reads. The data being read will therefore become stale, and if no
- * reads are made for more than 1 hour, the transaction will automatically timeout and be closed by
- * the Spanner server, meaning that any subsequent reads will fail.
- *
- * <pre>{@code
- * // Build a collection of ReadOperations.
- * PCollection<ReadOperation> reads = ...
- *
- * PCollection<Struct> rows = reads.apply(
- *     SpannerIO.readAll()
- *         .withInstanceId(instanceId)
- *         .withDatabaseId(dbId)
- * }</pre>
- *
- * <h3>Writing to Cloud Spanner</h3>
- *
- * <p>The Cloud Spanner {@link Write} transform writes to Cloud Spanner by executing a collection of
- * input row {@link Mutation Mutations}. The mutations are grouped into batches for efficiency.
- *
- * <p>To configure the write transform, create an instance using {@link #write()} and then specify
- * the destination Cloud Spanner instance ({@link Write#withInstanceId(String)} and destination
- * database ({@link Write#withDatabaseId(String)}). For example:
- *
- * <pre>{@code
- * // Earlier in the pipeline, create a PCollection of Mutations to be written to Cloud Spanner.
- * PCollection<Mutation> mutations = ...;
- * // Write mutations.
- * SpannerWriteResult result = mutations.apply(
- *     "Write", SpannerIO.write().withInstanceId("instance").withDatabaseId("database"));
- * }</pre>
- *
- * <h3>SpannerWriteResult</h3>
- *
- * <p>The {@link SpannerWriteResult SpannerWriteResult} object contains the results of the
- * transform, including a {@link PCollection} of MutationGroups that failed to write, and a {@link
- * PCollection} that can be used in batch pipelines as a completion signal to {@link Wait
- * Wait.OnSignal} to indicate when all input has been written. Note that in streaming pipelines,
- * this signal will never be triggered as the input is unbounded and this {@link PCollection} is
- * using the {@link GlobalWindow}.
- *
- * <h3>Batching and Grouping</h3>
- *
- * <p>To reduce the number of transactions sent to Spanner, the {@link Mutation Mutations} are
- * grouped into batches. The default maximum size of the batch is set to 1MB or 5000 mutated cells,
- * or 500 rows (whichever is reached first). To override this use {@link
- * Write#withBatchSizeBytes(long) withBatchSizeBytes()}, {@link Write#withMaxNumMutations(long)
- * withMaxNumMutations()} or {@link Write#withMaxNumMutations(long) withMaxNumRows()}. Setting
- * either to a small value or zero disables batching.
- *
- * <p>Note that the <a
- * href="https://cloud.google.com/spanner/quotas#limits_for_creating_reading_updating_and_deleting_data">maximum
- * size of a single transaction</a> is 20,000 mutated cells - including cells in indexes. If you
- * have a large number of indexes and are getting exceptions with message: <tt>INVALID_ARGUMENT: The
- * transaction contains too many mutations</tt> you will need to specify a smaller number of {@code
- * MaxNumMutations}.
- *
- * <p>The batches written are obtained from by grouping enough {@link Mutation Mutations} from the
- * Bundle provided by Beam to form several batches. This group of {@link Mutation Mutations} is then
- * sorted by table and primary key, and the batches are created from the sorted group. Each batch
- * will then have rows for the same table, with keys that are 'close' to each other, thus optimising
- * write efficiency by each batch affecting as few table splits as possible performance.
- *
- * <p>This grouping factor (number of batches) is controlled by the parameter {@link
- * Write#withGroupingFactor(int) withGroupingFactor()}.
- *
- * <p>Note that each worker will need enough memory to hold {@code GroupingFactor x
- * MaxBatchSizeBytes} Mutations, so if you have a large {@code MaxBatchSize} you may need to reduce
- * {@code GroupingFactor}
- *
- * <p>While Grouping and Batching increases write efficiency, it dramatically increases the latency
- * between when a Mutation is received by the transform, and when it is actually written to the
- * database. This is because enough Mutations need to be received to fill the grouped batches. In
- * Batch pipelines (bounded sources), this is not normally an issue, but in Streaming (unbounded)
- * pipelines, this latency is often seen as unacceptable.
- *
- * <p>There are therefore 3 different ways that this transform can be configured:
- *
- * <ul>
- *   <li>With Grouping and Batching. <br>
- *       This is the default for Batch pipelines, where sorted batches of Mutations are created and
- *       written. This is the most efficient way to ingest large amounts of data, but the highest
- *       latency before writing
- *   <li>With Batching but no Grouping <br>
- *       If {@link Write#withGroupingFactor(int) .withGroupingFactor(1)}, is set, grouping is
- *       disabled. This is the default for Streaming pipelines. Unsorted batches are created and
- *       written as soon as enough mutations to fill a batch are received. This reflects a
- *       compromise where a small amount of additional latency enables more efficient writes
- *   <li>Without any Batching <br>
- *       If {@link Write#withBatchSizeBytes(long) .withBatchSizeBytes(0)} is set, no batching is
- *       performed and the Mutations are written to the database as soon as they are received.
- *       ensuring the lowest latency before Mutations are written.
- * </ul>
- *
- * <h3>Monitoring</h3>
- *
- * <p>Several counters are provided for monitoring purpooses:
- *
- * <ul>
- *   <li><tt>batchable_mutation_groups</tt><br>
- *       Counts the mutations that are batched for writing to Spanner.
- *   <li><tt>unbatchable_mutation_groups</tt><br>
- *       Counts the mutations that can not be batched and are applied individually - either because
- *       they are too large to fit into a batch, or they are ranged deletes.
- *   <li><tt>mutation_group_batches_received, mutation_group_batches_write_success,
- *       mutation_group_batches_write_failed</tt><br>
- *       Count the number of batches that are processed. If Failure Mode is set to {@link
- *       FailureMode#REPORT_FAILURES REPORT_FAILURES}, then failed batches will be split up and the
- *       individual mutation groups retried separately.
- *   <li><tt>mutation_groups_received, mutation_groups_write_success,
- *       mutation_groups_write_fail</tt><br>
- *       Count the number of individual MutationGroups that are processed.
- *   <li><tt>spanner_write_success, spanner_write_fail</tt><br>
- *       The number of writes to Spanner that have occurred.
- *   <li><tt>spanner_write_retries</tt><br>
- *       The number of times a write is retried after a failure - either due to a timeout, or when
- *       batches fail and {@link FailureMode#REPORT_FAILURES REPORT_FAILURES} is set so that
- *       individual Mutation Groups are retried.
- *   <li><tt>spanner_write_timeouts</tt><br>
- *       The number of timeouts that occur when writing to Spanner. Writes that timed out are
- *       retried after a backoff. Large numbers of timeouts suggest an overloaded Spanner instance.
- *   <li><tt>spanner_write_total_latency_ms</tt><br>
- *       The total amount of time spent writing to Spanner, in milliseconds.
- * </ul>
- *
- * <h3>Database Schema Preparation</h3>
- *
- * <p>The Write transform reads the database schema on pipeline start to know which columns are used
- * as primary keys of the tables and indexes. This is so that the transform knows how to sort the
- * grouped Mutations by table name and primary key as described above.
- *
- * <p>If the database schema, any additional tables or indexes are created in the same pipeline then
- * there will be a race condition, leading to a situation where the schema is read before the table
- * is created its primary key will not be known. This will mean that the sorting/batching will not
- * be optimal and performance will be reduced (warnings will be logged for rows using unknown
- * tables)
- *
- * <p>To prevent this race condition, use {@link Write#withSchemaReadySignal(PCollection)} to pass a
- * signal {@link PCollection} (for example the output of the transform that creates the table(s))
- * which will be used with {@link Wait.OnSignal} to prevent the schema from being read until it is
- * ready. The Write transform will be paused until this signal {@link PCollection} is closed.
- *
- * <h3>Transactions</h3>
- *
- * <p>The transform does not provide same transactional guarantees as Cloud Spanner. In particular,
- *
- * <ul>
- *   <li>Individual Mutations are submitted atomically, but all Mutations are not submitted in the
- *       same transaction.
- *   <li>A Mutation is applied at least once;
- *   <li>If the pipeline was unexpectedly stopped, mutations that were already applied will not get
- *       rolled back.
- * </ul>
- *
- * <p>Use {@link MutationGroup MutationGroups} with the {@link WriteGrouped} transform to ensure
- * that a small set mutations is bundled together. It is guaranteed that mutations in a {@link
- * MutationGroup} are submitted in the same transaction. Note that a MutationGroup must not exceed
- * the Spanner transaction limits.
- *
- * <pre>{@code
- * // Earlier in the pipeline, create a PCollection of MutationGroups to be written to Cloud Spanner.
- * PCollection<MutationGroup> mutationGroups = ...;
- * // Write mutation groups.
- * SpannerWriteResult result = mutationGroups.apply(
- *     "Write",
- *     SpannerIO.write().withInstanceId("instance").withDatabaseId("database").grouped());
- * }</pre>
- *
- * <h3>Streaming Support</h3>
- *
- * <p>{@link Write} can be used as a streaming sink, however as with batch mode note that the write
- * order of individual {@link Mutation}/{@link MutationGroup} objects is not guaranteed.
- *
- * <p>{@link Read} and {@link ReadAll} can be used in Streaming pipelines to read a set of Facts on
- * pipeline startup.
- *
- * <p>{@link ReadAll} should not be used on an unbounded {@code PCollection<ReadOperation>}, for the
- * reasons stated above.
- *
- * <h3>Updates to the I/O connector code</h3>
- *
- * For any significant significant updates to this I/O connector, please consider involving
- * corresponding code reviewers mentioned <a
- * href="https://github.com/apache/beam/blob/master/sdks/java/io/google-cloud-platform/OWNERS">
- * here</a>.
- */
+
 @SuppressWarnings({
   "nullness" // TODO(https://github.com/apache/beam/issues/20497)
 })
@@ -440,11 +155,7 @@ public class SpannerIO {
   // table occur at the same time (within a bundle).
   static final int METRICS_CACHE_SIZE = 100;
 
-  /**
-   * Creates an uninitialized instance of {@link Read}. Before use, the {@link Read} must be
-   * configured with a {@link Read#withInstanceId} and {@link Read#withDatabaseId} that identify the
-   * Cloud Spanner database.
-   */
+  
   public static Read read() {
     return new AutoValue_SpannerIO_Read.Builder()
         .setSpannerConfig(SpannerConfig.create())
@@ -454,10 +165,7 @@ public class SpannerIO {
         .build();
   }
 
-  /**
-   * A {@link PTransform} that works like {@link #read}, but executes read operations coming from a
-   * {@link PCollection}.
-   */
+  
   public static ReadAll readAll() {
     return new AutoValue_SpannerIO_ReadAll.Builder()
         .setSpannerConfig(SpannerConfig.create())
@@ -466,11 +174,7 @@ public class SpannerIO {
         .build();
   }
 
-  /**
-   * Returns a transform that creates a batch transaction. By default, {@link
-   * TimestampBound#strong()} transaction is created, to override this use {@link
-   * CreateTransaction#withTimestampBound(TimestampBound)}.
-   */
+  
   public static CreateTransaction createTransaction() {
     return new AutoValue_SpannerIO_CreateTransaction.Builder()
         .setSpannerConfig(SpannerConfig.create())
@@ -478,11 +182,7 @@ public class SpannerIO {
         .build();
   }
 
-  /**
-   * Creates an uninitialized instance of {@link Write}. Before use, the {@link Write} must be
-   * configured with a {@link Write#withInstanceId} and {@link Write#withDatabaseId} that identify
-   * the Cloud Spanner database being written.
-   */
+  
   public static Write write() {
     return new AutoValue_SpannerIO_Write.Builder()
         .setSpannerConfig(SpannerConfig.create())
@@ -493,13 +193,7 @@ public class SpannerIO {
         .build();
   }
 
-  /**
-   * Creates an uninitialized instance of {@link ReadChangeStream}. Before use, the {@link
-   * ReadChangeStream} must be configured with a {@link ReadChangeStream#withProjectId}, {@link
-   * ReadChangeStream#withInstanceId}, and {@link ReadChangeStream#withDatabaseId} that identify the
-   * Cloud Spanner database being written. It must also be configured with the start time and the
-   * change stream name.
-   */
+  
   public static ReadChangeStream readChangeStream() {
     return new AutoValue_SpannerIO_ReadChangeStream.Builder()
         .setSpannerConfig(SpannerConfig.create())
@@ -510,7 +204,7 @@ public class SpannerIO {
         .build();
   }
 
-  /** Implementation of {@link #readAll}. */
+  
   @AutoValue
   public abstract static class ReadAll
       extends PTransform<PCollection<ReadOperation>, PCollection<Struct>> {
@@ -537,39 +231,39 @@ public class SpannerIO {
       abstract ReadAll build();
     }
 
-    /** Specifies the Cloud Spanner configuration. */
+    
     public ReadAll withSpannerConfig(SpannerConfig spannerConfig) {
       return toBuilder().setSpannerConfig(spannerConfig).build();
     }
 
-    /** Specifies the Cloud Spanner project. */
+    
     public ReadAll withProjectId(String projectId) {
       return withProjectId(ValueProvider.StaticValueProvider.of(projectId));
     }
 
-    /** Specifies the Cloud Spanner project. */
+    
     public ReadAll withProjectId(ValueProvider<String> projectId) {
       SpannerConfig config = getSpannerConfig();
       return withSpannerConfig(config.withProjectId(projectId));
     }
 
-    /** Specifies the Cloud Spanner instance. */
+    
     public ReadAll withInstanceId(String instanceId) {
       return withInstanceId(ValueProvider.StaticValueProvider.of(instanceId));
     }
 
-    /** Specifies the Cloud Spanner instance. */
+    
     public ReadAll withInstanceId(ValueProvider<String> instanceId) {
       SpannerConfig config = getSpannerConfig();
       return withSpannerConfig(config.withInstanceId(instanceId));
     }
 
-    /** Specifies the Cloud Spanner database. */
+    
     public ReadAll withDatabaseId(String databaseId) {
       return withDatabaseId(ValueProvider.StaticValueProvider.of(databaseId));
     }
 
-    /** Specifies the Cloud Spanner host. */
+    
     public ReadAll withHost(ValueProvider<String> host) {
       SpannerConfig config = getSpannerConfig();
       return withSpannerConfig(config.withHost(host));
@@ -579,7 +273,7 @@ public class SpannerIO {
       return withHost(ValueProvider.StaticValueProvider.of(host));
     }
 
-    /** Specifies the Cloud Spanner emulator host. */
+    
     public ReadAll withEmulatorHost(ValueProvider<String> emulatorHost) {
       SpannerConfig config = getSpannerConfig();
       return withSpannerConfig(config.withEmulatorHost(emulatorHost));
@@ -589,7 +283,7 @@ public class SpannerIO {
       return withEmulatorHost(ValueProvider.StaticValueProvider.of(emulatorHost));
     }
 
-    /** Specifies the Cloud Spanner database. */
+    
     public ReadAll withDatabaseId(ValueProvider<String> databaseId) {
       SpannerConfig config = getSpannerConfig();
       return withSpannerConfig(config.withDatabaseId(databaseId));
@@ -613,12 +307,7 @@ public class SpannerIO {
       return toBuilder().setTimestampBound(timestampBound).build();
     }
 
-    /**
-     * By default the <a
-     * href="https://cloud.google.com/spanner/docs/reads#read_data_in_parallel">PartitionQuery
-     * API</a> is used to read data from Cloud Spanner. It is useful to disable batching when the
-     * underlying query is not root-partitionable.
-     */
+    
     public ReadAll withBatching(boolean batching) {
       return toBuilder().setBatching(batching).build();
     }
@@ -659,7 +348,7 @@ public class SpannerIO {
           .apply("Read from Cloud Spanner", readTransform);
     }
 
-    /** Helper function to create ServiceCallMetrics. */
+    
     static ServiceCallMetric buildServiceCallMetricForReadOp(
         SpannerConfig config, ReadOperation op) {
 
@@ -695,7 +384,7 @@ public class SpannerIO {
     }
   }
 
-  /** Implementation of {@link #read}. */
+  
   @AutoValue
   public abstract static class Read extends PTransform<PBegin, PCollection<Struct>> {
 
@@ -760,45 +449,45 @@ public class SpannerIO {
           .build();
     }
 
-    /** Specifies the Cloud Spanner configuration. */
+    
     public Read withSpannerConfig(SpannerConfig spannerConfig) {
       return toBuilder().setSpannerConfig(spannerConfig).build();
     }
 
-    /** Specifies the Cloud Spanner project. */
+    
     public Read withProjectId(String projectId) {
       return withProjectId(ValueProvider.StaticValueProvider.of(projectId));
     }
 
-    /** Specifies the Cloud Spanner project. */
+    
     public Read withProjectId(ValueProvider<String> projectId) {
       SpannerConfig config = getSpannerConfig();
       return withSpannerConfig(config.withProjectId(projectId));
     }
 
-    /** Specifies the Cloud Spanner instance. */
+    
     public Read withInstanceId(String instanceId) {
       return withInstanceId(ValueProvider.StaticValueProvider.of(instanceId));
     }
 
-    /** Specifies the Cloud Spanner instance. */
+    
     public Read withInstanceId(ValueProvider<String> instanceId) {
       SpannerConfig config = getSpannerConfig();
       return withSpannerConfig(config.withInstanceId(instanceId));
     }
 
-    /** Specifies the Cloud Spanner database. */
+    
     public Read withDatabaseId(String databaseId) {
       return withDatabaseId(ValueProvider.StaticValueProvider.of(databaseId));
     }
 
-    /** Specifies the Cloud Spanner database. */
+    
     public Read withDatabaseId(ValueProvider<String> databaseId) {
       SpannerConfig config = getSpannerConfig();
       return withSpannerConfig(config.withDatabaseId(databaseId));
     }
 
-    /** Specifies the Cloud Spanner host. */
+    
     public Read withHost(ValueProvider<String> host) {
       SpannerConfig config = getSpannerConfig();
       return withSpannerConfig(config.withHost(host));
@@ -808,7 +497,7 @@ public class SpannerIO {
       return withHost(ValueProvider.StaticValueProvider.of(host));
     }
 
-    /** Specifies the Cloud Spanner emulator host. */
+    
     public Read withEmulatorHost(ValueProvider<String> emulatorHost) {
       SpannerConfig config = getSpannerConfig();
       return withSpannerConfig(config.withEmulatorHost(emulatorHost));
@@ -818,7 +507,7 @@ public class SpannerIO {
       return withEmulatorHost(ValueProvider.StaticValueProvider.of(emulatorHost));
     }
 
-    /** If true the uses Cloud Spanner batch API. */
+    
     public Read withBatching(boolean batching) {
       return toBuilder().setBatching(batching).build();
     }
@@ -877,11 +566,7 @@ public class SpannerIO {
       return withReadOperation(getReadOperation().withIndex(index));
     }
 
-    /**
-     * Note that {@link PartitionOptions} are currently ignored. See <a
-     * href="https://cloud.google.com/spanner/docs/reference/rpc/google.spanner.v1#google.spanner.v1.PartitionOptions">
-     * PartitionOptions in RPC documents</a>
-     */
+    
     public Read withPartitionOptions(PartitionOptions partitionOptions) {
       return withReadOperation(getReadOperation().withPartitionOptions(partitionOptions));
     }
@@ -980,13 +665,7 @@ public class SpannerIO {
     }
   }
 
-  /**
-   * A {@link PTransform} that create a transaction. If applied to a {@link PCollection}, it will
-   * create a transaction after the {@link PCollection} is closed.
-   *
-   * @see SpannerIO
-   * @see Wait
-   */
+  
   @AutoValue
   public abstract static class CreateTransaction
       extends PTransform<PInput, PCollectionView<Transaction>> {
@@ -1016,45 +695,45 @@ public class SpannerIO {
           .apply("As PCollectionView", View.asSingleton());
     }
 
-    /** Specifies the Cloud Spanner configuration. */
+    
     public CreateTransaction withSpannerConfig(SpannerConfig spannerConfig) {
       return toBuilder().setSpannerConfig(spannerConfig).build();
     }
 
-    /** Specifies the Cloud Spanner project. */
+    
     public CreateTransaction withProjectId(String projectId) {
       return withProjectId(ValueProvider.StaticValueProvider.of(projectId));
     }
 
-    /** Specifies the Cloud Spanner project. */
+    
     public CreateTransaction withProjectId(ValueProvider<String> projectId) {
       SpannerConfig config = getSpannerConfig();
       return withSpannerConfig(config.withProjectId(projectId));
     }
 
-    /** Specifies the Cloud Spanner instance. */
+    
     public CreateTransaction withInstanceId(String instanceId) {
       return withInstanceId(ValueProvider.StaticValueProvider.of(instanceId));
     }
 
-    /** Specifies the Cloud Spanner instance. */
+    
     public CreateTransaction withInstanceId(ValueProvider<String> instanceId) {
       SpannerConfig config = getSpannerConfig();
       return withSpannerConfig(config.withInstanceId(instanceId));
     }
 
-    /** Specifies the Cloud Spanner database. */
+    
     public CreateTransaction withDatabaseId(String databaseId) {
       return withDatabaseId(ValueProvider.StaticValueProvider.of(databaseId));
     }
 
-    /** Specifies the Cloud Spanner database. */
+    
     public CreateTransaction withDatabaseId(ValueProvider<String> databaseId) {
       SpannerConfig config = getSpannerConfig();
       return withSpannerConfig(config.withDatabaseId(databaseId));
     }
 
-    /** Specifies the Cloud Spanner host. */
+    
     public CreateTransaction withHost(ValueProvider<String> host) {
       SpannerConfig config = getSpannerConfig();
       return withSpannerConfig(config.withHost(host));
@@ -1064,7 +743,7 @@ public class SpannerIO {
       return withHost(ValueProvider.StaticValueProvider.of(host));
     }
 
-    /** Specifies the Cloud Spanner emulator host. */
+    
     public CreateTransaction withEmulatorHost(ValueProvider<String> emulatorHost) {
       SpannerConfig config = getSpannerConfig();
       return withSpannerConfig(config.withEmulatorHost(emulatorHost));
@@ -1084,7 +763,7 @@ public class SpannerIO {
       return toBuilder().setTimestampBound(timestampBound).build();
     }
 
-    /** A builder for {@link CreateTransaction}. */
+    
     @AutoValue.Builder
     public abstract static class Builder {
 
@@ -1096,19 +775,15 @@ public class SpannerIO {
     }
   }
 
-  /** A failure handling strategy. */
+  
   public enum FailureMode {
-    /** Invalid write to Spanner will cause the pipeline to fail. A default strategy. */
+    
     FAIL_FAST,
-    /** Invalid mutations will be returned as part of the result of the write transform. */
+    
     REPORT_FAILURES
   }
 
-  /**
-   * A {@link PTransform} that writes {@link Mutation} objects to Google Cloud Spanner.
-   *
-   * @see SpannerIO
-   */
+  
   @AutoValue
   public abstract static class Write extends PTransform<PCollection<Mutation>, SpannerWriteResult> {
 
@@ -1152,56 +827,56 @@ public class SpannerIO {
       abstract Write build();
     }
 
-    /** Specifies the Cloud Spanner configuration. */
+    
     public Write withSpannerConfig(SpannerConfig spannerConfig) {
       return toBuilder().setSpannerConfig(spannerConfig).build();
     }
 
-    /** Specifies the Cloud Spanner project. */
+    
     public Write withProjectId(String projectId) {
       return withProjectId(ValueProvider.StaticValueProvider.of(projectId));
     }
 
-    /** Specifies the Cloud Spanner project. */
+    
     public Write withProjectId(ValueProvider<String> projectId) {
       SpannerConfig config = getSpannerConfig();
       return withSpannerConfig(config.withProjectId(projectId));
     }
 
-    /** Specifies the Cloud Spanner instance. */
+    
     public Write withInstanceId(String instanceId) {
       return withInstanceId(ValueProvider.StaticValueProvider.of(instanceId));
     }
 
-    /** Specifies the Cloud Spanner instance. */
+    
     public Write withInstanceId(ValueProvider<String> instanceId) {
       SpannerConfig config = getSpannerConfig();
       return withSpannerConfig(config.withInstanceId(instanceId));
     }
 
-    /** Specifies the Cloud Spanner database. */
+    
     public Write withDatabaseId(String databaseId) {
       return withDatabaseId(ValueProvider.StaticValueProvider.of(databaseId));
     }
 
-    /** Specifies the Cloud Spanner database. */
+    
     public Write withDatabaseId(ValueProvider<String> databaseId) {
       SpannerConfig config = getSpannerConfig();
       return withSpannerConfig(config.withDatabaseId(databaseId));
     }
 
-    /** Specifies the Cloud Spanner host. */
+    
     public Write withHost(ValueProvider<String> host) {
       SpannerConfig config = getSpannerConfig();
       return withSpannerConfig(config.withHost(host));
     }
 
-    /** Specifies the Cloud Spanner host. */
+    
     public Write withHost(String host) {
       return withHost(ValueProvider.StaticValueProvider.of(host));
     }
 
-    /** Specifies the Cloud Spanner emulator host. */
+    
     public Write withEmulatorHost(ValueProvider<String> emulatorHost) {
       SpannerConfig config = getSpannerConfig();
       return withSpannerConfig(config.withEmulatorHost(emulatorHost));
@@ -1215,35 +890,19 @@ public class SpannerIO {
       return toBuilder().setDialectView(dialect).build();
     }
 
-    /**
-     * Specifies the deadline for the Commit API call. Default is 15 secs. DEADLINE_EXCEEDED errors
-     * will prompt a backoff/retry until the value of {@link #withMaxCumulativeBackoff(Duration)} is
-     * reached. DEADLINE_EXCEEDED errors are reported with logging and counters.
-     */
+    
     public Write withCommitDeadline(Duration commitDeadline) {
       SpannerConfig config = getSpannerConfig();
       return withSpannerConfig(config.withCommitDeadline(commitDeadline));
     }
 
-    /**
-     * Specifies max commit delay for the Commit API call for throughput optimized writes. If not
-     * set, Spanner might set a small delay if it thinks that will amortize the cost of the writes.
-     * For more information about the feature, <a
-     * href="https://cloud.google.com/spanner/docs/throughput-optimized-writes#default-behavior">see
-     * documentation</a>
-     */
+    
     public Write withMaxCommitDelay(long millis) {
       SpannerConfig config = getSpannerConfig();
       return withSpannerConfig(config.withMaxCommitDelay(millis));
     }
 
-    /**
-     * Specifies the maximum cumulative backoff time when retrying after DEADLINE_EXCEEDED errors.
-     * Default is 15 mins.
-     *
-     * <p>If the mutations still have not been written after this time, they are treated as a
-     * failure, and handled according to the setting of {@link #withFailureMode(FailureMode)}.
-     */
+    
     public Write withMaxCumulativeBackoff(Duration maxCumulativeBackoff) {
       SpannerConfig config = getSpannerConfig();
       return withSpannerConfig(config.withMaxCumulativeBackoff(maxCumulativeBackoff));
@@ -1255,59 +914,37 @@ public class SpannerIO {
       return withSpannerConfig(config.withServiceFactory(serviceFactory));
     }
 
-    /** Same transform but can be applied to {@link PCollection} of {@link MutationGroup}. */
+    
     public WriteGrouped grouped() {
       return new WriteGrouped(this);
     }
 
-    /**
-     * Specifies the batch size limit (max number of bytes mutated per batch). Default value is 1MB
-     */
+    
     public Write withBatchSizeBytes(long batchSizeBytes) {
       return toBuilder().setBatchSizeBytes(batchSizeBytes).build();
     }
 
-    /** Specifies failure mode. {@link FailureMode#FAIL_FAST} mode is selected by default. */
+    
     public Write withFailureMode(FailureMode failureMode) {
       return toBuilder().setFailureMode(failureMode).build();
     }
 
-    /**
-     * Specifies the cell mutation limit (maximum number of mutated cells per batch). Default value
-     * is 5000
-     */
+    
     public Write withMaxNumMutations(long maxNumMutations) {
       return toBuilder().setMaxNumMutations(maxNumMutations).build();
     }
 
-    /**
-     * Specifies the row mutation limit (maximum number of mutated rows per batch). Default value is
-     * 1000
-     */
+    
     public Write withMaxNumRows(long maxNumRows) {
       return toBuilder().setMaxNumRows(maxNumRows).build();
     }
 
-    /**
-     * Specifies an optional input PCollection that can be used as the signal for {@link
-     * Wait.OnSignal} to indicate when the database schema is ready to be read.
-     *
-     * <p>To be used when the database schema is created by another section of the pipeline, this
-     * causes this transform to wait until the {@code signal PCollection} has been closed before
-     * reading the schema from the database.
-     *
-     * @see Wait.OnSignal
-     */
+    
     public Write withSchemaReadySignal(PCollection<?> signal) {
       return toBuilder().setSchemaReadySignal(signal).build();
     }
 
-    /**
-     * Specifies the multiple of max mutation (in terms of both bytes per batch and cells per batch)
-     * that is used to select a set of mutations to sort by key for batching. This sort uses local
-     * memory on the workers, so using large values can cause out of memory errors. Default value is
-     * 1000.
-     */
+    
     public Write withGroupingFactor(int groupingFactor) {
       return toBuilder().setGroupingFactor(groupingFactor).build();
     }
@@ -1387,7 +1024,7 @@ public class SpannerIO {
     }
   }
 
-  /** Same as {@link Write} but supports grouped mutations. */
+  
   public static class WriteGrouped
       extends PTransform<PCollection<MutationGroup>, SpannerWriteResult> {
 
@@ -1557,7 +1194,7 @@ public class SpannerIO {
 
     abstract @Nullable RpcPriority getRpcPriority();
 
-    /** @deprecated This configuration has no effect, as tracing is not available */
+    
     @Deprecated
     abstract @Nullable Double getTraceSampleProbability();
 
@@ -1587,84 +1224,80 @@ public class SpannerIO {
       abstract ReadChangeStream build();
     }
 
-    /** Specifies the Cloud Spanner configuration. */
+    
     public ReadChangeStream withSpannerConfig(SpannerConfig spannerConfig) {
       return toBuilder().setSpannerConfig(spannerConfig).build();
     }
 
-    /** Specifies the Cloud Spanner project. */
+    
     public ReadChangeStream withProjectId(String projectId) {
       return withProjectId(ValueProvider.StaticValueProvider.of(projectId));
     }
 
-    /** Specifies the Cloud Spanner project. */
+    
     public ReadChangeStream withProjectId(ValueProvider<String> projectId) {
       SpannerConfig config = getSpannerConfig();
       return withSpannerConfig(config.withProjectId(projectId));
     }
 
-    /** Specifies the Cloud Spanner instance. */
+    
     public ReadChangeStream withInstanceId(String instanceId) {
       return withInstanceId(ValueProvider.StaticValueProvider.of(instanceId));
     }
 
-    /** Specifies the Cloud Spanner instance. */
+    
     public ReadChangeStream withInstanceId(ValueProvider<String> instanceId) {
       SpannerConfig config = getSpannerConfig();
       return withSpannerConfig(config.withInstanceId(instanceId));
     }
 
-    /** Specifies the Cloud Spanner database. */
+    
     public ReadChangeStream withDatabaseId(String databaseId) {
       return withDatabaseId(ValueProvider.StaticValueProvider.of(databaseId));
     }
 
-    /** Specifies the Cloud Spanner database. */
+    
     public ReadChangeStream withDatabaseId(ValueProvider<String> databaseId) {
       SpannerConfig config = getSpannerConfig();
       return withSpannerConfig(config.withDatabaseId(databaseId));
     }
 
-    /** Specifies the change stream name. */
+    
     public ReadChangeStream withChangeStreamName(String changeStreamName) {
       return toBuilder().setChangeStreamName(changeStreamName).build();
     }
 
-    /** Specifies the metadata database. */
+    
     public ReadChangeStream withMetadataInstance(String metadataInstance) {
       return toBuilder().setMetadataInstance(metadataInstance).build();
     }
 
-    /** Specifies the metadata database. */
+    
     public ReadChangeStream withMetadataDatabase(String metadataDatabase) {
       return toBuilder().setMetadataDatabase(metadataDatabase).build();
     }
 
-    /** Specifies the metadata table name. */
+    
     public ReadChangeStream withMetadataTable(String metadataTable) {
       return toBuilder().setMetadataTable(metadataTable).build();
     }
 
-    /** Specifies the time that the change stream should be read from. */
+    
     public ReadChangeStream withInclusiveStartAt(Timestamp timestamp) {
       return toBuilder().setInclusiveStartAt(timestamp).build();
     }
 
-    /** Specifies the end time of the change stream. */
+    
     public ReadChangeStream withInclusiveEndAt(Timestamp timestamp) {
       return toBuilder().setInclusiveEndAt(timestamp).build();
     }
 
-    /** Specifies the priority of the change stream queries. */
+    
     public ReadChangeStream withRpcPriority(RpcPriority rpcPriority) {
       return toBuilder().setRpcPriority(rpcPriority).build();
     }
 
-    /**
-     * Specifies the sample probability of tracing requests.
-     *
-     * @deprecated This configuration has no effect, as tracing is not available.
-     */
+    
     @Deprecated
     public ReadChangeStream withTraceSampleProbability(Double probability) {
       return toBuilder().setTraceSampleProbability(probability).build();
@@ -1825,7 +1458,7 @@ public class SpannerIO {
     }
   }
 
-  /** If credentials are not set in spannerConfig, uses the credentials from pipeline options. */
+  
   @VisibleForTesting
   static SpannerConfig buildSpannerConfigWithCredential(
       SpannerConfig spannerConfig, PipelineOptions pipelineOptions) {
@@ -1847,16 +1480,13 @@ public class SpannerIO {
     return databaseClient.getDialect();
   }
 
-  /**
-   * Interface to display the name of the metadata table on Dataflow UI. This is only used for
-   * internal purpose. This should not be used to pass the name of the metadata table.
-   */
+  
   public interface SpannerChangeStreamOptions extends StreamingOptions {
 
-    /** Returns the name of the metadata table. */
+    
     String getMetadataTable();
 
-    /** Specifies the name of the metadata table. */
+    
     void setMetadataTable(String table);
   }
 
@@ -1869,14 +1499,7 @@ public class SpannerIO {
     }
   }
 
-  /**
-   * Gathers a set of mutations together, gets the keys, encodes them to byte[], sorts them and then
-   * outputs the encoded sorted list.
-   *
-   * <p>Testing notes: With very small amounts of data, each mutation group is in a separate bundle,
-   * and as batching and sorting is over the bundle, this effectively means that no batching will
-   * occur, Therefore this DoFn has to be tested in isolation.
-   */
+  
   @VisibleForTesting
   static class GatherSortCreateBatchesFn extends DoFn<MutationGroup, Iterable<MutationGroup>> {
 
@@ -2071,13 +1694,7 @@ public class SpannerIO {
     }
   }
 
-  /**
-   * Filters MutationGroups larger than the batch size to the output tagged with {@code
-   * UNBATCHABLE_MUTATIONS_TAG}.
-   *
-   * <p>Testing notes: As batching does not occur during full pipline testing, this DoFn must be
-   * tested in isolation.
-   */
+  
   @VisibleForTesting
   static class BatchableMutationFilterFn extends DoFn<MutationGroup, MutationGroup> {
 
@@ -2295,7 +1912,7 @@ public class SpannerIO {
       return new ServiceCallMetric(MonitoringInfoConstants.Urns.API_REQUEST_COUNT, baseLabels);
     }
 
-    /** Write the Mutations to Spanner, handling DEADLINE_EXCEEDED with backoff/retries. */
+    
     private void writeMutations(Iterable<Mutation> mutationIterable)
         throws SpannerException, IOException {
       BackOff backoff = bundleWriteBackoff.backoff();

@@ -21,29 +21,15 @@ import java.time.Duration;
 import java.util.concurrent.TimeUnit;
 import org.apache.beam.sdk.extensions.euphoria.core.annotation.audience.Audience;
 
-/**
- * Timer provides convenience API very similar to {@link Histogram} but extended by time unit
- * support.
- *
- * @deprecated Use Java SDK directly, Euphoria is scheduled for removal in a future release.
- */
+
 @Audience(Audience.Type.CLIENT)
 @Deprecated
 public interface Timer extends Accumulator {
 
-  /**
-   * Add specific duration.
-   *
-   * @param duration Duration to be added.
-   */
+  
   void add(Duration duration);
 
-  /**
-   * Add specific duration with given time unit.
-   *
-   * @param duration Duration to be added.
-   * @param unit Time unit.
-   */
+  
   default void add(long duration, TimeUnit unit) {
     add(Duration.ofMillis(unit.toMillis(duration)));
   }

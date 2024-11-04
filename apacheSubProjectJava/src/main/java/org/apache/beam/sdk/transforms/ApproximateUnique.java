@@ -38,139 +38,42 @@ import org.apache.beam.vendor.guava.v32_1_2_jre.com.google.common.hash.HashingOu
 import org.apache.beam.vendor.guava.v32_1_2_jre.com.google.common.io.ByteStreams;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-/**
- * {@code PTransform}s for estimating the number of distinct elements in a {@code PCollection}, or
- * the number of distinct values associated with each key in a {@code PCollection} of {@code KV}s.
- *
- * @deprecated
- *     <p>Consider using {@code ApproximateCountDistinct} in the {@code zetasketch} extension
- *     module, which makes use of the {@code HllCount} implementation.
- *     <p>If {@code ApproximateCountDistinct} does not meet your needs then you can directly use
- *     {@code HllCount}. Direct usage will also give you access to save intermediate aggregation
- *     result into a sketch for later processing.
- *     <p>For example, to estimate the number of distinct elements in a {@code PCollection<String>}:
- *     <pre>{@code
- * PCollection<String> input = ...;
- * PCollection<Long> countDistinct =
- *     input.apply(HllCount.Init.forStrings().globally()).apply(HllCount.Extract.globally());
- * }</pre>
- *     For more details about using {@code HllCount} and the {@code zetasketch} extension module,
- *     see https://s.apache.org/hll-in-beam#bookmark=id.v6chsij1ixo7.
- */
+
 @Deprecated
 public class ApproximateUnique {
 
-  /**
-   * Returns a {@code PTransform} that takes a {@code PCollection<T>} and returns a {@code
-   * PCollection<Long>} containing a single value that is an estimate of the number of distinct
-   * elements in the input {@code PCollection}.
-   *
-   * <p>The {@code sampleSize} parameter controls the estimation error. The error is about {@code 2
-   * / sqrt(sampleSize)}, so for {@code ApproximateUnique.globally(10000)} the estimation error is
-   * about 2%. Similarly, for {@code ApproximateUnique.of(16)} the estimation error is about 50%. If
-   * there are fewer than {@code sampleSize} distinct elements then the returned result will be
-   * exact with extremely high probability (the chance of a hash collision is about {@code
-   * sampleSize^2 / 2^65}).
-   *
-   * <p>This transform approximates the number of elements in a set by computing the top {@code
-   * sampleSize} hash values, and using that to extrapolate the size of the entire set of hash
-   * values by assuming the rest of the hash values are as densely distributed as the top {@code
-   * sampleSize}.
-   *
-   * <p>See also {@link #globally(double)}.
-   *
-   * <p>Example of use:
-   *
-   * <pre>{@code
-   * PCollection<String> pc = ...;
-   * PCollection<Long> approxNumDistinct =
-   *     pc.apply(ApproximateUnique.<String>globally(1000));
-   * }</pre>
-   *
-   * @param <T> the type of the elements in the input {@code PCollection}
-   * @param sampleSize the number of entries in the statistical sample; the higher this number, the
-   *     more accurate the estimate will be; should be {@code >= 16}
-   * @throws IllegalArgumentException if the {@code sampleSize} argument is too small
-   */
+  
   public static <T> Globally<T> globally(int sampleSize) {
     return new Globally<>(sampleSize);
   }
 
-  /**
-   * Like {@link #globally(int)}, but specifies the desired maximum estimation error instead of the
-   * sample size.
-   *
-   * @param <T> the type of the elements in the input {@code PCollection}
-   * @param maximumEstimationError the maximum estimation error, which should be in the range {@code
-   *     [0.01, 0.5]}
-   * @throws IllegalArgumentException if the {@code maximumEstimationError} argument is out of range
-   */
+  
   public static <T> Globally<T> globally(double maximumEstimationError) {
     return new Globally<>(maximumEstimationError);
   }
 
-  /**
-   * Returns a {@code PTransform} that takes a {@code PCollection<KV<K, V>>} and returns a {@code
-   * PCollection<KV<K, Long>>} that contains an output element mapping each distinct key in the
-   * input {@code PCollection} to an estimate of the number of distinct values associated with that
-   * key in the input {@code PCollection}.
-   *
-   * <p>See {@link #globally(int)} for an explanation of the {@code sampleSize} parameter. A
-   * separate sampling is computed for each distinct key of the input.
-   *
-   * <p>See also {@link #perKey(double)}.
-   *
-   * <p>Example of use:
-   *
-   * <pre>{@code
-   * PCollection<KV<Integer, String>> pc = ...;
-   * PCollection<KV<Integer, Long>> approxNumDistinctPerKey =
-   *     pc.apply(ApproximateUnique.<Integer, String>perKey(1000));
-   * }</pre>
-   *
-   * @param <K> the type of the keys in the input and output {@code PCollection}s
-   * @param <V> the type of the values in the input {@code PCollection}
-   * @param sampleSize the number of entries in the statistical sample; the higher this number, the
-   *     more accurate the estimate will be; should be {@code >= 16}
-   * @throws IllegalArgumentException if the {@code sampleSize} argument is too small
-   */
+  
   public static <K, V> PerKey<K, V> perKey(int sampleSize) {
     return new PerKey<>(sampleSize);
   }
 
-  /**
-   * Like {@link #perKey(int)}, but specifies the desired maximum estimation error instead of the
-   * sample size.
-   *
-   * @param <K> the type of the keys in the input and output {@code PCollection}s
-   * @param <V> the type of the values in the input {@code PCollection}
-   * @param maximumEstimationError the maximum estimation error, which should be in the range {@code
-   *     [0.01, 0.5]}
-   * @throws IllegalArgumentException if the {@code maximumEstimationError} argument is out of range
-   */
+  
   public static <K, V> PerKey<K, V> perKey(double maximumEstimationError) {
     return new PerKey<>(maximumEstimationError);
   }
 
   /////////////////////////////////////////////////////////////////////////////
 
-  /**
-   * {@code PTransform} for estimating the number of distinct elements in a {@code PCollection}.
-   *
-   * @param <T> the type of the elements in the input {@code PCollection}
-   */
+  
   public static final class Globally<T> extends PTransform<PCollection<T>, PCollection<Long>> {
 
-    /**
-     * The number of entries in the statistical sample; the higher this number, the more accurate
-     * the estimate will be.
-     */
+    
     private final long sampleSize;
 
-    /** The desired maximum estimation error or null if not specified. */
+    
     private final @Nullable Double maximumEstimationError;
 
-    /** @see ApproximateUnique#globally(int) */
+    
     public Globally(int sampleSize) {
       if (sampleSize < 16) {
         throw new IllegalArgumentException(
@@ -184,7 +87,7 @@ public class ApproximateUnique {
       this.maximumEstimationError = null;
     }
 
-    /** @see ApproximateUnique#globally(double) */
+    
     public Globally(double maximumEstimationError) {
       if (maximumEstimationError < 0.01 || maximumEstimationError > 0.5) {
         throw new IllegalArgumentException(
@@ -208,26 +111,17 @@ public class ApproximateUnique {
     }
   }
 
-  /**
-   * {@code PTransform} for estimating the number of distinct values associated with each key in a
-   * {@code PCollection} of {@code KV}s.
-   *
-   * @param <K> the type of the keys in the input and output {@code PCollection}s
-   * @param <V> the type of the values in the input {@code PCollection}
-   */
+  
   public static final class PerKey<K, V>
       extends PTransform<PCollection<KV<K, V>>, PCollection<KV<K, Long>>> {
 
-    /**
-     * The number of entries in the statistical sample; the higher this number, the more accurate
-     * the estimate will be.
-     */
+    
     private final long sampleSize;
 
-    /** The desired maximum estimation error or null if not specified. */
+    
     private final @Nullable Double maximumEstimationError;
 
-    /** @see ApproximateUnique#perKey(int) */
+    
     public PerKey(int sampleSize) {
       if (sampleSize < 16) {
         throw new IllegalArgumentException(
@@ -240,7 +134,7 @@ public class ApproximateUnique {
       this.maximumEstimationError = null;
     }
 
-    /** @see ApproximateUnique#perKey(double) */
+    
     public PerKey(double estimationError) {
       if (estimationError < 0.01 || estimationError > 0.5) {
         throw new IllegalArgumentException(
@@ -274,43 +168,25 @@ public class ApproximateUnique {
 
   /////////////////////////////////////////////////////////////////////////////
 
-  /**
-   * {@code CombineFn} that computes an estimate of the number of distinct values that were
-   * combined.
-   *
-   * <p>Hashes input elements, computes the top {@code sampleSize} hash values, and uses those to
-   * extrapolate the size of the entire set of hash values by assuming the rest of the hash values
-   * are as densely distributed as the top {@code sampleSize}.
-   *
-   * <p>Used to implement {@link #globally(int) ApproximatUnique.globally(...)} and {@link
-   * #perKey(int) ApproximatUnique.perKey(...)}.
-   *
-   * @param <T> the type of the values being combined
-   */
+  
   public static class ApproximateUniqueCombineFn<T>
       extends CombineFn<T, ApproximateUniqueCombineFn.LargestUnique, Long> {
 
-    /** The size of the space of hashes returned by the hash function. */
+    
     static final double HASH_SPACE_SIZE = Long.MAX_VALUE - (double) Long.MIN_VALUE;
 
-    /** A heap utility class to efficiently track the largest added elements. */
+    
     public static class LargestUnique implements Serializable {
       private final TreeSet<Long> heap = new TreeSet<>();
       private long minHash = Long.MAX_VALUE;
       private final long sampleSize;
 
-      /**
-       * Creates a heap to track the largest {@code sampleSize} elements.
-       *
-       * @param sampleSize the size of the heap
-       */
+      
       public LargestUnique(long sampleSize) {
         this.sampleSize = sampleSize;
       }
 
-      /**
-       * Adds a value to the heap, returning whether the value is (large enough to be) in the heap.
-       */
+      
       public void add(long value) {
         if (heap.size() >= sampleSize && value < minHash) {
           return; // Common case as input size increases.
@@ -407,7 +283,7 @@ public class ApproximateUnique {
       return SerializableCoder.of(LargestUnique.class);
     }
 
-    /** Encodes the given element using the given coder and hashes the encoding. */
+    
     static <T> long hash(T element, Coder<T> coder) throws IOException {
       try (HashingOutputStream stream =
           new HashingOutputStream(Hashing.murmur3_128(), ByteStreams.nullOutputStream())) {
@@ -417,12 +293,7 @@ public class ApproximateUnique {
     }
   }
 
-  /**
-   * Computes the sampleSize based on the desired estimation error.
-   *
-   * @param estimationError should be bounded by [0.01, 0.5]
-   * @return the sample size needed for the desired estimation error
-   */
+  
   static long sampleSizeFromEstimationError(double estimationError) {
     return Math.round(Math.ceil(4.0 / Math.pow(estimationError, 2.0)));
   }

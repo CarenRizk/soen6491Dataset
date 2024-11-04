@@ -179,11 +179,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.mockStatic;
 
-/**
- * Tests for the {@link DataflowRunner}.
- *
- * <p>Implements {@link Serializable} because it is caught in closures.
- */
+
 @RunWith(JUnit4.class)
 // TODO(https://github.com/apache/beam/issues/21230): Remove when new version of errorprone is
 // released (2.11.0)
@@ -419,10 +415,7 @@ private DataflowPipelineOptions configureDataflowPipelineOptions() {
     assertThat(options.getUserAgent(), containsString(expectedVersion));
   }
 
-  /**
-   * Test that the region is set in the generated JSON pipeline options even when a default value is
-   * grabbed from the environment.
-   */
+  
   @RunWith(MockitoJUnitRunner.class)
   public class DefaultRegionTest {
 
@@ -476,7 +469,7 @@ private DataflowPipelineOptions configureDataflowPipelineOptions() {
     }
   }
 
-  /** PipelineOptions used to test auto registration of Jackson modules. */
+  
   public interface JacksonIncompatibleOptions extends PipelineOptions {
 
     JacksonIncompatible getJacksonIncompatible();
@@ -484,7 +477,7 @@ private DataflowPipelineOptions configureDataflowPipelineOptions() {
     void setJacksonIncompatible(JacksonIncompatible value);
   }
 
-  /** A Jackson {@link Module} to test auto-registration of modules. */
+  
   @AutoService(Module.class)
   public static class RegisteredTestModule extends SimpleModule {
 
@@ -494,7 +487,7 @@ private DataflowPipelineOptions configureDataflowPipelineOptions() {
     }
   }
 
-  /** A class which Jackson does not know how to serialize/deserialize. */
+  
   public static class JacksonIncompatible {
 
     private final String value;
@@ -504,12 +497,12 @@ private DataflowPipelineOptions configureDataflowPipelineOptions() {
     }
   }
 
-  /** A Jackson mixin used to add annotations to other classes. */
+  
   @JsonDeserialize(using = JacksonIncompatibleDeserializer.class)
   @JsonSerialize(using = JacksonIncompatibleSerializer.class)
   public static final class JacksonIncompatibleMixin {}
 
-  /** A Jackson deserializer for {@link JacksonIncompatible}. */
+  
   public static class JacksonIncompatibleDeserializer
       extends JsonDeserializer<JacksonIncompatible> {
 
@@ -521,7 +514,7 @@ private DataflowPipelineOptions configureDataflowPipelineOptions() {
     }
   }
 
-  /** A Jackson serializer for {@link JacksonIncompatible}. */
+  
   public static class JacksonIncompatibleSerializer extends JsonSerializer<JacksonIncompatible> {
 
     @Override
@@ -602,7 +595,7 @@ private DataflowPipelineOptions configureDataflowPipelineOptions() {
     DataflowRunner.fromOptions(options);
   }
 
-  /** Options for testing. */
+  
   public interface RuntimeTestOptions extends PipelineOptions {
 
     ValueProvider<String> getInput();
@@ -622,7 +615,7 @@ private DataflowPipelineOptions configureDataflowPipelineOptions() {
     p.apply(TextIO.read().from(options.getInput())).apply(TextIO.write().to(options.getOutput()));
   }
 
-  /** Tests that all reads are consumed by at least one {@link PTransform}. */
+  
   @Test
   public void testUnconsumedReads() throws IOException {
     DataflowPipelineOptions dataflowOptions = buildPipelineOptions();
@@ -690,10 +683,7 @@ private Job setupMockDataflowJobCreation(DataflowPipelineOptions options) throws
     p.run();
   }
 
-  /**
-   * Tests that {@link DataflowRunner} throws an appropriate exception when an explicitly specified
-   * file to stage does not exist locally.
-   */
+  
   @Test(expected = RuntimeException.class)
   public void testRunWithMissingFiles() throws IOException {
     final String cloudDataflowDataset = "somedataset";
@@ -1216,7 +1206,7 @@ private RunnerApi.Pipeline createExpectedPipeline(String dockerHubPythonContaine
         gcsUploadBufferSizeBytes, streamingOptions.getGcsUploadBufferSizeBytes().intValue());
   }
 
-  /** A fake PTransform for testing. */
+  
   public static class TestTransform extends PTransform<PCollection<Integer>, PCollection<Integer>> {
 
     public boolean translated = false;
@@ -1323,7 +1313,7 @@ private RunnerApi.Pipeline createExpectedPipeline(String dockerHubPythonContaine
     }
   }
 
-  /** Records all the composite transforms visited within the Pipeline. */
+  
   private static class CompositeTransformRecorder extends PipelineVisitor.Defaults {
 
     private List<PTransform<?, ?>> transforms = new ArrayList<>();

@@ -71,7 +71,7 @@ import org.junit.rules.Timeout;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-/** Tests for Flatten. */
+
 @RunWith(JUnit4.class)
 public class FlattenTest implements Serializable {
 

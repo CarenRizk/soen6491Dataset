@@ -108,7 +108,7 @@ import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-/** Tests for basic {@link DirectRunner} functionality. */
+
 @RunWith(JUnit4.class)
 @SuppressWarnings({
   "rawtypes", // TODO(https://github.com/apache/beam/issues/20447)
@@ -362,10 +362,7 @@ private PCollection<String> countElementsAndFormatResults(Pipeline p) {
     p.run();
   }
 
-  /**
-   * Tests that a {@link DoFn} that mutates an output with a good equals() fails in the {@link
-   * DirectRunner}.
-   */
+  
   @Test
   public void testMutatingOutputThenOutputDoFnError() throws Exception {
     Pipeline pipeline = getPipeline();
@@ -394,10 +391,7 @@ private void processAndModifyListOutput(Pipeline pipeline) {
                 }));
 }
 
-  /**
-   * Tests that a {@link DoFn} that mutates an output with a good equals() fails in the {@link
-   * DirectRunner}.
-   */
+  
   @Test
   public void testMutatingOutputWithEnforcementDisabledSucceeds() throws Exception {
     PipelineOptions options = PipelineOptionsFactory.create();
@@ -410,10 +404,7 @@ private void processAndModifyListOutput(Pipeline pipeline) {
     pipeline.run();
   }
 
-  /**
-   * Tests that a {@link DoFn} that mutates an output with a good equals() fails in the {@link
-   * DirectRunner}.
-   */
+  
   @Test
   public void testMutatingOutputThenTerminateDoFnError() throws Exception {
     Pipeline pipeline = getPipeline();
@@ -437,10 +428,7 @@ private void processAndModifyListOutput(Pipeline pipeline) {
     pipeline.run();
   }
 
-  /**
-   * Tests that a {@link DoFn} that mutates an output with a bad equals() still fails in the {@link
-   * DirectRunner}.
-   */
+  
   @Test
   public void testMutatingOutputCoderDoFnError() throws Exception {
     Pipeline pipeline = getPipeline();
@@ -465,10 +453,7 @@ private void processAndModifyListOutput(Pipeline pipeline) {
     pipeline.run();
   }
 
-  /**
-   * Tests that a {@link DoFn} that mutates its input with a good equals() fails in the {@link
-   * DirectRunner}.
-   */
+  
   @Test
   public void testMutatingInputDoFnError() throws Exception {
     Pipeline pipeline = getPipeline();
@@ -494,10 +479,7 @@ private void processAndModifyListOutput(Pipeline pipeline) {
     pipeline.run();
   }
 
-  /**
-   * Tests that a {@link DoFn} that mutates an input with a bad equals() still fails in the {@link
-   * DirectRunner}.
-   */
+  
   @Test
   public void testMutatingInputCoderDoFnError() throws Exception {
     Pipeline pipeline = getPipeline();
@@ -568,10 +550,7 @@ private void processAndModifyListOutput(Pipeline pipeline) {
     p.run();
   }
 
-  /**
-   * Tests that {@link DirectRunner#fromOptions(PipelineOptions)} drops {@link PipelineOptions}
-   * marked with {@link JsonIgnore} fields.
-   */
+  
   @Test
   public void testFromOptionsIfIgnoredFieldsGettingDropped() {
     TestSerializationOfOptions options =
@@ -600,10 +579,7 @@ private void processAndModifyListOutput(Pipeline pipeline) {
     p.run();
   }
 
-  /**
-   * Test running of {@link Pipeline} which has two {@link POutput POutputs} and finishing the first
-   * one triggers data being fed into the second one.
-   */
+  
   @Test(timeout = 10000)
   public void testTwoPOutputsInPipelineWithCascade() throws InterruptedException {
 
@@ -654,10 +630,7 @@ private void processAndModifyListOutput(Pipeline pipeline) {
     };
   }
 
-  /**
-   * Options for testing if {@link DirectRunner} drops {@link PipelineOptions} marked with {@link
-   * JsonIgnore} fields.
-   */
+  
   public interface TestSerializationOfOptions extends PipelineOptions {
     String getFoo();
 

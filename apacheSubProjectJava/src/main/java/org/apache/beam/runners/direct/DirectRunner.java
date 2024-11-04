@@ -54,16 +54,7 @@ import org.apache.beam.vendor.guava.v32_1_2_jre.com.google.common.util.concurren
 import org.apache.beam.vendor.guava.v32_1_2_jre.com.google.common.util.concurrent.ThreadFactoryBuilder;
 import org.joda.time.Duration;
 
-/**
- * A {@link PipelineRunner} that executes a {@link Pipeline} within the process that constructed the
- * {@link Pipeline}.
- *
- * <p>The {@link DirectRunner} is suitable for running a {@link Pipeline} on small scale, example,
- * and test data, and should be used for ensuring that processing logic is correct. It also is
- * appropriate for executing unit tests and performs additional work to ensure that behavior
- * contained within a {@link Pipeline} does not break assumptions within the Beam model, to improve
- * the ability to execute a {@link Pipeline} at scale on a distributed backend.
- */
+
 @SuppressWarnings({
   "nullness" // TODO(https://github.com/apache/beam/issues/20497)
 })
@@ -86,17 +77,13 @@ public class DirectRunner extends PipelineRunner<DirectPipelineResult> {
       }
     };
 
-    /**
-     * The set of {@link PTransform PTransforms} that execute a UDF. Useful for some enforcements.
-     */
+    
     private static final Set<String> CONTAINS_UDF =
         ImmutableSet.of(
             PTransformTranslation.READ_TRANSFORM_URN, PTransformTranslation.PAR_DO_TRANSFORM_URN);
 
     public abstract boolean appliesTo(PCollection<?> collection, DirectGraph graph);
 
-    ////////////////////////////////////////////////////////////////////////////////////////////////
-    // Utilities for creating enforcements
     static Set<Enforcement> enabled(DirectOptions options) {
       EnumSet<Enforcement> enabled = EnumSet.noneOf(Enforcement.class);
       if (options.isEnforceEncodability()) {
@@ -134,7 +121,6 @@ public class DirectRunner extends PipelineRunner<DirectPipelineResult> {
     }
   }
 
-  ////////////////////////////////////////////////////////////////////////////////////////////////
   private DirectOptions options;
   private final Set<Enforcement> enabledEnforcements;
   private Supplier<Clock> clockSupplier = new NanosOffsetClockSupplier();
@@ -142,7 +128,7 @@ public class DirectRunner extends PipelineRunner<DirectPipelineResult> {
       new ObjectMapper()
           .registerModules(ObjectMapper.findModules(ReflectHelpers.findClassLoader()));
 
-  /** Construct a {@link DirectRunner} from the provided options. */
+  
   public static DirectRunner fromOptions(PipelineOptions options) {
     return new DirectRunner(options.as(DirectOptions.class));
   }
@@ -231,14 +217,7 @@ public class DirectRunner extends PipelineRunner<DirectPipelineResult> {
     }
   }
 
-  /**
-   * Rewrites to the pipeline to make it ready for scheduling.
-   *
-   * <p>The order in which rewrites are applied is important, as some overrides are expanded into a
-   * composite. If the composite contains {@link PTransform PTransforms} which are also overridden,
-   * these PTransforms must occur later in the iteration order. {@link ImmutableMap} has an
-   * iteration order based on the order at which elements are added to it.
-   */
+  
   @VisibleForTesting
   void performRewrites(Pipeline pipeline) {
     // These overrides introduce side inputs so they must be
@@ -307,7 +286,7 @@ public class DirectRunner extends PipelineRunner<DirectPipelineResult> {
     return builder.build();
   }
 
-  /** The result of running a {@link Pipeline} with the {@link DirectRunner}. */
+  
   public static class DirectPipelineResult implements PipelineResult {
     private final PipelineExecutor executor;
     private final EvaluationContext evaluationContext;
@@ -333,13 +312,7 @@ public class DirectRunner extends PipelineRunner<DirectPipelineResult> {
       return evaluationContext.getMetrics();
     }
 
-    /**
-     * {@inheritDoc}.
-     *
-     * <p>If the pipeline terminates abnormally by throwing an {@link Exception}, this will rethrow
-     * the original {@link Exception}. Future calls to {@link #getState()} will return {@link
-     * org.apache.beam.sdk.PipelineResult.State#FAILED}.
-     */
+    
     @Override
     public State waitUntilFinish() {
       return waitUntilFinish(Duration.ZERO);
@@ -355,13 +328,7 @@ public class DirectRunner extends PipelineRunner<DirectPipelineResult> {
       return executor.getPipelineState();
     }
 
-    /**
-     * {@inheritDoc}.
-     *
-     * <p>If the pipeline terminates abnormally by throwing an {@link Exception}, this will rethrow
-     * the original {@link Exception}. Future calls to {@link #getState()} will return {@link
-     * org.apache.beam.sdk.PipelineResult.State#FAILED}.
-     */
+    
     @Override
     public State waitUntilFinish(Duration duration) {
       if (this.state.isTerminal()) {
@@ -391,7 +358,7 @@ public class DirectRunner extends PipelineRunner<DirectPipelineResult> {
     }
   }
 
-  /** A {@link Supplier} that creates a {@link NanosOffsetClock}. */
+  
   private static class NanosOffsetClockSupplier implements Supplier<Clock> {
     @Override
     public Clock get() {

@@ -89,7 +89,7 @@ import org.junit.rules.TemporaryFolder;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-/** Tests for {@link TextIO.Write}. */
+
 @RunWith(JUnit4.class)
 public class TextIOWriteTest {
   private static final String MY_HEADER = "myHeader";
@@ -400,7 +400,7 @@ public class TextIOWriteTest {
     assertEquals("TextIO.Write", TextIO.write().to("somefile").getName());
   }
 
-  /** Options for testing. */
+  
   public interface RuntimeTestOptions extends PipelineOptions {
     ValueProvider<String> getOutput();
 

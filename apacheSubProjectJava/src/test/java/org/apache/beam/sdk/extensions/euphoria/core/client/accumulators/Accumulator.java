@@ -19,14 +19,7 @@ package org.apache.beam.sdk.extensions.euphoria.core.client.accumulators;
 
 import org.apache.beam.sdk.extensions.euphoria.core.annotation.audience.Audience;
 
-/**
- * Accumulators collect values from user functions. Accumulators allow user to calculate statistics
- * during the flow execution.
- *
- * <p>Accumulators are inspired by the Hadoop/MapReduce counters.
- *
- * @deprecated Use Java SDK directly, Euphoria is scheduled for removal in a future release.
- */
+
 @Audience(Audience.Type.INTERNAL)
 @Deprecated
 public interface Accumulator {}

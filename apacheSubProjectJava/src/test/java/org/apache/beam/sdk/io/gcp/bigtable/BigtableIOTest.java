@@ -123,14 +123,14 @@ import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-/** Unit tests for {@link BigtableIO}. */
+
 @RunWith(JUnit4.class)
 public class BigtableIOTest {
   @Rule public final transient TestPipeline p = TestPipeline.create();
   @Rule public ExpectedException thrown = ExpectedException.none();
   @Rule public ExpectedLogs logged = ExpectedLogs.none(BigtableIO.class);
 
-  /** Read Options for testing. */
+  
   public interface ReadOptions extends GcpOptions {
     @Description("The project that contains the table to export.")
     ValueProvider<String> getBigtableProject();
@@ -376,7 +376,7 @@ public class BigtableIOTest {
     write.expand(null);
   }
 
-  /** Helper function to make a single row mutation to be written. */
+  
   private static KV<ByteString, Iterable<Mutation>> makeWrite(String key, String value) {
     ByteString rowKey = ByteString.copyFromUtf8(key);
     Iterable<Mutation> mutations =
@@ -387,13 +387,13 @@ public class BigtableIOTest {
     return KV.of(rowKey, mutations);
   }
 
-  /** Helper function to make a single bad row mutation (no set cell). */
+  
   private static KV<ByteString, Iterable<Mutation>> makeBadWrite(String key) {
     Iterable<Mutation> mutations = ImmutableList.of(Mutation.newBuilder().build());
     return KV.of(ByteString.copyFromUtf8(key), mutations);
   }
 
-  /** Tests that when reading from a non-existent table, the read fails. */
+  
   @Test
   public void testReadingFailsTableDoesNotExist() throws Exception {
     final String table = "TEST-TABLE";
@@ -412,7 +412,7 @@ public class BigtableIOTest {
     p.run();
   }
   
-  /** A {@link Predicate} that a {@link Row Row's} key matches the given regex. */
+  
   private static class KeyMatchesRegex implements Predicate<ByteString> {
     private final String regex;
 
@@ -454,10 +454,7 @@ public class BigtableIOTest {
     p.run();
   }
 
-  /**
-   * Tests reading all rows using key ranges. Tests a prefix [), a suffix (], and a restricted range
-   * [] and that some properties hold across them.
-   */
+  
   @Test
   public void testReadingWithKeyRange() throws Exception {
     final String table = "TEST-KEY-RANGE-TABLE";
@@ -499,7 +496,7 @@ public class BigtableIOTest {
     assertThat(suffixRows, hasItems(middleRows.toArray(new Row[] {})));
   }
 
-  /** Tests reading key ranges specified through a ValueProvider. */
+  
   @Test
   public void testReadingWithRuntimeParameterizedKeyRange() throws Exception {
     final String table = "TEST-KEY-RANGE-TABLE";
@@ -521,7 +518,7 @@ public class BigtableIOTest {
     assertThat(middleRows, allOf(hasSize(lessThan(numRows)), hasSize(greaterThan(0))));
   }
 
-  /** Tests reading three key ranges with one read. */
+  
   @Test
   public void testReadingWithKeyRanges() throws Exception {
     final String table = "TEST-KEY-RANGE-TABLE";
@@ -547,7 +544,7 @@ public class BigtableIOTest {
     assertThat(rangeRows, allOf(hasSize(lessThan(numRows)), hasSize(greaterThan(0))));
   }
 
-  /** Tests reading all rows using a filter. */
+  
   @Test
   public void testReadingWithFilter() {
     final String table = "TEST-FILTER-TABLE";
@@ -572,7 +569,7 @@ public class BigtableIOTest {
         defaultRead.withTableId(table).withRowFilter(filter), Lists.newArrayList(filteredRows));
   }
 
-  /** Tests reading rows using a filter provided through ValueProvider. */
+  
   @Test
   public void testReadingWithRuntimeParameterizedFilter() throws Exception {
     final String table = "TEST-FILTER-TABLE";
@@ -597,7 +594,7 @@ public class BigtableIOTest {
         defaultRead.withTableId(table).withRowFilter(StaticValueProvider.of(filter)),
         Lists.newArrayList(filteredRows));
   }
-  /** Tests dynamic work rebalancing exhaustively. */
+  
   @Test
   public void testReadingSplitAtFractionExhaustive() throws Exception {
     final String table = "TEST-FEW-ROWS-SPLIT-EXHAUSTIVE-TABLE";
@@ -626,7 +623,7 @@ private BigtableSource extracted(final String table, final int numRows, final in
 	return source;
 }
 
-  /** Unit tests of splitAtFraction. */
+  
   @Test
   public void testReadingSplitAtFraction() throws Exception {
     final String table = "TEST-SPLIT-AT-FRACTION";
@@ -649,7 +646,7 @@ private BigtableSource extracted(final String table, final int numRows, final in
     assertSplitAtFractionSucceedsAndConsistent(source, 6, 0.7, null /* options */);
   }
 
-  /** Tests reading all rows from a split table. */
+  
   @Test
   public void testReadingWithSplits() throws Exception {
     final String table = "TEST-MANY-ROWS-SPLITS-TABLE";
@@ -685,10 +682,7 @@ private void setupAndSplitBigtableSource(final String table, final int numRows, 
     assertSourcesEqualReferenceSource(source, splits, null /* options */);
 }
 
-  /**
-   * Regression test for <a href="https://github.com/apache/beam/issues/28793">[Bug]: BigtableSource
-   * "Desired bundle size 0 bytes must be greater than 0" #28793</a>.
-   */
+  
   @Test
   public void testSplittingWithDesiredBundleSizeZero() throws Exception {
     final String table = "TEST-SPLIT-DESIRED-BUNDLE-SIZE-ZERO-TABLE";
@@ -740,7 +734,7 @@ private void setupAndSplitBigtableSource(final String table, final int numRows, 
     return ByteKey.copyFrom(String.format("key%09d", key).getBytes(StandardCharsets.UTF_8));
   }
 
-  /** Tests reduce splits with few non adjacent ranges. */
+  
   @Test
   public void testReduceSplitsWithSomeNonAdjacentRanges() throws Exception {
     final String table = "TEST-MANY-ROWS-SPLITS-TABLE";
@@ -774,7 +768,7 @@ private void setupAndSplitBigtableSource(final String table, final int numRows, 
     createAndSplitBigtableSource(table, maxSplit, expectedKeyRangesAfterReducedSplits);
   }
 
-  /** Tests reduce split with all non adjacent ranges. */
+  
   @Test
   public void testReduceSplitsWithAllNonAdjacentRange() throws Exception {
     final String table = "TEST-MANY-ROWS-SPLITS-TABLE";
@@ -834,7 +828,7 @@ private void createAndSplitBigtableSource(final String table, final int maxSplit
         IsIterableContainingInAnyOrder.containsInAnyOrder(keyRanges.toArray()));
 }
 
-  /** Tests reduce Splits with all adjacent ranges. */
+  
   @Test
   public void tesReduceSplitsWithAdjacentRanges() throws Exception {
     final String table = "TEST-MANY-ROWS-SPLITS-TABLE";
@@ -899,7 +893,7 @@ private void createAndSplitBigtableSource(final String table, final int maxSplit
     assertSourcesEqualReferenceSource(source, reducedSplits, null /* options */);
   }
 
-  /** Tests reading all rows from a split table with several key ranges. */
+  
   @Test
   public void testReadingWithSplitsWithSeveralKeyRanges() throws Exception {
     final String table = "TEST-MANY-ROWS-SPLITS-TABLE-MULTIPLE-RANGES";
@@ -958,7 +952,7 @@ private BigtableSource createBigtableSourceWithKeyRanges(final String table, Byt
 	return source;
 }
 
-  /** Tests reading all rows from a sub-split table. */
+  
   @Test
   public void testReadingWithSubSplits() throws Exception {
     final String table = "TEST-MANY-ROWS-SPLITS-TABLE";
@@ -989,7 +983,7 @@ private BigtableSource createBigtableSourceWithKeyRanges(final String table, Byt
     assertSourcesEqualReferenceSource(source, splits, null /* options */);
   }
 
-  /** Tests reading all rows from a sub-split table with several key ranges. */
+  
   @Test
   public void testReadingWithSubSplitsWithSeveralKeyRanges() throws Exception {
     final String table = "TEST-MANY-ROWS-SPLITS-TABLE-MULTIPLE-RANGES";
@@ -997,7 +991,7 @@ private BigtableSource createBigtableSourceWithKeyRanges(final String table, Byt
     setupAndSplitBigtableSource(table, expectedNumSplits, expectedNumSplits);
   }
 
-  /** Tests reading all rows from a sub-split table. */
+  
   @Test
   public void testReadingWithFilterAndSubSplits() throws Exception {
     final String table = "TEST-FILTER-SUB-SPLITS";
@@ -1057,7 +1051,7 @@ private BigtableSource createBigtableSourceWithKeyRanges(final String table, Byt
     write.validate(TestPipeline.testingPipelineOptions());
   }
 
-  /** Tests that at least one result is emitted per element written in the global window. */
+  
   @Test
   public void testWritingEmitsResultsWhenDoneInGlobalWindow() {
     final String table = "table";
@@ -1076,10 +1070,7 @@ private BigtableSource createBigtableSourceWithKeyRanges(final String table, Byt
     p.run();
   }
 
-  /**
-   * Tests that the outputs of the Bigtable writer are correctly windowed, and can be used in a
-   * Wait.on transform as the trigger.
-   */
+  
   @Test
   public void testWritingAndWaitingOnResults() {
     final String table = "table";
@@ -1123,10 +1114,7 @@ private BigtableSource createBigtableSourceWithKeyRanges(final String table, Byt
     p.run();
   }
 
-  /**
-   * A DoFn used to generate N outputs, where N is the input. Used to generate bundles of >= 1
-   * element.
-   */
+  
   private static class WriteGeneratorDoFn extends DoFn<Long, KV<ByteString, Iterable<Mutation>>> {
     @ProcessElement
     public void processElement(ProcessContext ctx) {
@@ -1136,7 +1124,7 @@ private BigtableSource createBigtableSourceWithKeyRanges(final String table, Byt
     }
   }
 
-  /** Tests that at least one result is emitted per element written in each window. */
+  
   @Test
   public void testWritingEmitsResultsWhenDoneInFixedWindow() throws Exception {
     final String table = "table";
@@ -1173,7 +1161,7 @@ private BigtableSource createBigtableSourceWithKeyRanges(final String table, Byt
     p.run();
   }
 
-  /** Tests that when writing to a non-existent table, the write fails. */
+  
   @Test
   public void testWritingFailsTableDoesNotExist() throws Exception {
     final String table = "TEST-TABLE";
@@ -1196,7 +1184,7 @@ private PCollection<KV<ByteString, Iterable<Mutation>>> createEmptyInputPCollect
 	return emptyInput;
 }
 
-  /** Tests that when writing to a non-existent table, the write fails. */
+  
   @Test
   public void testTableCheckIgnoredWhenCanNotAccessConfig() throws Exception {
     PCollection<KV<ByteString, Iterable<Mutation>>> emptyInput =
@@ -1300,7 +1288,7 @@ private PCollection<KV<ByteString, Iterable<Mutation>>> createEmptyInputPCollect
   private static final Column TEST_COLUMN = Column.newBuilder().setQualifier(COLUMN_NAME).build();
   private static final Family TEST_FAMILY = Family.newBuilder().setName(COLUMN_FAMILY_NAME).build();
 
-  /** Helper function that builds a {@link Row} in a test table that could be returned by read. */
+  
   private static Row makeRow(ByteString key, ByteString value) {
     // Build the currentRow and return true.
     Column.Builder newColumn = TEST_COLUMN.toBuilder().addCells(Cell.newBuilder().setValue(value));
@@ -1310,7 +1298,7 @@ private PCollection<KV<ByteString, Iterable<Mutation>>> createEmptyInputPCollect
         .build();
   }
 
-  /** Helper function to create a table and return the rows that it created with custom service. */
+  
   private static List<Row> makeTableData(
       FakeBigtableService fakeService, String tableId, int numRows) {
     fakeService.createTable(tableId);
@@ -1327,12 +1315,12 @@ private PCollection<KV<ByteString, Iterable<Mutation>>> createEmptyInputPCollect
     return testRows;
   }
 
-  /** Helper function to create a table and return the rows that it created. */
+  
   private static List<Row> makeTableData(String tableId, int numRows) {
     return makeTableData(service, tableId, numRows);
   }
 
-  /** A {@link BigtableService} implementation that stores tables and their contents in memory. */
+  
   private static class FakeBigtableService implements BigtableService {
     private final Map<String, SortedMap<ByteString, ByteString>> tables = new HashMap<>();
     private final Map<String, List<KeyOffset>> sampleRowKeys = new HashMap<>();
@@ -1379,7 +1367,7 @@ private PCollection<KV<ByteString, Iterable<Mutation>>> createEmptyInputPCollect
     @Override
     public void close() {}
 
-    /** Sets up the sample row keys for the specified table. */
+    
     void setupSampleRowKeys(String tableId, int numSamples, long bytesPerRow) {
       verifyTableExists(tableId);
       checkArgument(numSamples > 0, "Number of samples must be positive: %s", numSamples);
@@ -1406,7 +1394,7 @@ private PCollection<KV<ByteString, Iterable<Mutation>>> createEmptyInputPCollect
     }
   }
 
-  /** A {@link BigtableService} implementation that throw exceptions at given stage. */
+  
   private static class FailureBigtableService extends FakeBigtableService {
     public FailureBigtableService(FailureOptions options) {
       failureOptions = options;
@@ -1436,12 +1424,7 @@ private PCollection<KV<ByteString, Iterable<Mutation>>> createEmptyInputPCollect
     private final FailureOptions failureOptions;
   }
 
-  /**
-   * A {@link BigtableService.Reader} implementation that reads from the static instance of {@link
-   * FakeBigtableService} stored in {@link #service}.
-   *
-   * <p>This reader does not support {@link RowFilter} objects.
-   */
+  
   private static class FakeBigtableReader implements BigtableService.Reader {
     private final BigtableSource source;
     private final FakeBigtableService service;
@@ -1520,7 +1503,7 @@ private PCollection<KV<ByteString, Iterable<Mutation>>> createEmptyInputPCollect
     public void close() {}
   }
 
-  /** A {@link FakeBigtableReader} implementation that throw exceptions at given stage. */
+  
   private static class FailureBigtableReader extends FakeBigtableReader {
     public FailureBigtableReader(
         BigtableSource source, FakeBigtableService service, FailureOptions options) {
@@ -1551,16 +1534,7 @@ private PCollection<KV<ByteString, Iterable<Mutation>>> createEmptyInputPCollect
     private final FailureOptions failureOptions;
   }
 
-  /**
-   * A {@link BigtableService.Writer} implementation that writes to the static instance of {@link
-   * FakeBigtableService} stored in {@link #service}.
-   *
-   * <p>This writer only supports {@link Mutation Mutations} that consist only of {@link SetCell}
-   * entries. The column family in the {@link SetCell} is ignored; only the value is used.
-   *
-   * <p>When no {@link SetCell} is provided, the write will fail and this will be exposed via an
-   * exception on the returned {@link CompletionStage}.
-   */
+  
   private static class FakeBigtableWriter implements BigtableService.Writer {
     private final String tableId;
     private final FakeBigtableService service;
@@ -1599,7 +1573,7 @@ private PCollection<KV<ByteString, Iterable<Mutation>>> createEmptyInputPCollect
     public void close() {}
   }
 
-  /** A {@link FakeBigtableWriter} implementation that throw exceptions at given stage. */
+  
   private static class FailureBigtableWriter extends FakeBigtableWriter {
     public FailureBigtableWriter(
         String tableId, FailureBigtableService service, FailureOptions options) {
@@ -1626,7 +1600,7 @@ private PCollection<KV<ByteString, Iterable<Mutation>>> createEmptyInputPCollect
     private final FailureOptions failureOptions;
   }
 
-  /** A serializable comparator for ByteString. Used to make row samples. */
+  
   private static final class ByteStringComparator implements Comparator<ByteString>, Serializable {
     @Override
     public int compare(ByteString o1, ByteString o2) {
@@ -1634,7 +1608,7 @@ private PCollection<KV<ByteString, Iterable<Mutation>>> createEmptyInputPCollect
     }
   }
 
-  /** Error injection options for FakeBigtableService and FakeBigtableReader. */
+  
   @AutoValue
   abstract static class FailureOptions implements Serializable {
     abstract Boolean getFailAtStart();

@@ -35,7 +35,7 @@ import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-/** Tests for constructs defined within {@link Coder}. */
+
 @RunWith(JUnit4.class)
 public class CoderTest {
   @Rule public ExpectedException expectedException = ExpectedException.none();

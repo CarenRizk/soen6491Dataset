@@ -48,7 +48,7 @@ import org.junit.rules.TemporaryFolder;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-/** Unit tests for bucketing. */
+
 @RunWith(JUnit4.class)
 public class WindowingTest implements Serializable {
 
@@ -212,7 +212,7 @@ public class WindowingTest implements Serializable {
     p.run();
   }
 
-  /** A DoFn that tokenizes lines of text into individual words. */
+  
   static class ExtractWordsWithTimestampsFn extends DoFn<String, String> {
     @ProcessElement
     public void processElement(ProcessContext c) {

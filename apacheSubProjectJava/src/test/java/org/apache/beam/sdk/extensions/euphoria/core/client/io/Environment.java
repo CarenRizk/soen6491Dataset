@@ -22,38 +22,19 @@ import org.apache.beam.sdk.extensions.euphoria.core.client.accumulators.Counter;
 import org.apache.beam.sdk.extensions.euphoria.core.client.accumulators.Histogram;
 import org.apache.beam.sdk.extensions.euphoria.core.client.accumulators.Timer;
 
-/**
- * Defines basic methods available in user defined functions.
- *
- * @deprecated Use Java SDK directly, Euphoria is scheduled for removal in a future release.
- */
+
 @Audience(Audience.Type.CLIENT)
 @Deprecated
 public interface Environment {
 
   // ---------------- Aggregator related methods ------------
 
-  /**
-   * Get an existing instance of a counter or create a new one.
-   *
-   * @param name Unique name of the counter.
-   * @return Instance of a counter.
-   */
+  
   Counter getCounter(String name);
 
-  /**
-   * Get an existing instance of a histogram or create a new one.
-   *
-   * @param name Unique name of the histogram.
-   * @return Instance of a histogram.
-   */
+  
   Histogram getHistogram(String name);
 
-  /**
-   * Get an existing instance of a timer or create a new one.
-   *
-   * @param name Unique name of the timer.
-   * @return Instance of a timer.
-   */
+  
   Timer getTimer(String name);
 }

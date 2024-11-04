@@ -80,7 +80,7 @@ import org.junit.rules.Timeout;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
-/** Tests for {@link FileIO}. */
+
 @RunWith(JUnit4.class)
 public class FileIOTest implements Serializable {
   @Rule public transient TestPipeline p = TestPipeline.create();
@@ -216,7 +216,7 @@ public class FileIOTest implements Serializable {
     p.run();
   }
 
-  /** DoFn that copy test files from source to watch path. */
+  
   private static class CopyFilesFn
       extends DoFn<KV<String, MatchResult.Metadata>, MatchResult.Metadata> {
     public CopyFilesFn(Path sourcePath, Path watchPath) {

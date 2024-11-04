@@ -34,152 +34,79 @@ import org.hamcrest.TypeSafeMatcher;
 import org.junit.rules.ExternalResource;
 import org.junit.rules.TestRule;
 
-/**
- * This {@link TestRule} enables the ability to capture JUL logging events during test execution and
- * assert expectations that they contain certain messages (with or without {@link Throwable}) at
- * certain log levels. For logs generated via the SLF4J logging frontend, the JUL backend must be
- * used.
- */
+
 public class ExpectedLogs extends ExternalResource {
-  /**
-   * Returns a {@link TestRule} that captures logs for the given logger name.
-   *
-   * @param name The logger name to capture logs for.
-   * @return A {@link ExpectedLogs} test rule.
-   */
+  
   public static ExpectedLogs none(String name) {
     return new ExpectedLogs(name);
   }
 
-  /**
-   * Returns a {@link TestRule} that captures logs for the given class.
-   *
-   * @param klass The class to capture logs for.
-   * @return A {@link ExpectedLogs} test rule.
-   */
+  
   public static ExpectedLogs none(Class<?> klass) {
     return ExpectedLogs.none(klass.getName());
   }
 
-  /**
-   * Verify a logging event at the trace level with the given message.
-   *
-   * @param substring The message to match against.
-   */
+  
   public void verifyTrace(String substring) {
     verify(Level.FINEST, substring);
   }
 
-  /**
-   * Verify a logging event at the trace level with the given message and throwable.
-   *
-   * @param substring The message to match against.
-   * @param t The throwable to match against.
-   */
+  
   public void verifyTrace(String substring, Throwable t) {
     verify(Level.FINEST, substring, t);
   }
 
-  /**
-   * Verify a logging event at the debug level with the given message.
-   *
-   * @param substring The message to match against.
-   */
+  
   public void verifyDebug(String substring) {
     verify(Level.FINE, substring);
   }
 
-  /**
-   * Verify a logging event at the debug level with the given message and throwable.
-   *
-   * @param message The message to match against.
-   * @param t The throwable to match against.
-   */
+  
   public void verifyDebug(String message, Throwable t) {
     verify(Level.FINE, message, t);
   }
 
-  /**
-   * Verify a logging event at the info level with the given message.
-   *
-   * @param substring The message to match against.
-   */
+  
   public void verifyInfo(String substring) {
     verify(Level.INFO, substring);
   }
 
-  /**
-   * Verify a logging event at the info level with the given message and throwable.
-   *
-   * @param message The message to match against.
-   * @param t The throwable to match against.
-   */
+  
   public void verifyInfo(String message, Throwable t) {
     verify(Level.INFO, message, t);
   }
 
-  /**
-   * Verify a logging event at the warn level with the given message.
-   *
-   * @param substring The message to match against.
-   */
+  
   public void verifyWarn(String substring) {
     verify(Level.WARNING, substring);
   }
 
-  /**
-   * Verify a logging event at the warn level with the given message and throwable.
-   *
-   * @param substring The message to match against.
-   * @param t The throwable to match against.
-   */
+  
   public void verifyWarn(String substring, Throwable t) {
     verify(Level.WARNING, substring, t);
   }
 
-  /**
-   * Verify a logging event at the error level with the given message.
-   *
-   * @param substring The message to match against.
-   */
+  
   public void verifyError(String substring) {
     verify(Level.SEVERE, substring);
   }
 
-  /**
-   * Verify a logging event at the error level with the given message and throwable.
-   *
-   * @param substring The message to match against.
-   * @param t The throwable to match against.
-   */
+  
   public void verifyError(String substring, Throwable t) {
     verify(Level.SEVERE, substring, t);
   }
 
-  /**
-   * Verify there are no logging events with messages containing the given substring.
-   *
-   * @param substring The message to match against.
-   */
+  
   public void verifyNotLogged(String substring) {
     verifyNotLogged(matcher(substring), logSaver);
   }
 
-  /**
-   * Verify there is no logging event at the error level with the given message and throwable.
-   *
-   * @param substring The message to match against.
-   * @param t The throwable to match against.
-   */
+  
   public void verifyNoError(String substring, Throwable t) {
     verifyNo(Level.SEVERE, substring, t);
   }
 
-  /**
-   * Verify that the list of log records matches the provided {@code matcher}.
-   *
-   * @param matcher The matcher to use.
-   */
+  
   public void verifyLogRecords(Matcher<Iterable<LogRecord>> matcher) {
     if (!matcher.matches(logSaver.getLogs())) {
       fail(String.format("Missing match for [%s]", matcher));
@@ -293,7 +220,7 @@ public class ExpectedLogs extends ExternalResource {
     logSaver = new LogSaver();
   }
 
-  /** A JUL logging {@link Handler} that records all logging events that are passed to it. */
+  
   @ThreadSafe
   public static class LogSaver extends Handler {
     private final Collection<LogRecord> logRecords = new ConcurrentLinkedDeque<>();

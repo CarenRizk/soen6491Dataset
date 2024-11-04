@@ -65,7 +65,7 @@ import org.apache.beam.vendor.guava.v32_1_2_jre.com.google.common.collect.Orderi
 import org.apache.beam.vendor.guava.v32_1_2_jre.com.google.common.collect.Sets;
 import org.apache.beam.vendor.guava.v32_1_2_jre.com.google.common.collect.TreeMultimap;
 
-/** Clients facing {@link FileSystem} utility. */
+
 @SuppressWarnings({
   "nullness", // TODO(https://github.com/apache/beam/issues/20497)
   "rawtypes"
@@ -83,51 +83,19 @@ public class FileSystems {
   private static final AtomicReference<Map<String, FileSystem>> SCHEME_TO_FILESYSTEM =
       new AtomicReference<>(ImmutableMap.of(DEFAULT_SCHEME, new LocalFileSystem()));
 
-  /** ******************************** METHODS FOR CLIENT ********************************* */
+  
 
-  /** Checks whether the given spec contains a glob wildcard character. */
+  
   public static boolean hasGlobWildcard(String spec) {
     return GLOB_PATTERN.matcher(spec).find();
   }
 
-  /**
-   * This is the entry point to convert user-provided specs to {@link ResourceId ResourceIds}.
-   * Callers should use {@link #match} to resolve users specs ambiguities before calling other
-   * methods.
-   *
-   * <p>Implementation handles the following ambiguities of a user-provided spec:
-   *
-   * <ol>
-   *   <li>{@code spec} could be a glob or a uri. {@link #match} should be able to tell and choose
-   *       efficient implementations.
-   *   <li>The user-provided {@code spec} might refer to files or directories. It is common that
-   *       users that wish to indicate a directory will omit the trailing path delimiter, such as
-   *       {@code "/tmp/dir"} in Linux. The {@link FileSystem} should be able to recognize a
-   *       directory with the trailing path delimiter omitted, but should always return a correct
-   *       {@link ResourceId} (e.g., {@code "/tmp/dir/"} inside the returned {@link MatchResult}.
-   * </ol>
-   *
-   * <p>All {@link FileSystem} implementations should support glob in the final hierarchical path
-   * component of {@link ResourceId}. This allows SDK libraries to construct file system agnostic
-   * spec. {@link FileSystem FileSystems} can support additional patterns for user-provided specs.
-   *
-   * <p>In case the spec schemes don't match any known {@link FileSystem} implementations,
-   * FileSystems will attempt to use {@link LocalFileSystem} to resolve a path.
-   *
-   * <p>Specs that do not match any resources are treated according to {@link
-   * EmptyMatchTreatment#DISALLOW}.
-   *
-   * @return {@code List<MatchResult>} in the same order of the input specs.
-   * @throws IllegalArgumentException if specs are invalid -- empty or have different schemes.
-   * @throws IOException if all specs failed to match due to issues like: network connection,
-   *     authorization. Exception for individual spec is deferred until callers retrieve metadata
-   *     with {@link MatchResult#metadata()}.
-   */
+  
   public static List<MatchResult> match(List<String> specs) throws IOException {
     return getFileSystemInternal(getOnlyScheme(specs)).match(specs);
   }
 
-  /** Like {@link #match(List)}, but with a configurable {@link EmptyMatchTreatment}. */
+  
   public static List<MatchResult> match(List<String> specs, EmptyMatchTreatment emptyMatchTreatment)
       throws IOException {
     List<MatchResult> matches = getFileSystemInternal(getOnlyScheme(specs)).match(specs);
@@ -138,12 +106,7 @@ public class FileSystems {
     return res;
   }
 
-  /**
-   * Like {@link #match(List)}, but for a single resource specification.
-   *
-   * <p>The function {@link #match(List)} is preferred when matching multiple patterns, as it allows
-   * for bulk API calls to remote filesystems.
-   */
+  
   public static MatchResult match(String spec) throws IOException {
     List<MatchResult> matches = match(Collections.singletonList(spec));
     verify(
@@ -154,7 +117,7 @@ public class FileSystems {
     return matches.get(0);
   }
 
-  /** Like {@link #match(String)}, but with a configurable {@link EmptyMatchTreatment}. */
+  
   public static MatchResult match(String spec, EmptyMatchTreatment emptyMatchTreatment)
       throws IOException {
     MatchResult res = match(spec);
@@ -177,16 +140,7 @@ public class FileSystems {
     return res;
   }
 
-  /**
-   * Returns the {@link Metadata} for a single file resource. Expects a resource specification
-   * {@code spec} that matches a single result.
-   *
-   * @param spec a resource specification that matches exactly one result.
-   * @return the {@link Metadata} for the specified resource.
-   * @throws FileNotFoundException if the file resource is not found.
-   * @throws IOException in the event of an error in the inner call to {@link #match}, or if the
-   *     given spec does not match exactly 1 result.
-   */
+  
   public static Metadata matchSingleFileSpec(String spec) throws IOException {
     List<MatchResult> matches = FileSystems.match(Collections.singletonList(spec));
     MatchResult matchResult = Iterables.getOnlyElement(matches);
@@ -207,71 +161,29 @@ public class FileSystems {
     }
   }
 
-  /**
-   * Returns {@link MatchResult MatchResults} for the given {@link ResourceId resourceIds}.
-   *
-   * @param resourceIds {@link ResourceId resourceIds} that might be derived from {@link #match},
-   *     {@link ResourceId#resolve}, or {@link ResourceId#getCurrentDirectory()}.
-   * @throws IOException if all {@code resourceIds} failed to match due to issues like: network
-   *     connection, authorization. Exception for individual {@link ResourceId} need to be deferred
-   *     until callers retrieve metadata with {@link MatchResult#metadata()}.
-   */
+  
   public static List<MatchResult> matchResources(List<ResourceId> resourceIds) throws IOException {
     return match(FluentIterable.from(resourceIds).transform(ResourceId::toString).toList());
   }
 
-  /**
-   * Returns a write channel for the given {@link ResourceId}.
-   *
-   * <p>The resource is not expanded; it is used verbatim.
-   *
-   * @param resourceId the reference of the file-like resource to create
-   * @param mimeType the mine type of the file-like resource to create
-   */
+  
   public static WritableByteChannel create(ResourceId resourceId, String mimeType)
       throws IOException {
     return create(resourceId, StandardCreateOptions.builder().setMimeType(mimeType).build());
   }
 
-  /**
-   * Returns a write channel for the given {@link ResourceId} with {@link CreateOptions}.
-   *
-   * <p>The resource is not expanded; it is used verbatim.
-   *
-   * @param resourceId the reference of the file-like resource to create
-   * @param createOptions the configuration of the create operation
-   */
+  
   public static WritableByteChannel create(ResourceId resourceId, CreateOptions createOptions)
       throws IOException {
     return getFileSystemInternal(resourceId.getScheme()).create(resourceId, createOptions);
   }
 
-  /**
-   * Returns a read channel for the given {@link ResourceId}.
-   *
-   * <p>The resource is not expanded; it is used verbatim.
-   *
-   * <p>If seeking is supported, then this returns a {@link java.nio.channels.SeekableByteChannel}.
-   *
-   * @param resourceId the reference of the file-like resource to open
-   */
+  
   public static ReadableByteChannel open(ResourceId resourceId) throws IOException {
     return getFileSystemInternal(resourceId.getScheme()).open(resourceId);
   }
 
-  /**
-   * Copies a {@link List} of file-like resources from one location to another.
-   *
-   * <p>The number of source resources must equal the number of destination resources. Destination
-   * resources will be created recursively.
-   *
-   * <p>{@code srcResourceIds} and {@code destResourceIds} must have the same scheme.
-   *
-   * <p>It doesn't support copying globs.
-   *
-   * @param srcResourceIds the references of the source resources
-   * @param destResourceIds the references of the destination resources
-   */
+  
   public static void copy(
       List<ResourceId> srcResourceIds, List<ResourceId> destResourceIds, MoveOptions... moveOptions)
       throws IOException {
@@ -286,21 +198,7 @@ public class FileSystems {
     }
   }
 
-  /**
-   * Renames a {@link List} of file-like resources from one location to another.
-   *
-   * <p>The number of source resources must equal the number of destination resources. Destination
-   * resources will be created recursively.
-   *
-   * <p>{@code srcResourceIds} and {@code destResourceIds} must have the same scheme.
-   *
-   * <p>It doesn't support renaming globs.
-   *
-   * <p>Src files will be removed, even if the copy is skipped due to specified move options.
-   *
-   * @param srcResourceIds the references of the source resources
-   * @param destResourceIds the references of the destination resources
-   */
+  
   public static void rename(
       List<ResourceId> srcResourceIds, List<ResourceId> destResourceIds, MoveOptions... moveOptions)
       throws IOException {
@@ -337,13 +235,7 @@ public class FileSystems {
     }
   }
 
-  /**
-   * Deletes a collection of resources.
-   *
-   * <p>{@code resourceIds} must have the same scheme.
-   *
-   * @param resourceIds the references of the resources to delete.
-   */
+  
   public static void delete(Collection<ResourceId> resourceIds, MoveOptions... moveOptions)
       throws IOException {
     if (resourceIds.isEmpty()) {
@@ -511,7 +403,7 @@ public class FileSystems {
     }
   }
 
-  /** Internal method to get {@link FileSystem} for {@code scheme}. */
+  
   @VisibleForTesting
   static FileSystem getFileSystemInternal(String scheme) {
     String lowerCaseScheme = scheme.toLowerCase();
@@ -523,15 +415,9 @@ public class FileSystems {
     return rval;
   }
 
-  /** ******************************** METHODS FOR REGISTRATION ********************************* */
+  
 
-  /**
-   * Sets the default configuration in workers.
-   *
-   * <p>It will be used in {@link FileSystemRegistrar FileSystemRegistrars} for all schemes.
-   *
-   * <p>This is expected only to be used by runners after {@code Pipeline.run}, or in tests.
-   */
+  
   @Internal
   public static void setDefaultPipelineOptions(PipelineOptions options) {
     checkNotNull(options, "options");
@@ -591,29 +477,13 @@ public class FileSystems {
     return schemeToFileSystem.build();
   }
 
-  /**
-   * Returns a new {@link ResourceId} that represents the named resource of a type corresponding to
-   * the resource type.
-   *
-   * <p>The supplied {@code singleResourceSpec} is expected to be in a proper format, including any
-   * necessary escaping, for the underlying {@link FileSystem}.
-   *
-   * <p>This function may throw an {@link IllegalArgumentException} if given an invalid argument,
-   * such as when the specified {@code singleResourceSpec} is not a valid resource name.
-   */
+  
   public static ResourceId matchNewResource(String singleResourceSpec, boolean isDirectory) {
     return getFileSystemInternal(parseScheme(singleResourceSpec))
         .matchNewResource(singleResourceSpec, isDirectory);
   }
 
-  /**
-   * Returns a new {@link ResourceId} that represents the named directory resource.
-   *
-   * @param singleResourceSpec the root directory, for example "/abc"
-   * @param baseNames a list of named directory, for example ["d", "e", "f"]
-   * @return the ResourceId for the resolved directory. In same example as above, it corresponds to
-   *     "/abc/d/e/f".
-   */
+  
   public static ResourceId matchNewDirectory(String singleResourceSpec, String... baseNames) {
     ResourceId currentDir = matchNewResource(singleResourceSpec, true);
     for (String dir : baseNames) {

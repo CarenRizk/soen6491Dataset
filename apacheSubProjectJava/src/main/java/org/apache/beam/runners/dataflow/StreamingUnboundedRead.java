@@ -34,10 +34,7 @@ import org.apache.beam.sdk.values.PCollection.IsBounded;
       }
     }
 
-    /**
-     * {@link PTransform} that reads {@code (record,recordId)} pairs from an {@link
-     * UnboundedSource}.
-     */
+    
     private static class ReadWithIds<T>
         extends PTransform<PInput, PCollection<ValueWithRecordId<T>>> {
 

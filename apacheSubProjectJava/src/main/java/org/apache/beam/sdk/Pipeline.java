@@ -71,72 +71,15 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * A {@link Pipeline} manages a directed acyclic graph of {@link PTransform PTransforms}, and the
- * {@link PCollection PCollections} that the {@link PTransform PTransforms} consume and produce.
- *
- * <p>Each {@link Pipeline} is self-contained and isolated from any other {@link Pipeline}. The
- * {@link PValue PValues} that are inputs and outputs of each of a {@link Pipeline Pipeline's}
- * {@link PTransform PTransforms} are also owned by that {@link Pipeline}. A {@link PValue} owned by
- * one {@link Pipeline} can be read only by {@link PTransform PTransforms} also owned by that {@link
- * Pipeline}. {@link Pipeline Pipelines} can safely be executed concurrently.
- *
- * <p>Here is a typical example of use:
- *
- * <pre>{@code
- * // Start by defining the options for the pipeline.
- * PipelineOptions options = PipelineOptionsFactory.create();
- * // Then create the pipeline. The runner is determined by the options.
- * Pipeline p = Pipeline.create(options);
- *
- * // A root PTransform, like TextIO.Read or Create, gets added
- * // to the Pipeline by being applied:
- * PCollection<String> lines =
- *     p.apply(TextIO.read().from("gs://bucket/dir/file*.txt"));
- *
- * // A Pipeline can have multiple root transforms:
- * PCollection<String> moreLines =
- *     p.apply(TextIO.read().from("gs://bucket/other/dir/file*.txt"));
- * PCollection<String> yetMoreLines =
- *     p.apply(Create.of("yet", "more", "lines").withCoder(StringUtf8Coder.of()));
- *
- * // Further PTransforms can be applied, in an arbitrary (acyclic) graph.
- * // Subsequent PTransforms (and intermediate PCollections etc.) are
- * // implicitly part of the same Pipeline.
- * PCollection<String> allLines =
- *     PCollectionList.of(lines).and(moreLines).and(yetMoreLines)
- *     .apply(new Flatten<String>());
- * PCollection<KV<String, Integer>> wordCounts =
- *     allLines
- *     .apply(ParDo.of(new ExtractWords()))
- *     .apply(new Count<String>());
- * PCollection<String> formattedWordCounts =
- *     wordCounts.apply(ParDo.of(new FormatCounts()));
- * formattedWordCounts.apply(TextIO.write().to("gs://bucket/dir/counts.txt"));
- *
- * // PTransforms aren't executed when they're applied, rather they're
- * // just added to the Pipeline.  Once the whole Pipeline of PTransforms
- * // is constructed, the Pipeline's PTransforms can be run using a
- * // PipelineRunner.  The default PipelineRunner executes the Pipeline
- * // directly, sequentially, in this one process, which is useful for
- * // unit tests and simple experiments:
- * p.run();
- *
- * }</pre>
- */
+
 @SuppressWarnings({
   "nullness" // TODO(https://github.com/apache/beam/issues/20497)
 })
 public class Pipeline {
   private static final Logger LOG = LoggerFactory.getLogger(Pipeline.class);
-  /**
-   * Thrown during execution of a {@link Pipeline}, whenever user code within that {@link Pipeline}
-   * throws an exception.
-   *
-   * <p>The original exception thrown by user code may be retrieved via {@link #getCause}.
-   */
+  
   public static class PipelineExecutionException extends RuntimeException {
-    /** Wraps {@code cause} into a {@link PipelineExecutionException}. */
+    
     public PipelineExecutionException(Throwable cause) {
       super(cause);
     }
@@ -145,14 +88,14 @@ public class Pipeline {
   /////////////////////////////////////////////////////////////////////////////
   // Public operations.
 
-  /** Constructs a pipeline from default {@link PipelineOptions}. */
+  
   public static Pipeline create() {
     Pipeline pipeline = new Pipeline(PipelineOptionsFactory.create());
     LOG.debug("Creating {}", pipeline);
     return pipeline;
   }
 
-  /** Constructs a pipeline from the provided {@link PipelineOptions}. */
+  
   public static Pipeline create(PipelineOptions options) {
     // TODO: fix runners that mutate PipelineOptions in this method, then remove this line
     PipelineRunner.fromOptions(options);
@@ -162,34 +105,17 @@ public class Pipeline {
     return pipeline;
   }
 
-  /**
-   * Returns a {@link PBegin} owned by this Pipeline. This serves as the input of a root {@link
-   * PTransform} such as {@link Read} or {@link Create}.
-   */
+  
   public PBegin begin() {
     return PBegin.in(this);
   }
 
-  /**
-   * Like {@link #apply(String, PTransform)} but the transform node in the {@link Pipeline} graph
-   * will be named according to {@link PTransform#getName}.
-   *
-   * @see #apply(String, PTransform)
-   */
+  
   public <OutputT extends POutput> OutputT apply(PTransform<? super PBegin, OutputT> root) {
     return begin().apply(root);
   }
 
-  /**
-   * Adds a root {@link PTransform}, such as {@link Read} or {@link Create}, to this {@link
-   * Pipeline}.
-   *
-   * <p>The node in the {@link Pipeline} graph will use the provided {@code name}. This name is used
-   * in various places, including the monitoring UI, logging, and to stably identify this node in
-   * the {@link Pipeline} graph upon update.
-   *
-   * <p>Alias for {@code begin().apply(name, root)}.
-   */
+  
   public <OutputT extends POutput> OutputT apply(
       String name, PTransform<? super PBegin, OutputT> root) {
     return begin().apply(name, root);
@@ -206,12 +132,7 @@ public class Pipeline {
     return defaultOptions;
   }
 
-  /**
-   * <b><i>For internal use only; no backwards-compatibility guarantees.</i></b>
-   *
-   * <p>Replaces all nodes that match a {@link PTransformOverride} in this pipeline. Overrides are
-   * applied in the order they are present within the list.
-   */
+  
   @Internal
   public void replaceAll(List<PTransformOverride> overrides) {
     for (PTransformOverride override : overrides) {
@@ -302,18 +223,12 @@ public class Pipeline {
     }
   }
 
-  /**
-   * Runs this {@link Pipeline} according to the {@link PipelineOptions} used to create the {@link
-   * Pipeline} via {@link #create(PipelineOptions)}.
-   */
+  
   public PipelineResult run() {
     return run(defaultOptions);
   }
 
-  /**
-   * Runs this {@link Pipeline} using the given {@link PipelineOptions}, using the runner specified
-   * by the options.
-   */
+  
   public PipelineResult run(PipelineOptions options) {
     PipelineRunner<? extends PipelineResult> runner = PipelineRunner.fromOptions(options);
     // Ensure all of the nodes are fully specified before a PipelineRunner gets access to the
@@ -332,7 +247,7 @@ public class Pipeline {
     }
   }
 
-  /** Returns the {@link CoderRegistry} that this {@link Pipeline} uses. */
+  
   public CoderRegistry getCoderRegistry() {
     if (coderRegistry == null) {
       coderRegistry = CoderRegistry.createDefault();
@@ -357,68 +272,40 @@ public class Pipeline {
   /////////////////////////////////////////////////////////////////////////////
   // Below here are operations that aren't normally called by users.
 
-  /**
-   * @deprecated this should never be used - every {@link Pipeline} has a registry throughout its
-   *     lifetime.
-   */
+  
   @Deprecated
   public void setCoderRegistry(CoderRegistry coderRegistry) {
     this.coderRegistry = coderRegistry;
   }
 
-  /**
-   * <b><i>For internal use only; no backwards-compatibility guarantees.</i></b>
-   *
-   * <p>A {@link PipelineVisitor} can be passed into {@link Pipeline#traverseTopologically} to be
-   * called for each of the transforms and values in the {@link Pipeline}.
-   */
+  
   @Internal
   public interface PipelineVisitor {
-    /**
-     * Called before visiting anything values or transforms, as many uses of a visitor require
-     * access to the {@link Pipeline} object itself.
-     */
+    
     void enterPipeline(Pipeline p);
 
-    /**
-     * Called for each composite transform after all topological predecessors have been visited but
-     * before any of its component transforms.
-     *
-     * <p>The return value controls whether or not child transforms are visited.
-     */
+    
     CompositeBehavior enterCompositeTransform(TransformHierarchy.Node node);
 
-    /**
-     * Called for each composite transform after all of its component transforms and their outputs
-     * have been visited.
-     */
+    
     void leaveCompositeTransform(TransformHierarchy.Node node);
 
-    /**
-     * Called for each primitive transform after all of its topological predecessors and inputs have
-     * been visited.
-     */
+    
     void visitPrimitiveTransform(TransformHierarchy.Node node);
 
-    /** Called for each value after the transform that produced the value has been visited. */
+    
     void visitValue(PValue value, TransformHierarchy.Node producer);
 
-    /** Called when all values and transforms in a {@link Pipeline} have been visited. */
+    
     void leavePipeline(Pipeline pipeline);
 
-    /**
-     * Control enum for indicating whether or not a traversal should process the contents of a
-     * composite transform or not.
-     */
+    
     enum CompositeBehavior {
       ENTER_TRANSFORM,
       DO_NOT_ENTER_TRANSFORM
     }
 
-    /**
-     * Default no-op {@link PipelineVisitor} that enters all composite transforms. User
-     * implementations can override just those methods they are interested in.
-     */
+    
     class Defaults implements PipelineVisitor {
 
       private @Nullable Pipeline pipeline;
@@ -457,20 +344,7 @@ public class Pipeline {
     }
   }
 
-  /**
-   * <b><i>For internal use only; no backwards-compatibility guarantees.</i></b>
-   *
-   * <p>Invokes the {@link PipelineVisitor PipelineVisitor's} {@link
-   * PipelineVisitor#visitPrimitiveTransform} and {@link PipelineVisitor#visitValue} operations on
-   * each of this {@link Pipeline Pipeline's} transform and value nodes, in forward topological
-   * order.
-   *
-   * <p>Traversal of the {@link Pipeline} causes {@link PTransform PTransforms} and {@link PValue
-   * PValues} owned by the {@link Pipeline} to be marked as finished, at which point they may no
-   * longer be modified.
-   *
-   * <p>Typically invoked by {@link PipelineRunner} subclasses.
-   */
+  
   @Internal
   public void traverseTopologically(PipelineVisitor visitor) {
     visitor.enterPipeline(this);
@@ -478,29 +352,14 @@ public class Pipeline {
     visitor.leavePipeline(this);
   }
 
-  /**
-   * <b><i>For internal use only; no backwards-compatibility guarantees.</i></b>
-   *
-   * <p>Like {@link #applyTransform(String, PInput, PTransform)} but defaulting to the name provided
-   * by the {@link PTransform}.
-   */
+  
   @Internal
   public static <InputT extends PInput, OutputT extends POutput> OutputT applyTransform(
       InputT input, PTransform<? super InputT, OutputT> transform) {
     return input.getPipeline().applyInternal(transform.getName(), input, transform);
   }
 
-  /**
-   * <b><i>For internal use only; no backwards-compatibility guarantees.</i></b>
-   *
-   * <p>Applies the given {@code PTransform} to this input {@code InputT} and returns its {@code
-   * OutputT}. This uses {@code name} to identify this specific application of the transform. This
-   * name is used in various places, including the monitoring UI, logging, and to stably identify
-   * this application node in the {@link Pipeline} graph during update.
-   *
-   * <p>Each {@link PInput} subclass that provides an {@code apply} method should delegate to this
-   * method to ensure proper registration with the {@link PipelineRunner}.
-   */
+  
   @Internal
   public static <InputT extends PInput, OutputT extends POutput> OutputT applyTransform(
       String name, InputT input, PTransform<? super InputT, OutputT> transform) {
@@ -513,10 +372,10 @@ public class Pipeline {
   private final TransformHierarchy transforms;
   private final Set<String> usedFullNames = new HashSet<>();
 
-  /** Lazily initialized; access via {@link #getCoderRegistry()}. */
+  
   private @Nullable CoderRegistry coderRegistry;
 
-  /** Lazily initialized; access via {@link #getSchemaRegistry()}. */
+  
   private @Nullable SchemaRegistry schemaRegistry;
 
   private final Multimap<String, PTransform<?, ?>> instancePerName = ArrayListMultimap.create();
@@ -539,11 +398,7 @@ public class Pipeline {
     return "Pipeline#" + hashCode();
   }
 
-  /**
-   * Applies a {@link PTransform} to the given {@link PInput}.
-   *
-   * @see Pipeline#apply
-   */
+  
   private <InputT extends PInput, OutputT extends POutput> OutputT applyInternal(
       String name, InputT input, PTransform<? super InputT, OutputT> transform) {
     String namePrefix = transforms.getCurrent().getFullName();
@@ -637,10 +492,7 @@ public class Pipeline {
     }
   }
 
-  /**
-   * Returns a unique name for a transform with the given prefix (from enclosing transforms) and
-   * initial name.
-   */
+  
   private String uniquifyInternal(String namePrefix, String origName) {
     String name = origName;
     int suffixNum = 2;
@@ -654,7 +506,7 @@ public class Pipeline {
     }
   }
 
-  /** Builds a name from a "/"-delimited prefix and a name. */
+  
   private String buildName(String namePrefix, String name) {
     return namePrefix.isEmpty() ? name : namePrefix + "/" + name;
   }

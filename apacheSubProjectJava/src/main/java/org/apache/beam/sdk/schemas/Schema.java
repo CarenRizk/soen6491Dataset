@@ -55,7 +55,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/** {@link Schema} describes the fields in {@link Row}. */
+
 @SuppressWarnings("ALL")
 public class Schema implements Serializable {
 
@@ -109,7 +109,7 @@ public class Schema implements Serializable {
 
   private final Options options;
 
-  /** Builder class for building {@link Schema} objects. */
+  
   public static class Builder {
     final List<Field> fields;
     Options options = Options.none();
@@ -288,7 +288,7 @@ public class Schema implements Serializable {
       return addNullableField(name, FieldType.map(keyType, valueType));
     }
 
-    /** Returns a copy of the Field with isNullable set. */
+    
     public Builder setOptions(Options options) {
       this.options = options;
       return this;
@@ -337,10 +337,7 @@ public class Schema implements Serializable {
     return Schema.builder().addFields(fields).build();
   }
 
-  /**
-   * Returns an identical Schema with lexicographically sorted fields. Recursively sorts nested
-   * fields.
-   */
+  
   public Schema sorted() {
     // Create a new schema and copy over the appropriate Schema object attributes: {fields, options}
     // Note: uuid is not copied as the Schema field ordering is changed. encoding positions are not
@@ -362,43 +359,43 @@ public class Schema implements Serializable {
         .withOptions(getOptions());
   }
 
-  /** Returns a copy of the Schema with the options set. */
+  
   public Schema withOptions(Options options) {
     return new Schema(fields, getOptions().toBuilder().addOptions(options).build());
   }
 
-  /** Returns a copy of the Schema with the options set. */
+  
   public Schema withOptions(Options.Builder optionsBuilder) {
     return withOptions(optionsBuilder.build());
   }
 
-  /** Set this schema's UUID. All schemas with the same UUID must be guaranteed to be identical. */
+  
   public void setUUID(UUID uuid) {
     this.uuid = uuid;
   }
 
-  /** Gets the encoding positions for this schema. */
+  
   public Map<String, Integer> getEncodingPositions() {
     return encodingPositions;
   }
 
-  /** Returns whether encoding positions have been explicitly overridden. */
+  
   public boolean isEncodingPositionsOverridden() {
     return encodingPositionsOverridden;
   }
 
-  /** Sets the encoding positions for this schema. */
+  
   public void setEncodingPositions(Map<String, Integer> encodingPositions) {
     this.encodingPositions = encodingPositions;
     this.encodingPositionsOverridden = true;
   }
 
-  /** Get this schema's UUID. */
+  
   public @Nullable UUID getUUID() {
     return this.uuid;
   }
 
-  /** Returns true if two Schemas have the same fields in the same order. */
+  
   @Override
   public boolean equals(@Nullable Object o) {
     if (this == o) {
@@ -427,7 +424,7 @@ public class Schema implements Serializable {
 	   return uuid1 != null && uuid2 != null && Objects.equals(uuid1, uuid2);
 	}
 
-  /** Returns true if two schemas are equal ignoring field names and descriptions. */
+  
   public boolean typesEqual(Schema other) {
     if (areUuidsEqual(this.uuid, other.uuid)) {
       return true;
@@ -446,24 +443,24 @@ public class Schema implements Serializable {
     return true;
   }
 
-  /** Control whether nullable is included in equivalence check. */
+  
   public enum EquivalenceNullablePolicy {
     SAME,
     WEAKEN,
     IGNORE
   }
 
-  /** Returns true if two Schemas have the same fields, but possibly in different orders. */
+  
   public boolean equivalent(Schema other) {
     return equivalent(other, EquivalenceNullablePolicy.SAME);
   }
 
-  /** Returns true if this Schema can be assigned to another Schema. * */
+  
   public boolean assignableTo(Schema other) {
     return equivalent(other, EquivalenceNullablePolicy.WEAKEN);
   }
 
-  /** Returns true if this Schema can be assigned to another Schema, ignoring nullable. * */
+  
   public boolean assignableToIgnoreNullable(Schema other) {
     return equivalent(other, EquivalenceNullablePolicy.IGNORE);
   }
@@ -520,15 +517,7 @@ public class Schema implements Serializable {
     return fields;
   }
 
-  /**
-   * An enumerated list of type constructors.
-   *
-   * <ul>
-   *   <li>Atomic types are built from type constructors that take no arguments
-   *   <li>Arrays, rows, and maps are type constructors that take additional arguments to form a
-   *       valid {@link FieldType}.
-   * </ul>
-   */
+  
   @SuppressWarnings("MutableConstantField")
   public enum TypeName {
     BYTE, // One-byte signed integer.
@@ -592,7 +581,7 @@ public class Schema implements Serializable {
       return other.isSupertypeOf(this);
     }
 
-    /** Whether this is a super type of the another type. */
+    
     public boolean isSupertypeOf(TypeName other) {
       if (this == other) {
         return true;
@@ -631,66 +620,34 @@ public class Schema implements Serializable {
     }
   }
 
-  /**
-   * A LogicalType allows users to define a custom schema type.
-   *
-   * <p>A LogicalType is a way to define a new type that can be stored in a schema field using an
-   * underlying FieldType as storage. A LogicalType must specify a base FieldType used to store the
-   * data by overriding the {@link #getBaseType()} method. Usually the FieldType returned will be
-   * one of the standard ones implemented by Schema. It is legal to return another LogicalType, but
-   * the storage types must eventually resolve to one of the standard Schema types; it is not
-   * allowed to have LogicalTypes reference each other recursively via getBaseType. The {@link
-   * #toBaseType} and {@link #toInputType} should convert back and forth between the Java type for
-   * the LogicalType (InputT) and the Java type appropriate for the underlying base type (BaseT).
-   * Note for nullable types, null checking is always done externally. {@link #toBaseType} and
-   * {@link #toInputType} may assume their inputs are never null.
-   *
-   * <p>{@link #getIdentifier} must define a globally unique identifier for this LogicalType. A
-   * LogicalType can optionally provide an identifying argument as well using {@link #getArgument}.
-   * An example is a LogicalType that represents a fixed-size byte array. The identifier
-   * "FixedBytes" uniquely identifies this LogicalType (or specifically, this class of
-   * LogicalTypes), while the argument returned will be the length of the fixed-size byte array. The
-   * combination of {@link #getIdentifier} and {@link #getArgument} must completely identify a
-   * LogicalType.
-   *
-   * <p>A LogicalType can be added to a schema using {@link Schema.Builder#addLogicalTypeField}.
-   *
-   * @param <InputT> The Java type used to set the type when using {@link Row.Builder#addValue}.
-   * @param <BaseT> The Java type for the underlying storage.
-   */
+  
   public interface LogicalType<InputT, BaseT> extends Serializable {
-    /** The unique identifier for this type. */
+    
     String getIdentifier();
 
-    /**
-     * A schema type representing how to interpret the argument. {@code null} indicates this logical
-     * type is not parameterized by an argument.
-     */
+    
     @Nullable
     FieldType getArgumentType();
 
-    /** An optional argument to configure the type. */
+    
     @SuppressWarnings("TypeParameterUnusedInFormals")
     default <T> @Nullable T getArgument() {
       return null;
     }
 
-    /** The base {@link FieldType} used to store values of this type. */
+    
     FieldType getBaseType();
 
-    /** Convert the input type to the type Java type used by the base {@link FieldType}. */
+    
     @NonNull
     BaseT toBaseType(@NonNull InputT input);
 
-    /** Convert the Java type used by the base {@link FieldType} to the input type. */
+    
     @NonNull
     InputT toInputType(@NonNull BaseT base);
   }
 
-  /**
-   * A descriptor of a single field type. This is a recursive descriptor, as nested types are
-   * allowed.
-   */
+  
   @AutoValue
   @Immutable
   public abstract static class FieldType implements Serializable {
@@ -723,11 +680,7 @@ public class Schema implements Serializable {
 
     public abstract @Nullable Schema getRowSchema();
 
-    /**
-     * Returns optional extra metadata.
-     *
-     * @deprecated use schema options instead.
-     */
+    
     @SuppressWarnings("mutable")
     @Deprecated
     abstract Map<String, ByteArrayWrapper> getMetadata();
@@ -739,7 +692,7 @@ public class Schema implements Serializable {
           && getLogicalType().getIdentifier().equals(logicalTypeIdentifier);
     }
 
-    /** Helper function for retrieving the concrete logical type subclass. */
+    
     public <InputT, BaseT, LogicalTypeT extends LogicalType<InputT, BaseT>>
         LogicalTypeT getLogicalType(Class<LogicalTypeT> logicalTypeClass) {
       return logicalTypeClass.cast(getLogicalType());
@@ -768,57 +721,57 @@ public class Schema implements Serializable {
 
       abstract Builder setRowSchema(@Nullable Schema rowSchema);
 
-      /** @deprecated use schema options instead. */
+      
       @Deprecated
       abstract Builder setMetadata(Map<String, ByteArrayWrapper> metadata);
 
       abstract FieldType build();
     }
 
-    /** Create a {@link FieldType} for the given type. */
+    
     public static FieldType of(TypeName typeName) {
       return forTypeName(typeName).build();
     }
 
-    /** The type of string fields. */
+    
     public static final FieldType STRING = FieldType.of(TypeName.STRING);
 
-    /** The type of byte fields. */
+    
     public static final FieldType BYTE = FieldType.of(TypeName.BYTE);
 
-    /** The type of bytes fields. */
+    
     public static final FieldType BYTES = FieldType.of(TypeName.BYTES);
 
-    /** The type of int16 fields. */
+    
     public static final FieldType INT16 = FieldType.of(TypeName.INT16);
 
-    /** The type of int32 fields. */
+    
     public static final FieldType INT32 = FieldType.of(TypeName.INT32);
 
-    /** The type of int64 fields. */
+    
     public static final FieldType INT64 = FieldType.of(TypeName.INT64);
 
-    /** The type of float fields. */
+    
     public static final FieldType FLOAT = FieldType.of(TypeName.FLOAT);
 
-    /** The type of double fields. */
+    
     public static final FieldType DOUBLE = FieldType.of(TypeName.DOUBLE);
 
-    /** The type of decimal fields. */
+    
     public static final FieldType DECIMAL = FieldType.of(TypeName.DECIMAL);
 
-    /** The type of boolean fields. */
+    
     public static final FieldType BOOLEAN = FieldType.of(TypeName.BOOLEAN);
 
-    /** The type of datetime fields. */
+    
     public static final FieldType DATETIME = FieldType.of(TypeName.DATETIME);
 
-    /** Create an array type for the given field type. */
+    
     public static FieldType array(FieldType elementType) {
       return FieldType.forTypeName(TypeName.ARRAY).setCollectionElementType(elementType).build();
     }
 
-    /** @deprecated Set the nullability on the elementType instead */
+    
     @Deprecated
     public static FieldType array(FieldType elementType, boolean nullable) {
       return FieldType.forTypeName(TypeName.ARRAY)
@@ -830,7 +783,7 @@ public class Schema implements Serializable {
       return FieldType.forTypeName(TypeName.ITERABLE).setCollectionElementType(elementType).build();
     }
 
-    /** Create a map type for the given key and value types. */
+    
     public static FieldType map(FieldType keyType, FieldType valueType) {
       if (FieldType.BYTES.equals(keyType)) {
         LOG.warn(
@@ -845,7 +798,7 @@ public class Schema implements Serializable {
           .build();
     }
 
-    /** @deprecated Set the nullability on the valueType instead */
+    
     @Deprecated
     public static FieldType map(FieldType keyType, FieldType valueType, boolean valueTypeNullable) {
       return FieldType.forTypeName(TypeName.MAP)
@@ -854,21 +807,17 @@ public class Schema implements Serializable {
           .build();
     }
 
-    /** Create a map type for the given key and value types. */
+    
     public static FieldType row(Schema schema) {
       return FieldType.forTypeName(TypeName.ROW).setRowSchema(schema).build();
     }
 
-    /** Creates a logical type based on a primitive field type. */
+    
     public static <InputT, BaseT> FieldType logicalType(LogicalType<InputT, BaseT> logicalType) {
       return FieldType.forTypeName(TypeName.LOGICAL_TYPE).setLogicalType(logicalType).build();
     }
 
-    /**
-     * Set the metadata map for the type, overriding any existing metadata.
-     *
-     * @deprecated use schema options instead.
-     */
+    
     @Deprecated
     public FieldType withMetadata(Map<String, byte[]> metadata) {
       Map<String, ByteArrayWrapper> wrapped =
@@ -878,11 +827,7 @@ public class Schema implements Serializable {
       return toBuilder().setMetadata(wrapped).build();
     }
 
-    /**
-     * Returns a copy of the descriptor with metadata set for the given key.
-     *
-     * @deprecated use schema options instead.
-     */
+    
     @Deprecated
     public FieldType withMetadata(String key, byte[] metadata) {
       Map<String, ByteArrayWrapper> newMetadata =
@@ -893,31 +838,27 @@ public class Schema implements Serializable {
       return toBuilder().setMetadata(newMetadata).build();
     }
 
-    /**
-     * Returns a copy of the descriptor with metadata set for the given key.
-     *
-     * @deprecated use schema options instead.
-     */
+    
     @Deprecated
     public FieldType withMetadata(String key, String metadata) {
       return withMetadata(key, metadata.getBytes(StandardCharsets.UTF_8));
     }
 
-    /** @deprecated use schema options instead. */
+    
     @Deprecated
     public Map<String, byte[]> getAllMetadata() {
       return getMetadata().entrySet().stream()
           .collect(Collectors.toMap(e -> e.getKey(), e -> e.getValue().array));
     }
 
-    /** @deprecated use schema options instead. */
+    
     @Deprecated
     public byte @Nullable [] getMetadata(String key) {
       ByteArrayWrapper metadata = getMetadata().get(key);
       return (metadata != null) ? metadata.array : null;
     }
 
-    /** @deprecated use schema options instead. */
+    
     @Deprecated
     public String getMetadataString(String key) {
       ByteArrayWrapper metadata = getMetadata().get(key);
@@ -976,7 +917,7 @@ public class Schema implements Serializable {
           && Objects.equals(getMetadata(), other.getMetadata());
     }
 
-    /** Returns true if two FieldTypes are equal. */
+    
     public boolean typesEqual(FieldType other) {
       if (!Objects.equals(getTypeName(), other.getTypeName())) {
         return false;
@@ -1018,7 +959,7 @@ public class Schema implements Serializable {
         return getTypeName() != TypeName.ROW || getRowSchema().typesEqual(other.getRowSchema());
     }
 
-    /** Check whether two types are equivalent. */
+    
     public boolean equivalent(FieldType other, EquivalenceNullablePolicy nullablePolicy) {
       if (nullablePolicy == EquivalenceNullablePolicy.SAME
           && !other.getNullable().equals(getNullable())) {
@@ -1114,24 +1055,24 @@ public class Schema implements Serializable {
     }
   }
 
-  /** Field of a row. Contains the {@link FieldType} along with associated metadata. */
+  
   @AutoValue
   public abstract static class Field implements Serializable {
-    /** Returns the field name. */
+    
     public abstract String getName();
 
-    /** Returns the field's description. */
+    
     public abstract String getDescription();
 
-    /** Returns the fields {@link FieldType}. */
+    
     public abstract FieldType getType();
 
-    /** Returns the fields {@link Options}. */
+    
     public abstract Options getOptions();
 
     public abstract Builder toBuilder();
 
-    /** Builder for {@link Field}. */
+    
     @AutoValue.Builder
     public abstract static class Builder {
       public abstract Builder setName(String name);
@@ -1150,7 +1091,7 @@ public class Schema implements Serializable {
       public abstract Field build();
     }
 
-    /** Return's a field with the give name and type. */
+    
     public static Field of(String name, FieldType fieldType) {
       return new AutoValue_Schema_Field.Builder()
           .setName(name)
@@ -1160,7 +1101,7 @@ public class Schema implements Serializable {
           .build();
     }
 
-    /** Return's a nullable field with the give name and type. */
+    
     public static Field nullable(String name, FieldType fieldType) {
       return new AutoValue_Schema_Field.Builder()
           .setName(name)
@@ -1170,32 +1111,32 @@ public class Schema implements Serializable {
           .build();
     }
 
-    /** Returns a copy of the Field with the name set. */
+    
     public Field withName(String name) {
       return toBuilder().setName(name).build();
     }
 
-    /** Returns a copy of the Field with the description set. */
+    
     public Field withDescription(String description) {
       return toBuilder().setDescription(description).build();
     }
 
-    /** Returns a copy of the Field with the {@link FieldType} set. */
+    
     public Field withType(FieldType fieldType) {
       return toBuilder().setType(fieldType).build();
     }
 
-    /** Returns a copy of the Field with isNullable set. */
+    
     public Field withNullable(boolean isNullable) {
       return toBuilder().setType(getType().withNullable(isNullable)).build();
     }
 
-    /** Returns a copy of the Field with the options set. */
+    
     public Field withOptions(Options options) {
       return toBuilder().setOptions(getOptions().toBuilder().addOptions(options).build()).build();
     }
 
-    /** Returns a copy of the Field with the options set. */
+    
     public Field withOptions(Options.Builder optionsBuilder) {
       return withOptions(optionsBuilder.build());
     }
@@ -1212,7 +1153,7 @@ public class Schema implements Serializable {
           && Objects.equals(getOptions(), other.getOptions());
     }
 
-    /** Returns true if two fields are equal, ignoring name and description. */
+    
     public boolean typesEqual(Field other) {
       return getType().typesEqual(other.getType());
     }
@@ -1390,7 +1331,7 @@ public class Schema implements Serializable {
       return new Options();
     }
 
-    /** Get the value of an option. If the option is not found null is returned. */
+    
     @SuppressWarnings("TypeParameterUnusedInFormals")
     public <T> T getValue(String optionName) {
       Option option = options.get(optionName);
@@ -1401,12 +1342,12 @@ public class Schema implements Serializable {
           String.format("No option found with name %s.", optionName));
     }
 
-    /** Get the value of an option. If the option is not found null is returned. */
+    
     public <T> T getValue(String optionName, Class<T> valueClass) {
       return getValue(optionName);
     }
 
-    /** Get the value of an option. If the option is not found the default value is returned. */
+    
     public <T> T getValueOrDefault(String optionName, T defaultValue) {
       Option option = options.get(optionName);
       if (option != null) {
@@ -1415,7 +1356,7 @@ public class Schema implements Serializable {
       return defaultValue;
     }
 
-    /** Get the type of an option. */
+    
     public FieldType getType(String optionName) {
       Option option = options.get(optionName);
       if (option != null) {
@@ -1434,7 +1375,7 @@ public class Schema implements Serializable {
     }
   }
 
-  /** Collects a stream of {@link Field}s into a {@link Schema}. */
+  
   public static Collector<Field, List<Field>, Schema> toSchema() {
     return Collector.of(
         ArrayList::new,
@@ -1450,12 +1391,12 @@ public class Schema implements Serializable {
     return new Schema(fields);
   }
 
-  /** Return the list of all field names. */
+  
   public List<String> getFieldNames() {
     return getFields().stream().map(Schema.Field::getName).collect(Collectors.toList());
   }
 
-  /** Return a field by index. */
+  
   public Field getField(int index) {
     return getFields().get(index);
   }
@@ -1464,7 +1405,7 @@ public class Schema implements Serializable {
     return getFields().get(indexOf(name));
   }
 
-  /** Find the index of a given field. */
+  
   public int indexOf(String fieldName) {
     Integer index = fieldIndices.get(fieldName);
     Preconditions.checkArgument(
@@ -1472,19 +1413,19 @@ public class Schema implements Serializable {
     return index;
   }
 
-  /** Returns true if {@code fieldName} exists in the schema, false otherwise. */
+  
   public boolean hasField(String fieldName) {
     return fieldIndices.containsKey(fieldName);
   }
 
-  /** Return the name of field by index. */
+  
   public String nameOf(int fieldIndex) {
     String name = fieldIndices.inverse().get(fieldIndex);
     Preconditions.checkArgument(name != null, "Cannot find field %s", fieldIndex);
     return name;
   }
 
-  /** Return the count of fields. */
+  
   public int getFieldCount() {
     return getFields().size();
   }
@@ -1493,7 +1434,7 @@ public class Schema implements Serializable {
     return this.options;
   }
 
-  /** Recursively converts all field names to `snake_case`. */
+  
   public Schema toSnakeCase() {
     return this.getFields().stream()
         .map(
@@ -1517,7 +1458,7 @@ private Field updateInnerTypeWithSnakeCaseSchema(Field field, FieldType innerTyp
 	return field;
 }
 
-  /** Recursively converts all field names to `lowerCamelCase`. */
+  
   public Schema toCamelCase() {
     return this.getFields().stream()
         .map(

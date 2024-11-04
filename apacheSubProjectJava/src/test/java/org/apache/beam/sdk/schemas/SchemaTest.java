@@ -37,7 +37,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-/** Unit tests for {@link Schema}. */
+
 public class SchemaTest {
   @Rule public ExpectedException thrown = ExpectedException.none();
 

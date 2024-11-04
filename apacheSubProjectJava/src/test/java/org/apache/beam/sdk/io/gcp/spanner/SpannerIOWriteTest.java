@@ -106,13 +106,7 @@ import org.mockito.Captor;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
-/**
- * Unit tests for {@link SpannerIO}.
- *
- * <p>Note that because batching and sorting work on Bundles, and the TestPipeline does not bundle
- * small numbers of elements, the batching and sorting DoFns need to be unit tested outside of the
- * pipeline.
- */
+
 @RunWith(JUnit4.class)
 public class SpannerIOWriteTest implements Serializable {
 
