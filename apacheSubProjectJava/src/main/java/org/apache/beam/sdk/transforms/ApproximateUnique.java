@@ -1,20 +1,3 @@
-/*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package org.apache.beam.sdk.transforms;
 
 import java.io.IOException;
@@ -62,7 +45,7 @@ public class ApproximateUnique {
     return new PerKey<>(maximumEstimationError);
   }
 
-  /////////////////////////////////////////////////////////////////////////////
+  
 
   
   public static final class Globally<T> extends PTransform<PCollection<T>, PCollection<Long>> {
@@ -166,7 +149,7 @@ public class ApproximateUnique {
     }
   }
 
-  /////////////////////////////////////////////////////////////////////////////
+  
 
   
   public static class ApproximateUniqueCombineFn<T>
@@ -189,7 +172,7 @@ public class ApproximateUnique {
       
       public void add(long value) {
         if (heap.size() >= sampleSize && value < minHash) {
-          return; // Common case as input size increases.
+          return; 
         }
         if (heap.add(value)) {
           if (heap.size() > sampleSize) {
@@ -206,12 +189,12 @@ public class ApproximateUnique {
           return heap.size();
         } else {
           double sampleSpaceSize = Long.MAX_VALUE - (double) minHash;
-          // This formula takes into account the possibility of hash collisions,
-          // which become more likely than not for 2^32 distinct elements.
-          // Note that log(1+x) ~ x for small x, so for sampleSize << maxHash
-          // log(1 - sampleSize/sampleSpace) / log(1 - 1/sampleSpace) ~ sampleSize
-          // and hence estimate ~ sampleSize * HASH_SPACE_SIZE / sampleSpace
-          // as one would expect.
+          
+          
+          
+          
+          
+          
           double estimate =
               Math.log1p(-sampleSize / sampleSpaceSize)
                   / Math.log1p(-1 / sampleSpaceSize)

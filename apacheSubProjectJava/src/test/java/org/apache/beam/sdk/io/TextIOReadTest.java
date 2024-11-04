@@ -1,20 +1,3 @@
-/*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package org.apache.beam.sdk.io;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -261,10 +244,10 @@ public class TextIOReadTest {
   
   private static void verifyReaderInitialStateAndProgress(BoundedSource.BoundedReader<String> reader)
 		throws @UnknownKeyFor @NonNull @Initialized IOException {
-	// Check preconditions before starting
+	
 	assertReaderInitialState(reader);
 
-	// Line 2
+	
 	assertTrue(reader.advance());
 	assertEquals(1, reader.getSplitPointsConsumed());
 }
@@ -276,7 +259,7 @@ private static void assertReaderInitialState(BoundedSource.BoundedReader<String>
 	assertEquals(
 	    BoundedSource.BoundedReader.SPLIT_POINTS_UNKNOWN, reader.getSplitPointsRemaining());
 
-	// Line 1
+	
 	assertTrue(reader.start());
 	assertEquals(0, reader.getSplitPointsConsumed());
 	assertEquals(
@@ -315,7 +298,7 @@ private static void assertReaderInitialState(BoundedSource.BoundedReader<String>
       runTestReadWithData(line.getBytes(UTF_8), expected);
     }
 
-    // Placeholder channel that only yields 0- and 1-length buffers.
+    
     private static class SlowReadChannel implements ReadableByteChannel {
       int readCount = 0;
       InputStream stream;
@@ -328,7 +311,7 @@ private static void assertReaderInitialState(BoundedSource.BoundedReader<String>
         stream = Channels.newInputStream(channel);
       }
 
-      // Data is read at most one byte at a time from line parameter.
+      
       @Override
       public int read(ByteBuffer dst) throws IOException {
         if (++readCount % 3 == 0) {
@@ -383,17 +366,17 @@ private static void assertReaderInitialState(BoundedSource.BoundedReader<String>
 
       PipelineOptions options = PipelineOptionsFactory.create();
 
-      // Check every possible split positions.
+      
       for (int i = 0; i < line.length(); ++i) {
         double fraction = i * 1.0 / line.length();
         FileBasedReader<String> reader = source.createSingleFileReader(options);
 
-        // Use a slow read channel to read the content byte by byte. This can simulate the scenario
-        // of a certain character (in our case CR) occurring at the end of the read buffer.
+        
+        
         reader.startReading(new SlowReadChannel(source));
 
-        // In order to get a successful split, we need to read at least one record before calling
-        // splitAtFraction().
+        
+        
         List<String> totalItems = SourceTestUtils.readNItemsFromStartedReader(reader, 1);
         BoundedSource<String> residual = reader.splitAtFraction(fraction);
         List<String> primaryItems = SourceTestUtils.readFromStartedReader(reader);
@@ -522,8 +505,8 @@ private static void assertReaderInitialState(BoundedSource.BoundedReader<String>
               FileSystems.matchSingleFileSpec(source.getFileOrPatternSpec()).resourceId());
       InputStream stream = Channels.newInputStream(channel);
       reader.startReading(
-          // Placeholder channel that only yields 0- and 1-length buffers.
-          // Data is read at most one byte at a time from testCase parameter.
+          
+          
           new ReadableByteChannel() {
             int readCount = 0;
 
@@ -641,16 +624,16 @@ private static void assertReaderInitialState(BoundedSource.BoundedReader<String>
     public void testProgressEmptyFile() throws IOException {
       try (BoundedSource.BoundedReader<String> reader =
           prepareSource(new byte[0]).createReader(PipelineOptionsFactory.create())) {
-        // Check preconditions before starting.
+        
         assertEquals(0.0, reader.getFractionConsumed(), 1e-6);
         assertEquals(0, reader.getSplitPointsConsumed());
         assertEquals(
             BoundedSource.BoundedReader.SPLIT_POINTS_UNKNOWN, reader.getSplitPointsRemaining());
 
-        // Assert empty
+        
         assertFalse(reader.start());
 
-        // Check postconditions after finishing
+        
         assertEquals(1.0, reader.getFractionConsumed(), 1e-6);
         assertEquals(0, reader.getSplitPointsConsumed());
         assertEquals(0, reader.getSplitPointsRemaining());
@@ -667,7 +650,7 @@ private static void assertReaderInitialState(BoundedSource.BoundedReader<String>
         assertEquals(
             BoundedSource.BoundedReader.SPLIT_POINTS_UNKNOWN, reader.getSplitPointsRemaining());
 
-        // Line 3
+        
         assertTrue(reader.advance());
         assertEquals(2, reader.getSplitPointsConsumed());
         assertReaderStateAfterAdvance(reader);
@@ -680,7 +663,7 @@ private static void assertReaderInitialState(BoundedSource.BoundedReader<String>
 			throws @UnknownKeyFor @NonNull @Initialized IOException {
 		assertEquals(1, reader.getSplitPointsRemaining());
 
-        // Check postconditions after finishing
+        
         assertFalse(reader.advance());
         assertEquals(1.0, reader.getFractionConsumed(), 1e-6);
 	}
@@ -691,23 +674,23 @@ private static void assertReaderInitialState(BoundedSource.BoundedReader<String>
       BoundedSource<String> source = prepareSource(file.getBytes(StandardCharsets.UTF_8));
       BoundedSource<String> remainder;
 
-      // Create the remainder, verifying properties pre- and post-splitting.
+      
       try (BoundedSource.BoundedReader<String> readerOrig =
           source.createReader(PipelineOptionsFactory.create())) {
-        // Preconditions.
+        
     	assertReaderInitialState(readerOrig);
-        // Split. 0.1 is in line1, so should now be able to detect last record.
+        
         remainder = readerOrig.splitAtFraction(0.1);
         assertNotNull(remainder);
 
-        // First record, after splitting.
+        
         assertEquals(0, readerOrig.getSplitPointsConsumed());
         assertReaderStateAfterAdvance(readerOrig);
         assertEquals(1, readerOrig.getSplitPointsConsumed());
         assertEquals(0, readerOrig.getSplitPointsRemaining());
       }
 
-      // Check the properties of the remainder.
+      
       try (BoundedSource.BoundedReader<String> reader =
           remainder.createReader(PipelineOptionsFactory.create())) {
         verifyReaderInitialStateAndProgress(reader);
@@ -719,18 +702,18 @@ private static void assertReaderInitialState(BoundedSource.BoundedReader<String>
 
     @Test
     public void testInitialSplitAutoModeGz() throws Exception {
-      // TODO: Java core test failing on windows, https://github.com/apache/beam/issues/20470
+      
       assumeFalse(SystemUtils.IS_OS_WINDOWS);
       PipelineOptions options = TestPipeline.testingPipelineOptions();
       long desiredBundleSize = 1000;
       File largeGz = writeToFile(LARGE, tempFolder, "large.gz", GZIP);
-      // Sanity check: file is at least 2 bundles long.
+      
       assertThat(largeGz.length(), greaterThan(2 * desiredBundleSize));
 
       FileBasedSource<String> source = TextIO.read().from(largeGz.getPath()).getSource();
       List<? extends FileBasedSource<String>> splits = source.split(desiredBundleSize, options);
 
-      // Exactly 1 split, even in AUTO mode, since it is a gzip file.
+      
       assertThat(splits, hasSize(equalTo(1)));
       SourceTestUtils.assertSourcesEqualReferenceSource(source, splits, options);
     }
@@ -767,11 +750,11 @@ private static void assertReaderInitialState(BoundedSource.BoundedReader<String>
           pipeline
               .apply("Create", Create.of(p1.toString(), p2.toString(), p3.toString()))
               .setCoder(StringUtf8Coder.of())
-              // PCollection<String>
+              
               .apply("Read file", new TextIOReadTest.TextSourceTest.TextFileReadTransform());
-      // PCollection<KV<String, String>>: tableName, line
+      
 
-      // Validate that the BOM bytes (\uFEFF) at the beginning of the first line have been removed.
+      
       PAssert.that(contents)
           .containsInAnyOrder(
               "1,p1",
@@ -787,7 +770,7 @@ private static void assertReaderInitialState(BoundedSource.BoundedReader<String>
     @Test
     @Category(NeedsRunner.class)
     public void testPreserveNonBOMBytes() throws Exception {
-      // Contains \uFEFE, not UTF BOM.
+      
       Path p1 =
           createTestFile(
               "test_txt_utf_bom", Charset.forName("UTF-8"), "\uFEFE1,p1テスト", "\uFEFE2,p1テスト");
@@ -795,7 +778,7 @@ private static void assertReaderInitialState(BoundedSource.BoundedReader<String>
           pipeline
               .apply("Create", Create.of(p1.toString()))
               .setCoder(StringUtf8Coder.of())
-              // PCollection<String>
+              
               .apply("Read file", new TextIOReadTest.TextSourceTest.TextFileReadTransform());
 
       PAssert.that(contents).containsInAnyOrder("\uFEFE1,p1テスト", "\uFEFE2,p1テスト");
@@ -810,8 +793,8 @@ private static void assertReaderInitialState(BoundedSource.BoundedReader<String>
         FileIO.ReadableFile file = c.element();
         ValueProvider<String> filenameProvider =
             ValueProvider.StaticValueProvider.of(file.getMetadata().resourceId().getFilename());
-        // Create a TextSource, passing null as the delimiter to use the default
-        // delimiters ('\n', '\r', or '\r\n').
+        
+        
         TextSource textSource = new TextSource(filenameProvider, null, null, 0);
         try {
           BoundedSource.BoundedReader<String> reader =
@@ -836,13 +819,13 @@ private static void assertReaderInitialState(BoundedSource.BoundedReader<String>
       @Override
       public PCollection<String> expand(PCollection<String> files) {
         return files
-            // PCollection<String>
+            
             .apply(FileIO.matchAll().withEmptyMatchTreatment(EmptyMatchTreatment.DISALLOW))
-            // PCollection<Match.Metadata>
+            
             .apply(FileIO.readMatches())
-            // PCollection<FileIO.ReadableFile>
+            
             .apply("Read lines", ParDo.of(new TextIOReadTest.TextSourceTest.FileReadDoFn()));
-        // PCollection<String>: line
+        
       }
     }
 

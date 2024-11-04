@@ -45,7 +45,7 @@ import org.apache.beam.sdk.values.TupleTag;
           .getPipeline()
           .traverseTopologically(
               new PipelineVisitor.Defaults() {
-                // Stores whether we have entered the expected composite view transform.
+                
                 private boolean tracking = false;
 
                 @Override

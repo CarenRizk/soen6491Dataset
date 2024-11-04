@@ -1,20 +1,3 @@
-/*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package org.apache.beam.sdk.io;
 
 import static org.apache.beam.vendor.guava.v32_1_2_jre.com.google.common.base.Preconditions.checkArgument;
@@ -67,7 +50,7 @@ import org.apache.beam.vendor.guava.v32_1_2_jre.com.google.common.collect.TreeMu
 
 
 @SuppressWarnings({
-  "nullness", // TODO(https://github.com/apache/beam/issues/20497)
+  "nullness", 
   "rawtypes"
 })
 public class FileSystems {
@@ -223,8 +206,8 @@ public class FileSystems {
     try {
       fileSystem.rename(srcResourceIds, destResourceIds, moveOptions);
     } catch (UnsupportedOperationException e) {
-      // Some file systems do not yet support specifying the move options. Instead we
-      // perform filtering using match calls before renaming.
+      
+      
       FilterResult filtered = filterFiles(fileSystem, srcResourceIds, destResourceIds, moveOptions);
       if (!filtered.resultSources.isEmpty()) {
         fileSystem.rename(filtered.resultSources, filtered.resultDestinations);
@@ -239,7 +222,7 @@ public class FileSystems {
   public static void delete(Collection<ResourceId> resourceIds, MoveOptions... moveOptions)
       throws IOException {
     if (resourceIds.isEmpty()) {
-      // Short-circuit.
+      
       return;
     }
 
@@ -302,7 +285,7 @@ public class FileSystems {
       throws IOException {
     FilterResult result = new FilterResult();
     if (moveOptions.length == 0 || srcResourceIds.isEmpty()) {
-      // Nothing will be filtered.
+      
       result.resultSources = srcResourceIds;
       result.resultDestinations = destResourceIds;
       return result;
@@ -314,7 +297,7 @@ public class FileSystems {
         moveOptionSet.contains(StandardMoveOptions.SKIP_IF_DESTINATION_EXISTS);
     final int size = srcResourceIds.size();
 
-    // Match necessary srcs and dests with a single match call.
+    
     List<ResourceId> matchResources = new ArrayList<>();
     if (ignoreMissingSrc) {
       matchResources.addAll(srcResourceIds);
@@ -333,7 +316,7 @@ public class FileSystems {
 
     for (int i = 0; i < size; ++i) {
       if (matchSrcResults != null && matchSrcResults.get(i).status().equals(Status.NOT_FOUND)) {
-        // If the source is not found, and we are ignoring missing source files, then we skip it.
+        
         continue;
       }
       if (matchDestResults != null
@@ -342,8 +325,8 @@ public class FileSystems {
           && checksumMatch(
               matchDestResults.get(i).metadata().get(0),
               matchSrcResults.get(i).metadata().get(0))) {
-        // If the destination exists, and we are skipping when destinations exist, then we skip
-        // the copy but note that the source exists in case it should be deleted.
+        
+        
         result.filteredExistingSrcs.add(srcResourceIds.get(i));
         continue;
       }
@@ -366,7 +349,7 @@ public class FileSystems {
         destResourceIds.size());
 
     if (srcResourceIds.isEmpty()) {
-      // nothing more to validate.
+      
       return;
     }
 
@@ -389,11 +372,11 @@ public class FileSystems {
   }
 
   private static String parseScheme(String spec) {
-    // The spec is almost, but not quite, a URI. In particular,
-    // the reserved characters '[', ']', and '?' have meanings that differ
-    // from their use in the URI spec. ('*' is not reserved).
-    // Here, we just need the scheme, which is so circumscribed as to be
-    // very easy to extract with a regex.
+    
+    
+    
+    
+    
     Matcher matcher = FILE_SCHEME_PATTERN.matcher(spec);
 
     if (!matcher.matches()) {
@@ -426,7 +409,7 @@ public class FileSystems {
 
     while (true) {
       KV<Long, Integer> revision = FILESYSTEM_REVISION.get();
-      // only update file systems if the pipeline changed or the options revision increased
+      
       if (revision != null && revision.getKey().equals(id) && revision.getValue() >= nextRevision) {
         return;
       }

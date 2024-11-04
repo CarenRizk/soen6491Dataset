@@ -1,20 +1,3 @@
-/*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package org.apache.beam.sdk.transforms;
 
 import static org.apache.beam.vendor.guava.v32_1_2_jre.com.google.common.base.Preconditions.checkState;
@@ -72,11 +55,11 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 
 @SuppressWarnings({
-  "nullness" // TODO(https://github.com/apache/beam/issues/20497)
+  "nullness" 
 })
 public class Combine {
   private Combine() {
-    // do not instantiate
+    
   }
 
   
@@ -164,7 +147,7 @@ public class Combine {
     return new GroupedValues<>(fn, fnDisplayData);
   }
 
-  /////////////////////////////////////////////////////////////////////////////
+  
 
   
   public abstract static class CombineFn<
@@ -216,7 +199,7 @@ public class Combine {
     }
   }
 
-  /////////////////////////////////////////////////////////////////////////////
+  
 
   
   public abstract static class BinaryCombineFn<V> extends CombineFn<V, Holder<V>, V> {
@@ -640,7 +623,7 @@ public class Combine {
     }
   }
 
-  /////////////////////////////////////////////////////////////////////////////
+  
 
   
   public abstract static class AccumulatingCombineFn<
@@ -682,9 +665,9 @@ public class Combine {
     }
   }
 
-  /////////////////////////////////////////////////////////////////////////////
+  
 
-  ////////////////////////////////////////////////////////////////////////////
+  
 
   
   public static class Globally<InputT, OutputT>
@@ -996,7 +979,7 @@ public class Combine {
     }
   }
 
-  /////////////////////////////////////////////////////////////////////////////
+  
 
   
   public static class PerKey<K, InputT, OutputT>
@@ -1139,7 +1122,7 @@ public class Combine {
 
     private <AccumT> PCollection<KV<K, OutputT>> applyHelper(PCollection<KV<K, InputT>> input) {
 
-      // Name the accumulator type.
+      
       @SuppressWarnings("unchecked")
       final GlobalCombineFn<InputT, AccumT, OutputT> typedFn =
           (GlobalCombineFn<InputT, AccumT, OutputT>) this.fn;
@@ -1163,11 +1146,11 @@ public class Combine {
       Coder<InputOrAccum<InputT, AccumT>> inputOrAccumCoder =
           new InputOrAccum.InputOrAccumCoder<>(inputCoder.getValueCoder(), accumCoder);
 
-      // A CombineFn's mergeAccumulator can be applied in a tree-like fashion.
-      // Here we shard the key using an integer nonce, combine on that partial
-      // set of values, then drop the nonce and do a final combine of the
-      // aggregates.  We do this by splitting the original CombineFn into two,
-      // on that does addInput + merge and another that does merge + extract.
+      
+      
+      
+      
+      
       GlobalCombineFn<InputT, AccumT, AccumT> hotPreCombine;
       GlobalCombineFn<InputOrAccum<InputT, AccumT>, AccumT, OutputT> postCombine;
       if (typedFn instanceof CombineFn) {
@@ -1368,8 +1351,8 @@ public class Combine {
             String.format("Unknown type of CombineFn: %s", typedFn.getClass()));
       }
 
-      // Use the provided hotKeyFanout fn to split into "hot" and "cold" keys,
-      // augmenting the hot keys with a nonce.
+      
+      
       final TupleTag<KV<KV<K, Integer>, InputT>> hot = new TupleTag<>();
       final TupleTag<KV<K, InputT>> cold = new TupleTag<>();
       PCollectionTuple split =
@@ -1381,11 +1364,11 @@ public class Combine {
 
                         @StartBundle
                         public void startBundle() {
-                          // Spreading a hot key across all possible sub-keys for all bundles
-                          // would defeat the goal of not overwhelming downstream reducers
-                          // (as well as making less efficient use of PGBK combining tables).
-                          // Instead, each bundle independently makes a consistent choice about
-                          // which "shard" of a key to send its intermediate results.
+                          
+                          
+                          
+                          
+                          
                           nonce = ThreadLocalRandom.current().nextInt(Integer.MAX_VALUE);
                         }
 
@@ -1404,7 +1387,7 @@ public class Combine {
                       })
                   .withOutputTags(cold, TupleTagList.of(hot)));
 
-      // The first level of combine should never use accumulating mode.
+      
       WindowingStrategy<?, ?> preCombineStrategy = input.getWindowingStrategy();
       if (preCombineStrategy.getMode()
           == WindowingStrategy.AccumulationMode.ACCUMULATING_FIRED_PANES) {
@@ -1412,7 +1395,7 @@ public class Combine {
             preCombineStrategy.withMode(WindowingStrategy.AccumulationMode.DISCARDING_FIRED_PANES);
       }
 
-      // Combine the hot and cold keys separately.
+      
       Combine.PerKey<KV<K, Integer>, InputT, AccumT> hotPreCombineTransform =
           fewKeys
               ? Combine.fewKeys(hotPreCombine, fnDisplayData)
@@ -1463,7 +1446,7 @@ public class Combine {
                       }))
               .setCoder(KvCoder.of(inputCoder.getKeyCoder(), inputOrAccumCoder));
 
-      // Combine the union of the pre-processed hot and cold key results.
+      
       Combine.PerKey<K, InputOrAccum<InputT, AccumT>, OutputT> postCombineTransform =
           fewKeys
               ? Combine.fewKeys(postCombine, fnDisplayData)
@@ -1573,7 +1556,7 @@ public class Combine {
     }
   }
 
-  /////////////////////////////////////////////////////////////////////////////
+  
 
   
   public static class GroupedValues<K, InputT, OutputT>
@@ -1675,7 +1658,7 @@ public class Combine {
                     input.getPipeline().getCoderRegistry(), kvCoder.getValueCoder());
         output.setCoder(KvCoder.of(kvCoder.getKeyCoder(), outputValueCoder));
       } catch (CannotProvideCoderException exc) {
-        // let coder inference happen later, if it can
+        
       }
 
       return output;

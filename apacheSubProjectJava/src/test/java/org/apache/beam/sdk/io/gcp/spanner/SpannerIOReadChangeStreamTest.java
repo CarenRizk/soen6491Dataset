@@ -1,21 +1,3 @@
-
-/*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package org.apache.beam.sdk.io.gcp.spanner;
 
 import static org.junit.Assert.assertEquals;
@@ -55,7 +37,7 @@ public class SpannerIOReadChangeStreamTest {
 
   @Before
   public void setUp() throws Exception {
-	MockitoAnnotations.openMocks(this); // Ensure this line is present
+	MockitoAnnotations.openMocks(this); 
     spannerConfig =
         SpannerConfig.create()
             .withProjectId(TEST_PROJECT)
@@ -80,23 +62,23 @@ public class SpannerIOReadChangeStreamTest {
 
   @Test
   public void testSetPipelineCredential() {
-      // Create an instance of TestCredential to use in assertions
+      
       TestCredential testCredential = new TestCredential();
 
-      // Set the credential in the pipeline options directly, without mocking
+      
       testPipeline.getOptions().as(GcpOptions.class).setGcpCredential(testCredential);
 
-      // Build Spanner configurations
+      
       SpannerConfig changeStreamSpannerConfig = readChangeStream.buildChangeStreamSpannerConfig();
       SpannerConfig metadataSpannerConfig =
           MetadataSpannerConfigFactory.create(
               changeStreamSpannerConfig, TEST_METADATA_INSTANCE, TEST_METADATA_DATABASE);
       
-      // Assert that initially the credentials are null
+      
       assertNull(changeStreamSpannerConfig.getCredentials());
       assertNull(metadataSpannerConfig.getCredentials());
 
-      // Build configurations with the credentials set
+      
       SpannerConfig changeStreamSpannerConfigWithCredential =
           SpannerIO.buildSpannerConfigWithCredential(
               changeStreamSpannerConfig, testPipeline.getOptions());
@@ -104,18 +86,18 @@ public class SpannerIOReadChangeStreamTest {
           SpannerIO.buildSpannerConfigWithCredential(
               metadataSpannerConfig, testPipeline.getOptions());
       
-      // Assert that the credentials have been correctly set
+      
       assertEquals(testCredential, changeStreamSpannerConfigWithCredential.getCredentials().get());
       assertEquals(testCredential, metadataSpannerConfigWithCredential.getCredentials().get());
   }
 
   @Test
   public void testSetSpannerConfigCredential() {
-      // Create an instance of TestCredential to use in assertions
+      
       TestCredential testCredential = new TestCredential();
 
-      // Directly use the actual TestCredential without mocking
-      spannerConfig = spannerConfig.withCredentials(testCredential); // Ensure this method exists in SpannerConfig
+      
+      spannerConfig = spannerConfig.withCredentials(testCredential); 
       readChangeStream = readChangeStream.withSpannerConfig(spannerConfig);
 
       SpannerConfig changeStreamSpannerConfig = readChangeStream.buildChangeStreamSpannerConfig();
@@ -123,11 +105,11 @@ public class SpannerIOReadChangeStreamTest {
           MetadataSpannerConfigFactory.create(
               changeStreamSpannerConfig, TEST_METADATA_INSTANCE, TEST_METADATA_DATABASE);
 
-      // Assert that the expected credentials are set in both configurations
+      
       assertEquals(testCredential, changeStreamSpannerConfig.getCredentials().get());
       assertEquals(testCredential, metadataSpannerConfig.getCredentials().get());
 
-      // Test building configurations with credentials
+      
       SpannerConfig changeStreamSpannerConfigWithCredential =
           SpannerIO.buildSpannerConfigWithCredential(
               changeStreamSpannerConfig, testPipeline.getOptions());
@@ -135,7 +117,7 @@ public class SpannerIOReadChangeStreamTest {
           SpannerIO.buildSpannerConfigWithCredential(
               metadataSpannerConfig, testPipeline.getOptions());
 
-      // Assert the credentials in the built configurations
+      
       assertEquals(testCredential, changeStreamSpannerConfigWithCredential.getCredentials().get());
       assertEquals(testCredential, metadataSpannerConfigWithCredential.getCredentials().get());
   }

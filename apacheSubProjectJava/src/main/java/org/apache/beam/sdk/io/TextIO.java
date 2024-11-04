@@ -1,20 +1,3 @@
-/*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package org.apache.beam.sdk.io;
 
 import static org.apache.beam.sdk.io.FileIO.ReadMatches.DirectoryTreatment;
@@ -65,7 +48,7 @@ import org.joda.time.Duration;
 
 
 @SuppressWarnings({
-  "nullness" // TODO(https://github.com/apache/beam/issues/20497)
+  "nullness" 
 })
 public class TextIO {
   private static final long DEFAULT_BUNDLE_SIZE_BYTES = 64 * 1024 * 1024L;
@@ -93,9 +76,9 @@ public class TextIO {
   
   public static ReadFiles readFiles() {
     return new AutoValue_TextIO_ReadFiles.Builder()
-        // 64MB is a reasonable value that allows to amortize the cost of opening files,
-        // but is not so large as to exhaust a typical runner's maximum amount of output per
-        // ProcessElement call.
+        
+        
+        
         .setDesiredBundleSizeBytes(DEFAULT_BUNDLE_SIZE_BYTES)
         .setSkipHeaderLines(0)
         .build();
@@ -136,7 +119,7 @@ public class TextIO {
 
     abstract Compression getCompression();
 
-    @SuppressWarnings("mutable") // this returns an array that can be mutated by the caller
+    @SuppressWarnings("mutable") 
     abstract byte @Nullable [] getDelimiter();
 
     abstract int getSkipHeaderLines();
@@ -226,7 +209,7 @@ public class TextIO {
     }
 
     static boolean isSelfOverlapping(byte[] s) {
-      // s self-overlaps if v exists such as s = vu = wv with u and w non empty
+      
       for (int i = 1; i < s.length - 1; ++i) {
         if (ByteBuffer.wrap(s, 0, i).equals(ByteBuffer.wrap(s, s.length - i, i))) {
           return true;
@@ -242,7 +225,7 @@ public class TextIO {
         return input.apply("Read", org.apache.beam.sdk.io.Read.from(getSource()));
       }
 
-      // All other cases go through FileIO + ReadFiles
+      
       return input
           .apply("Create filepattern", Create.ofProvider(getFilepattern(), StringUtf8Coder.of()))
           .apply("Match All", FileIO.matchAll().withConfiguration(getMatchConfiguration()))
@@ -256,7 +239,7 @@ public class TextIO {
               readFiles().withDelimiter(getDelimiter()).withSkipHeaderLines(getSkipHeaderLines()));
     }
 
-    // Helper to create a source specific to the requested compression type.
+    
     protected FileBasedSource<String> getSource() {
       return CompressedSource.from(
               new TextSource(
@@ -282,7 +265,7 @@ public class TextIO {
     }
   }
 
-  /////////////////////////////////////////////////////////////////////////////
+  
 
   
   @Deprecated
@@ -293,7 +276,7 @@ public class TextIO {
 
     abstract Compression getCompression();
 
-    @SuppressWarnings("mutable") // this returns an array that can be mutated by the caller
+    @SuppressWarnings("mutable") 
     abstract byte @Nullable [] getDelimiter();
 
     abstract int getSkipHeaderLines();
@@ -385,7 +368,7 @@ public class TextIO {
       extends PTransform<PCollection<FileIO.ReadableFile>, PCollection<String>> {
     abstract long getDesiredBundleSizeBytes();
 
-    @SuppressWarnings("mutable") // this returns an array that can be mutated by the caller
+    @SuppressWarnings("mutable") 
     abstract byte @Nullable [] getDelimiter();
 
     abstract int getSkipHeaderLines();
@@ -456,7 +439,7 @@ public class TextIO {
     }
   }
 
-  // ///////////////////////////////////////////////////////////////////////////
+  
 
   
   @AutoValue
@@ -473,7 +456,7 @@ public class TextIO {
     abstract @Nullable ValueProvider<ResourceId> getTempDirectory();
 
     
-    @SuppressWarnings("mutable") // this returns an array that can be mutated by the caller
+    @SuppressWarnings("mutable") 
     abstract char[] getDelimiter();
 
     
@@ -683,9 +666,9 @@ public class TextIO {
     public TypedWrite<UserT, DestinationT> withNumShards(int numShards) {
       checkArgument(numShards >= 0);
       if (numShards == 0) {
-        // If 0 shards are passed, then the user wants runner-determined
-        // sharding to kick in, thus we pass a null StaticValueProvider
-        // so that the runner-determined-sharding path will be activated.
+        
+        
+        
         return withNumShards(null);
       } else {
         return withNumShards(StaticValueProvider.of(numShards));
@@ -761,13 +744,13 @@ public class TextIO {
           getDynamicDestinations();
       if (dynamicDestinations == null) {
         if (getDestinationFunction() != null) {
-          // In this case, DestinationT == Params
+          
           dynamicDestinations =
               (DynamicDestinations)
                   DynamicFileDestinations.toDefaultPolicies(
                       getDestinationFunction(), getEmptyDestination(), getFormatFunction());
         } else {
-          // In this case, DestinationT == Void
+          
           FilenamePolicy usedFilenamePolicy = getFilenamePolicy();
           if (usedFilenamePolicy == null) {
             usedFilenamePolicy =
@@ -1084,7 +1067,7 @@ public class TextIO {
     }
   }
 
-  //////////////////////////////////////////////////////////////////////////////
+  
 
   
   public static Sink sink() {
@@ -1142,7 +1125,7 @@ public class TextIO {
       if (getFooter() != null) {
         writer.println(getFooter());
       }
-      // BEAM-7813: don't close writer here
+      
       writer.flush();
     }
   }

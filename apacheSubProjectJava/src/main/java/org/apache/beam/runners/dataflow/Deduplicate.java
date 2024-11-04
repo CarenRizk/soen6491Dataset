@@ -16,9 +16,9 @@ import org.apache.beam.sdk.values.ValueWithRecordId;
   class Deduplicate<T>
       extends PTransform<PCollection<ValueWithRecordId<T>>, PCollection<T>> {
 
-    // Use a finite set of keys to improve bundling.  Without this, the key space
-    // will be the space of ids which is potentially very large, which results in much
-    // more per-key overhead.
+    
+    
+    
     private static final int NUM_RESHARD_KEYS = 10000;
 
     @Override

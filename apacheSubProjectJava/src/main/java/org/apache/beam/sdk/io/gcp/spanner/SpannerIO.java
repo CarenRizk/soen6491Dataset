@@ -1,20 +1,3 @@
-/*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package org.apache.beam.sdk.io.gcp.spanner;
 
 import static java.util.stream.Collectors.toList;
@@ -135,24 +118,24 @@ import org.slf4j.LoggerFactory;
 
 
 @SuppressWarnings({
-  "nullness" // TODO(https://github.com/apache/beam/issues/20497)
+  "nullness" 
 })
 public class SpannerIO {
 
   private static final Logger LOG = LoggerFactory.getLogger(SpannerIO.class);
 
-  private static final long DEFAULT_BATCH_SIZE_BYTES = 1024L * 1024L; // 1 MB
-  // Max number of mutations to batch together.
+  private static final long DEFAULT_BATCH_SIZE_BYTES = 1024L * 1024L; 
+  
   private static final int DEFAULT_MAX_NUM_MUTATIONS = 5000;
-  // Max number of mutations to batch together.
+  
   private static final int DEFAULT_MAX_NUM_ROWS = 500;
-  // Multiple of mutation size to use to gather and sort mutations
+  
   private static final int DEFAULT_GROUPING_FACTOR = 1000;
 
-  // Size of caches for read/write ServiceCallMetric objects .
-  // This is a reasonable limit, as for reads, each worker will process very few different table
-  // read requests, and for writes, batching will ensure that write operations for the same
-  // table occur at the same time (within a bundle).
+  
+  
+  
+  
   static final int METRICS_CACHE_SIZE = 100;
 
   
@@ -328,7 +311,7 @@ public class SpannerIO {
     public PCollection<Struct> expand(PCollection<ReadOperation> input) {
 
       if (PCollection.IsBounded.UNBOUNDED == input.isBounded()) {
-        // Warn that SpannerIO.ReadAll should not be used on unbounded inputs.
+        
         LOG.warn(
             "SpannerIO.ReadAll({}) is being applied to an unbounded input. "
                 + "This is not supported and can lead to runtime failures.",
@@ -358,7 +341,7 @@ public class SpannerIO {
       if (op.getQuery() != null) {
         String queryName = op.getQueryName();
         if (queryName == null || queryName.isEmpty()) {
-          // if queryName is not specified, use a hash of the SQL statement string.
+          
           queryName = String.format("UNNAMED_QUERY#%08x", op.getQuery().getSql().hashCode());
         }
 
@@ -590,13 +573,13 @@ public class SpannerIO {
               + "with withTimestampBound or withTimestamp method");
 
       if (getReadOperation().getQuery() != null) {
-        // TODO: validate query?
+        
         if (getReadOperation().getTable() != null) {
           throw new IllegalArgumentException(
               "Both query and table cannot be specified at the same time for SpannerIO.read().");
         }
       } else if (getReadOperation().getTable() != null) {
-        // Assume read
+        
         checkNotNull(
             getReadOperation().getColumns(),
             "For a read operation SpannerIO.read() requires a list of "
@@ -985,8 +968,8 @@ public class SpannerIO {
       builder.add(
           DisplayData.item("maxNumRows", getMaxNumRows())
               .withLabel("Max number of rows in each batch"));
-      // Grouping factor default value depends on whether it is a batch or streaming pipeline.
-      // This function is not aware of that state, so use 'DEFAULT' if unset.
+      
+      
       builder.add(
           DisplayData.item(
                   "groupingFactor",
@@ -1072,11 +1055,11 @@ public class SpannerIO {
         batches = input.apply(MapElements.into(descriptor).via(ImmutableList::of));
       } else {
 
-        // First, read the Cloud Spanner schema.
+        
         PCollection<Void> schemaSeed =
             input.getPipeline().apply("Create Seed", Create.of((Void) null));
         if (spec.getSchemaReadySignal() != null) {
-          // Wait for external signal before reading schema.
+          
           schemaSeed = schemaSeed.apply("Wait for schema", Wait.on(spec.getSchemaReadySignal()));
         }
         final PCollectionView<SpannerSchema> schemaView =
@@ -1087,8 +1070,8 @@ public class SpannerIO {
                         .withSideInputs(dialectView))
                 .apply("Schema View", View.asSingleton());
 
-        // Split the mutations into batchable and unbatchable mutations.
-        // Filter out mutation groups too big to be batched.
+        
+        
         PCollectionTuple filteredMutations =
             input
                 .apply(
@@ -1109,8 +1092,8 @@ public class SpannerIO {
                         .withOutputTags(
                             BATCHABLE_MUTATIONS_TAG, TupleTagList.of(UNBATCHABLE_MUTATIONS_TAG)));
 
-        // Build a set of Mutation groups from the current bundle,
-        // sort them by table/key then split into batches.
+        
+        
         PCollection<Iterable<MutationGroup>> batchedMutations =
             filteredMutations
                 .get(BATCHABLE_MUTATIONS_TAG)
@@ -1121,7 +1104,7 @@ public class SpannerIO {
                                 spec.getBatchSizeBytes(),
                                 spec.getMaxNumMutations(),
                                 spec.getMaxNumRows(),
-                                // Do not group on streaming unless explicitly set.
+                                
                                 spec.getGroupingFactor()
                                     .orElse(
                                         input.isBounded() == IsBounded.BOUNDED
@@ -1130,7 +1113,7 @@ public class SpannerIO {
                                 schemaView))
                         .withSideInputs(schemaView));
 
-        // Merge the batched and unbatchable mutation PCollections and write to Spanner.
+        
         batches =
             PCollectionList.of(filteredMutations.get(UNBATCHABLE_MUTATIONS_TAG))
                 .and(batchedMutations)
@@ -1323,7 +1306,7 @@ public class SpannerIO {
       checkArgument(
           getInclusiveStartAt() != null,
           "SpannerIO.readChangeStream() requires the start time to be set.");
-      // Inclusive end at is defaulted to ChangeStreamsContants.MAX_INCLUSIVE_END_AT
+      
       checkArgument(
           getInclusiveEndAt() != null,
           "SpannerIO.readChangeStream() requires the end time to be set. If you'd like to process the stream without an end time, you can omit this parameter.");
@@ -1333,7 +1316,7 @@ public class SpannerIO {
             "SpannerIO.readChangeStream() requires the metadata database to be set if metadata instance is set.");
       }
 
-      // Start time must be before end time
+      
       if (getInclusiveEndAt() != null
           && getInclusiveStartAt().toSqlTimestamp().after(getInclusiveEndAt().toSqlTimestamp())) {
         throw new IllegalArgumentException("Start time cannot be after end time.");
@@ -1370,8 +1353,8 @@ public class SpannerIO {
               getMetadataTable(), generatePartitionMetadataTableName(partitionMetadataDatabaseId));
       final String changeStreamName = getChangeStreamName();
       final Timestamp startTimestamp = getInclusiveStartAt();
-      // Uses (Timestamp.MAX - 1ns) at max for end timestamp, because we add 1ns to transform the
-      // interval into a closed-open in the read change stream restriction (prevents overflow)
+      
+      
       final Timestamp endTimestamp =
           getInclusiveEndAt().compareTo(MAX_INCLUSIVE_END_AT) > 0
               ? MAX_INCLUSIVE_END_AT
@@ -1435,13 +1418,13 @@ public class SpannerIO {
     @VisibleForTesting
     SpannerConfig buildChangeStreamSpannerConfig() {
       SpannerConfig changeStreamSpannerConfig = getSpannerConfig();
-      // Set default retryable errors for ReadChangeStream
+      
       if (changeStreamSpannerConfig.getRetryableCodes() == null) {
         ImmutableSet<Code> defaultRetryableCodes = ImmutableSet.of(Code.UNAVAILABLE, Code.ABORTED);
         changeStreamSpannerConfig =
             changeStreamSpannerConfig.toBuilder().setRetryableCodes(defaultRetryableCodes).build();
       }
-      // Set default retry timeouts for ReadChangeStream
+      
       if (changeStreamSpannerConfig.getExecuteStreamingSqlRetrySettings() == null) {
         changeStreamSpannerConfig =
             changeStreamSpannerConfig
@@ -1472,7 +1455,7 @@ public class SpannerIO {
   }
 
   private static Dialect getDialect(SpannerConfig spannerConfig, PipelineOptions pipelineOptions) {
-    // Allow passing the credential from pipeline options to the getDialect() call.
+    
     SpannerConfig spannerConfigWithCredential =
         buildSpannerConfigWithCredential(spannerConfig, pipelineOptions);
     DatabaseClient databaseClient =
@@ -1512,11 +1495,11 @@ public class SpannerIO {
     private final PCollectionView<SpannerSchema> schemaView;
     private final ArrayList<MutationGroupContainer> mutationsToSort = new ArrayList<>();
 
-    // total size of MutationGroups in mutationsToSort.
+    
     private long sortableSizeBytes = 0;
-    // total number of mutated cells in mutationsToSort
+    
     private long sortableNumCells = 0;
-    // total number of rows mutated in mutationsToSort
+    
     private long sortableNumRows = 0;
 
     GatherSortCreateBatchesFn(
@@ -1556,36 +1539,36 @@ public class SpannerIO {
     private synchronized void sortAndOutputBatches(OutputReceiver<Iterable<MutationGroup>> out) {
       try {
         if (mutationsToSort.isEmpty()) {
-          // nothing to output.
+          
           return;
         }
 
         if (maxSortableNumMutations == maxBatchNumMutations) {
-          // no grouping is occurring, no need to sort and make batches, just output what we have.
+          
           outputBatch(out, 0, mutationsToSort.size());
           return;
         }
 
-        // Sort then split the sorted mutations into batches.
+        
         mutationsToSort.sort(Comparator.naturalOrder());
         int batchStart = 0;
         int batchEnd = 0;
 
-        // total size of the current batch.
+        
         long batchSizeBytes = 0;
-        // total number of mutated cells.
+        
         long batchCells = 0;
-        // total number of rows mutated.
+        
         long batchRows = 0;
 
-        // collect and output batches.
+        
         while (batchEnd < mutationsToSort.size()) {
           MutationGroupContainer mg = mutationsToSort.get(batchEnd);
 
           if (((batchCells + mg.numCells) > maxBatchNumMutations)
               || ((batchSizeBytes + mg.sizeBytes) > maxBatchSizeBytes
                   || (batchRows + mg.numRows > maxBatchNumRows))) {
-            // Cannot add new element, current batch is full; output.
+            
             outputBatch(out, batchStart, batchEnd);
             batchStart = batchEnd;
             batchSizeBytes = 0;
@@ -1600,7 +1583,7 @@ public class SpannerIO {
         }
 
         if (batchStart < batchEnd) {
-          // output remaining elements
+          
           outputBatch(out, batchStart, mutationsToSort.size());
         }
       } finally {
@@ -1642,7 +1625,7 @@ public class SpannerIO {
       }
     }
 
-    // Container class to store a MutationGroup, its sortable encoded key and its statistics.
+    
     private static final class MutationGroupContainer
         implements Comparable<MutationGroupContainer> {
 
@@ -1671,8 +1654,8 @@ public class SpannerIO {
       }
     }
 
-    // TODO(https://github.com/apache/beam/issues/18203): Remove this when FinishBundle has added
-    // support for an {@link OutputReceiver}
+    
+    
     private static class OutputReceiverForFinishBundle
         implements OutputReceiver<Iterable<MutationGroup>> {
 
@@ -1725,7 +1708,7 @@ public class SpannerIO {
     public void processElement(ProcessContext c) {
       MutationGroup mg = c.element();
       if (mg.primary().getOperation() == Op.DELETE && !isPointDelete(mg.primary())) {
-        // Ranged deletes are not batchable.
+        
         c.output(unbatchableMutationsTag, Collections.singletonList(mg));
         unBatchableMutationGroupsCounter.inc();
         return;
@@ -1752,7 +1735,7 @@ public class SpannerIO {
     private final SpannerConfig spannerConfig;
     private final FailureMode failureMode;
 
-    // SpannerAccessor can not be serialized so must be initialized at runtime in setup().
+    
     private transient SpannerAccessor spannerAccessor;
       /* Number of times an aborted write to spanner could be retried */
     private static final int ABORTED_RETRY_ATTEMPTS = 5;
@@ -1794,7 +1777,7 @@ public class SpannerIO {
 
     private final TupleTag<MutationGroup> failedTag;
 
-    // Fluent Backoff is not serializable so create at runtime in setup().
+    
     private transient FluentBackoff bundleWriteBackoff;
     private transient LoadingCache<String, ServiceCallMetric> writeMetricsByTableName;
 
@@ -1813,9 +1796,9 @@ public class SpannerIO {
               .withMaxCumulativeBackoff(spannerConfig.getMaxCumulativeBackoff().get())
               .withInitialBackoff(spannerConfig.getMaxCumulativeBackoff().get().dividedBy(60));
 
-      // Use a LoadingCache for metrics as there can be different tables being written to which
-      // result in different service call metrics labels. ServiceCallMetric items are created
-      // on-demand and added to the cache.
+      
+      
+      
       writeMetricsByTableName =
           CacheBuilder.newBuilder()
               .maximumSize(METRICS_CACHE_SIZE)
@@ -1827,7 +1810,7 @@ public class SpannerIO {
                     }
                   });
 
-        // resolved at runtime for metrics report purpose. SpannerConfig may not have projectId set.
+        
         String projectId = resolveSpannerProjectId(spannerConfig);
     }
 
@@ -1840,7 +1823,7 @@ public class SpannerIO {
     public void processElement(ProcessContext c) throws Exception {
       List<MutationGroup> mutations = ImmutableList.copyOf(c.element());
 
-      // Batch upsert rows.
+      
       try {
         mutationGroupBatchesReceived.inc();
         mutationGroupsReceived.inc(mutations.size());
@@ -1852,7 +1835,7 @@ public class SpannerIO {
       } catch (SpannerException e) {
         mutationGroupBatchesWriteFail.inc();
         if (failureMode == FailureMode.REPORT_FAILURES) {
-          // fall through and retry individual mutationGroups.
+          
         } else if (failureMode == FailureMode.FAIL_FAST) {
           mutationGroupsWriteFail.inc(mutations.size());
           LOG.error("Failed to write a batch of mutation groups", e);
@@ -1862,7 +1845,7 @@ public class SpannerIO {
         }
       }
 
-      // If we are here, writing a batch has failed, retry individual mutations.
+      
       for (MutationGroup mg : mutations) {
         try {
           spannerWriteRetries.inc();
@@ -1920,7 +1903,7 @@ public class SpannerIO {
 
       while (true) {
         Stopwatch timer = Stopwatch.createStarted();
-        // loop is broken on success, timeout backoff/retry attempts exceeded, or other failure.
+        
         try {
           spannerWriteSuccess.inc();
           return;
@@ -1928,7 +1911,7 @@ public class SpannerIO {
           if (exception.getErrorCode() == ErrorCode.DEADLINE_EXCEEDED) {
             spannerWriteTimeouts.inc();
 
-            // Potentially backoff/retry after DEADLINE_EXCEEDED.
+            
             long sleepTimeMsecs = backoff.nextBackOffMillis();
             if (sleepTimeMsecs == BackOff.STOP) {
               LOG.error(
@@ -1949,10 +1932,10 @@ public class SpannerIO {
             try {
               sleeper.sleep(sleepTimeMsecs);
             } catch (InterruptedException e) {
-              // ignore.
+              
             }
           } else {
-            // Some other failure: pass up the stack.
+            
             spannerWriteFail.inc();
             throw exception;
           }
@@ -1963,7 +1946,7 @@ public class SpannerIO {
     }
   }
 
-  private SpannerIO() {} // Prevent construction.
+  private SpannerIO() {} 
 
   private static HashMap<String, String> buildServiceCallMetricLabels(SpannerConfig config) {
     HashMap<String, String> baseLabels = new HashMap<>();

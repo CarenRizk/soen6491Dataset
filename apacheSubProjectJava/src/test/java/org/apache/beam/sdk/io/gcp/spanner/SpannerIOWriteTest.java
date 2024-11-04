@@ -1,20 +1,3 @@
-/*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package org.apache.beam.sdk.io.gcp.spanner;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -136,7 +119,7 @@ public class SpannerIOWriteTest implements Serializable {
     MockitoAnnotations.initMocks(this);
     serviceFactory = new FakeServiceFactory();
 
-    // Setup the ProcessWideContainer for testing metrics are set.
+    
     MetricsContainerImpl container = new MetricsContainerImpl(null);
     MetricsEnvironment.setProcessWideContainer(container);
     MetricsEnvironment.setCurrentContainer(container);
@@ -244,9 +227,9 @@ private static Builder buildStructWithTableAndColumnNames(String tableName, Stri
               buildUpsertMutation(2L),
               buildUpsertMutation(3L),
               buildUpsertMutation(4L),
-              buildUpsertMutation(5L)), // not batchable - too big.
+              buildUpsertMutation(5L)), 
           buildMutationGroup(buildDeleteMutation(1L)),
-          buildMutationGroup(buildDeleteMutation(5L, 6L)), // not point delete.
+          buildMutationGroup(buildDeleteMutation(5L, 6L)), 
           buildMutationGroup(all),
           buildMutationGroup(prefix),
           buildMutationGroup(range)
@@ -257,7 +240,7 @@ private static Builder buildStructWithTableAndColumnNames(String tableName, Stri
 
     verifyCapturedBatchableMutationGroups(mutationGroups, testFn);
 
-    // Verify captured unbatchable mutations
+    
     Iterable<MutationGroup> unbatchableMutations =
         Iterables.concat(mutationGroupListCaptor.getAllValues());
     assertThat(
@@ -267,8 +250,8 @@ private static Builder buildStructWithTableAndColumnNames(String tableName, Stri
                 buildUpsertMutation(2L),
                 buildUpsertMutation(3L),
                 buildUpsertMutation(4L),
-                buildUpsertMutation(5L)), // not batchable - too big.
-            buildMutationGroup(buildDeleteMutation(5L, 6L)), // not point delete.
+                buildUpsertMutation(5L)), 
+            buildMutationGroup(buildDeleteMutation(5L, 6L)), 
             buildMutationGroup(all),
             buildMutationGroup(prefix),
             buildMutationGroup(range)));
@@ -277,7 +260,7 @@ private static Builder buildStructWithTableAndColumnNames(String tableName, Stri
 private void verifyCapturedBatchableMutationGroups(MutationGroup[] mutationGroups, BatchableMutationFilterFn testFn) {
 	processMutationGroups(mutationGroups, testFn);
 
-    // Verify captured batchable elements.
+    
     assertThat(
         mutationGroupCaptor.getAllValues(),
         containsInAnyOrder(
@@ -291,11 +274,11 @@ private void processMutationGroups(MutationGroup[] mutationGroups, BatchableMuta
         Mockito.mock(ProcessContext.class);
     when(mockProcessContext.sideInput(any())).thenReturn(getSchema());
 
-    // Capture the outputs.
+    
     doNothing().when(mockProcessContext).output(mutationGroupCaptor.capture());
     doNothing().when(mockProcessContext).output(any(), mutationGroupListCaptor.capture());
 
-    // Process all elements.
+    
     for (MutationGroup m : mutationGroups) {
       when(mockProcessContext.element()).thenReturn(m);
       testFn.processElement(mockProcessContext);
@@ -319,17 +302,17 @@ private void processMutationGroups(MutationGroup[] mutationGroups, BatchableMuta
         Mockito.mock(ProcessContext.class);
     when(mockProcessContext.sideInput(any())).thenReturn(getSchema());
 
-    // Capture the outputs.
+    
     doNothing().when(mockProcessContext).output(mutationGroupCaptor.capture());
     doNothing().when(mockProcessContext).output(any(), mutationGroupListCaptor.capture());
 
-    // Process all elements.
+    
     for (MutationGroup m : mutationGroups) {
       when(mockProcessContext.element()).thenReturn(m);
       testFn.processElement(mockProcessContext);
     }
 
-    // Verify captured batchable elements.
+    
     assertThat(
         mutationGroupCaptor.getAllValues(),
         containsInAnyOrder(
@@ -337,7 +320,7 @@ private void processMutationGroups(MutationGroup[] mutationGroups, BatchableMuta
             buildMutationGroup(buildUpsertMutation(2L), buildUpsertMutation(3L)),
             buildMutationGroup(buildDeleteMutation(1L))));
 
-    // Verify captured unbatchable mutations
+    
     Iterable<MutationGroup> unbatchableMutations =
         Iterables.concat(mutationGroupListCaptor.getAllValues());
     assertThat(
@@ -347,8 +330,8 @@ private void processMutationGroups(MutationGroup[] mutationGroups, BatchableMuta
                 buildUpsertMutation(1L),
                 buildUpsertMutation(3L),
                 buildUpsertMutation(4L),
-                buildUpsertMutation(5L)), // not batchable - too big.
-            buildMutationGroup(buildDeleteMutation(5L, 6L)), // not point delete.
+                buildUpsertMutation(5L)), 
+            buildMutationGroup(buildDeleteMutation(5L, 6L)), 
             buildMutationGroup(all),
             buildMutationGroup(prefix),
             buildMutationGroup(range)));
@@ -367,7 +350,7 @@ private void processMutationGroups(MutationGroup[] mutationGroups, BatchableMuta
 
     verifyCapturedBatchableMutationGroups(mutationGroups, testFn);
 
-    // Verify captured unbatchable mutations
+    
     Iterable<MutationGroup> unbatchableMutations =
         Iterables.concat(mutationGroupListCaptor.getAllValues());
     assertThat(
@@ -377,8 +360,8 @@ private void processMutationGroups(MutationGroup[] mutationGroups, BatchableMuta
                 buildUpsertMutation(1L),
                 buildUpsertMutation(3L),
                 buildUpsertMutation(4L),
-                buildUpsertMutation(5L)), // not batchable - too many rows.
-            buildMutationGroup(buildDeleteMutation(5L, 6L)), // not point delete.
+                buildUpsertMutation(5L)), 
+            buildMutationGroup(buildDeleteMutation(5L, 6L)), 
             buildMutationGroup(all),
             buildMutationGroup(prefix),
             buildMutationGroup(range)));
@@ -393,9 +376,9 @@ private MutationGroup[] createMutationGroups(Mutation all, Mutation prefix, Muta
               buildUpsertMutation(1L),
               buildUpsertMutation(3L),
               buildUpsertMutation(4L),
-              buildUpsertMutation(5L)), // not batchable - too many rows.
+              buildUpsertMutation(5L)), 
           buildMutationGroup(buildDeleteMutation(1L)),
-          buildMutationGroup(buildDeleteMutation(5L, 6L)), // not point delete.
+          buildMutationGroup(buildDeleteMutation(5L, 6L)), 
           buildMutationGroup(all),
           buildMutationGroup(prefix),
           buildMutationGroup(range)
@@ -417,10 +400,10 @@ private MutationGroup[] createMutationGroups(Mutation all, Mutation prefix, Muta
 
     processMutationGroups(mutationGroups, testFn);
 
-    // Verify captured batchable elements.
+    
     assertTrue(mutationGroupCaptor.getAllValues().isEmpty());
 
-    // Verify captured unbatchable mutations
+    
     Iterable<MutationGroup> unbatchableMutations =
         Iterables.concat(mutationGroupListCaptor.getAllValues());
     assertThat(unbatchableMutations, containsInAnyOrder(mutationGroups));
@@ -431,10 +414,10 @@ private MutationGroup[] createMutationGroups(Mutation all, Mutation prefix, Muta
 
     GatherSortCreateBatchesFn testFn =
         new GatherSortCreateBatchesFn(
-            10000000, // batch bytes
-            100, // batch up to 35 mutated cells.
-            5, // batch rows
-            100, // groupingFactor
+            10000000, 
+            100, 
+            5, 
+            100, 
             null);
 
     GatherSortCreateBatchesFn.ProcessContext mockProcessContext =
@@ -443,17 +426,17 @@ private MutationGroup[] createMutationGroups(Mutation all, Mutation prefix, Muta
         Mockito.mock(FinishBundleContext.class);
     when(mockProcessContext.sideInput(any())).thenReturn(getSchema());
 
-    // Capture the outputs.
+    
     doNothing()
         .when(mockFinishBundleContext)
         .output(mutationGroupListCaptor.capture(), any(), any());
 
     MutationGroup[] mutationGroups =
         new MutationGroup[] {
-          // Unsorted group of 12 mutations.
-          // each mutation is considered 7 cells,
-          // should be sorted and output as 2 lists of 5, then 1 list of 2
-          // with mutations sorted in order.
+          
+          
+          
+          
           buildMutationGroup(buildUpsertMutation(4L)),
           buildMutationGroup(buildUpsertMutation(1L)),
           buildMutationGroup(buildUpsertMutation(7L)),
@@ -468,10 +451,10 @@ private MutationGroup[] createMutationGroups(Mutation all, Mutation prefix, Muta
           buildMutationGroup(buildUpsertMutation(5L))
         };
 
-    // Process all elements as one bundle.
+    
     for (MutationGroup m : mutationGroups) {
       when(mockProcessContext.element()).thenReturn(m);
-      // outputReceiver should not be called until end of bundle.
+      
       testFn.processElement(mockProcessContext, null);
     }
     testFn.finishBundle(mockFinishBundleContext);
@@ -479,7 +462,7 @@ private MutationGroup[] createMutationGroups(Mutation all, Mutation prefix, Muta
     verify(mockProcessContext, never()).output(any());
     verify(mockFinishBundleContext, times(3)).output(any(), any(), any());
 
-    // Verify output are 3 batches of sorted values
+    
     assertThat(
         mutationGroupListCaptor.getAllValues(),
         contains(
@@ -503,13 +486,13 @@ private MutationGroup[] createMutationGroups(Mutation all, Mutation prefix, Muta
   @Test
   public void testGatherBundleAndSortFn_flushOversizedBundle() throws Exception {
 
-    // Setup class to bundle every 6 rows and create batches of 2.
+    
     GatherSortCreateBatchesFn testFn =
         new GatherSortCreateBatchesFn(
-            10000000, // batch bytes
-            100, // batch up to 14 mutated cells.
-            2, // batch rows
-            3, // groupingFactor
+            10000000, 
+            100, 
+            2, 
+            3, 
             null);
 
     GatherSortCreateBatchesFn.ProcessContext mockProcessContext =
@@ -519,51 +502,51 @@ private MutationGroup[] createMutationGroups(Mutation all, Mutation prefix, Muta
     when(mockProcessContext.sideInput(any())).thenReturn(getSchema());
     OutputReceiver<Iterable<MutationGroup>> mockOutputReceiver = mock(OutputReceiver.class);
 
-    // Capture the outputs.
+    
     doNothing().when(mockOutputReceiver).output(mutationGroupListCaptor.capture());
-    // Capture the outputs.
+    
     doNothing()
         .when(mockFinishBundleContext)
         .output(mutationGroupListCaptor.capture(), any(), any());
 
     MutationGroup[] mutationGroups =
         new MutationGroup[] {
-          // Unsorted group of 12 mutations.
-          // each mutation is considered 7 cells,
-          // should be sorted and output as 2 lists of 5, then 1 list of 2
-          // with mutations sorted in order.
+          
+          
+          
+          
           buildMutationGroup(buildUpsertMutation(4L)),
           buildMutationGroup(buildUpsertMutation(1L)),
           buildMutationGroup(buildUpsertMutation(7L)),
           buildMutationGroup(buildUpsertMutation(9L)),
           buildMutationGroup(buildUpsertMutation(10L)),
           buildMutationGroup(buildUpsertMutation(11L)),
-          // end group
+          
           buildMutationGroup(buildUpsertMutation(2L)),
-          buildMutationGroup(buildDeleteMutation(8L)), // end batch
+          buildMutationGroup(buildDeleteMutation(8L)), 
           buildMutationGroup(buildUpsertMutation(3L)),
-          buildMutationGroup(buildUpsertMutation(6L)), // end batch
+          buildMutationGroup(buildUpsertMutation(6L)), 
           buildMutationGroup(buildUpsertMutation(5L))
-          // end bundle, so end group and end batch.
+          
         };
 
-    // Process all elements as one bundle.
+    
     for (MutationGroup m : mutationGroups) {
       when(mockProcessContext.element()).thenReturn(m);
       testFn.processElement(mockProcessContext, mockOutputReceiver);
     }
     testFn.finishBundle(mockFinishBundleContext);
 
-    // processElement ouput receiver should have been called 3 times when the 1st group was full.
+    
     verify(mockOutputReceiver, times(3)).output(any());
-    // finsihBundleContext output should be called 3 times when the bundle was finished.
+    
     verify(mockFinishBundleContext, times(3)).output(any(), any(), any());
 
     List<Iterable<MutationGroup>> mgListGroups = mutationGroupListCaptor.getAllValues();
 
     assertEquals(6, mgListGroups.size());
-    // verify contents of 6 sorted groups.
-    // first group should be 1,3,4,7,9,11
+    
+    
     assertThat(
         mgListGroups.get(0),
         contains(
@@ -580,7 +563,7 @@ private MutationGroup[] createMutationGroups(Mutation all, Mutation prefix, Muta
             buildMutationGroup(buildUpsertMutation(10L)),
             buildMutationGroup(buildUpsertMutation(11L))));
 
-    // second group at finishBundle should be 2,3,5,6,8
+    
     assertThat(
         mgListGroups.get(3),
         contains(
@@ -597,13 +580,13 @@ private MutationGroup[] createMutationGroups(Mutation all, Mutation prefix, Muta
   @Test
   public void testBatchFn_cells() throws Exception {
 
-    // Setup class to batch every 3 mutations (3xCELLS_PER_KEY cell mutations)
+    
     GatherSortCreateBatchesFn testFn =
         new GatherSortCreateBatchesFn(
-            10000000, // batch bytes
-            3 * CELLS_PER_KEY, // batch up to 21 mutated cells - 3 mutations.
-            100, // batch rows
-            100, // groupingFactor
+            10000000, 
+            3 * CELLS_PER_KEY, 
+            100, 
+            100, 
             null);
 
     testAndVerifyBatches(testFn);
@@ -614,13 +597,13 @@ private MutationGroup[] createMutationGroups(Mutation all, Mutation prefix, Muta
 
     long mutationSize = MutationSizeEstimator.sizeOf(buildUpsertMutation(1L));
 
-    // Setup class to bundle every 3 mutations by size)
+    
     GatherSortCreateBatchesFn testFn =
         new GatherSortCreateBatchesFn(
-            mutationSize * 3, // batch bytes = 3 mutations.
-            100, // batch cells
-            100, // batch rows
-            100, // groupingFactor
+            mutationSize * 3, 
+            100, 
+            100, 
+            100, 
             null);
 
     testAndVerifyBatches(testFn);
@@ -629,13 +612,13 @@ private MutationGroup[] createMutationGroups(Mutation all, Mutation prefix, Muta
   @Test
   public void testBatchFn_rows() throws Exception {
 
-    // Setup class to bundle every 3 rows
+    
     GatherSortCreateBatchesFn testFn =
         new GatherSortCreateBatchesFn(
-            10000, // batch bytes = 3 mutations.
-            100, // batch cells
-            3, // batch rows
-            100, // groupingFactor
+            10000, 
+            100, 
+            3, 
+            100, 
             null);
 
     testAndVerifyBatches(testFn);
@@ -648,7 +631,7 @@ private MutationGroup[] createMutationGroups(Mutation all, Mutation prefix, Muta
         Mockito.mock(FinishBundleContext.class);
     when(mockProcessContext.sideInput(any())).thenReturn(getSchema());
 
-    // Capture the output at finish bundle..
+    
     doNothing()
         .when(mockFinishBundleContext)
         .output(mutationGroupListCaptor.capture(), any(), any());
@@ -668,7 +651,7 @@ private MutationGroup[] createMutationGroups(Mutation all, Mutation prefix, Muta
             buildMutationGroup(buildUpsertMutation(11L)),
             buildMutationGroup(buildUpsertMutation(2L)));
 
-    // Process elements.
+    
     for (MutationGroup m : mutationGroups) {
       when(mockProcessContext.element()).thenReturn(m);
       testFn.processElement(mockProcessContext, null);
@@ -680,7 +663,7 @@ private MutationGroup[] createMutationGroups(Mutation all, Mutation prefix, Muta
     List<Iterable<MutationGroup>> batches = mutationGroupListCaptor.getAllValues();
     assertEquals(4, batches.size());
 
-    // verify contents of 4 batches.
+    
     assertThat(
         batches.get(0),
         contains(
@@ -691,7 +674,7 @@ private MutationGroup[] createMutationGroups(Mutation all, Mutation prefix, Muta
         batches.get(1),
         contains(
             buildMutationGroup(
-                buildUpsertMutation(4L)))); // small batch : next mutation group is too big.
+                buildUpsertMutation(4L)))); 
     assertThat(
         batches.get(2),
         contains(

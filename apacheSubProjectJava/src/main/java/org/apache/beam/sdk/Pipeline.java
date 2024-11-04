@@ -1,20 +1,3 @@
-/*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package org.apache.beam.sdk;
 
 import static org.apache.beam.vendor.guava.v32_1_2_jre.com.google.common.base.Preconditions.checkNotNull;
@@ -73,7 +56,7 @@ import org.slf4j.LoggerFactory;
 
 
 @SuppressWarnings({
-  "nullness" // TODO(https://github.com/apache/beam/issues/20497)
+  "nullness" 
 })
 public class Pipeline {
   private static final Logger LOG = LoggerFactory.getLogger(Pipeline.class);
@@ -84,11 +67,6 @@ public class Pipeline {
       super(cause);
     }
   }
-
-  /////////////////////////////////////////////////////////////////////////////
-  // Public operations.
-
-  
   public static Pipeline create() {
     Pipeline pipeline = new Pipeline(PipelineOptionsFactory.create());
     LOG.debug("Creating {}", pipeline);
@@ -97,7 +75,6 @@ public class Pipeline {
 
   
   public static Pipeline create(PipelineOptions options) {
-    // TODO: fix runners that mutate PipelineOptions in this method, then remove this line
     PipelineRunner.fromOptions(options);
 
     Pipeline pipeline = new Pipeline(options);
@@ -192,14 +169,14 @@ public class Pipeline {
           @Override
           public CompositeBehavior enterCompositeTransform(Node node) {
             if (!node.isRootNode() && freedNodes.contains(node.getEnclosingNode())) {
-              // This node will be freed because its parent will be freed.
+              
               freedNodes.add(node);
               return CompositeBehavior.ENTER_TRANSFORM;
             }
             if (!node.isRootNode()
                 && override.getMatcher().matches(node.toAppliedPTransform(getPipeline()))) {
               matches.add(node);
-              // This node will be freed. When we visit any of its children, they will also be freed
+              
               freedNodes.add(node);
             }
             return CompositeBehavior.ENTER_TRANSFORM;
@@ -231,18 +208,18 @@ public class Pipeline {
   
   public PipelineResult run(PipelineOptions options) {
     PipelineRunner<? extends PipelineResult> runner = PipelineRunner.fromOptions(options);
-    // Ensure all of the nodes are fully specified before a PipelineRunner gets access to the
-    // pipeline.
+    
+    
     LOG.debug("Running {} via {}", this, runner);
     try {
       validate(options);
       validateErrorHandlers();
       return runner.run(this);
     } catch (UserCodeException e) {
-      // This serves to replace the stack with one that ends here and
-      // is caused by the caught UserCodeException, thereby splicing
-      // out all the stack frames in between the PipelineRunner itself
-      // and where the worker calls into the user's code.
+      
+      
+      
+      
       throw new PipelineExecutionException(e.getCause());
     }
   }
@@ -269,10 +246,6 @@ public class Pipeline {
     return errorHandler;
   }
 
-  /////////////////////////////////////////////////////////////////////////////
-  // Below here are operations that aren't normally called by users.
-
-  
   @Deprecated
   public void setCoderRegistry(CoderRegistry coderRegistry) {
     this.coderRegistry = coderRegistry;
@@ -366,9 +339,6 @@ public class Pipeline {
     return input.getPipeline().applyInternal(name, input, transform);
   }
 
-  /////////////////////////////////////////////////////////////////////////////
-  // Below here are internal operations, never called by users.
-
   private final TransformHierarchy transforms;
   private final Set<String> usedFullNames = new HashSet<>();
 
@@ -442,7 +412,7 @@ public class Pipeline {
       OutputT newOutput = replacement.getTransform().expand(originalInput);
       Map<PCollection<?>, ReplacementOutput> originalToReplacement =
           replacementFactory.mapOutputs(original.getOutputs(), newOutput);
-      // Ensure the internal TransformHierarchy data structures are consistent.
+      
       transforms.setOutput(newOutput);
       transforms.replaceOutputs(originalToReplacement);
       checkState(
@@ -473,7 +443,7 @@ public class Pipeline {
               "The following transforms do not have stable unique names: {}",
               Joiner.on(", ").join(transform(errors, new KeysExtractor())));
           break;
-        case ERROR: // be very verbose here since it will just fail the execution
+        case ERROR: 
           throw new IllegalStateException(
               String.format(
                       "Pipeline update will not be possible because the following transforms do"
@@ -501,7 +471,7 @@ public class Pipeline {
       if (usedFullNames.add(candidate)) {
         return candidate;
       }
-      // A duplicate!  Retry.
+      
       name = origName + suffixNum++;
     }
   }

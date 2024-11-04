@@ -1,20 +1,3 @@
-/*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package org.apache.beam.sdk.transforms;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -116,10 +99,10 @@ public class FlattenTest implements Serializable {
 
     List<Long> expectedLongs = new ArrayList<>();
     for (int i = 0; i < count; i++) {
-      // The duplicated input
+      
       expectedLongs.add((long) i);
       expectedLongs.add((long) i);
-      // The bigger longs
+      
       expectedLongs.add(i + 10L);
     }
     PAssert.that(flattened).containsInAnyOrder(expectedLongs);
@@ -192,7 +175,7 @@ public class FlattenTest implements Serializable {
   @Test
   @Category(NeedsRunner.class)
   public void testFlattenNoListsNoCoder() {
-    // not ValidatesRunner because it should fail at pipeline construction time anyhow.
+    
     thrown.expect(IllegalStateException.class);
     thrown.expectMessage("Unable to return a default Coder");
 
@@ -201,7 +184,7 @@ public class FlattenTest implements Serializable {
     p.run();
   }
 
-  /////////////////////////////////////////////////////////////////////////////
+  
 
   @Test
   @Category(ValidatesRunner.class)
@@ -238,7 +221,7 @@ public class FlattenTest implements Serializable {
     p.run();
   }
 
-  /////////////////////////////////////////////////////////////////////////////
+  
 
   @Test
   @Category(NeedsRunner.class)
@@ -314,7 +297,7 @@ private PCollection<String> createAndWindowInput1() {
     Assert.assertEquals("Flatten.PCollections", Flatten.<String>pCollections().getName());
   }
 
-  /////////////////////////////////////////////////////////////////////////////
+  
 
   private static class IdentityFn<T> extends DoFn<T, T> {
     @ProcessElement

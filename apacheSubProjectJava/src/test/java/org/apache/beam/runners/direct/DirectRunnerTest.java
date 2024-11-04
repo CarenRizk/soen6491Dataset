@@ -1,20 +1,3 @@
-/*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package org.apache.beam.runners.direct;
 
 import static org.apache.beam.vendor.guava.v32_1_2_jre.com.google.common.base.Preconditions.checkState;
@@ -111,7 +94,7 @@ import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
 @SuppressWarnings({
-  "rawtypes", // TODO(https://github.com/apache/beam/issues/20447)
+  "rawtypes", 
 })
 public class DirectRunnerTest implements Serializable {
   @Rule public transient ExpectedException thrown = ExpectedException.none();
@@ -261,16 +244,16 @@ private PCollection<String> countElementsAndFormatResults(Pipeline p) {
                 new DoFn<Long, Long>() {
                   @ProcessElement
                   public void hang(ProcessContext context) throws InterruptedException {
-                    // Hangs "forever"
+                    
                     Thread.sleep(Long.MAX_VALUE);
                   }
                 }));
     PipelineResult result = p.run();
-    // The pipeline should never complete;
+    
     assertThat(result.getState(), is(State.RUNNING));
-    // Must time out, otherwise this test will never complete
+    
     assertEquals(null, result.waitUntilFinish(Duration.millis(1L)));
-    // Ensure multiple calls complete
+    
     assertEquals(null, result.waitUntilFinish(Duration.millis(1L)));
   }
 
@@ -297,7 +280,7 @@ private PCollection<String> countElementsAndFormatResults(Pipeline p) {
     try {
       handler.get(10, TimeUnit.SECONDS);
     } catch (ExecutionException | InterruptedException | TimeoutException e) {
-      // timeout means it never reaches DONE state
+      
       throw new RuntimeException(e);
     } finally {
       executor.shutdownNow();
@@ -317,13 +300,13 @@ private PCollection<String> countElementsAndFormatResults(Pipeline p) {
                 new DoFn<String, String>() {
                   @ProcessElement
                   public void onElement(final ProcessContext ctx) {
-                    // no-op
+                    
                   }
 
                   @Teardown
                   public void teardown() {
-                    // just to not have a fast execution hiding an issue until we have a shutdown
-                    // callback
+                    
+                    
                     try {
                       Thread.sleep(1000);
                     } catch (final InterruptedException e) {
@@ -598,15 +581,15 @@ private void processAndModifyListOutput(Pipeline pipeline) {
                     .withAllowedLateness(Duration.ZERO))
             .apply(Sum.integersGlobally());
 
-    // the result should be 6, after the data will have been written
+    
     PAssert.that(result).containsInAnyOrder(6);
 
     PipelineResult run = pipeline.run();
 
-    // wait until a message has been written to the start queue
+    
     while (start.take() == null) {}
 
-    // and publish messages
+    
     messages.add(1).add(2).add(3).terminate();
 
     run.waitUntilFinish();
@@ -667,7 +650,7 @@ private void processAndModifyListOutput(Pipeline pipeline) {
     @Override
     public List<? extends BoundedSource<T>> split(
         long desiredBundleSizeBytes, PipelineOptions options) throws Exception {
-      // Must have more than
+      
       checkState(
           desiredBundleSizeBytes < getEstimatedSizeBytes(options),
           "Must split into more than one source");
@@ -710,7 +693,7 @@ private void processAndModifyListOutput(Pipeline pipeline) {
 
         @Override
         public void finalizeCheckpoint() throws IOException {
-          // nop
+          
         }
       }
 
@@ -783,7 +766,7 @@ private void processAndModifyListOutput(Pipeline pipeline) {
 
           @Override
           public void close() throws IOException {
-            // nop
+            
           }
         };
       }

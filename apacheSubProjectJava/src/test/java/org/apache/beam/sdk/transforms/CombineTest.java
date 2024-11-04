@@ -1,20 +1,3 @@
-/*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package org.apache.beam.sdk.transforms;
 
 import static org.apache.beam.sdk.testing.CombineFnTester.testCombineFn;
@@ -97,8 +80,8 @@ import org.junit.runners.JUnit4;
 
 
 public class CombineTest implements Serializable {
-  // This test is Serializable, just so that it's easy to have
-  // anonymous inner classes inside the non-static test methods.
+  
+  
 
   
   public abstract static class SharedTestBase {
@@ -185,8 +168,8 @@ public class CombineTest implements Serializable {
       pipeline.run();
     }
 
-    ////////////////////////////////////////////////////////////////////////////
-    // Test classes, for different kinds of combining fns.
+    
+    
 
     
     public static class TestCounter
@@ -265,8 +248,8 @@ public class CombineTest implements Serializable {
 
       @Override
       public Coder<Counter> getAccumulatorCoder(CoderRegistry registry, Coder<Integer> inputCoder) {
-        // This is a *very* inefficient encoding to send over the wire, but suffices
-        // for tests.
+        
+        
         return SerializableCoder.of(Counter.class);
       }
     }
@@ -275,7 +258,7 @@ public class CombineTest implements Serializable {
     public static class TestCombineFn
         extends CombineFn<Integer, TestCombineFn.Accumulator, String> {
 
-      // Not serializable.
+      
       static class Accumulator {
         final String seed;
         String value;
@@ -649,7 +632,7 @@ public class CombineTest implements Serializable {
     @Test
     @Category({ValidatesRunner.class, UsesSideInputs.class})
     @SuppressWarnings({
-      "rawtypes", // TODO(https://github.com/apache/beam/issues/20447)
+      "rawtypes", 
       "unchecked"
     })
     public void testSimpleCombine() {
@@ -682,7 +665,7 @@ public class CombineTest implements Serializable {
       runTestBasicCombine(EMPTY_TABLE, ImmutableSet.of(), Collections.emptyList());
     }
 
-    // Checks that Min, Max, Mean, Sum (operations that pass-through to Combine) have good names.
+    
     @Test
     public void testCombinerNames() {
       Combine.PerKey<String, Integer, Integer> min = Min.integersPerKey();
@@ -873,7 +856,7 @@ public class CombineTest implements Serializable {
         SerializableUtils.clone(combiner.getClass());
         lambdaClassSerializationThrows = false;
       } catch (IllegalArgumentException e) {
-        // Expected
+        
         lambdaClassSerializationThrows = true;
       }
       Assume.assumeTrue(
@@ -882,7 +865,7 @@ public class CombineTest implements Serializable {
           lambdaClassSerializationThrows);
 
       Combine.Globally<?, ?> combine = Combine.globally(combiner);
-      SerializableUtils.clone(combine); // should not throw.
+      SerializableUtils.clone(combine); 
     }
 
     @Test
@@ -899,7 +882,7 @@ public class CombineTest implements Serializable {
     @Test
     @Category({ValidatesRunner.class, UsesSideInputs.class})
     @SuppressWarnings({
-      "rawtypes", // TODO(https://github.com/apache/beam/issues/20447)
+      "rawtypes", 
       "unchecked"
     })
     public void testSimpleCombineWithContext() {
@@ -1036,9 +1019,9 @@ public class CombineTest implements Serializable {
 
                         @Override
                         public List<String> mergeAccumulators(Iterable<List<String>> accumulators) {
-                          // Mutate all of the accumulators. Instances should be used in only one
-                          // place, and not
-                          // reused after merging.
+                          
+                          
+                          
                           List<String> cur = createAccumulator();
                           for (List<String> accumulator : accumulators) {
                             accumulator.addAll(cur);
@@ -1070,7 +1053,7 @@ public class CombineTest implements Serializable {
     @Test
     @Category({ValidatesRunner.class, UsesSideInputs.class})
     public void testSlidingWindowsCombineWithContext() {
-      // [a: 1, 1], [a: 4; b: 1], [b: 13]
+      
       PCollection<KV<String, Integer>> perKeyInput =
           pipeline
               .apply(
@@ -1133,8 +1116,8 @@ public class CombineTest implements Serializable {
               .apply(Sum.integersGlobally())
               .apply(ParDo.of(new FormatPaneInfo()));
 
-      // The actual elements produced are nondeterministic. Could be one, could be two.
-      // But it should certainly have a final element with the correct final sum.
+      
+      
       PAssert.that(output)
           .satisfies(
               input1 -> {

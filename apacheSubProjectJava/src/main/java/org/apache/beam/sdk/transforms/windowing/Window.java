@@ -1,20 +1,3 @@
-/*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package org.apache.beam.sdk.transforms.windowing;
 
 import com.google.auto.value.AutoValue;
@@ -37,7 +20,7 @@ import org.joda.time.Duration;
 
 @AutoValue
 @SuppressWarnings({
-  "nullness", // TODO(https://github.com/apache/beam/issues/20497)
+  "nullness", 
   "rawtypes"
 })
 public abstract class Window<T> extends PTransform<PCollection<T>, PCollection<T>> {
@@ -180,7 +163,7 @@ public abstract class Window<T> extends PTransform<PCollection<T>, PCollection<T
     WindowingStrategy<?, ?> outputStrategy =
         getOutputStrategyInternal(input.getWindowingStrategy());
 
-    // Make sure that the windowing strategy is complete & valid.
+    
     if (outputStrategy.isTriggerSpecified()
         && !(outputStrategy.getTrigger() instanceof DefaultTrigger)
         && !(outputStrategy.getWindowFn() instanceof GlobalWindows)
@@ -202,9 +185,9 @@ public abstract class Window<T> extends PTransform<PCollection<T>, PCollection<T
   }
 
   private boolean canProduceMultiplePanes(WindowingStrategy<?, ?> strategy) {
-    // The default trigger is Repeatedly.forever(AfterWatermark.pastEndOfWindow()); This fires
-    // for every late-arriving element if allowed lateness is nonzero, and thus we must have
-    // an accumulating mode specified
+    
+    
+    
     boolean dataCanArriveLate =
         !(strategy.getWindowFn() instanceof GlobalWindows)
             && strategy.getAllowedLateness().getMillis() > 0;
@@ -220,13 +203,13 @@ public abstract class Window<T> extends PTransform<PCollection<T>, PCollection<T
         getOutputStrategyInternal(input.getWindowingStrategy());
 
     if (getWindowFn() == null) {
-      // A new PCollection must be created in case input is reused in a different location as the
-      // two PCollections will, in general, have a different windowing strategy.
+      
+      
       return PCollectionList.of(input)
           .apply(Flatten.pCollections())
           .setWindowingStrategyInternal(outputStrategy);
     } else {
-      // This is the AssignWindows primitive
+      
       return input.apply(new Assign<>(this, outputStrategy));
     }
   }
@@ -321,9 +304,9 @@ public abstract class Window<T> extends PTransform<PCollection<T>, PCollection<T
     @Override
     public PCollection<T> expand(PCollection<T> input) {
       return input
-          // We first apply a (trivial) transform to the input PCollection to produce a new
-          // PCollection. This ensures that we don't modify the windowing strategy of the input
-          // which may be used elsewhere.
+          
+          
+          
           .apply(
               "Identity",
               MapElements.via(
@@ -333,7 +316,7 @@ public abstract class Window<T> extends PTransform<PCollection<T>, PCollection<T
                       return element;
                     }
                   }))
-          // Then we modify the windowing strategy.
+          
           .setWindowingStrategyInternal(input.getWindowingStrategy().withAlreadyMerged(false));
     }
   }

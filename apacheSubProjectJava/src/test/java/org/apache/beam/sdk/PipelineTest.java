@@ -1,20 +1,3 @@
-/*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package org.apache.beam.sdk;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -81,7 +64,7 @@ import org.junit.runners.JUnit4;
 
 @RunWith(JUnit4.class)
 @SuppressWarnings({
-  "rawtypes", // TODO(https://github.com/apache/beam/issues/20447)
+  "rawtypes", 
 })
 public class PipelineTest {
 
@@ -89,8 +72,8 @@ public class PipelineTest {
   @Rule public ExpectedException thrown = ExpectedException.none();
   @Rule public transient Timeout globalTimeout = Timeout.seconds(1200);
 
-  // Mock class that throws a user code exception during the call to
-  // Pipeline.run().
+  
+  
   static class TestPipelineRunnerThrowingUserException extends PipelineRunner<PipelineResult> {
 
     public static TestPipelineRunnerThrowingUserException fromOptions(PipelineOptions options) {
@@ -104,8 +87,8 @@ public class PipelineTest {
     }
   }
 
-  // Mock class that throws an SDK or API client code exception during
-  // the call to Pipeline.run().
+  
+  
   static class TestPipelineRunnerThrowingSdkException extends PipelineRunner<PipelineResult> {
 
     public static TestPipelineRunnerThrowingSdkException fromOptions(PipelineOptions options) {
@@ -123,10 +106,10 @@ public class PipelineTest {
     final PipelineOptions options = TestPipeline.testingPipelineOptions();
     final Pipeline p = Pipeline.create(options);
 
-    // Check pipeline runner correctly catches user errors.
+    
     thrown.expect(IllegalStateException.class);
     thrown.expectMessage(
-        new BaseMatcher<String>() { // more readable than a regex
+        new BaseMatcher<String>() { 
           @Override
           public void describeTo(final Description description) {
             description.appendText(
@@ -160,7 +143,7 @@ public class PipelineTest {
           }
         });
     p.apply(Create.of("a"))
-        // 2 anonymous classes are conflicting
+        
         .apply(
             ParDo.of(
                 new DoFn<String, String>() {
@@ -174,7 +157,7 @@ public class PipelineTest {
                 new DoFn<String, String>() {
                   @ProcessElement
                   public void onElement(final ProcessContext ctx) {
-                    // no-op
+                    
                   }
                 }));
     p.run();
@@ -186,7 +169,7 @@ public class PipelineTest {
     options.setRunner(TestPipelineRunnerThrowingUserException.class);
     Pipeline p = Pipeline.create(options);
 
-    // Check pipeline runner correctly catches user errors.
+    
     thrown.expect(PipelineExecutionException.class);
     thrown.expectCause(isA(IllegalStateException.class));
     thrown.expectMessage("user code exception");
@@ -199,16 +182,16 @@ public class PipelineTest {
     options.setRunner(TestPipelineRunnerThrowingSdkException.class);
     Pipeline p = Pipeline.create(options);
 
-    // Check pipeline runner correctly catches SDK errors.
+    
     try {
       p.run();
       fail("Should have thrown an exception.");
     } catch (RuntimeException exn) {
-      // Make sure the exception isn't a UserCodeException.
+      
       assertThat(exn, not(instanceOf(UserCodeException.class)));
-      // Assert that the message is correct.
+      
       assertThat(exn.getMessage(), containsString("SDK exception"));
-      // RuntimeException should be IllegalStateException.
+      
       assertThat(exn, instanceOf(IllegalStateException.class));
     }
   }
@@ -386,7 +369,7 @@ public class PipelineTest {
     pipeline.enableAbandonedNodeEnforcement(false);
     pipeline.apply(GenerateSequence.from(0));
 
-    // The order is such that the output of the second will match the first, which is permitted.
+    
     pipeline.replaceAll(
         ImmutableList.of(
             PTransformOverride.of(

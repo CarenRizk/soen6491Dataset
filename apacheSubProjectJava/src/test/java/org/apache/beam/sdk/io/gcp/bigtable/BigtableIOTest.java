@@ -1,20 +1,3 @@
-/*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package org.apache.beam.sdk.io.gcp.bigtable;
 
 import static org.apache.beam.sdk.options.ValueProvider.StaticValueProvider;
@@ -303,7 +286,7 @@ public class BigtableIOTest {
             .withInstanceId(options.getBigtableInstanceId())
             .withTableId(options.getBigtableTableId());
 
-    // Not running a pipeline therefore this is expected.
+    
     thrown.expect(PipelineRunMissingException.class);
 
     p.apply(read);
@@ -404,7 +387,7 @@ public class BigtableIOTest {
             .withTableId(table)
             .withServiceFactory(factory);
 
-    // Exception will be thrown by read.validate() when read is applied.
+    
     thrown.expect(IllegalArgumentException.class);
     thrown.expectMessage(String.format("Table %s does not exist", table));
 
@@ -464,35 +447,35 @@ public class BigtableIOTest {
     ByteKey endKey = ByteKey.copyFrom("key000000300".getBytes(StandardCharsets.UTF_8));
 
     service.setupSampleRowKeys(table, numRows / 10, "key000000100".length());
-    // Test prefix: [beginning, startKey).
+    
     final ByteKeyRange prefixRange = ByteKeyRange.ALL_KEYS.withEndKey(startKey);
     List<Row> prefixRows = filterToRange(testRows, prefixRange);
     runReadTest(defaultRead.withTableId(table).withKeyRange(prefixRange), prefixRows);
 
-    // Test suffix: [startKey, end).
+    
     final ByteKeyRange suffixRange = ByteKeyRange.ALL_KEYS.withStartKey(startKey);
     List<Row> suffixRows = filterToRange(testRows, suffixRange);
     runReadTest(defaultRead.withTableId(table).withKeyRange(suffixRange), suffixRows);
 
-    // Test restricted range: [startKey, endKey).
+    
     final ByteKeyRange middleRange = ByteKeyRange.of(startKey, endKey);
     List<Row> middleRows = filterToRange(testRows, middleRange);
     runReadTest(defaultRead.withTableId(table).withKeyRange(middleRange), middleRows);
 
-    //////// Size and content sanity checks //////////
+    
 
-    // Prefix, suffix, middle should be non-trivial (non-zero,non-all).
+    
     assertThat(prefixRows, allOf(hasSize(lessThan(numRows)), hasSize(greaterThan(0))));
     assertThat(suffixRows, allOf(hasSize(lessThan(numRows)), hasSize(greaterThan(0))));
     assertThat(middleRows, allOf(hasSize(lessThan(numRows)), hasSize(greaterThan(0))));
 
-    // Prefix + suffix should be exactly all rows.
+    
     List<Row> union = Lists.newArrayList(prefixRows);
     union.addAll(suffixRows);
     assertThat(
         "prefix + suffix = total", union, containsInAnyOrder(testRows.toArray(new Row[] {})));
 
-    // Suffix should contain the middle.
+    
     assertThat(suffixRows, hasItems(middleRows.toArray(new Row[] {})));
   }
 
@@ -540,7 +523,7 @@ public class BigtableIOTest {
     List<Row> rangeRows = filterToRanges(testRows, ranges);
     runReadTest(defaultRead.withTableId(table).withKeyRanges(ranges), rangeRows);
 
-    // range rows should be non-trivial (non-zero,non-all).
+    
     assertThat(rangeRows, allOf(hasSize(lessThan(numRows)), hasSize(greaterThan(0))));
   }
 
@@ -631,17 +614,17 @@ private BigtableSource extracted(final String table, final int numRows, final in
     final int numSamples = 1;
     final long bytesPerRow = 1L;
     BigtableSource source = extracted(table, numRows, numSamples, bytesPerRow);
-    // With 0 items read, all split requests will fail.
+    
     assertSplitAtFractionFails(source, 0, 0.1, null /* options */);
     assertSplitAtFractionFails(source, 0, 1.0, null /* options */);
-    // With 1 items read, all split requests past 1/10th will succeed.
+    
     assertSplitAtFractionSucceedsAndConsistent(source, 1, 0.333, null /* options */);
     assertSplitAtFractionSucceedsAndConsistent(source, 1, 0.666, null /* options */);
-    // With 3 items read, all split requests past 3/10ths will succeed.
+    
     assertSplitAtFractionFails(source, 3, 0.2, null /* options */);
     assertSplitAtFractionSucceedsAndConsistent(source, 3, 0.571, null /* options */);
     assertSplitAtFractionSucceedsAndConsistent(source, 3, 0.9, null /* options */);
-    // With 6 items read, all split requests past 6/10ths will succeed.
+    
     assertSplitAtFractionFails(source, 6, 0.5, null /* options */);
     assertSplitAtFractionSucceedsAndConsistent(source, 6, 0.7, null /* options */);
   }
@@ -659,11 +642,11 @@ private void setupAndSplitBigtableSource(final String table, final int numRows, 
 		throws Exception, @UnknownKeyFor @NonNull @Initialized Exception {
 	final long bytesPerRow = 100L;
 
-    // Set up test table data and sample row keys for size estimation and splitting.
+    
     makeTableData(table, numRows);
     service.setupSampleRowKeys(table, numSamples, bytesPerRow);
 
-    // Generate source and split it.
+    
     BigtableSource source =
         new BigtableSource(
             factory,
@@ -677,7 +660,7 @@ private void setupAndSplitBigtableSource(final String table, final int numRows, 
     List<BigtableSource> splits =
         source.split(numRows * bytesPerRow / numSamples, null /* options */);
 
-    // Test num splits and split equality.
+    
     assertThat(splits, hasSize(numSamples));
     assertSourcesEqualReferenceSource(source, splits, null /* options */);
 }
@@ -690,11 +673,11 @@ private void setupAndSplitBigtableSource(final String table, final int numRows, 
     final int numSamples = 10;
     final long bytesPerRow = 1L;
 
-    // Set up test table data and sample row keys for size estimation and splitting.
+    
     makeTableData(table, numRows);
     service.setupSampleRowKeys(table, numSamples, bytesPerRow);
 
-    // Generate source and split it.
+    
     BigtableSource source =
         new BigtableSource(
             factory,
@@ -707,7 +690,7 @@ private void setupAndSplitBigtableSource(final String table, final int numRows, 
             null /*size*/);
     List<BigtableSource> splits = source.split(0, null /* options */);
 
-    // Test num splits and split equality.
+    
     assertThat(splits, hasSize(numSamples));
     assertSourcesEqualReferenceSource(source, splits, null /* options */);
   }
@@ -743,11 +726,11 @@ private void setupAndSplitBigtableSource(final String table, final int numRows, 
     final long bytesPerRow = 100L;
     final int maxSplit = 3;
 
-    // Set up test table data and sample row keys for size estimation and splitting.
+    
     makeTableData(table, numRows);
     service.setupSampleRowKeys(table, numSamples, bytesPerRow);
 
-    // Construct few non contiguous key ranges [..1][1..2][3..4][4..5][6..7][8..9]
+    
     List<ByteKeyRange> keyRanges =
         Arrays.asList(
             ByteKeyRange.of(ByteKey.EMPTY, createByteKey(1)),
@@ -757,7 +740,7 @@ private void setupAndSplitBigtableSource(final String table, final int numRows, 
             ByteKeyRange.of(createByteKey(6), createByteKey(7)),
             ByteKeyRange.of(createByteKey(8), createByteKey(9)));
 
-    // Expected ranges after split and reduction by maxSplitCount is [..2][3..5][6..7][8..9]
+    
     List<ByteKeyRange> expectedKeyRangesAfterReducedSplits =
         Arrays.asList(
             ByteKeyRange.of(ByteKey.EMPTY, createByteKey(2)),
@@ -777,11 +760,11 @@ private void setupAndSplitBigtableSource(final String table, final int numRows, 
     final long bytesPerRow = 100L;
     final int maxSplit = 3;
 
-    // Set up test table data and sample row keys for size estimation and splitting.
+    
     makeTableData(table, numRows);
     service.setupSampleRowKeys(table, numSamples, bytesPerRow);
 
-    // Construct non contiguous key ranges [..1][2..3][4..5][6..7][8..9]
+    
     List<ByteKeyRange> keyRanges =
         Arrays.asList(
             ByteKeyRange.of(ByteKey.EMPTY, createByteKey(1)),
@@ -790,7 +773,7 @@ private void setupAndSplitBigtableSource(final String table, final int numRows, 
             ByteKeyRange.of(createByteKey(6), createByteKey(7)),
             ByteKeyRange.of(createByteKey(8), createByteKey(9)));
 
-    // Generate source and split it.
+    
     createAndSplitBigtableSource(table, maxSplit, keyRanges);
   }
 
@@ -822,7 +805,7 @@ private void createAndSplitBigtableSource(final String table, final int maxSplit
 
     assertAllSourcesHaveSingleRanges(reducedSplits);
 
-    // The expected split source ranges are exactly same as original
+    
     assertThat(
         actualRangesAfterSplit,
         IsIterableContainingInAnyOrder.containsInAnyOrder(keyRanges.toArray()));
@@ -837,11 +820,11 @@ private void createAndSplitBigtableSource(final String table, final int maxSplit
     final long bytesPerRow = 100L;
     final int maxSplit = 3;
 
-    // Set up test table data and sample row keys for size estimation and splitting.
+    
     makeTableData(table, numRows);
     service.setupSampleRowKeys(table, numSamples, bytesPerRow);
 
-    // Generate source and split it.
+    
     BigtableSource source =
         new BigtableSource(
             factory,
@@ -869,8 +852,8 @@ private void createAndSplitBigtableSource(final String table, final int maxSplit
       splits.add(source.withSingleRange(range));
     }
 
-    // Splits Source have ranges [..1][1..2][2..3][3..4][4..5][5..6][6..7][7..8][8..9][9..]
-    // expected reduced Split source ranges are [..4][4..8][8..]
+    
+    
     List<ByteKeyRange> expectedKeyRangesAfterReducedSplits =
         Arrays.asList(
             ByteKeyRange.of(ByteKey.EMPTY, createByteKey(4)),
@@ -899,12 +882,12 @@ private void createAndSplitBigtableSource(final String table, final int maxSplit
     final String table = "TEST-MANY-ROWS-SPLITS-TABLE-MULTIPLE-RANGES";
     final int numRows = 1500;
     final int numSamples = 10;
-    // Two more splits are generated because of the split keys at 500 and 1000.
-    // E.g. the split [450, 600) becomes [450, 500) and [500, 600).
+    
+    
     final int numSplits = 12;
     final long bytesPerRow = 100L;
 
-    // Set up test table data and sample row keys for size estimation and splitting.
+    
     makeTableData(table, numRows);
     service.setupSampleRowKeys(table, numSamples, bytesPerRow);
 
@@ -923,10 +906,10 @@ private void createAndSplitBigtableSource(final String table, final int maxSplit
                     StaticValueProvider.of(Collections.singletonList(service.getTableRange(table))))
                 .build(),
             null /*size*/);
-    List<BigtableSource> splits = // 10,000
+    List<BigtableSource> splits = 
         source.split(numRows * bytesPerRow / numSamples, null /* options */);
 
-    // Test num splits and split equality.
+    
     assertThat(splits, hasSize(numSplits));
     assertSourcesEqualReferenceSource(referenceSource, splits, null /* options */);
   }
@@ -938,7 +921,7 @@ private BigtableSource createBigtableSourceWithKeyRanges(final String table, Byt
             tableRange.withEndKey(splitKey1),
             tableRange.withStartKey(splitKey1).withEndKey(splitKey2),
             tableRange.withStartKey(splitKey2));
-    // Generate source and split it.
+    
     BigtableSource source =
         new BigtableSource(
             factory,
@@ -961,11 +944,11 @@ private BigtableSource createBigtableSourceWithKeyRanges(final String table, Byt
     final int numSplits = 20;
     final long bytesPerRow = 100L;
 
-    // Set up test table data and sample row keys for size estimation and splitting.
+    
     makeTableData(table, numRows);
     service.setupSampleRowKeys(table, numSamples, bytesPerRow);
 
-    // Generate source and split it.
+    
     BigtableSource source =
         new BigtableSource(
             factory,
@@ -978,7 +961,7 @@ private BigtableSource createBigtableSourceWithKeyRanges(final String table, Byt
             null /*size*/);
     List<BigtableSource> splits = source.split(numRows * bytesPerRow / numSplits, null);
 
-    // Test num splits and split equality.
+    
     assertThat(splits, hasSize(numSplits));
     assertSourcesEqualReferenceSource(source, splits, null /* options */);
   }
@@ -1000,11 +983,11 @@ private BigtableSource createBigtableSourceWithKeyRanges(final String table, Byt
     final int numSplits = 20;
     final long bytesPerRow = 100L;
 
-    // Set up test table data and sample row keys for size estimation and splitting.
+    
     makeTableData(table, numRows);
     service.setupSampleRowKeys(table, numSamples, bytesPerRow);
 
-    // Generate source and split it.
+    
     RowFilter filter =
         RowFilter.newBuilder().setRowKeyRegexFilter(ByteString.copyFromUtf8(".*17.*")).build();
     BigtableSource source =
@@ -1020,7 +1003,7 @@ private BigtableSource createBigtableSourceWithKeyRanges(final String table, Byt
             null /*size*/);
     List<BigtableSource> splits = source.split(numRows * bytesPerRow / numSplits, null);
 
-    // Test num splits and split equality.
+    
     assertThat(splits, hasSize(numSplits));
     assertSourcesEqualReferenceSource(source, splits, null /* options */);
   }
@@ -1034,7 +1017,7 @@ private BigtableSource createBigtableSourceWithKeyRanges(final String table, Byt
             .withTableId(table)
             .withoutValidation();
 
-    // validate() will throw if withoutValidation() isn't working
+    
     read.validate(TestPipeline.testingPipelineOptions());
   }
 
@@ -1047,7 +1030,7 @@ private BigtableSource createBigtableSourceWithKeyRanges(final String table, Byt
             .withTableId(table)
             .withoutValidation();
 
-    // validate() will throw if withoutValidation() isn't working
+    
     write.validate(TestPipeline.testingPipelineOptions());
   }
 
@@ -1168,7 +1151,7 @@ private BigtableSource createBigtableSourceWithKeyRanges(final String table, Byt
 
     PCollection<KV<ByteString, Iterable<Mutation>>> emptyInput = createEmptyInputPCollection();
 
-    // Exception will be thrown by write.validate() when writeToDynamic is applied.
+    
     thrown.expect(IllegalArgumentException.class);
     thrown.expectMessage(String.format("Table %s does not exist", table));
 
@@ -1218,17 +1201,17 @@ private PCollection<KV<ByteString, Iterable<Mutation>>> createEmptyInputPCollect
     BoundedReader<Row> reader = source.createReader(TestPipeline.testingPipelineOptions());
 
     reader.start();
-    // Started, 0 split points consumed
+    
     assertEquals(
         "splitPointsConsumed starting", splitPointsConsumed, reader.getSplitPointsConsumed());
 
-    // Split points consumed increases for each row read
+    
     while (reader.advance()) {
       assertEquals(
           "splitPointsConsumed advancing", ++splitPointsConsumed, reader.getSplitPointsConsumed());
     }
 
-    // Reader marked as done, 100 split points consumed
+    
     assertEquals("splitPointsConsumed done", numRows, reader.getSplitPointsConsumed());
 
     reader.close();
@@ -1282,7 +1265,7 @@ private PCollection<KV<ByteString, Iterable<Mutation>>> createEmptyInputPCollect
     assertThat(options.getRetryOptions(), Matchers.equalTo(retryOptionsBuilder.build()));
   }
 
-  ////////////////////////////////////////////////////////////////////////////////////////////
+  
   private static final String COLUMN_FAMILY_NAME = "family";
   private static final ByteString COLUMN_NAME = ByteString.copyFromUtf8("column");
   private static final Column TEST_COLUMN = Column.newBuilder().setQualifier(COLUMN_NAME).build();
@@ -1290,7 +1273,7 @@ private PCollection<KV<ByteString, Iterable<Mutation>>> createEmptyInputPCollect
 
   
   private static Row makeRow(ByteString key, ByteString value) {
-    // Build the currentRow and return true.
+    
     Column.Builder newColumn = TEST_COLUMN.toBuilder().addCells(Cell.newBuilder().setValue(value));
     return Row.newBuilder()
         .setKey(key)
@@ -1379,15 +1362,15 @@ private PCollection<KV<ByteString, Iterable<Mutation>>> createEmptyInputPCollect
       int rowsSoFar = 0;
       for (Map.Entry<ByteString, ByteString> entry : rows.entrySet()) {
         if (((double) rowsSoFar) / rows.size() >= ((double) currentSample) / numSamples) {
-          // add the sample with the total number of bytes in the table before this key.
+          
           ret.add(KeyOffset.create(entry.getKey(), rowsSoFar * bytesPerRow));
-          // Move on to next sample
+          
           currentSample++;
         }
         ++rowsSoFar;
       }
 
-      // Add the last sample indicating the end of the table, with all rows before it
+      
       ret.add(KeyOffset.create(ByteString.EMPTY, rows.size() * bytesPerRow));
 
       sampleRowKeys.put(tableId, ret.build());
@@ -1457,27 +1440,27 @@ private PCollection<KV<ByteString, Iterable<Mutation>>> createEmptyInputPCollect
 
     @Override
     public boolean advance() throws IOException {
-      // Loop until we find a row in range, or reach the end of the iterator.
+      
       Map.Entry<ByteString, ByteString> entry = null;
       while (rows.hasNext()) {
         entry = rows.next();
         if (!filter.apply(entry.getKey())
             || !rangesContainsKey(source.getRanges(), makeByteKey(entry.getKey()))) {
-          // Does not match row filter or does not match source range. Skip.
+          
           entry = null;
           continue;
         }
-        // Found a row inside this source's key range, stop.
+        
         break;
       }
 
-      // Return false if no more rows.
+      
       if (entry == null) {
         currentRow = null;
         return false;
       }
 
-      // Set the current row and return true.
+      
       currentRow = makeRow(entry.getKey(), entry.getValue());
       return true;
     }
@@ -1523,7 +1506,7 @@ private PCollection<KV<ByteString, Iterable<Mutation>>> createEmptyInputPCollect
     @Override
     public boolean advance() throws IOException {
       if (failureOptions.getFailAtAdvance() && numAdvance > 0) {
-        // because start() will call numAdvance once, only throw if called before
+        
         throw new IOException("Fake IOException at advance()");
       }
       ++numAdvance;
@@ -1670,7 +1653,7 @@ private PCollection<KV<ByteString, Iterable<Mutation>>> createEmptyInputPCollect
     }
   }
 
-  /////////////////////////// ReadChangeStream ///////////////////////////
+  
 
   @Test
   public void testReadChangeStreamBuildsCorrectly() {
@@ -1727,7 +1710,7 @@ private PCollection<KV<ByteString, Iterable<Mutation>>> createEmptyInputPCollect
             .withInstanceId("instance")
             .withTableId("table")
             .withoutValidation();
-    // No error is thrown because we skip validation
+    
     readChangeStream.validate(TestPipeline.testingPipelineOptions());
   }
 
@@ -1737,7 +1720,7 @@ private BigtableIO.ReadChangeStream setupReadChangeStream() {
             .withProjectId("project")
             .withInstanceId("instance")
             .withTableId("table");
-    // Validating table fails because resources cannot be found
+    
     thrown.expect(RuntimeException.class);
 	return readChangeStream;
 }

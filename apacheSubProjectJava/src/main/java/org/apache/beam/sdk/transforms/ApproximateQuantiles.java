@@ -1,20 +1,3 @@
-/*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package org.apache.beam.sdk.transforms;
 
 import static org.apache.beam.vendor.guava.v32_1_2_jre.com.google.common.base.Preconditions.checkArgument;
@@ -52,11 +35,11 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 
 
 @SuppressWarnings({
-  "nullness" // TODO(https://github.com/apache/beam/issues/20497)
+  "nullness" 
 })
 public class ApproximateQuantiles {
   private ApproximateQuantiles() {
-    // do not instantiate
+    
   }
 
   
@@ -85,7 +68,7 @@ public class ApproximateQuantiles {
     return Combine.perKey(ApproximateQuantilesCombineFn.create(numQuantiles));
   }
 
-  /////////////////////////////////////////////////////////////////////////////
+  
 
   
   public static class ApproximateQuantilesCombineFn<
@@ -147,7 +130,7 @@ public class ApproximateQuantiles {
     public static <T, ComparatorT extends Comparator<T> & Serializable>
         ApproximateQuantilesCombineFn<T, ComparatorT> create(
             int numQuantiles, ComparatorT compareFn, long maxNumElements, double epsilon) {
-      // Compute optimal b and k.
+      
       int b = 2;
       while ((b - 2) * (1 << (b - 2)) < epsilon * maxNumElements) {
         b++;
@@ -303,10 +286,10 @@ public class ApproximateQuantiles {
       int newLevel = 0;
       long newWeight = 0;
       for (QuantileBuffer<T> buffer : buffers) {
-        // As presented in the paper, there should always be at least two
-        // buffers of the same (minimal) level to collapse, but it is possible
-        // to violate this condition when combining buffers from independently
-        // computed shards.  If they differ we take the max.
+        
+        
+        
+        
         newLevel = Math.max(newLevel, buffer.level + 1);
         newWeight += buffer.weight;
       }
@@ -334,7 +317,7 @@ public class ApproximateQuantiles {
       for (QuantileBuffer<T> buffer : buffers) {
         iterators.add(buffer.sizedIterator());
       }
-      // Each of the buffers is already sorted by element.
+      
       Iterator<WeightedValue<T>> sorted =
           Iterators.mergeSorted(iterators, (a, b) -> compareFn.compare(a.getValue(), b.getValue()));
 

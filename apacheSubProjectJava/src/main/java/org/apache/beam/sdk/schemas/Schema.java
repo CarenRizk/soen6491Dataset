@@ -1,20 +1,3 @@
-/*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package org.apache.beam.sdk.schemas;
 
 import static org.apache.beam.sdk.values.SchemaVerification.verifyFieldValue;
@@ -59,7 +42,7 @@ import org.slf4j.LoggerFactory;
 @SuppressWarnings("ALL")
 public class Schema implements Serializable {
 
-  // Helper class that adds proper equality checks to byte arrays.
+  
   static class ByteArrayWrapper implements Serializable {
     final byte[] array;
 
@@ -89,22 +72,22 @@ public class Schema implements Serializable {
       return Arrays.toString(array);
     }
   }
-  // A mapping between field names an indices.
+  
   private final BiMap<String, Integer> fieldIndices;
 
-  // Encoding positions can be used to maintain encoded byte compatibility between schemas with
-  // different field ordering or with added/removed fields. Such positions affect the encoding
-  // and decoding of Rows performed by RowCoderGenerator. They are stored within Schemas to
-  // facilitate plumbing to coders, display data etc but do not affect schema equality / uuid etc.
+  
+  
+  
+  
   private Map<String, Integer> encodingPositions = Maps.newHashMap();
   private boolean encodingPositionsOverridden = false;
 
   private final List<Field> fields;
-  // Cache the hashCode, so it doesn't have to be recomputed. Schema objects are immutable, so this
-  // is correct.
+  
+  
   private final int hashCode;
-  // Every SchemaCoder has a UUID. The schemas created with the same UUID are guaranteed to be
-  // equal, so we can short circuit comparison.
+  
+  
   private @Nullable UUID uuid = null;
 
   private final Options options;
@@ -339,10 +322,10 @@ public class Schema implements Serializable {
 
   
   public Schema sorted() {
-    // Create a new schema and copy over the appropriate Schema object attributes: {fields, options}
-    // Note: uuid is not copied as the Schema field ordering is changed. encoding positions are not
-    // copied over because generally they should align with the ordering of field indices.
-    // Otherwise, problems may occur when encoding/decoding Rows of this schema.
+    
+    
+    
+    
     return this.fields.stream()
         .sorted(Comparator.comparing(Field::getName))
         .map(
@@ -405,12 +388,12 @@ public class Schema implements Serializable {
       return false;
     }
     Schema other = (Schema) o;
-    // If both schemas have a UUID set, we can short-circuit deep comparison if the
-    // UUIDs are equal.
+    
+    
     if (areUuidsEqual(this.uuid, other.uuid)) {
         return true;
       }
-    // Utilize hash-code pre-calculation for cheap negative comparison.
+    
     if (this.hashCode != other.hashCode) {
       return false;
     }
@@ -419,7 +402,7 @@ public class Schema implements Serializable {
         && Objects.equals(getOptions(), other.getOptions());
   }
   
-	//Helper method to check UUID equality
+	
 	private boolean areUuidsEqual(UUID uuid1, UUID uuid2) {
 	   return uuid1 != null && uuid2 != null && Objects.equals(uuid1, uuid2);
 	}
@@ -520,21 +503,21 @@ public class Schema implements Serializable {
   
   @SuppressWarnings("MutableConstantField")
   public enum TypeName {
-    BYTE, // One-byte signed integer.
-    INT16, // two-byte signed integer.
-    INT32, // four-byte signed integer.
-    INT64, // eight-byte signed integer.
-    DECIMAL, // Arbitrary-precision decimal number
+    BYTE, 
+    INT16, 
+    INT32, 
+    INT64, 
+    DECIMAL, 
     FLOAT,
     DOUBLE,
-    STRING, // String.
-    DATETIME, // Date and time.
-    BOOLEAN, // Boolean.
-    BYTES, // Byte array.
+    STRING, 
+    DATETIME, 
+    BOOLEAN, 
+    BYTES, 
     ARRAY,
-    ITERABLE, // Iterable. Different than array in that it might not fit completely in memory.
+    ITERABLE, 
     MAP,
-    ROW, // The field is itself a nested row.
+    ROW, 
     LOGICAL_TYPE;
 
     public static final Set<TypeName> NUMERIC_TYPES =
@@ -587,7 +570,7 @@ public class Schema implements Serializable {
         return true;
       }
 
-      // defined only for numeric types
+      
       if (isNumericType() || other.isNumericType()) {
         return false;
       }
@@ -654,29 +637,29 @@ public class Schema implements Serializable {
 
     private static final Logger LOG = LoggerFactory.getLogger(FieldType.class);
 
-    // Returns the type of this field.
+    
     public abstract TypeName getTypeName();
 
-    // Whether this type is nullable.
+    
     public abstract Boolean getNullable();
 
-    // For logical types, return the implementing class.
+    
 
     public abstract @Nullable LogicalType<?, ?> getLogicalType();
 
-    // For container types (e.g. ARRAY or ITERABLE), returns the type of the contained element.
+    
 
     public abstract @Nullable FieldType getCollectionElementType();
 
-    // For MAP type, returns the type of the key element, it must be a primitive type;
+    
 
     public abstract @Nullable FieldType getMapKeyType();
 
-    // For MAP type, returns the type of the value element, it can be a nested type;
+    
 
     public abstract @Nullable FieldType getMapValueType();
 
-    // For ROW types, returns the schema for the row.
+    
 
     public abstract @Nullable Schema getRowSchema();
 
@@ -898,8 +881,8 @@ public class Schema implements Serializable {
               .equals(other.getLogicalType().getArgumentType())) {
             return false;
           }
-          // Only check argument equality if argument type is non-null. null indicates argument is
-          // ignored.
+          
+          
           if (!Row.Equals.deepEquals(
               getLogicalType().getArgument(),
               other.getLogicalType().getArgument(),

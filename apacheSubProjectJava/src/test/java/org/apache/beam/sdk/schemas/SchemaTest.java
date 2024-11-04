@@ -1,20 +1,3 @@
-/*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package org.apache.beam.sdk.schemas;
 
 import static org.apache.beam.sdk.schemas.Schema.toSchema;
@@ -332,12 +315,12 @@ private void createSchemaAndValidateField(FieldType arrayType) {
 
   @Test
   public void testSortedMethodIncludesAllSchemaFields() {
-    // This test is most likely to break when new Schema object attributes are added. It is designed
-    // this way to make sure that the Schema::sorted() method is updated to return a full sorted
-    // copy.
+    
+    
+    
 
-    // Schema object attributes that are accounted for in Schema::sorted().
-    // Note: Only the appropriate ones are copied over.
+    
+    
     List<String> attributesAccountedForInSorted =
         Arrays.asList(
             "fieldIndices",
@@ -348,7 +331,7 @@ private void createSchemaAndValidateField(FieldType arrayType) {
             "uuid",
             "options");
 
-    // Current attributes in Schema object.
+    
     List<String> currentAttributes =
         Arrays.stream(Schema.class.getDeclaredFields())
             .filter(field -> !field.isSynthetic())
@@ -503,34 +486,34 @@ private Schema assertSchemasAreNotEquivalent(Schema schema1, Schema schema2) {
         Schema.builder().addLogicalTypeField("logical", new TestType("id", "arg")).build();
     Schema schema2 =
         Schema.builder().addLogicalTypeField("logical", new TestType("id", "arg")).build();
-    assertEquals(schema1, schema2); // Logical types are the same.
+    assertEquals(schema1, schema2); 
 
     Schema schema3 =
         Schema.builder()
             .addNullableField("logical", Schema.FieldType.logicalType(new TestType("id", "arg")))
             .build();
-    assertNotEquals(schema1, schema3); // schema1 and schema3 differ in Nullability
+    assertNotEquals(schema1, schema3); 
 
     Schema schema4 =
         Schema.builder().addLogicalTypeField("logical", new TestType("id2", "arg")).build();
-    assertNotEquals(schema1, schema4); // Logical type id is different.
+    assertNotEquals(schema1, schema4); 
 
     Schema schema5 =
         Schema.builder().addLogicalTypeField("logical", new TestType("id", "arg2")).build();
-    assertNotEquals(schema1, schema5); // Logical type arg is different.
+    assertNotEquals(schema1, schema5); 
   }
 
   @Test
   public void testTypesEquality() {
     Schema schema1 = Schema.builder().addStringField("foo").build();
     Schema schema2 = Schema.builder().addStringField("bar").build();
-    assertTrue(schema1.typesEqual(schema2)); // schema1 and schema2 only differ by names
+    assertTrue(schema1.typesEqual(schema2)); 
 
     Schema schema3 = Schema.builder().addNullableField("foo", FieldType.STRING).build();
-    assertFalse(schema1.typesEqual(schema3)); // schema1 and schema3 differ in Nullability
+    assertFalse(schema1.typesEqual(schema3)); 
 
     Schema schema4 = Schema.builder().addInt32Field("foo").build();
-    assertFalse(schema1.typesEqual(schema4)); // schema1 and schema4 differ by types
+    assertFalse(schema1.typesEqual(schema4)); 
   }
 
   @Test

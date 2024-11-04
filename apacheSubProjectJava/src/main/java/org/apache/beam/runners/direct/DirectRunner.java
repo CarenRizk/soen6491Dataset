@@ -1,20 +1,4 @@
-/*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+
 package org.apache.beam.runners.direct;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -56,7 +40,7 @@ import org.joda.time.Duration;
 
 
 @SuppressWarnings({
-  "nullness" // TODO(https://github.com/apache/beam/issues/20497)
+  "nullness" 
 })
 public class DirectRunner extends PipelineRunner<DirectPipelineResult> {
 
@@ -175,7 +159,7 @@ public class DirectRunner extends PipelineRunner<DirectPipelineResult> {
           Executors.newCachedThreadPool(
               new ThreadFactoryBuilder()
                   .setThreadFactory(MoreExecutors.platformThreadFactory())
-                  .setDaemon(false) // otherwise you say you want to leak, please don't!
+                  .setDaemon(false) 
                   .setNameFormat("direct-metrics-counter-committer")
                   .build());
       DirectGraph graph = graphVisitor.getGraph();
@@ -220,20 +204,20 @@ public class DirectRunner extends PipelineRunner<DirectPipelineResult> {
   
   @VisibleForTesting
   void performRewrites(Pipeline pipeline) {
-    // These overrides introduce side inputs so they must be
-    // applied before the viewVisitor, next.
+    
+    
     pipeline.replaceAll(sideInputUsingTransformOverrides());
 
-    // Add WriteView primitives attached to each active side input.
-    // This must run before GBK override because it introduces
-    // additional GroupByKey primitives that must be expanded.
+    
+    
+    
     pipeline.traverseTopologically(new DirectWriteViewVisitor());
 
-    // The last set of overrides includes GBK overrides used in WriteView
+    
     pipeline.replaceAll(groupByKeyOverrides());
 
-    // TODO(https://github.com/apache/beam/issues/20530): Use SDF read as default when we address
-    // performance issue.
+    
+    
     SplittableParDo.convertReadBasedSplittableDoFnsToPrimitiveReadsIfNecessary(pipeline);
   }
 
@@ -261,12 +245,12 @@ public class DirectRunner extends PipelineRunner<DirectPipelineResult> {
     ImmutableList.Builder<PTransformOverride> builder = ImmutableList.builder();
     builder =
         builder
-            // SplittableParMultiDo is implemented in terms of nonsplittable simple ParDos and extra
-            // primitives
+            
+            
             .add(
                 PTransformOverride.of(
                     PTransformMatchers.splittableParDo(), new ParDoMultiOverrideFactory()))
-            // state and timer pardos are implemented in terms of simple ParDos and extra primitives
+            
             .add(
                 PTransformOverride.of(
                     PTransformMatchers.stateOrTimerParDo(), new ParDoMultiOverrideFactory()))
@@ -295,7 +279,7 @@ public class DirectRunner extends PipelineRunner<DirectPipelineResult> {
     private DirectPipelineResult(PipelineExecutor executor, EvaluationContext evaluationContext) {
       this.executor = executor;
       this.evaluationContext = evaluationContext;
-      // Only ever constructed after the executor has started.
+      
       this.state = State.RUNNING;
     }
 
@@ -338,9 +322,9 @@ public class DirectRunner extends PipelineRunner<DirectPipelineResult> {
       try {
         endState = executor.waitUntilFinish(duration);
       } catch (UserCodeException uce) {
-        // Emulates the behavior of Pipeline#run(), where a stack trace caused by a
-        // UserCodeException is truncated and replaced with the stack starting at the call to
-        // waitToFinish
+        
+        
+        
         throw new Pipeline.PipelineExecutionException(uce.getCause());
       } catch (Exception e) {
         if (e instanceof InterruptedException) {

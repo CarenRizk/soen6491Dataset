@@ -41,12 +41,12 @@ import org.apache.beam.vendor.guava.v32_1_2_jre.com.google.common.annotations.Vi
                     WriteFilesResult<DestinationT>,
                     WriteFiles<UserT, DestinationT, OutputT>>
                 transform) {
-      // By default, if numShards is not set WriteFiles will produce one file per bundle. In
-      // streaming, there are large numbers of small bundles, resulting in many tiny files.
-      // Instead we pick max workers * 2 to ensure full parallelism, but prevent too-many files.
-      // (current_num_workers * 2 might be a better choice, but that value is not easily available
-      // today).
-      // If the user does not set either numWorkers or maxNumWorkers, default to 10 shards.
+      
+      
+      
+      
+      
+      
       int numShards;
       if (options.getMaxNumWorkers() > 0) {
         numShards = options.getMaxNumWorkers() * 2;

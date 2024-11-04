@@ -1,20 +1,3 @@
-/*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package org.apache.beam.sdk.io;
 
 import static org.apache.beam.sdk.io.fs.MatchResult.Status.NOT_FOUND;
@@ -95,7 +78,7 @@ public class TextIOWriteTest {
   private static final String MY_HEADER = "myHeader";
   private static final String MY_FOOTER = "myFooter";
   private static final int CUSTOM_FILE_TRIGGERING_RECORD_COUNT = 50000;
-  private static final int CUSTOM_FILE_TRIGGERING_BYTE_COUNT = 32 * 1024 * 1024; // 32MiB
+  private static final int CUSTOM_FILE_TRIGGERING_BYTE_COUNT = 32 * 1024 * 1024; 
   private static final Duration CUSTOM_FILE_TRIGGERING_RECORD_BUFFERING_DURATION =
       Duration.standardSeconds(4);
 
@@ -120,7 +103,7 @@ public class TextIOWriteTest {
 
     @Override
     public String getDestination(String element) {
-      // Destination is based on first character of string.
+      
       return element.substring(0, 1);
     }
 
@@ -423,15 +406,15 @@ public class TextIOWriteTest {
     expectedException.expect(IllegalArgumentException.class);
     expectedException.expectMessage("Unsafe trigger");
 
-    // Tests for https://issues.apache.org/jira/browse/BEAM-3169
+    
     PCollection<String> data =
         p.apply(Create.of("0", "1", "2"))
             .apply(
                 Window.<String>into(FixedWindows.of(Duration.standardSeconds(1)))
-                    // According to this trigger, all data should be written.
-                    // However, the continuation of this trigger is elementCountAtLeast(1),
-                    // so with a buggy implementation that used a GBK before renaming files,
-                    // only 1 file would be renamed.
+                    
+                    
+                    
+                    
                     .triggering(AfterPane.elementCountAtLeast(3))
                     .withAllowedLateness(Duration.standardMinutes(1))
                     .discardingFiredPanes());

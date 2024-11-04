@@ -1,20 +1,3 @@
-/*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package org.apache.beam.sdk.io;
 
 import static org.apache.beam.sdk.io.fs.ResolveOptions.StandardResolveOptions.RESOLVE_FILE;
@@ -86,7 +69,7 @@ import org.slf4j.LoggerFactory;
 
 
 @SuppressWarnings({
-  "nullness" // TODO(https://github.com/apache/beam/issues/20497)
+  "nullness" 
 })
 public class FileIO {
   private static final Logger LOG = LoggerFactory.getLogger(FileIO.class);
@@ -644,7 +627,7 @@ public class FileIO {
           res.append("-");
         }
         String numShardsStr = String.valueOf(numShards);
-        // A trillion shards per window per pane ought to be enough for everybody.
+        
         DecimalFormat df =
             new DecimalFormat("000000000000".substring(0, Math.max(5, numShardsStr.length())));
         res.append(df.format(shardIndex)).append("-of-").append(df.format(numShards));
@@ -987,7 +970,7 @@ public class FileIO {
       checkArgument(getOutputFn() != null, "outputFn should have been set by .via()");
       resolvedSpec.setOutputFn(getOutputFn());
 
-      // Resolve destinationFn
+      
       if (getDynamic()) {
         checkArgument(getDestinationFn() != null, "when using writeDynamic(), .by() is required");
         resolvedSpec.setDestinationFn(getDestinationFn());
@@ -1181,8 +1164,6 @@ public class FileIO {
                 BoundedWindow window,
                 PaneInfo paneInfo,
                 OutputFileHints outputFileHints) {
-              // We ignore outputFileHints because it will always be the same as
-              // spec.getCompression() because we control the FileBasedSink.
               return FileSystems.matchNewResource(
                   namingFn.getFilename(
                       window, paneInfo, numShards, shardNumber, spec.getCompression()),

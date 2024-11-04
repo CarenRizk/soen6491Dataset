@@ -1,20 +1,3 @@
-/*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package org.apache.beam.sdk.io.gcp.pubsub;
 
 import static org.apache.beam.sdk.transforms.errorhandling.BadRecordRouter.BAD_RECORD_TAG;
@@ -95,7 +78,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @SuppressWarnings({
-  "nullness" // TODO(https://github.com/apache/beam/issues/20497)
+  "nullness" 
 })
 public class PubsubIO {
 
@@ -424,9 +407,9 @@ public class PubsubIO {
 
   
   public static <T extends Message> Read<T> readProtos(Class<T> messageClass) {
-    // TODO: Stop using ProtoCoder and instead parse the payload directly.
-    // We should not be relying on the fact that ProtoCoder's wire format is identical to
-    // the protobuf wire format, as the wire format is not part of a coder's API.
+    
+    
+    
     ProtoCoder<T> coder = ProtoCoder.of(messageClass);
     return Read.newBuilder(parsePayloadUsingCoder(coder)).setCoder(coder).build();
   }
@@ -463,9 +446,9 @@ public class PubsubIO {
 
   
   public static <T> Read<T> readAvros(Class<T> clazz) {
-    // TODO: Stop using AvroCoder and instead parse the payload directly.
-    // We should not be relying on the fact that AvroCoder's wire format is identical to
-    // the Avro wire format, as the wire format is not part of a coder's API.
+    
+    
+    
     AvroCoder<T> coder = AvroCoder.of(clazz);
     return Read.newBuilder(parsePayloadUsingCoder(coder)).setCoder(coder).build();
   }
@@ -544,7 +527,7 @@ public class PubsubIO {
 
   
   public static <T extends Message> Write<T> writeProtos(Class<T> messageClass) {
-    // TODO: Like in readProtos(), stop using ProtoCoder and instead format the payload directly.
+    
     return Write.newBuilder(formatPayloadUsingCoder(ProtoCoder.of(messageClass)))
         .setDynamicDestinations(false)
         .build();
@@ -554,7 +537,7 @@ public class PubsubIO {
   public static <T extends Message> Write<T> writeProtos(
       Class<T> messageClass,
       SerializableFunction<ValueInSingleWindow<T>, Map<String, String>> attributeFn) {
-    // TODO: Like in readProtos(), stop using ProtoCoder and instead format the payload directly.
+    
     return Write.newBuilder(formatPayloadUsingCoder(ProtoCoder.of(messageClass), attributeFn))
         .setDynamicDestinations(false)
         .build();
@@ -562,7 +545,7 @@ public class PubsubIO {
 
   
   public static <T> Write<T> writeAvros(Class<T> clazz) {
-    // TODO: Like in readAvros(), stop using AvroCoder and instead format the payload directly.
+    
     return Write.newBuilder(formatPayloadUsingCoder(AvroCoder.of(clazz)))
         .setDynamicDestinations(false)
         .build();
@@ -572,7 +555,7 @@ public class PubsubIO {
   public static <T> Write<T> writeAvros(
       Class<T> clazz,
       SerializableFunction<ValueInSingleWindow<T>, Map<String, String>> attributeFn) {
-    // TODO: Like in readAvros(), stop using AvroCoder and instead format the payload directly.
+    
     return Write.newBuilder(formatPayloadUsingCoder(AvroCoder.of(clazz), attributeFn))
         .setDynamicDestinations(false)
         .build();
@@ -691,7 +674,7 @@ public class PubsubIO {
     
     public Read<T> fromSubscription(ValueProvider<String> subscription) {
       if (subscription.isAccessible()) {
-        // Validate.
+        
         PubsubSubscription.fromPath(subscription.get());
       }
       return toBuilder()
@@ -820,16 +803,16 @@ public class PubsubIO {
       TypeDescriptor<T> typeDescriptor = new TypeDescriptor<T>() {};
       SerializableFunction<PubsubMessage, T> parseFnWrapped =
           new SerializableFunction<PubsubMessage, T>() {
-            // flag that reported metrics
+            
             private final SerializableFunction<PubsubMessage, T> underlying =
                 Objects.requireNonNull(getParseFn());
             private transient boolean reportedMetrics = false;
 
-            // public
+            
             @Override
             public T apply(PubsubMessage input) {
               if (!reportedMetrics) {
-                // report Lineage once
+                
                 if (topicPath != null) {
                   TopicPath topic = topicPath.get();
                   if (topic != null) {
@@ -853,7 +836,7 @@ public class PubsubIO {
           && (getBadRecordRouter() instanceof ThrowingBadRecordRouter)) {
         read = preParse.apply(MapElements.into(typeDescriptor).via(parseFnWrapped));
       } else {
-        // parse PubSub messages, separating out exceptions
+        
         Result<PCollection<T>, KV<PubsubMessage, EncodableThrowable>> result =
             preParse.apply(
                 "PubsubIO.Read/Map/Parse-Incoming-Messages",
@@ -861,10 +844,10 @@ public class PubsubIO {
                     .via(parseFnWrapped)
                     .exceptionsVia(new WithFailures.ThrowableHandler<PubsubMessage>() {}));
 
-        // Emit parsed records
+        
         read = result.output();
 
-        // Send exceptions to either the bad record router or the dead letter topic
+        
         if (!(getBadRecordRouter() instanceof ThrowingBadRecordRouter)) {
           PCollection<BadRecord> badRecords =
               result
@@ -875,11 +858,11 @@ public class PubsubIO {
           getBadRecordErrorHandler()
               .addErrorCollection(badRecords.setCoder(BadRecord.getCoder(preParse.getPipeline())));
         } else {
-          // Write out failures to the provided dead-letter topic.
+          
           result
               .failures()
-              // Since the stack trace could easily exceed Pub/Sub limits, we need to remove it from
-              // the attributes.
+              
+              
               .apply(
                   "PubsubIO.Read/Map/Remove-Stack-Trace-Attribute",
                   MapElements.into(new TypeDescriptor<KV<PubsubMessage, Map<String, String>>>() {})
@@ -890,8 +873,8 @@ public class PubsubIO {
                                 message.getMessageId() == null ? "<null>" : message.getMessageId();
                             Throwable throwable = kv.getValue().throwable();
 
-                            // In order to stay within Pub/Sub limits, we aren't adding the stack
-                            // trace to the attributes. Therefore, we need to log the throwable.
+                            
+                            
                             LOG.error(
                                 "Error parsing Pub/Sub message with id '{}'", messageId, throwable);
 
@@ -950,7 +933,7 @@ public class PubsubIO {
     }
   }
 
-  /////////////////////////////////////////////////////////////////////////////
+  
 
   
   private PubsubIO() {}
@@ -1167,7 +1150,7 @@ public class PubsubIO {
                       getMaxBatchBytesSize(), PubsubUnboundedSink.DEFAULT_PUBLISH_BATCH_BYTES),
                   getPubsubRootUrl()));
       }
-      throw new RuntimeException(); // cases are exhaustive.
+      throw new RuntimeException(); 
     }
 
     @Override
@@ -1209,7 +1192,7 @@ public class PubsubIO {
       public void startBundle(StartBundleContext c) throws IOException {
         this.output = Maps.newHashMap();
 
-        // NOTE: idAttribute is ignored.
+        
         this.pubsubClient =
             getPubsubClientFactory()
                 .newClient(
@@ -1219,7 +1202,7 @@ public class PubsubIO {
       @ProcessElement
       public void processElement(@Element PubsubMessage message, @Timestamp Instant timestamp)
           throws IOException, SizeLimitExceededException {
-        // Validate again here just as a sanity check.
+        
         PreparePubsubWriteDoFn.validatePubsubMessageSize(message, maxPublishBatchByteSize);
         byte[] payload = message.getPayload();
         int messageSize = payload.length;
@@ -1231,7 +1214,7 @@ public class PubsubIO {
           pubsubTopic =
               PubsubTopic.fromPath(Preconditions.checkArgumentNotNull(message.getTopic()));
         }
-        // Checking before adding the message stops us from violating max batch size or bytes
+        
         OutgoingData currentTopicOutput =
             output.computeIfAbsent(pubsubTopic, t -> new OutgoingData());
         if (currentTopicOutput.messages.size() >= maxPublishBatchSize
@@ -1254,7 +1237,7 @@ public class PubsubIO {
           msgBuilder.setOrderingKey(orderingKey);
         }
 
-        // NOTE: The record id is always null.
+        
         currentTopicOutput.messages.add(
             OutgoingMessage.of(
                 msgBuilder.build(), timestamp.getMillis(), null, message.getTopic()));

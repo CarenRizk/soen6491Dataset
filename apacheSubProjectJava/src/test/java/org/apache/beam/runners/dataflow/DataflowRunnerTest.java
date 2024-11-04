@@ -1,20 +1,3 @@
-/*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package org.apache.beam.runners.dataflow;
 
 import static org.apache.beam.runners.dataflow.DataflowRunner.getContainerImageForJob;
@@ -181,8 +164,8 @@ import static org.mockito.Mockito.mockStatic;
 
 
 @RunWith(JUnit4.class)
-// TODO(https://github.com/apache/beam/issues/21230): Remove when new version of errorprone is
-// released (2.11.0)
+
+
 @SuppressWarnings("unused")
 public class DataflowRunnerTest implements Serializable {
 
@@ -203,7 +186,7 @@ public class DataflowRunnerTest implements Serializable {
   private transient Dataflow.Projects.Locations.Jobs mockJobs;
   private transient GcsUtil mockGcsUtil;
 
-  // Asserts that the given Job has all expected fields set.
+  
   private static void assertValidJob(Job job) {
     assertNull(job.getId());
     assertNull(job.getCurrentState());
@@ -228,7 +211,7 @@ public class DataflowRunnerTest implements Serializable {
     p.apply("ReadMyFile", TextIO.read().from("gs://bucket/object"))
         .apply("WriteMyFile", TextIO.write().to("gs://bucket/object"));
 
-    // Enable the FileSystems API to know about gs:// URIs in this test.
+    
     FileSystems.setDefaultPipelineOptions(options);
 
     return p;
@@ -244,7 +227,7 @@ public class DataflowRunnerTest implements Serializable {
           .apply("WriteMyFile_" + i, TextIO.write().to("gs://bucket/object"));
     }
 
-    // Enable the FileSystems API to know about gs:// URIs in this test.
+    
     FileSystems.setDefaultPipelineOptions(options);
 
     return p;
@@ -315,7 +298,7 @@ public class DataflowRunnerTest implements Serializable {
         .when(mockGcsUtil)
         .verifyBucketAccessible(GcsPath.fromUri(NON_EXISTENT_BUCKET));
 
-    // Let every valid path be matched
+    
     when(mockGcsUtil.getObjects(anyListOf(GcsPath.class)))
         .thenAnswer(
             invocationOnMock -> {
@@ -334,7 +317,6 @@ public class DataflowRunnerTest implements Serializable {
               return results;
             });
 
-    // The dataflow pipeline attempts to output to this location.
     doNothing().when(mockGcsUtil).verifyBucketAccessible(GcsPath.fromUri("gs://bucket/object"));
 
     return mockGcsUtil;
@@ -343,12 +325,12 @@ public class DataflowRunnerTest implements Serializable {
   private DataflowPipelineOptions buildPipelineOptions() throws IOException {
     DataflowPipelineOptions options = configureDataflowPipelineOptions();
     options.setRegion(REGION_ID);
-    // Set FILES_PROPERTY to empty to prevent a default value calculated from classpath.
+    
     options.setFilesToStage(new ArrayList<>());
     options.setDataflowClient(buildMockDataflow(mockJobs));
     options.setGcsUtil(mockGcsUtil);
 
-    // Configure the FileSystem registrar to use these options.
+    
     FileSystems.setDefaultPipelineOptions(options);
 
     return options;
@@ -389,7 +371,7 @@ private DataflowPipelineOptions configureDataflowPipelineOptions() {
           "--credentialFactoryClass=" + NoopCredentialFactory.class.getName(),
           "--pathValidatorClass=" + NoopPathValidator.class.getName(),
         };
-    // Should not crash, because gcpTempLocation should get set from tempLocation
+    
     TestPipeline.fromOptions(PipelineOptionsFactory.fromArgs(args).create());
   }
 
@@ -419,36 +401,36 @@ private DataflowPipelineOptions configureDataflowPipelineOptions() {
   @RunWith(MockitoJUnitRunner.class)
   public class DefaultRegionTest {
 
-    private static final String REGION_ID = "us-central1"; // Example REGION_ID
-    private static final String PROJECT_ID = "my-project"; // Example PROJECT_ID
-    private static final String VALID_TEMP_BUCKET = "gs://my-temp-bucket"; // Example bucket
+    private static final String REGION_ID = "us-central1";
+    private static final String PROJECT_ID = "my-project";
+    private static final String VALID_TEMP_BUCKET = "gs://my-temp-bucket";
 
     @Test
     public void testDefaultRegionSet() throws Exception {
       
-      // Mock static method using Mockito
+      
       try (MockedStatic<DefaultGcpRegionFactory> mockedStatic = mockStatic(DefaultGcpRegionFactory.class)) {
         mockedStatic.when(DefaultGcpRegionFactory::getRegionFromEnvironment).thenReturn(REGION_ID);
 
-        // Mock other objects
+        
         Dataflow.Projects.Locations.Jobs mockJobs = mock(Dataflow.Projects.Locations.Jobs.class);
 
-        // Setup pipeline options
+        
         DataflowPipelineOptions options = configureDataflowPipelineOptions();
-        // Set FILES_PROPERTY to empty to prevent a default value calculated from classpath.
+        
         options.setFilesToStage(new ArrayList<>());
         options.setDataflowClient(buildMockDataflow(mockJobs));
         options.setGcsUtil(buildMockGcsUtil());
 
-        // Create the pipeline
+        
         Pipeline p = Pipeline.create(options);
         p.run();
 
-        // Capture the Job object and assert the region is set
+        
         ArgumentCaptor<Job> jobCaptor = ArgumentCaptor.forClass(Job.class);
         verify(mockJobs).create(eq(PROJECT_ID), eq(REGION_ID), jobCaptor.capture());
 
-        // Extract the SDK pipeline options and assert the "region" field
+        
         Map<String, Object> sdkPipelineOptions = jobCaptor.getValue().getEnvironment().getSdkPipelineOptions();
         assertThat(sdkPipelineOptions, hasKey("options"));
         Map<String, Object> optionsMap = (Map<String, Object>) sdkPipelineOptions.get("options");
@@ -456,16 +438,16 @@ private DataflowPipelineOptions configureDataflowPipelineOptions() {
       }
     }
 
-    // Mock buildMockDataflow (implementation not shown, assumed to be provided elsewhere)
+    
     private Dataflow buildMockDataflow(Dataflow.Projects.Locations.Jobs mockJobs) {
-      // Implementation for mocking Dataflow client
-      return null;  // Replace with actual mock implementation
+      
+      return null;  
     }
 
-    // Mock buildMockGcsUtil (implementation not shown, assumed to be provided elsewhere)
+    
     private GcsUtil buildMockGcsUtil() {
-      // Implementation for mocking GcsUtil
-      return null;  // Replace with actual mock implementation
+      
+      return null;  
     }
   }
 
@@ -665,7 +647,7 @@ private Job setupMockDataflowJobCreation(DataflowPipelineOptions options) throws
         .thenReturn(mockRequest);
     Job resultJob = new Job();
     resultJob.setId("newid");
-    // Return a different request id.
+    
     resultJob.setClientRequestId("different_request_id");
     when(mockRequest.execute()).thenReturn(resultJob);
 	return resultJob;
@@ -833,8 +815,8 @@ private void verifyNonExistentOutputPathThrowsException(DataflowPipelineOptions 
   public void testNoProjectFails() throws IOException {
     DataflowPipelineOptions options = buildPipelineOptions();
 
-    // Explicitly set to null to prevent the default instance factory from reading credentials
-    // from a user's environment, causing this test to fail.
+    
+    
     options.setProject(null);
 
     thrown.expect(IllegalArgumentException.class);
@@ -1343,8 +1325,8 @@ private RunnerApi.Pipeline createExpectedPipeline(String dockerHubPythonContaine
     CompositeTransformRecorder recorder = new CompositeTransformRecorder();
     p.traverseTopologically(recorder);
 
-    // The recorder will also have seen a Create.Values composite as well, but we can't obtain that
-    // transform.
+    
+    
     assertThat(
         "Expected to have seen CreateTimestamped composite transform.",
         recorder.getCompositeTransforms(),
@@ -1362,14 +1344,14 @@ private RunnerApi.Pipeline createExpectedPipeline(String dockerHubPythonContaine
     String[] testCases = {
       "some-container",
 
-      // It is important that empty string is preserved, as
-      // dataflowWorkerJar relies on being passed an empty value vs
-      // not providing the container image option at all.
+      
+      
+      
       "",
     };
 
     for (String testCase : testCases) {
-      // When image option is set, should use that exact image.
+      
       options.setSdkContainerImage(testCase);
       assertThat(getContainerImageForJob(options), equalTo(testCase));
     }
@@ -1382,28 +1364,28 @@ private RunnerApi.Pipeline createExpectedPipeline(String dockerHubPythonContaine
 
     for (Environments.JavaVersion javaVersion : Environments.JavaVersion.values()) {
       System.setProperty("java.specification.version", javaVersion.specification());
-      // batch legacy
+      
       options.setExperiments(null);
       options.setStreaming(false);
       assertThat(
           getContainerImageForJob(options),
           equalTo(String.format("gcr.io/beam-%s-batch/foo", javaVersion.legacyName())));
 
-      // streaming, legacy
+      
       options.setExperiments(null);
       options.setStreaming(true);
       assertThat(
           getContainerImageForJob(options),
           equalTo(String.format("gcr.io/beam-%s-streaming/foo", javaVersion.legacyName())));
 
-      // batch, FnAPI
+      
       options.setExperiments(ImmutableList.of("beam_fn_api"));
       options.setStreaming(false);
       assertThat(
           getContainerImageForJob(options),
           equalTo(String.format("gcr.io/beam_%s_sdk/foo", javaVersion.name())));
 
-      // streaming, FnAPI
+      
       options.setExperiments(ImmutableList.of("beam_fn_api"));
       options.setStreaming(true);
       assertThat(
@@ -1712,14 +1694,14 @@ private void assertBatchingOverrideApplied(Pipeline p, Boolean expectOverriden) 
 
         @Override
         public void close() throws Exception {
-          // do nothing
+          
         }
       };
     }
 
     @Override
     public void close() throws Exception {
-      // do nothing
+      
     }
   }
 
