@@ -5,7 +5,6 @@ import static org.apache.beam.vendor.guava.v32_1_2_jre.com.google.common.base.Pr
 import org.apache.beam.runners.dataflow.TransformTranslator.StepTranslationContext;
 import org.apache.beam.runners.dataflow.util.PropertyNames;
 
-/** Rewrite {@link StreamingPubsubIORead} to the appropriate internal node. */
   class StreamingPubsubIOReadTranslator
       implements TransformTranslator<StreamingPubsubIORead> {
 

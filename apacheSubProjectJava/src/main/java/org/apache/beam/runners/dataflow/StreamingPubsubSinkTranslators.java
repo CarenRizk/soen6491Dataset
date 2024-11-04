@@ -14,7 +14,6 @@ import org.apache.beam.sdk.util.WindowedValue;
 import org.apache.beam.sdk.values.PCollection;
 
 class StreamingPubsubSinkTranslators {
-    /** Rewrite {@link StreamingPubsubIOWrite} to the appropriate internal node. */
     static class StreamingPubsubIOWriteTranslator
         implements TransformTranslator<StreamingPubsubIOWrite> {
 
@@ -59,7 +58,6 @@ class StreamingPubsubSinkTranslators {
           PropertyNames.PUBSUB_SERIALIZED_ATTRIBUTES_FN,
           byteArrayToJsonString(serializeToByteArray(new IdentityMessageFn())));
 
-      // Using a GlobalWindowCoder as a place holder because GlobalWindowCoder is known coder.
       stepContext.addEncodingInput(
           WindowedValue.getFullCoder(VoidCoder.of(), GlobalWindow.Coder.INSTANCE));
       stepContext.addInput(PropertyNames.PARALLEL_INPUT, input);

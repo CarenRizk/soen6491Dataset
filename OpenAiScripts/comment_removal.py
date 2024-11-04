@@ -1,56 +1,24 @@
-import os
 import re
 
-def remove_commented_code(file_path):
-    with open(file_path, 'r') as file:
-        lines = file.readlines()
+def remove_javadoc_comments(input_file, output_file):
+    # Regular expression pattern for JavaDoc comments
+    javadoc_pattern = r'/\*\*.*?\*/'
 
-    new_lines = []
-    in_block_comment = False
-    is_javadoc = False
+    # Read the content of the input file
+    with open(input_file, 'r', encoding='utf-8') as file:
+        content = file.read()
 
-    for line in lines:
-        # Check for Javadoc comment start (/**)
-        if line.strip().startswith("/**"):
-            is_javadoc = True
+    # Remove JavaDoc comments using regex
+    cleaned_content = re.sub(javadoc_pattern, '', content, flags=re.DOTALL)
 
-        # End of Javadoc comment (*/)
-        if is_javadoc and "*/" in line:
-            is_javadoc = False
-            new_lines.append(line)
-            continue
+    # Write the cleaned content to the output file
+    with open(output_file, 'w', encoding='utf-8') as file:
+        file.write(cleaned_content)
 
-        # Regular block comment start (/*) but not inline comments
-        if re.match(r'^\s*/\*', line) and not in_block_comment:
-            if "*/" not in line:  # Only start block if it doesn't close on the same line
-                in_block_comment = True
-            continue  # Skip this line
+    print(f"Removed JavaDoc comments from '{input_file}' and saved to '{output_file}'.")
 
-        # End of regular block comment (*/)
-        if in_block_comment and "*/" in line:
-            in_block_comment = False
-            continue
+# Usage example
+input_file_path = 'path/to/your/JavaFile.java'  # Change this to your input file path
+output_file_path = 'path/to/your/CleanedJavaFile.java'  # Change this to your desired output file path
 
-        # Ignore all lines inside a block comment
-        if in_block_comment:
-            continue
-
-        # Skip single-line comments that start with // but retain lines with mixed code
-        if not re.match(r'^\s*//', line) or is_javadoc:
-            new_lines.append(line)
-
-    # Write the cleaned lines back to the file
-    with open(file_path, 'w') as file:
-        file.writelines(new_lines)
-
-def remove_comments_in_project(project_path):
-    for root, dirs, files in os.walk(project_path):
-        for file in files:
-            if file.endswith(".java"):
-                file_path = os.path.join(root, file)
-                remove_commented_code(file_path)
-                print(f"Processed {file_path}")
-
-# Run the script on your Java project directory
-project_path = r"C:\Users\carenrizk\repos\soen6491Dataset\apacheSubProjectJava\src"  # Adjust this path to your project
-remove_comments_in_project(project_path)
+remove_javadoc_comments(input_file_path, output_file_path)

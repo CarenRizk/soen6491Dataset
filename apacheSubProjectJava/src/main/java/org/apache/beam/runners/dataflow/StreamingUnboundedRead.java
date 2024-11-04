@@ -14,13 +14,6 @@ import org.apache.beam.sdk.values.ValueWithRecordId;
 import org.apache.beam.sdk.values.WindowingStrategy;
 import org.apache.beam.sdk.values.PCollection.IsBounded;
 
-/**
-   * Specialized implementation for {@link org.apache.beam.sdk.io.Read.Unbounded Read.Unbounded} for
-   * the Dataflow runner in streaming mode.
-   *
-   * <p>In particular, if an UnboundedSource requires deduplication, then features of WindmillSink
-   * are leveraged to do the deduplication.
-   */
   class StreamingUnboundedRead<T> extends PTransform<PBegin, PCollection<T>> {
 
     private final UnboundedSource<T, ?> source;

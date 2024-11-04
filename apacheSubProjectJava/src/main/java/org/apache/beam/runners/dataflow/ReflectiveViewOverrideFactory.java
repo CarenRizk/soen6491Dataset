@@ -18,11 +18,6 @@ import org.apache.beam.sdk.values.PCollection;
 import org.apache.beam.sdk.values.PCollectionView;
 import org.apache.beam.sdk.values.TupleTag;
 
-/**
-   * Replace the View.AsYYY transform with specialized view overrides for Dataflow. It is required
-   * that the new replacement transform uses the supplied PCollectionView and does not create
-   * another instance.
-   */
   class ReflectiveViewOverrideFactory<InputT, ViewT>
       implements PTransformOverrideFactory<
           PCollection<InputT>,
@@ -111,12 +106,7 @@ import org.apache.beam.sdk.values.TupleTag;
     @Override
     public Map<PCollection<?>, ReplacementOutput> mapOutputs(
         Map<TupleTag<?>, PCollection<?>> outputs, PCollectionView<ViewT> newOutput) {
-      /*
-      The output of View.AsXYZ is a PCollectionView that expands to the PCollection to be materialized.
-      The PCollectionView itself must have the same tag since that tag may have been embedded in serialized DoFns
-      previously and cannot easily be rewired. The PCollection may differ, so we rewire it, even if the rewiring
-      is a noop.
-      */
+
       return ReplacementOutputs.singleton(outputs, newOutput);
     }
   }

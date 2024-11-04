@@ -9,10 +9,6 @@ import org.apache.beam.sdk.values.PBegin;
 import org.apache.beam.sdk.values.PCollection;
 import org.apache.beam.sdk.values.PCollection.IsBounded;
 
-/**
-   * Specialized implementation for {@link org.apache.beam.sdk.io.Read.Bounded Read.Bounded} for the
-   * Dataflow runner in streaming mode.
-   */
   class StreamingBoundedRead<T> extends PTransform<PBegin, PCollection<T>> {
 
     private final BoundedSource<T> source;

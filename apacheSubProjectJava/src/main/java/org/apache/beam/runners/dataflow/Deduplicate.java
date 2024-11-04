@@ -13,8 +13,6 @@ import org.apache.beam.sdk.values.KV;
 import org.apache.beam.sdk.values.PCollection;
 import org.apache.beam.sdk.values.TypeDescriptors;
 import org.apache.beam.sdk.values.ValueWithRecordId;
-
-/** Remove values with duplicate ids. */
   class Deduplicate<T>
       extends PTransform<PCollection<ValueWithRecordId<T>>, PCollection<T>> {
 
@@ -31,8 +29,6 @@ import org.apache.beam.sdk.values.ValueWithRecordId;
                       (ValueWithRecordId<T> value) ->
                           Arrays.hashCode(value.getId()) % NUM_RESHARD_KEYS)
                   .withKeyType(TypeDescriptors.integers()))
-          // Reshuffle will dedup based on ids in ValueWithRecordId by passing the data through
-          // WindmillSink.
           .apply(Reshuffle.of())
           .apply(
               "StripIds",

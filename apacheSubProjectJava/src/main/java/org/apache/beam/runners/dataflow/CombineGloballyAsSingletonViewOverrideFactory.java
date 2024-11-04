@@ -8,10 +8,6 @@ import org.apache.beam.sdk.util.construction.PTransformReplacements;
 import org.apache.beam.sdk.values.PCollection;
 import org.apache.beam.sdk.values.PCollectionView;
 
-/**
-   * Replace the {@link Combine.GloballyAsSingletonView} transform with a specialization which
-   * re-applies the {@link CombineFn} and adds a specialization specific to the Dataflow runner.
-   */
   class CombineGloballyAsSingletonViewOverrideFactory<InputT, ViewT>
       extends ReflectiveViewOverrideFactory<Object, Object> {
 

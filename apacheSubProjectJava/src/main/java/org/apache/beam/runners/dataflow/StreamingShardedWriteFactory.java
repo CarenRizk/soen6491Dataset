@@ -26,8 +26,6 @@ import org.apache.beam.vendor.guava.v32_1_2_jre.com.google.common.annotations.Vi
           WriteFilesResult<DestinationT>,
           WriteFiles<UserT, DestinationT, OutputT>> {
 
-    // We pick 10 as a default, as it works well with the default number of workers started
-    // by Dataflow.
     static final int DEFAULT_NUM_SHARDS = 10;
     final DataflowPipelineWorkerPoolOptions options;
 

@@ -11,10 +11,6 @@ import org.apache.beam.sdk.values.PCollection;
 import org.apache.beam.sdk.values.WindowingStrategy;
 import org.apache.beam.sdk.values.PCollection.IsBounded;
 
-/**
-   * Suppress application of {@link PubsubUnboundedSource#expand} in streaming mode so that we can
-   * instead defer to Windmill's implementation.
-   */
   class StreamingPubsubIORead
       extends PTransform<PBegin, PCollection<PubsubMessage>> {
 

@@ -8,10 +8,6 @@ import org.apache.beam.sdk.transforms.windowing.BoundedWindow;
 import org.apache.beam.sdk.values.PCollection;
 import org.apache.beam.sdk.values.PCollectionView;
 
-/**
-   * A marker {@link DoFn} for writing the contents of a {@link PCollection} to a streaming {@link
-   * PCollectionView} backend implementation.
-   */
   public class StreamingPCollectionViewWriterFn<T> extends DoFn<Iterable<T>, T> {
 
     private final PCollectionView<?> view;

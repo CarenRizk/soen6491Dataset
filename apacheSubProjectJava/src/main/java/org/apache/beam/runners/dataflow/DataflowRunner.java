@@ -1,20 +1,3 @@
-/*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package org.apache.beam.runners.dataflow;
 
 import com.fasterxml.jackson.databind.Module;
@@ -108,44 +91,20 @@ import static org.apache.beam.vendor.guava.v32_1_2_jre.com.google.common.base.Pr
 import static org.apache.beam.vendor.guava.v32_1_2_jre.com.google.common.base.Preconditions.checkState;
 import static org.apache.beam.vendor.guava.v32_1_2_jre.com.google.common.base.Strings.isNullOrEmpty;
 
-/**
- * A {@link PipelineRunner} that executes the operations in the pipeline by first translating them
- * to the Dataflow representation using the {@link DataflowPipelineTranslator} and then submitting
- * them to a Dataflow service for execution.
- *
- * <h3>Permissions</h3>
- *
- * <p>When reading from a Dataflow source or writing to a Dataflow sink using {@code
- * DataflowRunner}, the Google cloudservices account and the Google compute engine service account
- * of the GCP project running the Dataflow Job will need access to the corresponding source/sink.
- *
- * <p>Please see <a href="https://cloud.google.com/dataflow/security-and-permissions">Google Cloud
- * Dataflow Security and Permissions</a> for more details.
- */
 @SuppressWarnings({
   "rawtypes", // TODO(https://github.com/apache/beam/issues/20447)
   "nullness" // TODO(https://github.com/apache/beam/issues/20497)
 })
 public class DataflowRunner extends PipelineRunner<DataflowPipelineJob> {
 
-  /** Experiment to "unsafely attempt to process unbounded data in batch mode". */
   public static final String UNSAFELY_ATTEMPT_TO_PROCESS_UNBOUNDED_DATA_IN_BATCH_MODE =
       "unsafely_attempt_to_process_unbounded_data_in_batch_mode";
 
   private static final Logger LOG = LoggerFactory.getLogger(DataflowRunner.class);
-  /** Provided configuration options. */
   private final DataflowPipelineOptions options;
-
-  /** Client for the Dataflow service. This is used to actually submit jobs. */
   private final DataflowClient dataflowClient;
-
-  /** Translator for this DataflowRunner, based on options. */
   private final DataflowPipelineTranslator translator;
-
-  /** A set of user defined functions to invoke at different points in execution. */
   private DataflowRunnerHooks hooks;
-
-  // The limit of CreateJob request size.
   private static final int CREATE_JOB_REQUEST_LIMIT_BYTES = 10 * 1024 * 1024;
 
   @VisibleForTesting static final int GCS_UPLOAD_BUFFER_SIZE_BYTES_DEFAULT = 1024 * 1024;
@@ -155,11 +114,6 @@ public class DataflowRunner extends PipelineRunner<DataflowPipelineJob> {
 
   private static final ObjectMapper MAPPER = new ObjectMapper();
 
-  /**
-   * Use an {@link ObjectMapper} configured with any {@link Module}s in the class path allowing for
-   * user specified configuration injection into the ObjectMapper. This supports user custom types
-   * on {@link PipelineOptions}.
-   */
   private static final ObjectMapper MAPPER_WITH_MODULES =
       new ObjectMapper()
           .registerModules(ObjectMapper.findModules(ReflectHelpers.findClassLoader()));
@@ -169,22 +123,9 @@ public class DataflowRunner extends PipelineRunner<DataflowPipelineJob> {
   private final Set<PCollection> pCollectionsPreservedKeys;
   private final Set<PCollection> pcollectionsRequiringAutoSharding;
 
-  /**
-   * Project IDs must contain lowercase letters, digits, or dashes. IDs must start with a letter and
-   * may not end with a dash. This regex isn't exact - this allows for patterns that would be
-   * rejected by the service, but this is sufficient for basic validation of project IDs.
-   */
   public static final String PROJECT_ID_REGEXP = "[a-z][-a-z0-9:.]+[a-z0-9]";
 
-  /** Dataflow service endpoints are expected to match this pattern. */
   static final String ENDPOINT_REGEXP = "https://[\\S]*googleapis\\.com[/]?";
-
-  /**
-   * Construct a runner from the provided options.
-   *
-   * @param options Properties that configure the runner.
-   * @return The newly created runner.
-   */
   public static DataflowRunner fromOptions(PipelineOptions options) {
     DataflowPipelineOptions dataflowOptions =
         PipelineOptionsValidator.validate(DataflowPipelineOptions.class, options);
@@ -234,9 +175,6 @@ public class DataflowRunner extends PipelineRunner<DataflowPipelineJob> {
     }
 
     if (dataflowOptions.getFilesToStage() != null) {
-      // The user specifically requested these files, so fail now if they do not exist.
-      // (automatically detected classpath elements are permitted to not exist, so later
-      // staging will not fail on nonexistent files)
       dataflowOptions.getFilesToStage().stream()
           .forEach(
               stagedFileSpec -> {
@@ -248,8 +186,6 @@ public class DataflowRunner extends PipelineRunner<DataflowPipelineJob> {
                   localFile = new File(stagedFileSpec);
                 }
                 if (!localFile.exists()) {
-                  // should be FileNotFoundException, but for build-time backwards compatibility
-                  // cannot add checked exception
                   throw new RuntimeException(
                       String.format("Non-existent files specified in filesToStage: %s", localFile));
                 }
@@ -269,8 +205,6 @@ public class DataflowRunner extends PipelineRunner<DataflowPipelineJob> {
       }
     }
 
-    // Verify jobName according to service requirements, truncating converting to lowercase if
-    // necessary.
     String jobName = dataflowOptions.getJobName().toLowerCase();
     checkArgument(
         jobName.matches("[a-z]([-a-z0-9]*[a-z0-9])?"),
@@ -286,7 +220,6 @@ public class DataflowRunner extends PipelineRunner<DataflowPipelineJob> {
     }
     dataflowOptions.setJobName(jobName);
 
-    // Verify project
     String project = dataflowOptions.getProject();
     if (project.matches("[0-9]*")) {
       throw new IllegalArgumentException(
@@ -303,7 +236,6 @@ public class DataflowRunner extends PipelineRunner<DataflowPipelineJob> {
 
     DataflowPipelineDebugOptions debugOptions =
         dataflowOptions.as(DataflowPipelineDebugOptions.class);
-    // Verify the number of worker threads is a valid value
     if (debugOptions.getNumberOfWorkerHarnessThreads() < 0) {
       throw new IllegalArgumentException(
           "Number of worker harness threads '"
@@ -311,7 +243,6 @@ public class DataflowRunner extends PipelineRunner<DataflowPipelineJob> {
               + "' invalid. Please make sure the value is non-negative.");
     }
 
-    // Verify that if recordJfrOnGcThrashing is set, the pipeline is at least on java 11
     if (dataflowOptions.getRecordJfrOnGcThrashing()
         && Environments.getJavaVersion() == Environments.JavaVersion.java8) {
       throw new IllegalArgumentException(
@@ -322,7 +253,6 @@ public class DataflowRunner extends PipelineRunner<DataflowPipelineJob> {
       dataflowOptions.setGcsUploadBufferSizeBytes(GCS_UPLOAD_BUFFER_SIZE_BYTES_DEFAULT);
     }
 
-    // Adding the Java version to the SDK name for user's and support convenience.
     String agentJavaVer = "(JRE 8 environment)";
     if (Environments.getJavaVersion() != Environments.JavaVersion.java8) {
       agentJavaVer =
@@ -348,8 +278,6 @@ public class DataflowRunner extends PipelineRunner<DataflowPipelineJob> {
   }
 
   static void validateSdkContainerImageOptions(DataflowPipelineWorkerPoolOptions workerOptions) {
-    // Check against null - empty string value for workerHarnessContainerImage
-    // must be preserved for legacy dataflowWorkerJar to work.
     String sdkContainerOption = workerOptions.getSdkContainerImage();
     String workerHarnessOption = workerOptions.getSdkContainerImage();
     Preconditions.checkArgument(
@@ -358,17 +286,14 @@ public class DataflowRunner extends PipelineRunner<DataflowPipelineJob> {
             || sdkContainerOption.equals(workerHarnessOption),
         "Cannot use legacy option workerHarnessContainerImage with sdkContainerImage. Prefer sdkContainerImage.");
 
-    // Default to new option, which may be null.
     String containerImage = workerOptions.getSdkContainerImage();
     if (workerOptions.getSdkContainerImage() != null
         && workerOptions.getSdkContainerImage() == null) {
-      // Set image to old option if old option was set but new option is not set.
       LOG.warn(
           "Prefer --sdkContainerImage over deprecated legacy option --workerHarnessContainerImage.");
       containerImage = workerOptions.getSdkContainerImage();
     }
 
-    // Make sure both options have same value.
     workerOptions.setSdkContainerImage(containerImage);
     workerOptions.setSdkContainerImage(containerImage);
   }
@@ -464,7 +389,6 @@ public class DataflowRunner extends PipelineRunner<DataflowPipelineJob> {
 	}
 
 	private void addCommonOverrides(ImmutableList.Builder<PTransformOverride> overridesBuilder) {
-	    // Add common overrides that apply to both streaming and batch
 	    overridesBuilder
 	        .add(
 	            PTransformOverride.of(
@@ -476,7 +400,6 @@ public class DataflowRunner extends PipelineRunner<DataflowPipelineJob> {
 	}
 
 	private void addStreamingOverrides(ImmutableList.Builder<PTransformOverride> overridesBuilder) {
-	    // Overrides specific to streaming mode
 	    if (!hasExperiment(options, ENABLE_CUSTOM_PUBSUB_SOURCE)) {
 	        overridesBuilder.add(
 	            PTransformOverride.of(
@@ -521,7 +444,6 @@ public class DataflowRunner extends PipelineRunner<DataflowPipelineJob> {
 	}
 
 	private void addBatchOverrides(ImmutableList.Builder<PTransformOverride> overridesBuilder) {
-	    // Overrides specific to batch mode
 	    overridesBuilder.add(SplittableParDo.PRIMITIVE_BOUNDED_READ_OVERRIDE)
 	        .add(
 	            PTransformOverride.of(
@@ -569,7 +491,6 @@ public class DataflowRunner extends PipelineRunner<DataflowPipelineJob> {
 	    try {
 	        overridesBuilder.add(KafkaIO.Read.KAFKA_READ_OVERRIDE);
 	    } catch (NoClassDefFoundError e) {
-	        // KafkaIO is optional, ignore if not present
 	    }
 	}
 
@@ -624,7 +545,6 @@ public class DataflowRunner extends PipelineRunner<DataflowPipelineJob> {
         }
         if (containerImage.startsWith("apache/beam")
             && !updated
-            // don't update if the container image is already configured by DataflowRunner
             && !containerImage.equals(getContainerImageForJob(options))) {
           containerImage =
               DataflowRunnerInfo.getDataflowRunnerInfo().getContainerImageBaseRepository()
@@ -748,8 +668,6 @@ private String getStagedName(RunnerApi.ArtifactInformation info, RunnerApi.Artif
         options.as(DataflowStreamingPipelineOptions.class).getOverrideWindmillBinary();
     String dataflowWorkerJar = options.getDataflowWorkerJar();
     if (dataflowWorkerJar != null && !dataflowWorkerJar.isEmpty() && !useUnifiedWorker(options)) {
-      // Put the user specified worker jar at the start of the classpath, to be consistent with the
-      // built in worker order.
       pathsToStageBuilder.add("dataflow-worker.jar=" + dataflowWorkerJar);
     }
     pathsToStageBuilder.addAll(options.getFilesToStage());
@@ -791,8 +709,6 @@ private String getStagedName(RunnerApi.ArtifactInformation info, RunnerApi.Artif
 
   @Override
   public DataflowPipelineJob run(Pipeline pipeline) {
-    // Multi-language pipelines and pipelines that include upgrades should automatically be upgraded
-    // to Runner v2.
     if (DataflowRunner.isMultiLanguagePipeline(pipeline) || Schema.Options.includesTransformUpgrades(pipeline)) {
       List<String> experiments = firstNonNull(options.getExperiments(), Collections.emptyList());
       if (!experiments.contains("use_runner_v2")) {
@@ -811,7 +727,7 @@ private String getStagedName(RunnerApi.ArtifactInformation info, RunnerApi.Artif
             "Runner V2 both disabled and enabled: at least one of ['beam_fn_api', 'use_unified_worker', 'use_runner_v2', 'use_portable_job_submission'] is set and also one of ['disable_runner_v2', 'disable_runner_v2_until_2023', 'disable_prime_runner_v2'] is set.");
       }
       List<String> experiments =
-          new ArrayList<>(options.getExperiments()); // non-null if useUnifiedWorker is true
+          new ArrayList<>(options.getExperiments());
       if (!experiments.contains("use_runner_v2")) {
         experiments.add("use_runner_v2");
       }
@@ -835,7 +751,7 @@ private String getStagedName(RunnerApi.ArtifactInformation info, RunnerApi.Artif
       if (useUnifiedWorker(options)) {
         options.setEnableStreamingEngine(true);
         List<String> experiments =
-            new ArrayList<>(options.getExperiments()); // non-null if useUnifiedWorker is true
+            new ArrayList<>(options.getExperiments());
         if (!experiments.contains("enable_streaming_engine")) {
           experiments.add("enable_streaming_engine");
         }
@@ -856,16 +772,9 @@ private String getStagedName(RunnerApi.ArtifactInformation info, RunnerApi.Artif
     DataflowPipelineOptions dataflowOptions = options.as(DataflowPipelineOptions.class);
     String workerHarnessContainerImageURL = DataflowRunner.getContainerImageForJob(dataflowOptions);
 
-    // This incorrectly puns the worker harness container image (which implements v1beta3 API)
-    // with the SDK harness image (which implements Fn API).
-    //
-    // The same Environment is used in different and contradictory ways, depending on whether
-    // it is a v1 or v2 job submission.
     RunnerApi.Environment defaultEnvironmentForDataflow =
         Environments.createDockerEnvironment(workerHarnessContainerImageURL);
 
-    // The SdkComponents for portable an non-portable job submission must be kept distinct. Both
-    // need the default environment.
     SdkComponents portableComponents = SdkComponents.create();
     portableComponents.registerEnvironment(
         defaultEnvironmentForDataflow
@@ -876,8 +785,6 @@ private String getStagedName(RunnerApi.ArtifactInformation info, RunnerApi.Artif
 
     RunnerApi.Pipeline portablePipelineProto =
         PipelineTranslation.toProto(pipeline, portableComponents, false);
-    // Note that `stageArtifacts` has to be called before `resolveArtifact` because
-    // `resolveArtifact` updates local paths to staged paths in pipeline proto.
     portablePipelineProto = resolveAnyOfEnvironments(portablePipelineProto);
     List<DataflowPackage> packages = stageArtifacts(portablePipelineProto);
     portablePipelineProto = resolveArtifacts(portablePipelineProto);
@@ -887,9 +794,6 @@ private String getStagedName(RunnerApi.ArtifactInformation info, RunnerApi.Artif
           "Portable pipeline proto:\n{}",
           TextFormat.printer().printToString(portablePipelineProto));
     }
-    // Stage the portable pipeline proto, retrieving the staged pipeline path, then update
-    // the options on the new job
-    // TODO: add an explicit `pipeline` parameter to the submission instead of pipeline options
     LOG.info("Staging portable pipeline proto to {}", options.getStagingLocation());
     byte[] serializedProtoPipeline = portablePipelineProto.toByteArray();
 
@@ -900,11 +804,8 @@ private String getStagedName(RunnerApi.ArtifactInformation info, RunnerApi.Artif
     if (useUnifiedWorker(options)) {
       LOG.info("Skipping v1 transform replacements since job will run on v2.");
     } else {
-      // Now rewrite things to be as needed for v1 (mutates the pipeline)
-      // This way the job submitted is valid for v1 and v2, simultaneously
       replaceV1Transforms(pipeline);
     }
-    // Capture the SdkComponents for look up during step translations
     SdkComponents dataflowV1Components = SdkComponents.create();
     dataflowV1Components.registerEnvironment(
         defaultEnvironmentForDataflow
@@ -912,7 +813,6 @@ private String getStagedName(RunnerApi.ArtifactInformation info, RunnerApi.Artif
             .addAllDependencies(getDefaultArtifacts())
             .addAllCapabilities(Environments.getJavaCapabilities())
             .build());
-    // No need to perform transform upgrading for the Runner v1 proto.
     RunnerApi.Pipeline dataflowV1PipelineProto =
         PipelineTranslation.toProto(pipeline, dataflowV1Components, true, false);
 
@@ -922,13 +822,6 @@ private String getStagedName(RunnerApi.ArtifactInformation info, RunnerApi.Artif
           TextFormat.printer().printToString(dataflowV1PipelineProto));
     }
 
-    // Set a unique client_request_id in the CreateJob request.
-    // This is used to ensure idempotence of job creation across retried
-    // attempts to create a job. Specifically, if the service returns a job with
-    // a different client_request_id, it means the returned one is a different
-    // job previously created with the same job name, and that the job creation
-    // has been effectively rejected. The SDK should return
-    // Error::Already_Exists to user in that case.
     int randomNum = new Random().nextInt(9000) + 1000;
     String requestId =
         DateTimeFormat.forPattern("YYYYMMddHHmmssmmm")
@@ -973,8 +866,6 @@ private String getStagedName(RunnerApi.ArtifactInformation info, RunnerApi.Artif
     LOG.info("Dataflow SDK version: {}", version);
 
     newJob.getEnvironment().setUserAgent((Map) dataflowRunnerInfo.getProperties());
-    // The Dataflow Service may write to the temporary directory directly, so
-    // must be verified.
     if (!isNullOrEmpty(options.getGcpTempLocation())) {
       newJob
           .getEnvironment()
@@ -998,7 +889,6 @@ private String getStagedName(RunnerApi.ArtifactInformation info, RunnerApi.Artif
       newJob.getEnvironment().setFlexResourceSchedulingGoal("FLEXRS_SPEED_OPTIMIZED");
     }
 
-    // Represent the minCpuPlatform pipeline option as an experiment, if not already present.
     if (!isNullOrEmpty(dataflowOptions.getMinCpuPlatform())) {
       List<String> experiments =
           firstNonNull(dataflowOptions.getExperiments(), Collections.emptyList());
@@ -1028,11 +918,6 @@ private String getStagedName(RunnerApi.ArtifactInformation info, RunnerApi.Artif
             ImmutableList.copyOf(
                 firstNonNull(dataflowOptions.getExperiments(), Collections.emptyList())));
 
-    // Set the Docker container image that executes Dataflow worker harness, residing in Google
-    // Container Registry. Translator is guaranteed to create a worker pool prior to this point.
-    // For runner_v1, only worker_harness_container is set.
-    // For runner_v2, both worker_harness_container and sdk_harness_container are set to the same
-    // value.
     String containerImage = getContainerImageForJob(options);
     for (WorkerPool workerPool : newJob.getEnvironment().getWorkerPools()) {
       workerPool.setWorkerHarnessContainerImage(containerImage);
@@ -1046,7 +931,6 @@ private String getStagedName(RunnerApi.ArtifactInformation info, RunnerApi.Artif
       hooks.modifyEnvironmentBeforeSubmission(newJob.getEnvironment());
     }
 
-    // enable upload_graph when the graph is too large
     byte[] jobGraphBytes = DataflowPipelineTranslator.jobToString(newJob).getBytes(UTF_8);
     int jobGraphByteSize = jobGraphBytes.length;
     if (jobGraphByteSize >= CREATE_JOB_REQUEST_LIMIT_BYTES
@@ -1071,8 +955,6 @@ private String getStagedName(RunnerApi.ArtifactInformation info, RunnerApi.Artif
               + "to runner v2 jobs. Option has been automatically removed.");
     }
 
-    // Upload the job to GCS and remove the graph object from the API call.  The graph
-    // will be downloaded from GCS by the service.
     if (hasExperiment(options, "upload_graph")) {
       DataflowPackage stagedGraph =
           options.getStager().stageToFile(jobGraphBytes, DATAFLOW_GRAPH_FILE_NAME);
@@ -1150,8 +1032,6 @@ private String getStagedName(RunnerApi.ArtifactInformation info, RunnerApi.Artif
       throw new RuntimeException("Failed to create a workflow job", e);
     }
 
-    // Use a raw client for post-launch monitoring, as status calls may fail
-    // regularly and need not be retried automatically.
     DataflowPipelineJob dataflowPipelineJob =
         new DataflowPipelineJob(
             DataflowClient.create(options),
@@ -1160,15 +1040,9 @@ private String getStagedName(RunnerApi.ArtifactInformation info, RunnerApi.Artif
             jobSpecification != null ? jobSpecification.getStepNames() : Collections.emptyMap(),
             portablePipelineProto);
 
-    // If the service returned client request id, the SDK needs to compare it
-    // with the original id generated in the request, if they are not the same
-    // (i.e., the returned job is not created by this request), throw
-    // DataflowJobAlreadyExistsException or DataflowJobAlreadyUpdatedException
-    // depending on whether this is a reload or not.
     if (jobResult.getClientRequestId() != null
         && !jobResult.getClientRequestId().isEmpty()
         && !jobResult.getClientRequestId().equals(requestId)) {
-      // If updating a job.
       if (options.isUpdate()) {
         throw new DataflowJobAlreadyUpdatedException(
             dataflowPipelineJob,
@@ -1243,14 +1117,12 @@ private String getStagedName(RunnerApi.ArtifactInformation info, RunnerApi.Artif
         .collect(Collectors.toList());
   }
 
-  /** Returns true if the specified experiment is enabled, handling null experiments. */
   public static boolean hasExperiment(DataflowPipelineDebugOptions options, String experiment) {
     List<String> experiments =
         firstNonNull(options.getExperiments(), Collections.emptyList());
     return experiments.contains(experiment);
   }
 
-  /** Helper to configure the Dataflow Job Environment based on the user's job options. */
   private static Map<String, Object> getEnvironmentVersion(DataflowPipelineOptions options) {
     DataflowRunnerInfo runnerInfo = DataflowRunnerInfo.getDataflowRunnerInfo();
     String majorVersion;
@@ -1267,13 +1139,9 @@ private String getStagedName(RunnerApi.ArtifactInformation info, RunnerApi.Artif
         PropertyNames.ENVIRONMENT_VERSION_JOB_TYPE_KEY, jobType);
   }
 
-  // This method is protected to allow a Google internal subclass to properly
-  // setup overrides.
   @VisibleForTesting
   protected void replaceV1Transforms(Pipeline pipeline) {
     boolean streaming = shouldActAsStreaming(pipeline);
-    // Ensure all outputs of all reads are consumed before potentially replacing any
-    // Read PTransforms
     UnconsumedReads.ensureAllReadsConsumed(pipeline);
     pipeline.replaceAll(getOverrides(streaming));
   }
@@ -1325,17 +1193,14 @@ private String getStagedName(RunnerApi.ArtifactInformation info, RunnerApi.Artif
     }
   }
 
-    /** Returns the DataflowPipelineTranslator associated with this object. */
   public DataflowPipelineTranslator getTranslator() {
     return translator;
   }
 
-  /** Sets callbacks to invoke during execution see {@code DataflowRunnerHooks}. */
   public void setHooks(DataflowRunnerHooks hooks) {
     this.hooks = hooks;
   }
 
-  /////////////////////////////////////////////////////////////////////////////
 
   private void logWarningIfBigqueryDLQUnused(Pipeline pipeline) {
     Map<PCollection, String> unconsumedDLQ = Maps.newHashMap();
@@ -1349,19 +1214,13 @@ private String getStagedName(RunnerApi.ArtifactInformation info, RunnerApi.Artif
               String rootBigQueryTransform = "";
               if (transform.getClass().equals(StorageApiLoads.class)) {
                 StorageApiLoads<?, ?> storageLoads = (StorageApiLoads<?, ?>) transform;
-                // If the storage load is directing exceptions to an error handler, we don't need to
-                // warn for unconsumed rows
                 if (!storageLoads.usesErrorHandler()) {
                   failedTag = storageLoads.getFailedRowsTag();
                 }
-                // For storage API the transform that outputs failed rows is nested one layer below
-                // BigQueryIO.
                 rootBigQueryTransform = node.getEnclosingNode().getFullName();
               } else if (transform.getClass().equals(StreamingWriteTables.class)) {
                 StreamingWriteTables<?> streamingInserts = (StreamingWriteTables<?>) transform;
                 failedTag = streamingInserts.getFailedRowsTupleTag();
-                // For streaming inserts the transform that outputs failed rows is nested two layers
-                // below BigQueryIO.
                 rootBigQueryTransform = node.getEnclosingNode().getEnclosingNode().getFullName();
               }
               if (failedTag != null) {
@@ -1390,11 +1249,7 @@ private String getStagedName(RunnerApi.ArtifactInformation info, RunnerApi.Artif
     }
   }
 
-  /** Outputs a warning about PCollection views without deterministic key coders. */
   private void logWarningIfPCollectionViewHasNonDeterministicKeyCoder(Pipeline pipeline) {
-    // We need to wait till this point to determine the names of the transforms since only
-    // at this time do we know the hierarchy of the transforms otherwise we could
-    // have just recorded the full names during apply time.
     if (!ptransformViewsWithNonDeterministicKeyCoders.isEmpty()) {
       final SortedSet<String> ptransformViewNamesWithNonDeterministicKeyCoders = new TreeSet<>();
       pipeline.traverseTopologically(
@@ -1437,18 +1292,10 @@ private String getStagedName(RunnerApi.ArtifactInformation info, RunnerApi.Artif
     }
   }
 
-  /**
-   * Returns true if the passed in {@link PCollection} needs to be materialized using an indexed
-   * format.
-   */
   boolean doesPCollectionRequireIndexedFormat(PCollection pcol) {
     return pcollectionsRequiringIndexedFormat.contains(pcol);
   }
 
-  /**
-   * Marks the passed in {@link PCollection} as requiring to be materialized using an indexed
-   * format.
-   */
   void addPCollectionRequiringIndexedFormat(PCollection pcol) {
     pcollectionsRequiringIndexedFormat.add(pcol);
   }
@@ -1458,7 +1305,6 @@ private String getStagedName(RunnerApi.ArtifactInformation info, RunnerApi.Artif
   }
 
   void maybeRecordPCollectionWithAutoSharding(PCollection pcol) {
-    // Auto-sharding is only supported in Streaming Engine.
     checkArgument(
         options.isEnableStreamingEngine(),
         "Runner determined sharding not available in Dataflow for GroupIntoBatches for"
@@ -1476,17 +1322,11 @@ private String getStagedName(RunnerApi.ArtifactInformation info, RunnerApi.Artif
     return pcollectionsRequiringAutoSharding.contains(pcol);
   }
 
-  /** A set of {@link View}s with non-deterministic key coders. */
   private final Set<PTransform<?, ?>> ptransformViewsWithNonDeterministicKeyCoders;
 
-  /** Records that the {@link PTransform} requires a deterministic key coder. */
   void recordViewUsesNonDeterministicKeyCoder(PTransform<?, ?> ptransform) {
     ptransformViewsWithNonDeterministicKeyCoders.add(ptransform);
   }
-
-  // ================================================================================
-  // PubsubIO translations
-  // ================================================================================
 
   static void translateOverriddenPubsubSourceStep(
       PubsubUnboundedSource overriddenTransform, StepTranslationContext stepTranslationContext) {
@@ -1519,21 +1359,13 @@ private String getStagedName(RunnerApi.ArtifactInformation info, RunnerApi.Artif
       stepTranslationContext.addInput(
           PropertyNames.PUBSUB_ID_ATTRIBUTE, overriddenTransform.getIdAttribute());
     }
-    // In both cases, the transform needs to read PubsubMessage. However, in case it needs
-    // the attributes or messageId, we supply an identity "parse fn" so the worker will
-    // read PubsubMessage's from Windmill and simply pass them around; and in case it
-    // doesn't need attributes, we're already implicitly using a "Coder" that interprets
-    // the data as a PubsubMessage's payload.
+
     if (overriddenTransform.getNeedsAttributes() || overriddenTransform.getNeedsMessageId()) {
       stepTranslationContext.addInput(
           PropertyNames.PUBSUB_SERIALIZED_ATTRIBUTES_FN,
           byteArrayToJsonString(serializeToByteArray(new IdentityMessageFn())));
     }
   }
-
-  
-
-  // ================================================================================
 
   static {
     DataflowPipelineTranslator.registerTransformTranslator(
@@ -1556,7 +1388,6 @@ private String getStagedName(RunnerApi.ArtifactInformation info, RunnerApi.Artif
     return "DataflowRunner#" + options.getJobName();
   }
 
-  /** Finds the id for the running job of the given name. */
   private String getJobIdFromName(String jobName) {
     try {
       ListJobsResponse listResult;
@@ -1588,17 +1419,14 @@ private String getStagedName(RunnerApi.ArtifactInformation info, RunnerApi.Artif
     String containerImage = options.getSdkContainerImage();
 
     if (containerImage == null) {
-      // If not set, construct and return default image URL.
       return getDefaultContainerImageUrl(options);
     } else if (containerImage.contains("IMAGE")) {
-      // Replace placeholder with default image name
       return containerImage.replace("IMAGE", getDefaultContainerImageNameForJob(options));
     } else {
       return containerImage;
     }
   }
 
-  /** Construct the default Dataflow container full image URL. */
   static String getDefaultContainerImageUrl(DataflowPipelineOptions options) {
     DataflowRunnerInfo dataflowRunnerInfo = DataflowRunnerInfo.getDataflowRunnerInfo();
     return String.format(
@@ -1608,9 +1436,6 @@ private String getStagedName(RunnerApi.ArtifactInformation info, RunnerApi.Artif
         getDefaultContainerVersion(options));
   }
 
-  /**
-   * Construct the default Dataflow container image name based on pipeline type and Java version.
-   */
   static String getDefaultContainerImageNameForJob(DataflowPipelineOptions options) {
     Environments.JavaVersion javaVersion = Environments.getJavaVersion();
     if (useUnifiedWorker(options)) {
@@ -1622,9 +1447,6 @@ private String getStagedName(RunnerApi.ArtifactInformation info, RunnerApi.Artif
     }
   }
 
-  /**
-   * Construct the default Dataflow container image name based on pipeline type and Java version.
-   */
   static String getDefaultContainerVersion(DataflowPipelineOptions options) {
     DataflowRunnerInfo dataflowRunnerInfo = DataflowRunnerInfo.getDataflowRunnerInfo();
     ReleaseInfo releaseInfo = ReleaseInfo.getReleaseInfo();
@@ -1689,7 +1511,6 @@ private String getStagedName(RunnerApi.ArtifactInformation info, RunnerApi.Artif
   }
 
   static void verifyStateSupportForWindowingStrategy(WindowingStrategy strategy) {
-    // https://github.com/apache/beam/issues/18478
     if (strategy.needsMerge()) {
       throw new UnsupportedOperationException(
           String.format(

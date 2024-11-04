@@ -94,87 +94,6 @@ import org.joda.time.Instant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * Read and Write {@link PTransform}s for Cloud Pub/Sub streams. These transforms create and consume
- * unbounded {@link PCollection PCollections}.
- *
- * <h3>Using local emulator</h3>
- *
- * <p>In order to use local emulator for Pubsub you should use {@code
- * PubsubOptions#setPubsubRootUrl(String)} method to set host and port of your local emulator.
- *
- * <h3>Permissions</h3>
- *
- * <p>Permission requirements depend on the {@link PipelineRunner} that is used to execute the Beam
- * pipeline. Please refer to the documentation of corresponding {@link PipelineRunner
- * PipelineRunners} for more details.
- *
- * <h3>Updates to the I/O connector code</h3>
- *
- * For any significant updates to this I/O connector, please consider involving corresponding code
- * reviewers mentioned <a
- * href="https://github.com/apache/beam/blob/master/sdks/java/io/google-cloud-platform/OWNERS">
- * here</a>.
- *
- * <h3>Example PubsubIO read usage</h3>
- *
- * <pre>{@code
- * // Read from a specific topic; a subscription will be created at pipeline start time.
- * PCollection<PubsubMessage> messages = PubsubIO.readMessages().fromTopic(topic);
- *
- * // Read from a subscription.
- * PCollection<PubsubMessage> messages = PubsubIO.readMessages().fromSubscription(subscription);
- *
- * // Read messages including attributes. All PubSub attributes will be included in the PubsubMessage.
- * PCollection<PubsubMessage> messages = PubsubIO.readMessagesWithAttributes().fromTopic(topic);
- *
- * // Examples of reading different types from PubSub.
- * PCollection<String> strings = PubsubIO.readStrings().fromTopic(topic);
- * PCollection<MyProto> protos = PubsubIO.readProtos(MyProto.class).fromTopic(topic);
- * PCollection<MyType> avros = PubsubIO.readAvros(MyType.class).fromTopic(topic);
- *
- * }</pre>
- *
- * <h3>Example PubsubIO write usage</h3>
- *
- * Data can be written to a single topic or to a dynamic set of topics. In order to write to a
- * single topic, the {@link PubsubIO.Write#to(String)} method can be used. For example:
- *
- * <pre>{@code
- * avros.apply(PubsubIO.writeAvros(MyType.class).to(topic));
- * protos.apply(PubsubIO.writeProtos(MyProto.class).to(topic));
- * strings.apply(PubsubIO.writeStrings().to(topic));
- * }</pre>
- *
- * Dynamic topic destinations can be accomplished by specifying a function to extract the topic from
- * the record using the {@link PubsubIO.Write#to(SerializableFunction)} method. For example:
- *
- * <pre>{@code
- * avros.apply(PubsubIO.writeAvros(MyType.class).
- *      to((ValueInSingleWindow<Event> quote) -> {
- *               String country = quote.getCountry();
- *               return "projects/myproject/topics/events_" + country;
- *              });
- * }</pre>
- *
- * Dynamic topics can also be specified by writing {@link PubsubMessage} objects containing the
- * topic and writing using the {@link PubsubIO#writeMessagesDynamic()} method. For example:
- *
- * <pre>{@code
- * events.apply(MapElements.into(new TypeDescriptor<PubsubMessage>() {})
- *                         .via(e -> new PubsubMessage(
- *                             e.toByteString(), Collections.emptyMap()).withTopic(e.getCountry())))
- * .apply(PubsubIO.writeMessagesDynamic());
- * }</pre>
- *
- * <h3>Custom timestamps</h3>
- *
- * All messages read from PubSub have a stable publish timestamp that is independent of when the
- * message is read from the PubSub topic. By default, the publish time is used as the timestamp for
- * all messages read and the watermark is based on that. If there is a different logical timestamp
- * to be used, that timestamp must be published in a PubSub attribute and specified using {@link
- * PubsubIO.Read#withTimestampAttribute}. See the Javadoc for that method for the timestamp format.
- */
 @SuppressWarnings({
   "nullness" // TODO(https://github.com/apache/beam/issues/20497)
 })
@@ -182,14 +101,8 @@ public class PubsubIO {
 
   private static final Logger LOG = LoggerFactory.getLogger(PubsubIO.class);
 
-  /** Factory for creating pubsub client to manage transport. */
   private static final PubsubClient.PubsubClientFactory FACTORY = PubsubJsonClient.FACTORY;
 
-  /**
-   * Project IDs must contain 6-63 lowercase letters, digits, or dashes. IDs must start with a
-   * letter and may not end with a dash. This regex isn't exact - this allows for patterns that
-   * would be rejected by the service, but this is sufficient for basic parsing of table references.
-   */
   private static final Pattern PROJECT_ID_REGEXP =
       Pattern.compile("[a-z][-a-z0-9:.]{4,61}[a-z0-9]");
 
@@ -248,7 +161,6 @@ public class PubsubIO {
     }
   }
 
-  /** Populate common {@link DisplayData} between Pubsub source and sink. */
   private static void populateCommonDisplayData(
       DisplayData.Builder builder,
       String timestampAttribute,
@@ -262,7 +174,6 @@ public class PubsubIO {
         .addIfNotNull(DisplayData.item("topic", topic).withLabel("Pubsub Topic"));
   }
 
-  /** Class representing a Cloud Pub/Sub Subscription. */
   public static class PubsubSubscription implements Serializable {
 
     private enum Type {
@@ -280,23 +191,6 @@ public class PubsubIO {
       this.subscription = subscription;
     }
 
-    /**
-     * Creates a class representing a Pub/Sub subscription from the specified subscription path.
-     *
-     * <p>Cloud Pub/Sub subscription names should be of the form {@code
-     * projects/<project>/subscriptions/<subscription>}, where {@code <project>} is the name of the
-     * project the subscription belongs to. The {@code <subscription>} component must comply with
-     * the following requirements:
-     *
-     * <ul>
-     *   <li>Can only contain lowercase letters, numbers, dashes ('-'), underscores ('_') and
-     *       periods ('.').
-     *   <li>Must be between 3 and 255 characters.
-     *   <li>Must begin with a letter.
-     *   <li>Must end with a letter or a number.
-     *   <li>Cannot begin with {@code 'goog'} prefix.
-     * </ul>
-     */
     public static PubsubSubscription fromPath(String path) {
       if (path.startsWith(SUBSCRIPTION_RANDOM_TEST_PREFIX)
           || path.startsWith(SUBSCRIPTION_STARTING_SIGNAL)) {
@@ -329,12 +223,6 @@ public class PubsubIO {
       return new PubsubSubscription(PubsubSubscription.Type.NORMAL, projectName, subscriptionName);
     }
 
-    /**
-     * Returns the string representation of this subscription as a path used in the Cloud Pub/Sub
-     * v1beta1 API.
-     *
-     * @deprecated the v1beta1 API for Cloud Pub/Sub is deprecated.
-     */
     @Deprecated
     public String asV1Beta1Path() {
       if (type == PubsubSubscription.Type.NORMAL) {
@@ -344,12 +232,6 @@ public class PubsubIO {
       }
     }
 
-    /**
-     * Returns the string representation of this subscription as a path used in the Cloud Pub/Sub
-     * v1beta2 API.
-     *
-     * @deprecated the v1beta2 API for Cloud Pub/Sub is deprecated.
-     */
     @Deprecated
     public String asV1Beta2Path() {
       if (type == PubsubSubscription.Type.NORMAL) {
@@ -359,10 +241,6 @@ public class PubsubIO {
       }
     }
 
-    /**
-     * Returns the string representation of this subscription as a path used in the Cloud Pub/Sub
-     * API.
-     */
     public String asPath() {
       if (type == PubsubSubscription.Type.NORMAL) {
         return "projects/" + project + "/subscriptions/" + subscription;
@@ -377,7 +255,6 @@ public class PubsubIO {
     }
   }
 
-  /** Used to build a {@link ValueProvider} for {@link SubscriptionPath}. */
   private static class SubscriptionPathTranslator
       implements SerializableFunction<PubsubSubscription, SubscriptionPath> {
 
@@ -387,7 +264,6 @@ public class PubsubIO {
     }
   }
 
-  /** Used to build a {@link ValueProvider} for {@link TopicPath}. */
   private static class TopicPathTranslator implements SerializableFunction<PubsubTopic, TopicPath> {
 
     @Override
@@ -396,7 +272,6 @@ public class PubsubIO {
     }
   }
 
-  /** Class representing a Cloud Pub/Sub Topic. */
   public static class PubsubTopic implements Serializable {
     @Override
     public boolean equals(Object o) {
