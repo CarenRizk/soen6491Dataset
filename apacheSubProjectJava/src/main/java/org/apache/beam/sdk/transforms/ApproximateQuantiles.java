@@ -214,8 +214,8 @@ public class ApproximateQuantiles {
       return new QuantileState<>(
           compareFn,
           numQuantiles,
-          null, /* min */
-          null, /* max */
+          null, 
+          null, 
           numBuffers,
           bufferSize,
           Collections.emptyList(),

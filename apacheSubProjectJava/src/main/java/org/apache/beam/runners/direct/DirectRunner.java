@@ -229,14 +229,14 @@ public class DirectRunner extends PipelineRunner<DirectPipelineResult> {
       builder.add(
           PTransformOverride.of(
               PTransformMatchers.writeWithRunnerDeterminedSharding(),
-              new WriteWithShardingFactory())); /* Uses a view internally. */
+              new WriteWithShardingFactory())); 
     }
     builder
         .add(PTransformOverride.of(MultiStepCombine.matcher(), MultiStepCombine.Factory.create()))
         .add(
             PTransformOverride.of(
                 PTransformMatchers.urnEqualTo(PTransformTranslation.TEST_STREAM_TRANSFORM_URN),
-                new DirectTestStreamFactory(this))); /* primitive */
+                new DirectTestStreamFactory(this))); 
     return builder.build();
   }
 
@@ -262,11 +262,11 @@ public class DirectRunner extends PipelineRunner<DirectPipelineResult> {
             .add(
                 PTransformOverride.of(
                     PTransformMatchers.urnEqualTo(SplittableParDo.SPLITTABLE_GBKIKWI_URN),
-                    new DirectGBKIntoKeyedWorkItemsOverrideFactory())) /* Returns a GBKO */
+                    new DirectGBKIntoKeyedWorkItemsOverrideFactory())) 
             .add(
                 PTransformOverride.of(
                     PTransformMatchers.urnEqualTo(PTransformTranslation.GROUP_BY_KEY_TRANSFORM_URN),
-                    new DirectGroupByKeyOverrideFactory())); /* returns two chained primitives. */
+                    new DirectGroupByKeyOverrideFactory())); 
     return builder.build();
   }
 

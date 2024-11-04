@@ -781,7 +781,7 @@ public class PubsubIO {
           new PubsubUnboundedSource(
               getClock(),
               getPubsubClientFactory(),
-              null /* always get project from runtime PipelineOptions */,
+              null ,
               topicPath,
               subscriptionPath,
               getTimestampAttribute(),
@@ -1143,7 +1143,7 @@ public class PubsubIO {
                       : null,
                   getTimestampAttribute(),
                   getIdAttribute(),
-                  100 /* numShards */,
+                  100 ,
                   MoreObjects.firstNonNull(
                       getMaxBatchSize(), PubsubUnboundedSink.DEFAULT_PUBLISH_BATCH_SIZE),
                   MoreObjects.firstNonNull(

@@ -185,7 +185,7 @@ public class TextIOReadTest {
     File tmpFile = folder.getRoot().toPath().resolve(filename).toFile();
 
     ZipOutputStream out = new ZipOutputStream(new FileOutputStream(tmpFile));
-    PrintStream writer = new PrintStream(out, true /* auto-flush on write */);
+    PrintStream writer = new PrintStream(out, true );
 
     int index = 0;
     for (String[] entry : fieldsEntries) {

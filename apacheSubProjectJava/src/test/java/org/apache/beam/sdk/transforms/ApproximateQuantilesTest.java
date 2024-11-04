@@ -124,7 +124,7 @@ public class ApproximateQuantilesTest {
       testCombineFn(
           ApproximateQuantilesCombineFn.create(37),
           intRange(5000),
-          quantileMatcher(5000, 37, 20 /* tolerance */));
+          quantileMatcher(5000, 37, 20 ));
     }
 
     @Test
@@ -132,7 +132,7 @@ public class ApproximateQuantilesTest {
       testCombineFn(
           ApproximateQuantilesCombineFn.create(50),
           intRange(10001),
-          quantileMatcher(10001, 50, 20 /* tolerance */));
+          quantileMatcher(10001, 50, 20 ));
     }
 
     @Test
@@ -140,7 +140,7 @@ public class ApproximateQuantilesTest {
       testCombineFn(
           ApproximateQuantilesCombineFn.<Integer>create(10).withEpsilon(0.01),
           intRange(10001),
-          quantileMatcher(10001, 10, 5 /* tolerance */));
+          quantileMatcher(10001, 10, 5 ));
     }
 
     @Test

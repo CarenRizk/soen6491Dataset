@@ -1737,14 +1737,14 @@ public class SpannerIO {
 
     
     private transient SpannerAccessor spannerAccessor;
-      /* Number of times an aborted write to spanner could be retried */
+      
     private static final int ABORTED_RETRY_ATTEMPTS = 5;
-    /* Error string in Aborted exception during schema change */
+    
     private final String schemaChangeErrString =
         "Transaction aborted. "
             + "Database schema probably changed during transaction, retry may succeed.";
 
-    /* Error string in Aborted exception for concurrent transaction in Spanner Emulator */
+    
     private final String emulatorErrorString =
         "The emulator only supports one transaction at a time.";
 

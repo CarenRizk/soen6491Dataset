@@ -107,21 +107,21 @@ public class Combine {
   private static <K, InputT, OutputT> PerKey<K, InputT, OutputT> perKey(
       GlobalCombineFn<? super InputT, ?, OutputT> fn,
       DisplayData.ItemSpec<? extends Class<?>> fnDisplayData) {
-    return new PerKey<>(fn, fnDisplayData, false /*fewKeys*/);
+    return new PerKey<>(fn, fnDisplayData, false );
   }
 
   
   @Internal
   public static <K, InputT, OutputT> PerKey<K, InputT, OutputT> fewKeys(
       GlobalCombineFn<? super InputT, ?, OutputT> fn) {
-    return new PerKey<>(fn, displayDataForFn(fn), true /*fewKeys*/);
+    return new PerKey<>(fn, displayDataForFn(fn), true );
   }
 
   
   private static <K, InputT, OutputT> PerKey<K, InputT, OutputT> fewKeys(
       GlobalCombineFn<? super InputT, ?, OutputT> fn,
       DisplayData.ItemSpec<? extends Class<?>> fnDisplayData) {
-    return new PerKey<>(fn, fnDisplayData, true /*fewKeys*/);
+    return new PerKey<>(fn, fnDisplayData, true );
   }
 
   

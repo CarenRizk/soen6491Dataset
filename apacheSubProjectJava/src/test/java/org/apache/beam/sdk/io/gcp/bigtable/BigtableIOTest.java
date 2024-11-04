@@ -615,18 +615,18 @@ private BigtableSource extracted(final String table, final int numRows, final in
     final long bytesPerRow = 1L;
     BigtableSource source = extracted(table, numRows, numSamples, bytesPerRow);
     
-    assertSplitAtFractionFails(source, 0, 0.1, null /* options */);
-    assertSplitAtFractionFails(source, 0, 1.0, null /* options */);
+    assertSplitAtFractionFails(source, 0, 0.1, null );
+    assertSplitAtFractionFails(source, 0, 1.0, null );
     
-    assertSplitAtFractionSucceedsAndConsistent(source, 1, 0.333, null /* options */);
-    assertSplitAtFractionSucceedsAndConsistent(source, 1, 0.666, null /* options */);
+    assertSplitAtFractionSucceedsAndConsistent(source, 1, 0.333, null );
+    assertSplitAtFractionSucceedsAndConsistent(source, 1, 0.666, null );
     
-    assertSplitAtFractionFails(source, 3, 0.2, null /* options */);
-    assertSplitAtFractionSucceedsAndConsistent(source, 3, 0.571, null /* options */);
-    assertSplitAtFractionSucceedsAndConsistent(source, 3, 0.9, null /* options */);
+    assertSplitAtFractionFails(source, 3, 0.2, null );
+    assertSplitAtFractionSucceedsAndConsistent(source, 3, 0.571, null );
+    assertSplitAtFractionSucceedsAndConsistent(source, 3, 0.9, null );
     
-    assertSplitAtFractionFails(source, 6, 0.5, null /* options */);
-    assertSplitAtFractionSucceedsAndConsistent(source, 6, 0.7, null /* options */);
+    assertSplitAtFractionFails(source, 6, 0.5, null );
+    assertSplitAtFractionSucceedsAndConsistent(source, 6, 0.7, null );
   }
 
   
@@ -656,13 +656,13 @@ private void setupAndSplitBigtableSource(final String table, final int numRows, 
                 .setTableId(StaticValueProvider.of(table))
                 .setKeyRanges(ALL_KEY_RANGE)
                 .build(),
-            null /*size*/);
+            null );
     List<BigtableSource> splits =
-        source.split(numRows * bytesPerRow / numSamples, null /* options */);
+        source.split(numRows * bytesPerRow / numSamples, null );
 
     
     assertThat(splits, hasSize(numSamples));
-    assertSourcesEqualReferenceSource(source, splits, null /* options */);
+    assertSourcesEqualReferenceSource(source, splits, null );
 }
 
   
@@ -687,12 +687,12 @@ private void setupAndSplitBigtableSource(final String table, final int numRows, 
                 .setTableId(StaticValueProvider.of(table))
                 .setKeyRanges(ALL_KEY_RANGE)
                 .build(),
-            null /*size*/);
-    List<BigtableSource> splits = source.split(0, null /* options */);
+            null );
+    List<BigtableSource> splits = source.split(0, null );
 
     
     assertThat(splits, hasSize(numSamples));
-    assertSourcesEqualReferenceSource(source, splits, null /* options */);
+    assertSourcesEqualReferenceSource(source, splits, null );
   }
 
   private void assertAllSourcesHaveSingleAdjacentRanges(List<BigtableSource> sources) {
@@ -788,7 +788,7 @@ private void createAndSplitBigtableSource(final String table, final int maxSplit
                 .setTableId(StaticValueProvider.of(table))
                 .setKeyRanges(StaticValueProvider.of(keyRanges))
                 .build(),
-            null /*size*/);
+            null );
 
     List<BigtableSource> splits = new ArrayList<>();
     for (ByteKeyRange range : keyRanges) {
@@ -834,7 +834,7 @@ private void createAndSplitBigtableSource(final String table, final int maxSplit
                 .setTableId(StaticValueProvider.of(table))
                 .setKeyRanges(ALL_KEY_RANGE)
                 .build(),
-            null /*size*/);
+            null );
     List<BigtableSource> splits = new ArrayList<>();
     List<ByteKeyRange> keyRanges =
         Arrays.asList(
@@ -873,7 +873,7 @@ private void createAndSplitBigtableSource(final String table, final int maxSplit
         IsIterableContainingInAnyOrder.containsInAnyOrder(
             expectedKeyRangesAfterReducedSplits.toArray()));
     assertAllSourcesHaveSingleAdjacentRanges(reducedSplits);
-    assertSourcesEqualReferenceSource(source, reducedSplits, null /* options */);
+    assertSourcesEqualReferenceSource(source, reducedSplits, null );
   }
 
   
@@ -905,13 +905,13 @@ private void createAndSplitBigtableSource(final String table, final int maxSplit
                 .setKeyRanges(
                     StaticValueProvider.of(Collections.singletonList(service.getTableRange(table))))
                 .build(),
-            null /*size*/);
+            null );
     List<BigtableSource> splits = 
-        source.split(numRows * bytesPerRow / numSamples, null /* options */);
+        source.split(numRows * bytesPerRow / numSamples, null );
 
     
     assertThat(splits, hasSize(numSplits));
-    assertSourcesEqualReferenceSource(referenceSource, splits, null /* options */);
+    assertSourcesEqualReferenceSource(referenceSource, splits, null );
   }
 
 private BigtableSource createBigtableSourceWithKeyRanges(final String table, ByteKey splitKey1, ByteKey splitKey2) {
@@ -931,7 +931,7 @@ private BigtableSource createBigtableSourceWithKeyRanges(final String table, Byt
                 .setTableId(StaticValueProvider.of(table))
                 .setKeyRanges(StaticValueProvider.of(keyRanges))
                 .build(),
-            null /*size*/);
+            null );
 	return source;
 }
 
@@ -958,12 +958,12 @@ private BigtableSource createBigtableSourceWithKeyRanges(final String table, Byt
                 .setTableId(StaticValueProvider.of(table))
                 .setKeyRanges(ALL_KEY_RANGE)
                 .build(),
-            null /*size*/);
+            null );
     List<BigtableSource> splits = source.split(numRows * bytesPerRow / numSplits, null);
 
     
     assertThat(splits, hasSize(numSplits));
-    assertSourcesEqualReferenceSource(source, splits, null /* options */);
+    assertSourcesEqualReferenceSource(source, splits, null );
   }
 
   
@@ -1000,12 +1000,12 @@ private BigtableSource createBigtableSourceWithKeyRanges(final String table, Byt
                 .setRowFilter(StaticValueProvider.of(filter))
                 .setKeyRanges(ALL_KEY_RANGE)
                 .build(),
-            null /*size*/);
+            null );
     List<BigtableSource> splits = source.split(numRows * bytesPerRow / numSplits, null);
 
     
     assertThat(splits, hasSize(numSplits));
-    assertSourcesEqualReferenceSource(source, splits, null /* options */);
+    assertSourcesEqualReferenceSource(source, splits, null );
   }
 
   @Test

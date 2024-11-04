@@ -640,7 +640,7 @@ public class FileIO {
     public static FileNaming relativeFileNaming(
         final ValueProvider<String> baseDirectory, final FileNaming innerNaming) {
       return (window, pane, numShards, shardIndex, compression) ->
-          FileSystems.matchNewResource(baseDirectory.get(), true /* isDirectory */)
+          FileSystems.matchNewResource(baseDirectory.get(), true )
               .resolve(
                   innerNaming.getFilename(window, pane, numShards, shardIndex, compression),
                   RESOLVE_FILE)
@@ -1056,7 +1056,7 @@ public class FileIO {
         super(
             ValueProvider.NestedValueProvider.of(
                 spec.getTempDirectory(),
-                input -> FileSystems.matchNewResource(input, true /* isDirectory */)),
+                input -> FileSystems.matchNewResource(input, true )),
             new DynamicDestinationsAdapter<>(spec),
             spec.getCompression());
         this.spec = spec;
@@ -1167,7 +1167,7 @@ public class FileIO {
               return FileSystems.matchNewResource(
                   namingFn.getFilename(
                       window, paneInfo, numShards, shardNumber, spec.getCompression()),
-                  false /* isDirectory */);
+                  false );
             }
 
             @Override
@@ -1180,7 +1180,7 @@ public class FileIO {
                       numShards,
                       shardNumber,
                       spec.getCompression()),
-                  false /* isDirectory */);
+                  false );
             }
           };
         }
