@@ -37,6 +37,8 @@ def find_refactoring_opportunities(file_path):
 
     Output the suggestions as a numbered list.
     Do not add any styling.
+    Do not suggest class name changes
+    Do not suggest method name changes
     Only include the suggestions in the output.
     """
 
@@ -73,15 +75,17 @@ def apply_refactorings(file_path, suggestions):
     logging.info(f"Applying refactorings for file: {file_path}")
 
     prompt = f"""
-    You are a refactoring expert. Refactor the following complete code using all the suggestions provided. 
+    You are a refactoring expert. Refactor the following complete code using all the suggestions provided. Return all the class, do not delete any code 
     
     Make sure you:
-    1. For each optimization made, return `// Optimized by LLM: {{Suggestion applied}} //` directly above the code block that was changed.
-    2. Return all code Do not remove any methods
-    4. Do not add any formatting.
+    1. For each optimization made, return `// Optimized by LLM: {{Suggestion applied}}` directly above the code block that was changed.
+    2. Return all code Do NOT remove any methods
+    4. Do NOT add any formatting.
     5. DO NOT modify class names.
     6. DO NOT change the structure of the code.
-    7. Never add any additional comments to the code besides that of the instruction in #1.
+    7. Do NOT add any additional comments to the code besides that of the instruction in #1.
+    8. Do NOT change method names
+    9. Do NOT remove deprecated methods
     
     Suggestions:
     {suggestions}
@@ -128,7 +132,7 @@ def clean_refactored_code(refactored_code):
 def process_files():
     for root, dirs, files in os.walk(PROJECT_PATH):
         for filename in files:
-            if filename.endswith(".java") and filename == "CombineGroupedValues.java":
+            if filename.endswith(".java") and filename == "DataflowRunner.java":
                 file_path = os.path.join(root, filename)
                 logging.info(f"Processing file: {file_path}")
 
