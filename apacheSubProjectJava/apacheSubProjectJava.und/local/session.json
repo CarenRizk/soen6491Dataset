@@ -3,6 +3,58 @@
     "Sessions": {
         "default": {
             "SessionData": {
+                "2_1920x1080_1536x864": {
+                    "DockWidgets": {
+                        "OpenWindows": {
+                            "00ProjectOverviewWidget": {
+                                "height": 459,
+                                "width": 250
+                            },
+                            "01EntityFilter": {
+                                "height": 436,
+                                "width": 250
+                            },
+                            "02InfoBrowserWidget_0": {
+                                "height": 456,
+                                "width": 270
+                            },
+                            "03SuggestionsBrowser": {
+                                "height": 919,
+                                "width": 250
+                            }
+                        }
+                    },
+                    "EntityFilter": {
+                        "Dock Area": 1,
+                        "Dock In Drawer Mode": false,
+                        "Dock Is Floating": false,
+                        "Dock Tab Group": [
+                            "ProjectOverviewWidget"
+                        ]
+                    },
+                    "InfoBrowserWidget_0": {
+                        "Dock Area": 1,
+                        "Dock In Drawer Mode": false,
+                        "Dock Is Floating": false,
+                        "Dock Tab Group": [
+                        ]
+                    },
+                    "ProjectOverviewWidget": {
+                        "Dock Area": 1,
+                        "Dock In Drawer Mode": false,
+                        "Dock Is Floating": false,
+                        "Dock Tab Group": [
+                            "EntityFilter"
+                        ]
+                    },
+                    "SuggestionsBrowser": {
+                        "Dock Area": 2,
+                        "Dock In Drawer Mode": false,
+                        "Dock Is Floating": false,
+                        "Dock Tab Group": [
+                        ]
+                    }
+                },
                 "2_1920x1080_2560x1440": {
                     "DockWidgets": {
                         "FloatingWidgetOrder": [
@@ -436,6 +488,24 @@
                         "hscroll": 0,
                         "isMaximized": false,
                         "vscroll": 0,
+                        "width": 1392,
+                        "x": 0,
+                        "y": 0
+                    },
+                    "f0d2d2f9af19853f9f75a0345bea579b": {
+                        "anchor": {
+                            "line": 238,
+                            "offset": 10
+                        },
+                        "caret": {
+                            "line": 238,
+                            "offset": 10
+                        },
+                        "container": 1,
+                        "height": 919,
+                        "hscroll": 0,
+                        "isMaximized": false,
+                        "vscroll": 204,
                         "width": 1392,
                         "x": 0,
                         "y": 0

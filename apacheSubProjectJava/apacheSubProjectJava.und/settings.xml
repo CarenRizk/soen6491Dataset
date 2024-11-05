@@ -77,6 +77,11 @@
           </dir>
         </dir>
         <dir
+          name="outputs">
+          <dir
+            name="refactored"/>
+        </dir>
+        <dir
           name="test">
           <dir
             name="java">
@@ -168,14 +173,6 @@
                   <dir
                     name="sdk">
                     <dir
-                      name="extensions">
-                      <dir
-                        name="avro">
-                        <dir
-                          name="io"/>
-                      </dir>
-                    </dir>
-                    <dir
                       name="io">
                       <dir
                         name="gcp">
@@ -186,8 +183,6 @@
                         <dir
                           name="spanner"/>
                       </dir>
-                      <dir
-                        name="mongodb"/>
                     </dir>
                     <dir
                       name="schemas"/>
