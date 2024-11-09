@@ -1,0 +1,10 @@
+1. Remove unused imports to improve code clarity and reduce clutter.
+2. Consolidate similar `prepareColumnMetadata` and `preparePgColumnMetadata` methods into a single method that accepts an additional parameter to differentiate between the two cases.
+3. Extract the repeated logic in the `testBatchableMutationFilterFn_size`, `testBatchableMutationFilterFn_cells`, and `testBatchableMutationFilterFn_rows` methods into a single helper method to reduce code duplication.
+4. Consider using a parameterized test for the `testBatchableMutationFilterFn_size`, `testBatchableMutationFilterFn_cells`, and `testBatchableMutationFilterFn_rows` methods to avoid redundancy.
+5. Move the `createMutationGroups` method to a more appropriate location if it is used in multiple tests, or consider making it a private static method if it is only used within the test class.
+6. Replace the use of `Mockito.mock(ProcessContext.class)` with a dedicated mock object for better readability and maintainability.
+7. Use constants for magic numbers like `10000000`, `100`, `3`, and `2` to improve code readability and maintainability.
+8. Refactor the `verifyCapturedBatchableMutationGroups` and `processMutationGroups` methods to reduce their complexity and improve readability.
+9. Consider using a more descriptive name for the `testAndVerifyBatches` method to clarify its purpose.
+10. Remove redundant comments that do not add value or clarity to the code.

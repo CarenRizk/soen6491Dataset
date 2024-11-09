@@ -1,0 +1,9 @@
+1. Extract the repeated logic for creating and matching files into a separate helper method to reduce code duplication in the `testMatchAndMatchAll` method.
+2. Replace the magic numbers (e.g., `0`, `1`) in the `CopyFilesFn` class with named constants to improve readability.
+3. Consider using a `List<Path>` to store the source and watch paths in the `CopyFilesFn` class instead of separate variables for each file.
+4. Move the file writing logic in the `testRead` method into a separate helper method to improve readability and reduce complexity.
+5. Use a loop to handle the creation of `PCollection<FileIO.ReadableFile>` for different compression types in the `testRead` method to reduce code duplication.
+6. Consider using a parameterized test for the `testMatchDisallowEmpty*` methods to reduce redundancy and improve maintainability.
+7. Use a single assertion method in the `testRead` method to handle the assertions for both compressed and uncompressed files to reduce code duplication.
+8. Consider using `try-with-resources` for the `FileOutputStream` in the `testRead` method to ensure proper resource management.
+9. Remove unused imports to clean up the code and improve readability.

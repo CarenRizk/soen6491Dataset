@@ -1,0 +1,10 @@
+1. Replace `HashMap<String, String>` with `Map<String, String>` in method signatures and variable declarations to use the more general interface.
+2. Use `List.of(...)` instead of `Arrays.asList(...)` for creating immutable lists where applicable (e.g., in `runBatchReadTest`).
+3. Consider using `ImmutableMap` or `ImmutableList` from Guava for creating immutable collections instead of `HashMap` and `Arrays.asList`.
+4. Extract the repeated logic for setting up metrics labels in `getTableRequestMetric` and `getQueryRequestMetric` into a separate method to reduce code duplication.
+5. Use `Optional.ofNullable()` for handling potentially null values in `getBaseMetricsLabels` to improve readability.
+6. Replace `fail()` with `Assertions.fail()` for consistency with the rest of the assertions in the class.
+7. Consider using `@BeforeEach` instead of `@Before` if using JUnit 5 in the future for better clarity.
+8. Use `Mockito.any()` with specific type parameters instead of raw `any()` to improve type safety in mocks.
+9. Group the import statements logically (e.g., standard libraries, third-party libraries, and project-specific imports) to improve readability.
+10. Consider using a constant for the string literals used in metrics labels to avoid potential typos and improve maintainability.

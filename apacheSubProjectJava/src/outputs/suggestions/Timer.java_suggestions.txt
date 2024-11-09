@@ -1,0 +1,7 @@
+1. Remove the deprecated annotation if the interface is no longer intended for use, or provide an alternative interface for users to migrate to.
+2. Consider providing a default implementation for the `add(Duration duration)` method to reduce the need for implementing classes to define it.
+3. Add JavaDoc comments to the interface and its methods to clarify their purpose and usage.
+4. Evaluate whether the `Timer` interface should extend `Accumulator`, and if so, ensure that the methods in `Accumulator` are relevant to `Timer`.
+5. Consider using `java.time.Instant` instead of `Duration` if the intention is to work with specific points in time rather than durations.
+6. If the `add(long duration, TimeUnit unit)` method is frequently used, consider adding a convenience method that accepts a `Duration` directly to improve usability.
+7. Review the need for both `add(Duration duration)` and `add(long duration, TimeUnit unit)` methods to avoid redundancy and simplify the interface.

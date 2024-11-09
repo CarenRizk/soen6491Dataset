@@ -1,0 +1,10 @@
+1. Remove unused imports to improve code clarity and reduce clutter.
+2. Consider using `Optional` for nullable fields like `coderRegistry` and `schemaRegistry` to avoid null checks and improve readability.
+3. Replace the `HashSet` for `usedFullNames` with a `Set` implementation that is more efficient for concurrent access if this class is intended to be used in a multi-threaded context.
+4. Extract the logic for logging messages in the `checkNoMoreMatches` method into a separate method to improve readability and reduce complexity.
+5. Consolidate the `applyTransform` methods into a single method that accepts an optional name parameter to reduce redundancy.
+6. Use a more descriptive name for the `matches` and `freedNodes` sets in the `replace` method to clarify their purpose.
+7. Consider using a `Map` instead of a `Multimap` for `instancePerName` if each name is guaranteed to have only one associated transform to simplify the data structure.
+8. Refactor the `validate` method to separate concerns, such as validation logic and error handling, into distinct methods for better maintainability.
+9. Replace the `for` loop in `validateErrorHandlers` with a stream operation for better readability and conciseness.
+10. Consider using a logging framework that supports structured logging instead of string concatenation for log messages to improve log quality and searchability.

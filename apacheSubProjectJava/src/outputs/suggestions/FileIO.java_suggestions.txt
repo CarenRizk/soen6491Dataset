@@ -1,0 +1,10 @@
+1. Consider extracting the repeated logic for creating `AutoValue` instances in methods like `match()`, `matchAll()`, `readMatches()`, `write()`, and `writeDynamic()` into a private helper method to reduce code duplication.
+2. The `checkArgument` calls in the `Write` class methods could be refactored into a single private method to reduce redundancy and improve readability.
+3. The `populateDisplayData` methods in various classes could be consolidated into a common interface or abstract class to avoid code duplication.
+4. The `continuously` methods in `MatchConfiguration` and `MatchAll` classes have similar signatures and could be refactored to share a common implementation.
+5. The `expand` methods in `Match` and `MatchAll` classes could be refactored to extract common logic into a private method to reduce duplication.
+6. The `shouldSkipDirectory` method in `ReadMatches` could be made a static utility method in a separate class to promote reusability.
+7. The `matchToReadableFile` method in `ReadMatches` could be refactored to reduce complexity and improve readability, possibly by breaking it into smaller methods.
+8. The `createWatchTransform` method in `MatchAll` could be simplified by extracting the logic for creating the `Watch.Growth` instance into a separate method.
+9. The `ViaFileBasedSink` class could be refactored to reduce the complexity of the `createWriter` method by extracting some of its logic into helper methods.
+10. The `DynamicDestinationsAdapter` class could be simplified by extracting the logic for handling side inputs into a separate method to improve readability.

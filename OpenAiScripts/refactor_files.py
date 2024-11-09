@@ -132,7 +132,7 @@ def clean_refactored_code(refactored_code):
 def process_files():
     for root, dirs, files in os.walk(PROJECT_PATH):
         for filename in files:
-            if filename.endswith(".java") and filename == "DataflowRunner.java":
+            if filename.endswith(".java"):
                 file_path = os.path.join(root, filename)
                 logging.info(f"Processing file: {file_path}")
 

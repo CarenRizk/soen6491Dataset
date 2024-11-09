@@ -1,0 +1,8 @@
+1. Consider extracting the repeated logic in the `getOutputStrategyInternal` method into a separate private method to reduce duplication and improve readability.
+2. The `applicableTo` method could benefit from breaking down the validation checks into smaller, private methods for better readability and maintainability.
+3. The `canProduceMultiplePanes` method could be simplified by using early returns to reduce nesting and improve clarity.
+4. The `expand` method contains a conditional that could be refactored into a separate method to clarify the logic for handling the case when `getWindowFn()` is null.
+5. The `populateDisplayData` method has multiple conditional blocks that could be extracted into private helper methods to reduce complexity and improve readability.
+6. The `Assign` class could have its constructor made private and provide a static factory method to encapsulate the creation logic.
+7. The `Remerge` class could be made a static inner class of `Window` to encapsulate its functionality more closely with the `Window` class.
+8. Consider using constants for the string literals used in the `apply` method of the `Remerge` class to avoid potential typos and improve maintainability.

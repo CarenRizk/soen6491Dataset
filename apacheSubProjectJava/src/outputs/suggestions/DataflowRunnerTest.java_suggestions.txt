@@ -1,0 +1,18 @@
+1. Remove duplicate `when(mockGcsUtil.create(...))` statements in the `buildMockGcsUtil` method.
+2. Combine the two `when(mockGcsUtil.create(...))` statements into one.
+3. Remove the unused `mockJobs` variable in the `DefaultRegionTest` class.
+4. Remove the unused `buildMockDataflow` and `buildMockGcsUtil` methods in the `DefaultRegionTest` class.
+5. Remove the `@SuppressWarnings("unused")` annotation if there are no unused methods or fields in the class.
+6. Consider using `List.of(...)` instead of `Arrays.asList(...)` for creating immutable lists in Java 9 and above.
+7. Replace `new ArrayList<>()` with `List.of()` where applicable to create immutable lists.
+8. Use `assertThrows` with a lambda expression instead of wrapping the call in a try-catch block for cleaner exception testing.
+9. Remove redundant comments that do not add value or context to the code.
+10. Consider using constants for repeated string literals like `"gs://valid-bucket"` to avoid duplication.
+11. Use `Optional.ofNullable()` instead of `assertNull()` for better readability when checking for null values.
+12. Consolidate similar test cases into parameterized tests to reduce code duplication.
+13. Remove unnecessary `@Test(expected = ...)` annotations in favor of `assertThrows` for consistency.
+14. Remove commented-out code or unused imports to clean up the codebase.
+15. Group related imports together to improve readability.
+16. Consider using `@BeforeEach` instead of `@Before` if using JUnit 5 for consistency with modern practices.
+17. Replace `assertThat(..., equalTo(...))` with `assertEquals(...)` where applicable for consistency in assertion style.
+18. Consider using `@ParameterizedTest` for tests that run the same logic with different inputs to reduce redundancy.

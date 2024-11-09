@@ -1,0 +1,10 @@
+1. Remove the unused imports to clean up the code and improve readability.
+2. Consolidate the overloaded `globally` and `perKey` methods by using a single method that accepts a `SerializableFunction` or `GlobalCombineFn` and handles the logic internally.
+3. Extract the repeated logic for creating `Globally` and `PerKey` instances into a private helper method to reduce code duplication.
+4. Consider using `Optional` for nullable return types instead of returning `null` to improve null safety.
+5. Use `List.of()` instead of `Arrays.asList()` when creating immutable lists to enhance readability and performance.
+6. Replace the manual iteration over `Iterable` in `mergeAccumulators` methods with Java Streams for better readability and conciseness.
+7. Consider using a `Map` instead of multiple `TupleTag` instances in `PerKeyWithHotKeyFanout` to simplify the handling of hot and cold keys.
+8. Refactor the `InputOrAccum` class to use a sealed class pattern for better type safety and clarity.
+9. Use `@SuppressWarnings("unchecked")` annotations only where necessary to avoid excessive suppression.
+10. Consider adding JavaDoc comments to public methods and classes to improve documentation and understanding of the code.

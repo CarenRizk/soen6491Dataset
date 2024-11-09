@@ -1,0 +1,7 @@
+1. Extract the logic for handling deduplication and stripping IDs into separate private methods to improve readability in the `expand` method.
+2. Consider using a factory method to create the `ReadWithIds` transform to reduce duplication in the `expand` method.
+3. Move the `validate` call for the source to a separate method to improve separation of concerns and enhance readability.
+4. Use constants for the string "StripIds" to avoid magic strings and improve maintainability.
+5. Consider adding Javadoc comments to the class and methods to improve documentation and clarify their purpose.
+6. Implement error handling for the `validate` method to provide more informative feedback if validation fails.
+7. Consider using a builder pattern for constructing `StreamingUnboundedRead` if it requires additional configuration in the future.

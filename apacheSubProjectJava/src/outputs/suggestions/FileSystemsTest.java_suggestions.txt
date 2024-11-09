@@ -1,0 +1,9 @@
+1. Replace repeated calls to `FileSystems.getFileSystemInternal(toLocalResourceId(...).getScheme())` in `testGetLocalFileSystem` with a helper method to reduce redundancy.
+2. Extract the creation of `ResourceId` lists in `testDeleteIgnoreMissingFiles`, `testCopyThrowsNoSuchFileException`, `testCopyIgnoreMissingFiles`, `testRenameThrowsNoSuchFileException`, `testCopySkipIfItExists`, and `testRenameIgnoreMissingFiles` into a separate method to avoid code duplication.
+3. Consolidate the assertions in `testCopyIgnoreMissingFiles` and `testRenameIgnoreMissingFiles` regarding file existence and content into a single helper method to improve readability and reduce redundancy.
+4. Use a parameterized test for `testMatchNewDirectory` to reduce boilerplate code and improve maintainability.
+5. Consider using constants for the string literals used in the tests (e.g., "content1", "content3") to avoid magic strings and improve clarity.
+6. Replace the `assertTrue` checks for file existence with a single method that checks multiple files to reduce redundancy.
+7. Use `assertThrows` instead of `thrown.expect` for exception assertions to modernize the test style and improve readability.
+8. Remove unnecessary comments like `/* isDirectory */` in method calls to improve code clarity.
+9. Consider using a single method to handle the creation of files with content, as seen in `createFileWithContent`, to reduce the number of similar methods.

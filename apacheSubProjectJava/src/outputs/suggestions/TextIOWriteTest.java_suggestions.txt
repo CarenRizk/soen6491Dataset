@@ -1,0 +1,10 @@
+1. Remove unused imports such as `org.apache.beam.vendor.guava.v32_1_2_jre.com.google.common.base.Function` and `org.apache.beam.vendor.guava.v32_1_2_jre.com.google.common.base.Predicate` if they are not used in the code.
+2. Consolidate the multiple overloaded `runTestWrite` methods into a single method with default parameters to reduce redundancy.
+3. Replace the manual creation of `DataInputStream` and `DataOutputStream` in `UserWriteTypeCoder` with a single `OutputStream` or `InputStream` usage to simplify the code.
+4. Use `java.nio.file.Files.readAllLines` in `readLinesFromFile` to simplify file reading logic.
+5. Replace the manual iteration in `removeHeaderAndFooter` with `List.subList` to create a new list without the header and footer.
+6. Consider using `Optional` for nullable fields instead of using `@Nullable` to improve null safety.
+7. Use `Stream` API in `assertOutputFiles` to simplify the collection of actual file contents.
+8. Remove the `@Override` annotation from the `apply` method in `Function` implementations if the interface does not require it, as it can clutter the code.
+9. Consider using `List.of()` for creating immutable lists instead of `new ArrayList<>()` when the list is not modified.
+10. Replace `assertTrue(actual.stream().allMatch(...))` with `assertThat(actual, everyItem(...))` for better readability and expressiveness in assertions.

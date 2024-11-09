@@ -1,0 +1,10 @@
+1. Remove the unused import statements such as `import org.apache.beam.sdk.transforms.display.DisplayData;` and `import org.hamcrest.Matchers;` to clean up the code.
+2. Replace the manual creation of lists in `testLotsOfDuplicates`, `testLogDistribution`, and `testZipfianDistribution` with a utility method to reduce code duplication.
+3. Consider using `Arrays.asList()` directly in the `testQuantilesGlobally`, `testQuantilesGobally_comparable`, `testQuantilesPerKey`, and `testQuantilesPerKey_reversed` methods instead of creating separate lists for expected values.
+4. Consolidate the `intRange` and `intRangeCollection` methods into a single method that can return either a `List<Integer>` or a `PCollection<Integer>` based on a parameter.
+5. Use a constant for the number of quantiles (e.g., `5`) in the tests to avoid magic numbers and improve maintainability.
+6. Consider using a parameterized test for the quantile tests to reduce code duplication and improve readability.
+7. Move the `Between` and `DescendingIntComparator` classes to a separate utility class if they are used in multiple test classes to promote reusability.
+8. Use `List.of()` instead of `new ArrayList<>()` where applicable for better readability and immutability.
+9. Add comments to clarify the purpose of complex assertions, especially in the `testCorrectness` method of `BufferTests`.
+10. Group related test methods together to improve readability and organization within the test classes.

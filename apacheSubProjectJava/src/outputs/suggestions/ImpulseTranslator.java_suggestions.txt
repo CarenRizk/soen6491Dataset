@@ -1,0 +1,7 @@
+1. Extract the common logic for adding the step context and output into a separate method to reduce code duplication.
+2. Move the logic for handling the streaming and non-streaming cases into separate private methods to improve readability.
+3. Replace the catch block that wraps the exception in a RuntimeException with a more specific exception type if applicable, or handle the exception in a way that provides more context.
+4. Consider using constants for the string literals "pubsub", "_starting_signal/", and "impulse" to avoid magic strings and improve maintainability.
+5. Use a more descriptive variable name than `coder` for the WindowedValue coder to clarify its purpose.
+6. Consider logging the exception before throwing it to provide more context for debugging.
+7. Validate the output of `context.getOutput(transform)` before using it to ensure it is not null, which could prevent potential NullPointerExceptions.

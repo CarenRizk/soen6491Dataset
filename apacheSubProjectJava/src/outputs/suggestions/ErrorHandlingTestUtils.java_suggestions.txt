@@ -1,0 +1,5 @@
+1. Extract the logic for handling bounded and unbounded inputs in the `ErrorSinkTransform` class into a separate private method to improve readability and reduce duplication.
+2. Use constants for the transform names ("Combine", "Window") to avoid hardcoding strings and improve maintainability.
+3. Consider adding Javadoc comments to the classes and methods to provide better documentation and context for future developers.
+4. Remove unnecessary annotations (`@UnknownKeyFor`, `@NonNull`, `@Initialized`) in the `expand` method of `ErrorSinkTransform` if they do not serve a specific purpose, as they can clutter the code.
+5. Consider using a more descriptive name for the `BadRecord` class if it is not clear what it represents, to enhance code clarity.

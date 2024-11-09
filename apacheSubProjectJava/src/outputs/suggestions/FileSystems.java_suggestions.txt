@@ -1,0 +1,10 @@
+1. Replace the use of `AtomicReference` for `FILESYSTEM_REVISION` and `SCHEME_TO_FILESYSTEM` with a more straightforward approach, such as using a `ConcurrentHashMap` or a simple synchronized block, to improve readability and maintainability.
+2. Extract the logic for creating a `MatchResult` in `maybeAdjustEmptyMatchResult` into a separate method to reduce complexity and improve readability.
+3. Use `List.of()` instead of `Collections.singletonList()` in the `match` method to create an immutable list for a single element.
+4. Replace the `FluentIterable` usage with Java Streams for better readability and to follow modern Java practices.
+5. Consider using `Optional` in methods that may return null values, such as `getFileSystemInternal`, to avoid potential `NullPointerExceptions`.
+6. Consolidate the two `match` methods that take `EmptyMatchTreatment` into a single method that accepts an optional parameter to reduce code duplication.
+7. Move the `FilterResult` class to a separate file if it is used in multiple places or consider making it a static inner class if it is only used within `FileSystems`.
+8. Replace the `new ArrayList()` instantiation in `FilterResult` with `new ArrayList<>()` to use the diamond operator for type inference.
+9. Remove unnecessary `@SuppressFBWarnings` annotations if they are not needed, or provide a justification for their presence.
+10. Simplify the `validateSrcDestLists` method by using `assert` statements for conditions that should never occur in production code.

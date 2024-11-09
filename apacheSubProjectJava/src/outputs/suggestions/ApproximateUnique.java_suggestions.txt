@@ -1,0 +1,10 @@
+1. Remove the duplicate validation logic for `sampleSize` in the `Globally` and `PerKey` constructors. Consider creating a private helper method to handle the validation to reduce code duplication.
+2. Remove the duplicate validation logic for `maximumEstimationError` in the `Globally` and `PerKey` constructors. Consider creating a private helper method to handle the validation to reduce code duplication.
+3. Consider using a more descriptive name for the `LargestUnique` class to better convey its purpose.
+4. In the `addInput` method of `ApproximateUniqueCombineFn`, catch specific exceptions instead of using `Throwable` to avoid masking unexpected errors.
+5. In the `mergeAccumulators` method of `ApproximateUniqueCombineFn`, consider using a more functional approach (e.g., streams) to improve readability when merging accumulators.
+6. Consider adding JavaDoc comments to public methods and classes to improve code documentation and understanding.
+7. Consider using `Optional` for `maximumEstimationError` instead of `@Nullable` to make the code more explicit about the absence of a value.
+8. Consider extracting the constant values (like `16`, `0.01`, and `0.5`) into named constants to improve code readability and maintainability.
+9. In the `getEstimate` method of `LargestUnique`, consider breaking down the complex calculation into smaller, well-named methods for better readability.
+10. In the `hash` method, consider handling the IOException more gracefully instead of wrapping it in a RuntimeException.
