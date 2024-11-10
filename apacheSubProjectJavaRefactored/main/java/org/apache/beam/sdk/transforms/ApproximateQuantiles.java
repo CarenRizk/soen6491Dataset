@@ -21,6 +21,7 @@ import org.apache.beam.sdk.coders.Coder;
 import org.apache.beam.sdk.coders.CoderRegistry;
 import org.apache.beam.sdk.coders.CustomCoder;
 import org.apache.beam.sdk.coders.ListCoder;
+import org.apache.beam.sdk.transforms.ApproximateQuantiles.ApproximateQuantilesCombineFn;
 import org.apache.beam.sdk.transforms.Combine.AccumulatingCombineFn;
 import org.apache.beam.sdk.transforms.Combine.AccumulatingCombineFn.Accumulator;
 import org.apache.beam.sdk.transforms.display.DisplayData;
@@ -50,8 +51,8 @@ public class ApproximateQuantiles {
 
   
   public static <T extends Comparable<T>> PTransform<PCollection<T>, PCollection<List<T>>> globally(
-      int numQuantiles) {
-    return Combine.globally(ApproximateQuantilesCombineFn.create(numQuantiles));
+	      int numQuantiles) {
+	    return Combine.globally(ApproximateQuantilesCombineFn.create(numQuantiles));
   }
 
   

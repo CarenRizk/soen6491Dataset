@@ -19,6 +19,7 @@ import org.apache.beam.sdk.testing.NeedsRunner;
 import org.apache.beam.sdk.testing.PAssert;
 import org.apache.beam.sdk.testing.TestPipeline;
 import org.apache.beam.sdk.transforms.ApproximateQuantiles.ApproximateQuantilesCombineFn;
+import org.apache.beam.sdk.transforms.ApproximateQuantilesTest.CombinerTests.DescendingIntComparator;
 import org.apache.beam.sdk.transforms.display.DisplayData;
 import org.apache.beam.sdk.values.KV;
 import org.apache.beam.sdk.values.PCollection;
@@ -68,6 +69,7 @@ public class ApproximateQuantilesTest {
       PCollection<List<Integer>> quantiles = input.apply(ApproximateQuantiles.globally(5));
 
       PAssert.that(quantiles).containsInAnyOrder(Arrays.asList(0, 25, 50, 75, 100));
+      p.run();
     }
 
     @Test
@@ -78,6 +80,7 @@ public class ApproximateQuantilesTest {
           input.apply(ApproximateQuantiles.globally(5, new DescendingIntComparator()));
 
       PAssert.that(quantiles).containsInAnyOrder(Arrays.asList(100, 75, 50, 25, 0));
+      p.run();
     }
 
     @Test
@@ -89,8 +92,9 @@ public class ApproximateQuantilesTest {
 
       PAssert.that(quantiles)
           .containsInAnyOrder(KV.of("a", Arrays.asList(1, 3)), KV.of("b", Arrays.asList(1, 100)));
+      p.run();
     }
-
+    
     @Test
     @Category(NeedsRunner.class)
     public void testQuantilesPerKey_reversed() {
@@ -100,6 +104,7 @@ public class ApproximateQuantilesTest {
 
       PAssert.that(quantiles)
           .containsInAnyOrder(KV.of("a", Arrays.asList(3, 1)), KV.of("b", Arrays.asList(100, 1)));
+      p.run();
     }
 
     @Test
@@ -227,7 +232,7 @@ public class ApproximateQuantilesTest {
       }
     }
 
-    private static class DescendingIntComparator implements SerializableComparator<Integer> {
+    public static class DescendingIntComparator implements SerializableComparator<Integer> {
       @Override
       public int compare(Integer o1, Integer o2) {
         return o2.compareTo(o1);
@@ -249,10 +254,13 @@ public class ApproximateQuantilesTest {
       return p.apply("CreateIntsUpTo(" + size + ")", Create.of(intRange(size)));
     }
 
-    // Optimized by LLM: Replaced new ArrayList<>() with List.of(...)
     private List<Integer> intRange(int size) {
-      return List.of(new Integer[size]);
-    }
+        List<Integer> all = new ArrayList<>(size);
+        for (int i = 0; i < size; i++) {
+          all.add(i);
+        }
+        return all;
+      }
   }
 
   @RunWith(Parameterized.class)

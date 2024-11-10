@@ -5,6 +5,7 @@ import static org.apache.beam.vendor.guava.v32_1_2_jre.com.google.common.base.Pr
 import static org.apache.beam.vendor.guava.v32_1_2_jre.com.google.common.collect.Iterables.transform;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -51,15 +52,20 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@SuppressWarnings({
-  "nullness" 
+
+@SuppressWarnings({ 
 })
 public class Pipeline {
   private static final Logger LOG = LoggerFactory.getLogger(Pipeline.class);
   
   public static class PipelineExecutionException extends RuntimeException {
     
-    public PipelineExecutionException(Throwable cause) {
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	public PipelineExecutionException(Throwable cause) {
       super(cause);
     }
   }
@@ -106,6 +112,7 @@ public class Pipeline {
   }
 
   
+  @Internal
   public void replaceAll(List<PTransformOverride> overrides) {
     for (PTransformOverride override : overrides) {
       replace(override);
@@ -321,19 +328,21 @@ public class Pipeline {
   }
 
   
+  @Internal
   public static <InputT extends PInput, OutputT extends POutput> OutputT applyTransform(
       InputT input, PTransform<? super InputT, OutputT> transform) {
     return input.getPipeline().applyInternal(transform.getName(), input, transform);
   }
 
   
+  @Internal
   public static <InputT extends PInput, OutputT extends POutput> OutputT applyTransform(
       String name, InputT input, PTransform<? super InputT, OutputT> transform) {
     return input.getPipeline().applyInternal(name, input, transform);
   }
 
   private final TransformHierarchy transforms;
-  private final Set<String> usedFullNames = Set.of();
+  private final Set<String> usedFullNames = new HashSet<>();
 
   
   private @Nullable CoderRegistry coderRegistry;
@@ -344,7 +353,7 @@ public class Pipeline {
   private final Multimap<String, PTransform<?, ?>> instancePerName = ArrayListMultimap.create();
   private final PipelineOptions defaultOptions;
 
-  private final List<ErrorHandler<?, ?>> errorHandlers = List.of();
+  private final List<ErrorHandler<?, ?>> errorHandlers = new ArrayList<>();
 
   private Pipeline(TransformHierarchy transforms, PipelineOptions options) {
     CoderTranslation.verifyModelCodersRegistered();
@@ -390,7 +399,8 @@ public class Pipeline {
       void applyReplacement(
           Node original,
           PTransformOverrideFactory<InputT, OutputT, TransformT> replacementFactory) {
-    PTransformReplacement<InputT, OutputT> replacement =
+    @SuppressWarnings("unchecked")
+	PTransformReplacement<InputT, OutputT> replacement =
         replacementFactory.getReplacementTransform(
             (AppliedPTransform<InputT, OutputT, TransformT>) original.toAppliedPTransform(this));
     if (replacement.getTransform() == original.getTransform()) {
@@ -504,7 +514,7 @@ public class Pipeline {
   }
 
   private static class UnstableNameToMessage
-  		implements Function<Map.Entry<String, Collection<PTransform<?, ?>>>, String> {
+      implements Function<Map.Entry<String, Collection<PTransform<?, ?>>>, String> {
     private final Multimap<String, PTransform<?, ?>> instances;
 
     private UnstableNameToMessage(final Multimap<String, PTransform<?, ?>> instancePerName) {
@@ -514,6 +524,7 @@ public class Pipeline {
     @SuppressFBWarnings(
         value = "NP_METHOD_PARAMETER_TIGHTENS_ANNOTATION",
         justification = "https://github.com/google/guava/issues/920")
+    @Override
     public String apply(@Nonnull final Map.Entry<String, Collection<PTransform<?, ?>>> input) {
       final Collection<PTransform<?, ?>> values = instances.get(input.getKey());
       return "- name="
@@ -543,15 +554,14 @@ public class Pipeline {
       return input != null && input.getValue().size() == 1;
     }
   }
-  
 
   private void validateErrorHandlers() {
-	    for (ErrorHandler<?, ?> errorHandler : errorHandlers) {
-	      if (!errorHandler.isClosed()) {
-	        throw new IllegalStateException(
-	            "One or more ErrorHandlers aren't closed, and this pipeline "
-	                + "cannot be run. See the ErrorHandler documentation for expected usage");
-	      }
-	    }
-	  }
+    for (ErrorHandler<?, ?> errorHandler : errorHandlers) {
+      if (!errorHandler.isClosed()) {
+        throw new IllegalStateException(
+            "One or more ErrorHandlers aren't closed, and this pipeline "
+                + "cannot be run. See the ErrorHandler documentation for expected usage");
+      }
+    }
+  }
 }
