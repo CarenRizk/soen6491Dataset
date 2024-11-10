@@ -4,7 +4,83 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="dce2c249-3740-43f9-967d-3277eeef5c23" name="Changes" comment="" />
+    <list default="true" id="dce2c249-3740-43f9-967d-3277eeef5c23" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/output.log" beforeDir="false" afterPath="$PROJECT_DIR$/output.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/refactor_files.py" beforeDir="false" afterPath="$PROJECT_DIR$/refactor_files.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../apacheSubProjectJava/src/main/java/org/apache/beam/runners/dataflow/StreamingShardedWriteFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/../apacheSubProjectJava/src/main/java/org/apache/beam/runners/dataflow/StreamingShardedWriteFactory.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/Accumulator.java_suggestions.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/ApproximateQuantiles.java_suggestions.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/ApproximateQuantilesTest.java_suggestions.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/ApproximateUnique.java_suggestions.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/ApproximateUniqueTest.java_suggestions.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/Audience.java_suggestions.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/BigtableIO.java_suggestions.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/BigtableIOTest.java_suggestions.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/Coder.java_suggestions.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/CoderTest.java_suggestions.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/Combine.java_suggestions.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/CombineGloballyAsSingletonViewOverrideFactory.java_suggestions.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/CombineGroupedValues.java_suggestions.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/CombineTest.java_suggestions.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/Context.java_suggestions.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/Counter.java_suggestions.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/DataflowRunner.java_suggestions.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/DataflowRunnerTest.java_suggestions.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/Deduplicate.java_suggestions.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/DirectRunner.java_suggestions.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/DirectRunnerTest.java_suggestions.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/Environment.java_suggestions.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/ErrorHandlingTestUtils.java_suggestions.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/ExpectedLogs.java_suggestions.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/FakeServiceFactory.java_suggestions.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/FileIO.java_suggestions.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/FileIOTest.java_suggestions.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/FileSystems.java_suggestions.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/FileSystemsTest.java_suggestions.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/Flatten.java_suggestions.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/FlattenTest.java_suggestions.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/Histogram.java_suggestions.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/IdentityMessageFn.java_suggestions.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/ImpulseTranslator.java_suggestions.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/MultiOutputExpandableTransformTranslator.java_suggestions.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/NetworkTestHelper.java_suggestions.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/Pipeline.java_suggestions.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/PipelineTest.java_suggestions.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/PrimitiveCombineGroupedValuesOverrideFactory.java_suggestions.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/PubsubIO.java_suggestions.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/PubsubIOTest.java_suggestions.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/ReflectiveOneToOneOverrideFactory.java_suggestions.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/ReflectiveViewOverrideFactory.java_suggestions.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/Schema.java_suggestions.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/SchemaTest.java_suggestions.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/SingleOutputExpandableTransformTranslator.java_suggestions.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/SpannerIO.java_suggestions.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/SpannerIOReadChangeStreamTest.java_suggestions.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/SpannerIOReadTest.java_suggestions.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/SpannerIOWriteTest.java_suggestions.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/StreamingBoundedRead.java_suggestions.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/StreamingBoundedReadOverrideFactory.java_suggestions.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/StreamingPCollectionViewWriterFn.java_suggestions.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/StreamingPubsubIORead.java_suggestions.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/StreamingPubsubIOReadOverrideFactory.java_suggestions.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/StreamingPubsubIOReadTranslator.java_suggestions.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/StreamingPubsubIOWrite.java_suggestions.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/StreamingPubsubIOWriteOverrideFactory.java_suggestions.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/StreamingPubsubSinkTranslators.java_suggestions.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/StreamingShardedWriteFactory.java_suggestions.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/StreamingUnboundedRead.java_suggestions.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/StreamingUnboundedReadOverrideFactory.java_suggestions.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/TestCredential.java_suggestions.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/TextIO.java_suggestions.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/TextIOReadTest.java_suggestions.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/TextIOWriteTest.java_suggestions.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/Timer.java_suggestions.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/Trigger.java_suggestions.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/TriggerTest.java_suggestions.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/Window.java_suggestions.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/WindowingTest.java_suggestions.txt" beforeDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -17,12 +93,51 @@
       </list>
     </option>
   </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "associatedIndex": 7
+}]]></component>
+  <component name="ProjectId" id="2oeyuOl6xImi4afM0KMGeCSEfPa" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
-    "node.js.selected.package.tslint": "(autodetect)"
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "main",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/Users/carenrizk/repos/soen6491Dataset/OpenAiScripts",
+    "node.js.detected.package.eslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-9823dce3aa75-28b599e66164-intellij.indexing.shared.core-IU-242.23339.11" />
+        <option value="bundled-js-predefined-d6986cc7102b-5c90d61e3bab-JavaScript-IU-242.23339.11" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="dce2c249-3740-43f9-967d-3277eeef5c23" name="Changes" comment="" />
+      <created>1731244558413</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1731244558413</updated>
+      <workItem from="1731244559425" duration="3552000" />
+    </task>
     <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
   </component>
 </project>

@@ -1,0 +1,10 @@
+1. Remove the unused import statements to clean up the code.
+2. Consolidate the multiple `withCompressionType` methods in the `Read` and `ReadAll` classes into a single method that uses the `withCompression` method directly.
+3. Consider using a single method for `withSkipHeaderLines` in both `Read` and `ReadAll` classes to avoid redundancy.
+4. In the `TypedWrite` class, consider consolidating the multiple `withNumShards` methods into one that handles both `int` and `ValueProvider<Integer>` types.
+5. In the `Write` class, consider consolidating the multiple `to` methods that accept different types of filename prefixes into a single method that can handle all cases.
+6. Remove the `@Deprecated` annotation from the `withCompressionType` methods if they are not intended to be used anymore, or provide a clear alternative.
+7. In the `Sink` class, consider using a `try-with-resources` statement for the `PrintWriter` to ensure it is closed properly.
+8. In the `isSelfOverlapping` method, consider using a more descriptive name for the method to clarify its purpose.
+9. Consider adding validation for the `delimiter` in the `withDelimiter` methods to ensure it meets certain criteria (e.g., not empty).
+10. Consider extracting common logic from the `expand` methods in `Read`, `ReadAll`, and `TypedWrite` classes into a utility method to reduce code duplication.

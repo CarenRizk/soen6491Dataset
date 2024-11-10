@@ -1,0 +1,15 @@
+1. In the `PCollections` class, consider extracting the logic for checking compatibility of window functions and triggers into separate private methods to improve readability and maintainability.
+
+2. In the `PCollections` class, the variable `isBounded` is initialized to `IsBounded.BOUNDED` but is only updated if there are inputs. Consider initializing it to `IsBounded.UNBOUNDED` instead, or handle the case where there are no inputs more explicitly.
+
+3. In the `Iterables` class, the check for the input coder being an instance of `IterableLikeCoder` can be extracted into a private method to improve readability.
+
+4. In the `Iterables` class, consider using a lambda expression instead of an anonymous inner class for the `SimpleFunction` implementation to reduce boilerplate code.
+
+5. In both `PCollections` and `Iterables` classes, consider adding JavaDoc comments to the classes and methods to provide better documentation for future developers.
+
+6. In the `expand` method of the `PCollections` class, the `windowingStrategy` variable is assigned a value in two different places. Consider consolidating the logic to assign it in one place to reduce duplication.
+
+7. In the `expand` method of the `Iterables` class, consider validating the input `PCollection` for null or empty states before proceeding with the coder check to avoid potential NullPointerExceptions.
+
+8. In the `expand` method of the `Iterables` class, consider using a more descriptive name for the `element` parameter in the `apply` method of the `SimpleFunction` to clarify its purpose.

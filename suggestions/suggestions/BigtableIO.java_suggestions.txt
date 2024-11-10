@@ -1,0 +1,10 @@
+1. Remove unused imports to improve code clarity and reduce clutter.
+2. Consolidate duplicate code patterns, such as the multiple `withProjectId`, `withInstanceId`, and `withAppProfileId` methods in both `Read` and `Write` classes, into a common utility method to reduce redundancy.
+3. Consider using `Optional` instead of `@Nullable` for better null handling and to avoid potential `NullPointerExceptions`.
+4. Replace the usage of `StaticValueProvider.of("")` with a more descriptive default value or consider making it a required parameter to avoid confusion.
+5. Remove deprecated methods or provide a clear migration path for users to transition to the new methods.
+6. Use logging levels appropriately; for instance, consider using `LOG.warn` instead of `LOG.debug` for important messages that may indicate potential issues.
+7. Refactor the `validateTableExists` method to handle exceptions more gracefully and provide clearer error messages.
+8. Simplify the `expand` methods in `Read` and `Write` classes by extracting common validation logic into a separate method.
+9. Consider breaking down large methods, such as `expand` in `ReadChangeStream`, into smaller, more manageable private methods to improve readability and maintainability.
+10. Use constants for repeated string literals, such as error messages, to avoid duplication and facilitate easier updates.

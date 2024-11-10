@@ -1,0 +1,19 @@
+1. Consider extracting the repeated logic for creating `AutoValue` builders in methods like `match()`, `matchAll()`, `readMatches()`, `write()`, and `writeDynamic()` into a private helper method to reduce code duplication.
+
+2. The `ReadableFile` class could benefit from a private method to handle the logic of reading a file fully as bytes and converting it to a UTF-8 string, reducing redundancy in `readFullyAsBytes()` and `readFullyAsUTF8String()`.
+
+3. In the `MatchConfiguration` class, the `continuously` methods could be combined into a single method that takes an optional boolean parameter for `matchUpdatedFiles`, reducing method overloads.
+
+4. The `Match` and `MatchAll` classes have similar methods for handling configurations. Consider creating a common base class or interface for shared configuration handling to reduce code duplication.
+
+5. In the `Write` class, the `via` methods could be refactored to reduce the number of overloads by using a single method that accepts a `Sink` and an `OutputFn` as parameters, allowing for more flexible usage.
+
+6. The `shouldSkipDirectory` method in `ReadMatches` could be simplified by using a switch expression (if supported) or by restructuring the logic to reduce the number of conditional checks.
+
+7. The `matchToReadableFile` method in `ReadMatches` could be refactored to use a builder pattern for constructing `ReadableFile`, improving readability and maintainability.
+
+8. The `expand` methods in `Match` and `MatchAll` could be refactored to extract common logic into a private method to avoid code duplication.
+
+9. Consider using `Optional` for nullable fields in classes like `MatchConfiguration`, `Match`, and `ReadMatches` to improve null safety and readability.
+
+10. The `ViaFileBasedSink` class could be simplified by extracting the logic for preparing the write operation into a separate method to improve readability and reduce complexity.

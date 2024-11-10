@@ -1,0 +1,6 @@
+1. Extract the common logic for adding a step context into a separate method to reduce code duplication.
+2. Create a constant for the string "ParallelRead" to avoid hardcoding it multiple times.
+3. Move the logic for encoding the impulse element into a separate method to improve readability and separation of concerns.
+4. Handle the exception in a more specific way rather than wrapping it in a generic RuntimeException.
+5. Use a more descriptive variable name for `encodedImpulse` to clarify its purpose.
+6. Consider using a logging framework to log the exception instead of throwing a runtime exception directly.

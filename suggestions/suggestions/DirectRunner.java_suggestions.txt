@@ -1,0 +1,10 @@
+1. Consider extracting the logic for creating the `ExecutorService` into a separate method to improve readability and reduce complexity in the `run` method.
+2. Move the initialization of the `MAPPER` object to a static block or a dedicated method to improve clarity and separate configuration from logic.
+3. Replace the `try-catch` block in the `run` method that handles `IOException` with a custom method to improve readability and encapsulate error handling.
+4. Consider using a more descriptive name for the `enabledEnforcements` variable to clarify its purpose.
+5. Extract the logic for building the `ImmutableMap` in the `defaultModelEnforcements` method into a separate method to enhance readability.
+6. Consider using a `List` instead of `ImmutableList.Builder` in the `sideInputUsingTransformOverrides` and `groupByKeyOverrides` methods to simplify the code.
+7. The `performRewrites` method could benefit from breaking down its responsibilities into smaller methods for each rewrite operation to improve maintainability.
+8. Consider using constants for the string literals in the `CONTAINS_UDF` set to avoid duplication and improve maintainability.
+9. The `waitUntilFinish` method in `DirectPipelineResult` could be simplified by extracting the exception handling logic into a separate method to reduce complexity.
+10. Consider adding comments to complex sections of the code to improve understanding for future maintainers.

@@ -1,0 +1,10 @@
+1. Extract the creation of the input table in `createInputTable` method to a separate method that returns a `List<KV<String, Integer>>` to avoid duplication in `testQuantilesPerKey` and `testQuantilesPerKey_reversed`.
+2. Replace the repeated `p.run()` calls at the end of each test method with a single call at the end of the `CombinerTests` class to improve readability and reduce redundancy.
+3. Move the `quantileMatcher` method to a utility class if it is used in multiple test classes to promote code reuse.
+4. Consider using a parameterized test for `testLotsOfDuplicates`, `testLogDistribution`, and `testZipfianDistribution` to reduce code duplication and improve maintainability.
+5. Use `List.of(...)` instead of `Arrays.asList(...)` for immutable lists in Java 9 and above for better readability.
+6. Replace the `new ArrayList<>()` instantiation with `List.of(...)` in the `intRange` method to create an immutable list, if the list does not need to be modified.
+7. Consider using a single matcher for the expected quantiles in the `testSimpleQuantiles`, `testUnevenQuantiles`, and `testLargerQuantiles` tests to reduce redundancy.
+8. Use constants for the expected quantiles in the tests to avoid magic numbers and improve readability.
+9. Consider adding Javadoc comments to the test methods to describe their purpose and expected outcomes for better documentation.
+10. Refactor the `Between` class to be a static inner class of `CombinerTests` if it is only used within that class to limit its visibility.

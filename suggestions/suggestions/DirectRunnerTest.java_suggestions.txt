@@ -1,0 +1,10 @@
+1. Remove unused imports to improve code readability and reduce clutter.
+2. Replace anonymous inner classes for `SimpleFunction` with lambda expressions where possible to simplify the code.
+3. Consolidate the `getPipeline` methods into a single method that accepts an optional parameter for `blockOnRun` to reduce redundancy.
+4. Extract repeated code for creating `PCollection<byte[]>` with `MapElements` into a separate method to avoid duplication.
+5. Use `Optional.ofNullable` instead of `Optional` for handling potential null values in `StaticQueue` to improve clarity.
+6. Consider using a `List` instead of an `ArrayBlockingQueue` in `StaticQueue` if the size is not a concern, to simplify the implementation.
+7. Move the `TEARDOWN_CALL` variable to a more appropriate scope or encapsulate it within a class to avoid potential issues with shared state.
+8. Use `assertThrows` instead of `thrown.expect` for exception assertions to modernize the test code.
+9. Group related test methods together to improve organization and readability.
+10. Add comments to complex sections of the code to enhance understanding for future maintainers.

@@ -1,0 +1,10 @@
+1. Remove duplicate `when(mockGcsUtil.create(...))` calls in `buildMockGcsUtil()` method.
+2. Consolidate the two `when(mockGcsUtil.create(...))` into a single call with a more generic handling of the arguments.
+3. Extract the repeated logic for creating `DataflowPipelineOptions` into a separate method to reduce redundancy.
+4. Combine the two `verifyNonExistentOutputPathThrowsException` methods into one to handle all types of locations (temp, staging, profile).
+5. Replace the repeated `assertThat` calls with a helper method that takes parameters for the expected message and the actual exception.
+6. Use a single `assertThrows` method for the tests that expect exceptions instead of repeating the `try-catch` block.
+7. Remove the unused `mockJobs` variable in the `DefaultRegionTest` class.
+8. Remove the unused `buildMockDataflow` and `buildMockGcsUtil` methods in the `DefaultRegionTest` class.
+9. Remove the `@SuppressWarnings("unused")` annotation if there are no unused methods or fields.
+10. Consider using a parameterized test for the `testInvalidJobName` and `testValidJobName` methods to reduce code duplication.

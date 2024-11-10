@@ -15,8 +15,10 @@ TOKEN_LIMIT = 12000
 MAX_LIMIT = 16100
 MODEL = "gpt-4o-mini"
 PROJECT_PATH = r"C:\Users\carenrizk\repos\soen6491Dataset\apacheSubProjectJava\src"
-OUTPUT_SUGGESTIONS_PATH = os.path.join(PROJECT_PATH, "outputs", "suggestions")
-OUTPUT_REFACTORED_PATH = os.path.join(PROJECT_PATH, "outputs", "refactored")
+REFACTORED_PATH = r"C:\Users\carenrizk\repos\soen6491Dataset\apacheSubProjectJavaRefactored"
+SUGGESTIONS_PATH = r"C:\Users\carenrizk\repos\soen6491Dataset\suggestions"
+OUTPUT_SUGGESTIONS_PATH = os.path.join(SUGGESTIONS_PATH, "suggestions")
+OUTPUT_REFACTORED_PATH = os.path.join(REFACTORED_PATH)
 
 # Create output directories if they don't exist
 os.makedirs(OUTPUT_SUGGESTIONS_PATH, exist_ok=True)
@@ -136,8 +138,14 @@ def process_files():
                 file_path = os.path.join(root, filename)
                 logging.info(f"Processing file: {file_path}")
 
+                # Preserve the directory structure
+                relative_path = os.path.relpath(root, PROJECT_PATH)
+                refactored_dir_path = os.path.join(OUTPUT_REFACTORED_PATH, relative_path)
+                os.makedirs(refactored_dir_path, exist_ok=True)
+
                 suggestions_file_path = os.path.join(OUTPUT_SUGGESTIONS_PATH, f"{filename}_suggestions.txt")
 
+                # Check if suggestions already exist
                 if os.path.exists(suggestions_file_path):
                     logging.info(f"Suggestions file already exists: {suggestions_file_path}")
 
@@ -145,6 +153,7 @@ def process_files():
                     with open(suggestions_file_path, 'r') as suggestions_file:
                         suggestions = suggestions_file.read()
                 else:
+                    # Generate suggestions if they don't exist
                     suggestions = find_refactoring_opportunities(file_path)
 
                     # Save suggestions to a new file
@@ -153,9 +162,9 @@ def process_files():
                         suggestions_file.write(suggestions)
                     logging.info(f"Refactoring suggestions saved to: {suggestions_file_path}")
 
-                # Step 2: Apply refactorings
+                # Apply refactorings and save the refactored file in the appropriate structure
                 refactored_code = apply_refactorings(file_path, suggestions)
-                refactored_file_path = os.path.join(OUTPUT_REFACTORED_PATH, filename)
+                refactored_file_path = os.path.join(refactored_dir_path, filename)
                 with open(refactored_file_path, 'w') as refactored_file:
                     refactored_file.write(refactored_code)
                 logging.info(f"Refactored code saved to: {refactored_file_path}")

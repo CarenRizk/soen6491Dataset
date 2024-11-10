@@ -1,0 +1,15 @@
+1. Extract the repeated logic for validating required pipeline options into a separate method to reduce duplication in the `fromOptions` method.
+2. Move the logic for validating file paths in `filesToStage` into a separate method to improve readability and maintainability.
+3. Create a utility method for checking and logging the presence of required options to avoid repetitive code in `fromOptions`.
+4. Consolidate the logic for setting the job name and logging warnings about it into a single method to reduce complexity in `fromOptions`.
+5. Refactor the logic for handling the `gcsUploadBufferSize` into a separate method to improve clarity.
+6. Extract the logic for creating the user agent string into a separate method to simplify the `fromOptions` method.
+7. Move the logic for validating worker settings into a separate class or utility to encapsulate related functionality.
+8. Create a separate method for handling the configuration of SDK harness container images to improve readability in `run`.
+9. Extract the logic for handling the job graph size and related experiments into a separate method to simplify the `run` method.
+10. Create a utility method for logging warnings related to unconsumed dead-letter queues to reduce complexity in `logWarningIfBigqueryDLQUnused`.
+11. Refactor the logic for checking if a PCollection requires indexed format into a separate method to improve clarity.
+12. Move the logic for checking if a PCollection preserves keys into a separate method to enhance readability.
+13. Extract the logic for handling the environment version into a separate method to improve organization in `getEnvironmentVersion`.
+14. Create a utility method for checking and logging the state of experiments to avoid repetitive checks throughout the class.
+15. Consolidate the logic for handling exceptions related to artifact validation into a single method to improve error handling consistency.

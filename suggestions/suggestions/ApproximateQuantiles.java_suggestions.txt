@@ -1,0 +1,10 @@
+1. Remove the unused import statements to clean up the code and improve readability.
+2. Consider using `List.of()` instead of `Lists.newArrayList()` for creating immutable lists where applicable, such as in `QuantileState.empty()`.
+3. Replace `new ArrayList<>(numBuffers)` with `new ArrayList<>(numBuffers)` in the `decode` method to avoid unnecessary boxing.
+4. Use `Collections.emptyList()` directly instead of creating a new list in `QuantileState.empty()`.
+5. Consider using `Optional<T>` for `min` and `max` in `QuantileState` to avoid null checks and improve clarity.
+6. Extract the logic for calculating `b` in `ApproximateQuantilesCombineFn.create()` into a separate private method for better readability.
+7. Consider using a `Map` instead of a `List` for `buffers` in `QuantileState` if the order of elements is not important, which could improve performance in some cases.
+8. Use `List.copyOf()` instead of `Lists.newArrayList()` when creating a copy of `unbufferedElements` in `addUnbuffered()` to ensure immutability.
+9. Consider adding JavaDoc comments to public methods and classes to improve documentation and understanding of the code.
+10. Refactor the `collapseIfNeeded()` method to reduce its complexity by breaking it into smaller methods.

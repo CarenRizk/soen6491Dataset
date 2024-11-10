@@ -1,0 +1,10 @@
+1. Replace repeated calls to `FileSystems.getFileSystemInternal(toLocalResourceId(...).getScheme())` in `testGetLocalFileSystem` with a helper method to reduce redundancy.
+2. Extract the logic for creating resource IDs from paths into a separate method to avoid duplication in tests like `testCopyIgnoreMissingFiles`, `testRenameIgnoreMissingFiles`, etc.
+3. Consolidate the assertions in `testCopySkipIfItExists` and `testCopyIgnoreMissingFiles` into a single helper method to reduce code duplication.
+4. Use a parameterized test for `testMatchNewDirectory` to avoid repetitive code and improve readability.
+5. Consider using constants for string literals like "content1", "content3", etc., to avoid magic strings and improve maintainability.
+6. Replace the `assumeFalse(SystemUtils.IS_OS_WINDOWS)` check in `testGetLocalFileSystem` with a more descriptive comment explaining its purpose.
+7. Move the `createFileWithContent` method to a utility class if it is used across multiple test classes to promote code reuse.
+8. Use `assertThrows` instead of `thrown.expect` for exception assertions in tests to modernize the testing style.
+9. Consider using `java.nio.file.Files` for file operations instead of `org.apache.beam.vendor.guava.v32_1_2_jre.com.google.common.io.Files` to reduce dependencies on Guava.
+10. Group related imports together to improve readability and maintainability of the import section.

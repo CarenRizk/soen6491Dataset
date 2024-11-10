@@ -1,0 +1,6 @@
+1. Extract the repeated code for creating `SpannerConfig` and `readChangeStream` in the `setUp` method into a separate private method to reduce duplication and improve readability.
+2. Combine the assertions for checking credentials in both test methods into a separate private method to avoid code duplication and enhance maintainability.
+3. Consider using constants for the `TestCredential` instantiation if it is used in multiple places, to avoid redundancy.
+4. Use `assertNotNull` for the credentials in the assertions to ensure that they are not null before calling `get()`, which can help prevent potential `NoSuchElementException`.
+5. Remove unnecessary comments that do not add value to the understanding of the code, as the code is self-explanatory in most parts.
+6. Consider using parameterized tests for the credential assertions to reduce code duplication between the two test methods.

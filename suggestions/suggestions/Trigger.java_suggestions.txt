@@ -1,0 +1,7 @@
+1. Remove the null check for `subTriggers` in the `getContinuationTrigger` method, as it is initialized to an empty list in the constructor and cannot be null.
+2. In the `subTriggers` method, remove the `MoreObjects.firstNonNull` call, as `subTriggers` will never be null and can directly return `subTriggers`.
+3. In the `isCompatible` method, simplify the null checks for `subTriggers` by using `Objects.equals` to compare both `subTriggers` directly.
+4. In the `toString` method, replace the check for `subTriggers` being null with a check for `subTriggers.isEmpty()` only, since it cannot be null.
+5. In the `equals` method, replace the check for `subTriggers` being null with a direct comparison using `Objects.equals`.
+6. In the `hashCode` method, consider using `Arrays.hashCode(subTriggers.toArray())` for better handling of the list's contents.
+7. Consider using a `List<Trigger>` as a parameter in the `getContinuationTrigger` method instead of allowing null, to avoid unnecessary null checks.

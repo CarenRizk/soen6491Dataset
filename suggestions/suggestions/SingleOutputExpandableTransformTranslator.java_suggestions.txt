@@ -1,0 +1,5 @@
+1. Consider adding Javadoc comments to the class and method to describe their purpose and usage.
+2. Use a more specific type for the output variable instead of using a wildcard (`PCollection<?>`), if the type can be determined.
+3. Extract the string "ExternalTransform" into a constant to avoid magic strings and improve maintainability.
+4. Consider adding error handling or logging in case the context does not contain the expected output for the transform.
+5. If applicable, check if the `addOutput` method can be chained to reduce the number of lines in the `translate` method.

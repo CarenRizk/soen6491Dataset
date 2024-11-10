@@ -1,0 +1,5 @@
+1. Remove the duplicate assertion in the `verifyEstimate` method that checks if the error is less than the max error, as it is already checked once before.
+2. Use `List.of(...)` instead of `ImmutableList.<Object[]>builder().add(...).build()` for creating the test data in the `data` method, which simplifies the code.
+3. Replace the `for` loop in `runApproximateUniqueWithDuplicates` that populates the `elements` list with a `LongStream` to generate the elements more concisely.
+4. Consider using `assertThat` with a matcher instead of `assert` for the `elementCount >= uniqueCount` check in `runApproximateUniqueWithDuplicates` to maintain consistency with other assertions.
+5. Remove the `Serializable` interface from the `ApproximateUniqueTest` class if it is not being serialized or if it does not contain any non-serializable fields.

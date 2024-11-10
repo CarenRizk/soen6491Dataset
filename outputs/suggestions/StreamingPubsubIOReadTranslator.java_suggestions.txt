@@ -1,5 +1,0 @@
-1. Extract the argument check into a separate private method to improve readability and maintainability.
-2. Use a constant for the error message in the `checkArgument` call to avoid duplication and enhance clarity.
-3. Consider renaming `stepContext` to `translationContext` for better clarity on its purpose.
-4. Add comments to explain the purpose of each step in the `translate` method for better understanding.
-5. Validate the `transform` parameter for null before using it to prevent potential NullPointerExceptions.

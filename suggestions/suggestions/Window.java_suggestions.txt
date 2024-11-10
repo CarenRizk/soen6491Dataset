@@ -1,0 +1,15 @@
+1. Consider extracting the repeated logic for building a new `Window` instance with updated properties into a private helper method to reduce code duplication. For example, methods like `triggering`, `discardingFiredPanes`, `accumulatingFiredPanes`, etc., can use a common method that takes the property to set and its value.
+
+2. The `getOutputStrategyInternal` method has a lot of conditional checks that could be refactored into smaller private methods to improve readability and maintainability.
+
+3. The `applicableTo` method contains multiple validation checks that could be extracted into separate methods to clarify the intent of each check and reduce the complexity of the method.
+
+4. The `canProduceMultiplePanes` method could be simplified by using a single return statement with a combined boolean expression instead of declaring intermediate variables.
+
+5. The `populateDisplayData` method contains repeated patterns for adding display data items. Consider creating a private helper method that takes parameters for the item name, value, and label to reduce redundancy.
+
+6. The `expand` method in the `Assign` class could benefit from a more descriptive comment explaining its purpose and functionality, as it currently lacks context.
+
+7. The `expand` method in the `Remerge` class could also use a comment to clarify its purpose, especially since it applies a transformation that may not be immediately clear to readers.
+
+8. Consider using `Optional` for nullable fields in the `Window` class to make the intent clearer and reduce the need for null checks throughout the code.

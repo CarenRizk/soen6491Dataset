@@ -1,0 +1,14 @@
+1. Remove unused imports to improve code clarity and reduce clutter.
+2. Consider using `ImmutableSet.of()` instead of `new HashSet<>()` in `UniqueInts` to create a new accumulator, as it is more idiomatic and can provide better performance in some cases.
+3. In the `Counter` class, consider using `Long` instead of `long` for the fields to avoid potential issues with nullability and to be consistent with the use of `Long` in other parts of the code.
+4. In the `Accumulator` class of `TestCombineFn`, consider making the `seed` field final to ensure it is immutable after construction.
+5. In the `addInput` method of `TestCombineFn`, consider using `StringBuilder` instead of string concatenation for better performance when appending strings.
+6. In the `mergeAccumulators` method of `TestCombineFn`, consider using a `StringBuilder` for accumulating the values instead of repeatedly concatenating strings.
+7. In the `MeanInts` class, consider using `Double.isNaN()` to check for invalid values instead of comparing with `0.0` in the `extractOutput` method.
+8. In the `CountSum` class, consider using `Double.compare()` for comparing doubles in the `equals` method to avoid issues with floating-point precision.
+9. In the `testCombineGloballyLambda` and `testCombineGloballyInstanceMethodReference` tests, consider extracting the lambda or method reference to a separate variable for better readability.
+10. In the `testHotKeyCombining` test, consider using a more descriptive name for the `mean` variable to clarify its purpose.
+11. In the `testSlidingWindowsCombine` test, consider using `Arrays.asList()` for creating the expected output list for better readability.
+12. In the `testCombineGloballyAsSingletonView` test, consider using `Assert.assertEquals` instead of `PAssert.thatSingleton` for clarity and consistency in assertions.
+13. In the `testWindowedCombineEmpty` test, consider adding a comment explaining the purpose of the test for better documentation.
+14. In the `testSessionsCombine` and `testSessionsCombineWithContext` tests, consider extracting the creation of the input PCollection into a separate method to reduce duplication and improve readability.

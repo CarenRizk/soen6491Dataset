@@ -1,0 +1,10 @@
+1. Extract repeated assertions in the `testCreate` method into a helper method to reduce redundancy and improve readability.
+2. Combine `testArraySchema`, `testArrayOfRowSchema`, and `testNestedArraySchema` into a single parameterized test method to avoid code duplication.
+3. Combine `testIterableSchema`, `testIterableOfRowSchema`, and `testNestedIterableSchema` into a single parameterized test method to avoid code duplication.
+4. Extract the logic for creating schemas and validating fields in `testIterableOfRowSchema` and `testNestedIterableSchema` into a helper method to reduce redundancy.
+5. Move the logic for creating expected schemas in `testToSnakeCase` and `testToCamelCase` into a helper method to avoid code duplication.
+6. Extract the logic for creating and validating schemas in `testSorted`, `testNestedSorted`, and `testSortedMethodIncludesAllSchemaFields` into a helper method to reduce redundancy.
+7. Create a helper method for asserting schema equivalence in `testEquivalent`, `testPrimitiveNotEquivalent`, and other similar tests to reduce redundancy.
+8. Consolidate the assertions in `testFieldsWithDifferentMetadataAreEquivalent` into a single method to improve clarity and reduce redundancy.
+9. Consider using a data-driven approach for tests that check for equivalence or non-equivalence of schemas to reduce boilerplate code.
+10. Remove unnecessary comments and whitespace in the `testSortedMethodIncludesAllSchemaFields` method for better readability.

@@ -1,6 +1,0 @@
-1. Extract the repeated code for creating `SpannerConfig` and `readChangeStream` in the `setUp` method into a separate private method to reduce duplication.
-2. Create a private method to handle the assertions for `SpannerConfig` credentials to avoid repeating the same assertions in both test methods.
-3. Consider using constants for the `TestCredential` instance instead of creating a new instance in each test method.
-4. Use a single method to build and assert `SpannerConfig` with credentials to avoid code duplication between the two test methods.
-5. Remove the `throws Exception` declaration from the `setUp` method if it is not needed, as it does not throw any checked exceptions.
-6. Consider using `@BeforeClass` if the setup is static and does not depend on instance variables, which could improve performance for multiple tests.

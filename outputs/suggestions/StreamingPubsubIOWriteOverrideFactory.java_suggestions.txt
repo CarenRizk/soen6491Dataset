@@ -1,6 +1,0 @@
-1. Consider adding JavaDoc comments to the class and its methods to improve code documentation and clarity for future developers.
-2. Use `Collections.singletonMap` in the `mapOutputs` method instead of `Collections.emptyMap` if there is a possibility of returning a single output in the future, to enhance flexibility.
-3. Validate the input parameters in the constructor and methods to ensure they are not null, which can help prevent potential `NullPointerExceptions`.
-4. Consider using `@NonNull` or similar annotations for method parameters and return types to improve code readability and enforce null safety.
-5. If applicable, implement logging within the methods to track the flow of execution and any potential issues during runtime.
-6. Consider extracting the creation of the `StreamingPubsubIOWrite` instance into a separate private method to improve readability and maintainability of the `getReplacementTransform` method.

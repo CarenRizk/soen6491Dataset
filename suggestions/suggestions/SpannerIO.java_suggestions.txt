@@ -1,0 +1,10 @@
+1. Remove unused imports to improve code readability and maintainability.
+2. Consolidate repeated logic in methods like `withProjectId`, `withInstanceId`, `withDatabaseId`, and `withHost` into a single helper method to reduce code duplication.
+3. Consider using `Optional` for nullable fields instead of `@Nullable` annotations to enhance null safety.
+4. Replace magic numbers (e.g., `1024L * 1024L`, `5000`, `500`, `1000`) with named constants to improve code clarity.
+5. Use `EnumSet` for `FailureMode` instead of a regular enum to allow for more flexible combinations of failure modes if needed in the future.
+6. Refactor the `expand` methods in `Read`, `Write`, and `ReadChangeStream` classes to reduce complexity and improve readability.
+7. Extract common validation logic in `expand` methods into a separate private method to avoid code duplication.
+8. Consider using a logging framework that supports structured logging for better log management and analysis.
+9. Review the use of `@VisibleForTesting` and ensure it is applied only where necessary to avoid exposing implementation details.
+10. Implement a more robust error handling strategy in `processElement` methods to capture and log specific exceptions for better debugging.

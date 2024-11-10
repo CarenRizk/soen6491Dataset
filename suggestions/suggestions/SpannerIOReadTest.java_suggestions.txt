@@ -1,0 +1,10 @@
+1. Replace `HashMap<String, String>` with `Map<String, String>` in method signatures and variable declarations where appropriate to use the more general interface.
+2. Use `List.of(...)` instead of `Arrays.asList(...)` for creating immutable lists in `FAKE_ROWS` and in the `runBatchReadTest` method to improve readability and performance.
+3. Consider using `@BeforeEach` instead of `@Before` if using JUnit 5 to align with modern testing practices.
+4. Remove the unused `fakePartition` variable if it is not utilized in the test methods.
+5. Replace `Mockito.mock(BatchReadOnlyTransaction.class)` with `Mockito.mock(BatchReadOnlyTransaction.class, Mockito.withSettings().serializable())` if the mock needs to be serializable.
+6. Use `assertThrows` with a lambda expression for better readability in the `runReadFailsToRetrieveSchema` test method.
+7. Consider using `ImmutableMap.Builder` for constructing `baseLabels` in `getBaseMetricsLabels` to ensure immutability and thread-safety.
+8. Replace `fail()` with `Assertions.fail()` for consistency with the rest of the assertions in the `checkMessage` method.
+9. Remove the `@Nullable` annotation from the `message` parameter in `checkMessage` if it is guaranteed to be non-null due to the preceding check.
+10. Consider using constants for repeated string literals like "Read" and "ok" to avoid magic strings and improve maintainability.

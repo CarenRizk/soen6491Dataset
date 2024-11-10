@@ -1,0 +1,7 @@
+1. Replace `assertEquals(Context.NESTED, new Context(false));` with `assertEquals(Context.NESTED, Context.NESTED);` to avoid creating a new instance unnecessarily.
+2. Replace `assertEquals(Context.OUTER, new Context(true));` with `assertEquals(Context.OUTER, Context.OUTER);` for the same reason as above.
+3. Consider using `assertSame` instead of `assertEquals` for comparing singleton instances like `Context.NESTED` and `Context.OUTER` to ensure reference equality.
+4. In `testNonDeterministicExceptionRequiresReason`, consider using `assertThrows` instead of `ExpectedException` for better readability and modern testing practices.
+5. In `testNonDeterministicException`, consider extracting the creation of `NonDeterministicException` into a helper method to reduce duplication.
+6. In `testNonDeterministicExceptionMultipleReasons`, consider using a constant for the expected message to avoid hardcoding the string in the assertion.
+7. In `testTypeIsPreserved`, consider adding a comment to explain the purpose of the test for better clarity.

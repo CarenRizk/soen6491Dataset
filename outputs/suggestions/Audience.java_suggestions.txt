@@ -1,5 +1,0 @@
-1. Consider adding a description or documentation for the `Audience` annotation to clarify its purpose and usage.
-2. Evaluate whether the `Type` enum values could be expanded or modified to better reflect the intended audience categories.
-3. If the `Audience` annotation is used in multiple places, consider creating a utility method or class to handle common operations related to audience types.
-4. Ensure that the `RetentionPolicy.SOURCE` is appropriate for the intended use of the annotation; if runtime access is needed, consider changing it to `RetentionPolicy.RUNTIME`.
-5. Consider adding validation logic to ensure that the `value` array is not empty when the annotation is used.

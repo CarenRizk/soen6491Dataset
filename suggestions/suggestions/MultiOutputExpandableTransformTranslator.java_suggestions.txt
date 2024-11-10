@@ -1,0 +1,6 @@
+1. Extract the logic for adding outputs to a separate method to improve readability and maintainability.
+2. Use enhanced for-loop syntax directly on the entry set of the map to eliminate the need for a separate variable for the entry.
+3. Consider adding null checks for the `transform` and `context` parameters to avoid potential NullPointerExceptions.
+4. Add JavaDoc comments to the class and method to explain their purpose and usage.
+5. Use a more descriptive variable name for `taggedOutput` to clarify its role in the loop.
+6. Consider using a constant for the string "ExternalTransform" to avoid magic strings and improve maintainability.

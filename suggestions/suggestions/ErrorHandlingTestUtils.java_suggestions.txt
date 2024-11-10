@@ -1,0 +1,5 @@
+1. Extract the logic for handling bounded and unbounded PCollections into a separate private method to reduce duplication in the `expand` method of `ErrorSinkTransform`.
+2. Use constants for the window duration and the combine transform names to avoid magic values and improve readability.
+3. Consider adding Javadoc comments to the classes and methods to improve code documentation and clarity on their purpose.
+4. Use a more descriptive type for the `BadRecord` class if it is not clear what it represents, or provide a brief comment explaining its purpose.
+5. Ensure that the `BadRecord` class is properly defined and imported if it is not included in the provided code snippet.

@@ -1,0 +1,10 @@
+1. Remove the unused import statements to clean up the code.
+2. Consider using `ImmutableMap` for `encodingPositions` to ensure immutability after initialization.
+3. Consolidate the `addNullableField` method calls in the `Builder` class by creating a single method that accepts a nullable flag.
+4. Remove the `encodingPositionsOverridden` boolean if it is not being used in any logic.
+5. The `sorted` method could be simplified by extracting the inner logic for sorting fields into a separate method to improve readability.
+6. The `collectFields` method can be made private since it is only used within the class.
+7. The `areUuidsEqual` method can be made static since it does not depend on instance variables.
+8. The `toSnakeCase` and `toCamelCase` methods share similar logic; consider extracting the common logic into a private method to reduce code duplication.
+9. The `equals` method in the `FieldType` class can be simplified by using `Objects.equals` for all comparisons instead of checking for logical types separately.
+10. The `getValue` method in the `Options` class can be improved by using `Optional` to handle the case where the option is not found, instead of throwing an exception.

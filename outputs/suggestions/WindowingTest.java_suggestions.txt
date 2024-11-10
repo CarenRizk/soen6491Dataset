@@ -1,8 +1,0 @@
-1. Move the `FormatCountsDoFn` class outside of the `WindowedCount` class to improve readability and separation of concerns.
-2. Extract the logic for creating `TimestampedValue` instances into a separate helper method to reduce duplication in the test methods.
-3. Replace the hardcoded window durations in the tests with constants to improve maintainability and readability.
-4. Use a single method to create the `PCollection<String>` for input in the tests to reduce duplication.
-5. Consider using a more descriptive name for the `output` method to clarify its purpose.
-6. Remove unused imports such as `java.io.File`, `java.io.FileOutputStream`, and `java.io.PrintStream` to clean up the code.
-7. Add comments to clarify the purpose of complex logic, especially in the `processElement` methods of the `DoFn` classes.
-8. Consider using a more structured way to represent the expected output in the tests, such as a list of expected results, to improve clarity.

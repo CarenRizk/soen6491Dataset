@@ -1,8 +1,0 @@
-1. Replace `assertEquals(Context.NESTED, new Context(false));` with `assertEquals(Context.NESTED, Context.NESTED);` to avoid creating a new `Context` object unnecessarily.
-2. Replace `assertEquals(Context.OUTER, new Context(true));` with `assertEquals(Context.OUTER, Context.OUTER);` for the same reason as above.
-3. Combine the assertions for `hashCode` in `testContextEqualsAndHashCode` into a single loop to reduce redundancy.
-4. Use `assertArrayEquals` for comparing the reasons in `testNonDeterministicExceptionMultipleReasons` instead of `assertThat` with `equalTo` for better clarity.
-5. Consider using a constant for the expected message in `testNonDeterministicExceptionMultipleReasons` to avoid hardcoding the string multiple times.
-6. Use `assertSame` instead of `assertEquals` when checking for the same instance in `testContextEqualsAndHashCode` for `Context.NESTED` and `Context.OUTER`.
-7. Group related assertions together in `testNonDeterministicException` for better readability.
-8. Add a comment before each test method to describe its purpose for better documentation.

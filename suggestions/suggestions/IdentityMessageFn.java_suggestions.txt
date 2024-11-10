@@ -1,0 +1,1 @@
+1. Remove the IdentityMessageFn class entirely and use a lambda expression or method reference if applicable, as the apply method simply returns the input without modification.

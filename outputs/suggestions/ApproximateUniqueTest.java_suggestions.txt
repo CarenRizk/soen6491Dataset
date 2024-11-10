@@ -1,7 +1,0 @@
-1. Remove the duplicate assertion in the `verifyEstimate` method that checks if the error is less than the max error, as it is already checked once before.
-2. Replace the `assert` statement in `runApproximateUniqueWithDuplicates` with `assertTrue` for better clarity and consistency with other assertions.
-3. Use `List.of(...)` instead of `ImmutableList.<Object[]>builder().add(...).build()` in the `data` method for simplicity and readability.
-4. Consider using a more descriptive name for the `elements` variable in `runApproximateUniqueWithDuplicates` to clarify its purpose.
-5. Use `LongStream.range(0, elementCount).mapToObj(i -> 1.0 / (i % uniqueCount + 1)).collect(Collectors.toList())` to generate the `elements` list instead of a for loop for better readability and conciseness.
-6. Add a comment to explain the purpose of the `VerifyEstimateFn` and `VerifyEstimatePerKeyFn` classes for better code documentation.
-7. Consider extracting the error calculation logic in `verifyEstimate` into a separate method to improve readability and maintainability.

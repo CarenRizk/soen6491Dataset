@@ -1,7 +1,0 @@
-1. Extract the logic for determining `numShards` into a separate private method to improve readability and reduce complexity in the `getReplacementTransform` method.
-2. Replace the `RuntimeException` in the catch block with a more specific exception type or a custom exception to provide better context for the error.
-3. Consider using `Optional` for handling the case where `options` might not be of type `DataflowPipelineWorkerPoolOptions` to avoid potential `ClassCastException`.
-4. Use constants or configuration for the multiplier (currently `2`) when calculating `numShards` to improve maintainability and clarity.
-5. Add logging in the catch block to capture the exception details before throwing the `RuntimeException` for better debugging.
-6. Consider validating the `options` object in the constructor to ensure it is not null and is of the expected type, throwing an appropriate exception if it is invalid.
-7. Group related import statements together to improve code organization and readability.

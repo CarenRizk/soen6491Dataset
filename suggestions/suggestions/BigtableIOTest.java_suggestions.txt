@@ -1,0 +1,10 @@
+1. Remove unused imports to improve code readability and reduce clutter.
+2. Consolidate similar validation tests for read and write operations into parameterized tests to reduce code duplication.
+3. Extract common logic in tests that create `BigtableIO.Read` and `BigtableIO.Write` instances into helper methods to reduce redundancy.
+4. Use constants for repeated string literals (e.g., table names, project IDs) to avoid hardcoding and improve maintainability.
+5. Consider using a single `FakeBigtableService` instance instead of creating multiple instances in different tests to reduce setup complexity.
+6. Refactor the `setupAndSplitBigtableSource` method to accept parameters for `bytesPerRow` and `numSamples` to make it more flexible and reusable.
+7. Replace the manual creation of `ByteKey` objects in tests with a helper method to improve readability and reduce boilerplate code.
+8. Use `assertThrows` instead of `thrown.expect` for exception assertions to modernize the test syntax and improve readability.
+9. Group related tests together to improve the organization of the test class.
+10. Consider using a mocking framework for `FakeBigtableService` to simplify the setup and improve test isolation.

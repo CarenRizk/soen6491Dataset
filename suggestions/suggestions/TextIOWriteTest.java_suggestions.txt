@@ -1,0 +1,10 @@
+1. Remove unused imports to improve code readability and reduce clutter.
+2. Replace the manual creation of `DataInputStream` and `DataOutputStream` in `UserWriteTypeCoder` with `BufferedOutputStream` and `BufferedInputStream` for better performance.
+3. Consider using `java.nio.file.Files.readAllLines()` in `readLinesFromFile` to simplify file reading.
+4. Combine the overloaded `runTestWrite` methods into a single method with default parameters to reduce code duplication.
+5. Use `List.of()` instead of `Arrays.asList()` for creating immutable lists where applicable.
+6. Replace `new ArrayList<>()` with `new ArrayList<>(Collections.emptyList())` in `readLinesFromFile` to avoid unnecessary initialization.
+7. Use `Optional` for nullable fields in `UserWriteType` to improve null safety.
+8. Refactor the `removeHeaderAndFooter` and `haveProperHeaderAndFooter` methods to use streams for better readability and conciseness.
+9. Consider using `StringBuilder` instead of `String.format` in `UserWriteType.toString()` for better performance.
+10. Use `assertArrayEquals` instead of `assertThat` for comparing arrays in `assertOutputFiles` for clearer intent.

@@ -1,0 +1,10 @@
+1. Replace the use of `FluentIterable` with Java Streams for better readability and performance in methods like `matchResources`, `delete`, and `filterFiles`.
+2. Extract the logic for creating a `FilterResult` into a separate method to reduce complexity in the `filterFiles` method.
+3. Use `List.of()` instead of `Collections.singletonList()` where applicable for improved readability.
+4. Replace the use of `new ArrayList()` with `new ArrayList<>(initialCapacity)` in the `FilterResult` class to avoid unnecessary resizing.
+5. Consider using `Optional` for methods that may not return a value, such as `getFileSystemInternal`, to avoid throwing exceptions for missing values.
+6. Consolidate the two `match` methods that accept `EmptyMatchTreatment` into a single method with an optional parameter to reduce redundancy.
+7. Use `Map.of()` instead of `ImmutableMap.of()` for creating immutable maps where applicable for simplicity.
+8. Remove unnecessary `@SuppressFBWarnings` annotations if they are not needed after refactoring.
+9. Consider using a more descriptive name for the `FilterResult` class to clarify its purpose.
+10. Simplify the `validateSrcDestLists` method by extracting the scheme validation logic into a separate method.

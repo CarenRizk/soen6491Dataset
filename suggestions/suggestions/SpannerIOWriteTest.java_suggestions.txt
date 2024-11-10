@@ -1,0 +1,10 @@
+1. Remove unused imports to improve code readability and reduce clutter.
+2. Consolidate the `prepareColumnMetadata` and `preparePgColumnMetadata` methods into a single method that accepts an additional parameter to differentiate between the two cases.
+3. Replace the `ArgumentMatcher` instances with lambda expressions for better readability where applicable.
+4. Extract the repeated logic in the `testBatchableMutationFilterFn_size`, `testBatchableMutationFilterFn_cells`, and `testBatchableMutationFilterFn_rows` methods into a single helper method to reduce code duplication.
+5. Consider using a parameterized test for the `testBatchableMutationFilterFn_size`, `testBatchableMutationFilterFn_cells`, and `testBatchableMutationFilterFn_rows` methods to avoid redundancy.
+6. Move the `createMutationGroups` method to a more appropriate location if it is used in multiple tests to promote reusability.
+7. Use constants for magic numbers (like `10000000`, `3`, `1000`, etc.) to improve maintainability and readability.
+8. Consider using a builder pattern for constructing `MutationGroup` and `Mutation` objects to improve clarity and reduce constructor overloads.
+9. Refactor the `verifyCapturedBatchableMutationGroups` method to reduce its complexity and improve readability.
+10. Group related test methods together to improve organization and readability of the test class.

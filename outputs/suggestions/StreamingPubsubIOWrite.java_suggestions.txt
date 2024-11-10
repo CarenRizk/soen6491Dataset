@@ -1,6 +1,0 @@
-1. Consider making the `transform` field final to ensure it is immutable after construction.
-2. Add validation in the constructor to check if the `transform` parameter is null, throwing an IllegalArgumentException if it is.
-3. Change the visibility of the `getOverriddenTransform` method to public if it is intended to be accessed outside the class.
-4. Consider adding JavaDoc comments to the class and its methods to improve code documentation and clarity.
-5. Remove the static block for registration if it can be done in a more centralized location or if it is not necessary for the class to handle its own registration.
-6. Consider using a constructor with parameters for `DataflowRunner` if it is not used in the class, or remove it if it is unnecessary.

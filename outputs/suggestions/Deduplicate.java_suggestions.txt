@@ -1,7 +1,0 @@
-1. Extract the magic number `10000` into a named constant for better readability and maintainability.
-2. Move the inner `DoFn` class to a separate static class or make it a private static inner class to improve readability and reduce complexity in the `expand` method.
-3. Use method references instead of lambda expressions where applicable, such as in the `WithKeys.of` method.
-4. Consider adding JavaDoc comments to the class and methods to provide context and usage information.
-5. Use a more descriptive name for the `processElement` method to clarify its purpose, such as `processValueWithRecordId`.
-6. Handle potential exceptions or edge cases in the `processElement` method, such as null checks for `ValueWithRecordId<T>`.
-7. Consider using a more descriptive name for the `StripIds` transform to clarify its purpose.

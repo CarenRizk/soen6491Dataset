@@ -1,6 +1,0 @@
-1. Remove the null check for `subTriggers` in the `getContinuationTrigger` method, as it is always initialized in the constructor and cannot be null.
-2. Replace `subTriggers == null` checks with `subTriggers.isEmpty()` in the `isCompatible` method for clarity and to avoid unnecessary null checks.
-3. In the `toString` method, simplify the check for `subTriggers` by using `subTriggers.isEmpty()` directly instead of checking for null and then empty.
-4. Consider using `List.of()` instead of `Collections.emptyList()` in the default constructor for better readability and immutability.
-5. In the `equals` method, use `getClass() == that.getClass()` instead of `Objects.equals(getClass(), that.getClass())` for a more efficient class comparison.
-6. In the `hashCode` method, consider using `Objects.hashCode(subTriggers)` instead of `Objects.hash(getClass(), subTriggers)` to focus on the relevant fields for hash code generation.

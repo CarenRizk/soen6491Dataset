@@ -1,0 +1,8 @@
+1. Extract the logic for creating timestamped values in the test methods into a separate helper method to reduce duplication.
+2. Move the `output` method to a utility class or make it a static method within the `WindowingTest` class to avoid repetition in each test.
+3. Consider using constants for the duration values (e.g., `Duration.millis(10)`, `Duration.millis(5)`) to improve readability and maintainability.
+4. Replace the inline creation of `PCollection<String>` in each test with a helper method that takes parameters and returns the created collection.
+5. Use a single instance of `WindowedCount` for different windowing strategies in the tests to reduce redundancy.
+6. Consider using a parameterized test framework to consolidate similar test cases that differ only in input data or expected output.
+7. Move the `FormatCountsDoFn` class outside of the `WindowedCount` class if it is used in multiple places to promote reusability.
+8. Add comments to clarify the purpose of each test case for better understanding and maintainability.

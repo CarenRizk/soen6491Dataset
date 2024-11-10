@@ -1,5 +1,0 @@
-1. Replace the raw type usage of `Class` in the constructor with a specific type to avoid unchecked conversion warnings.
-2. Use a specific type for `Combine.GloballyAsSingletonView` instead of casting to `(Combine.GloballyAsSingletonView)` to improve type safety.
-3. Replace the raw type usage of `CombineFn` with a specific type parameter to avoid unchecked conversion warnings.
-4. Consider extracting the logic for creating the `BatchViewOverrides.BatchViewAsSingleton` into a separate method to improve readability and maintainability.
-5. Add comments to explain the purpose of the class and its methods for better code documentation.

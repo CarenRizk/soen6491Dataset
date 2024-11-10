@@ -1,0 +1,14 @@
+1. Remove the unused imports to clean up the code and improve readability.
+2. Consolidate the two `TestPipelineRunnerThrowingUserException` and `TestPipelineRunnerThrowingSdkException` classes into a single class with a parameterized method to handle different exception types.
+3. Extract the `DoFn` implementations in the `testConflictingNames` method into separate named classes to improve readability and reusability.
+4. Replace the inline `BaseMatcher` implementation in `testConflictingNames` with a named class to enhance clarity and maintainability.
+5. Consider using a single `PTransform` for the `addSuffix` method instead of creating a new instance of `SimpleFunction` each time.
+6. Move the `IdentityTransform` and `TupleProjectionTransform` classes to their own files if they are used in multiple tests or could be reused elsewhere.
+7. Combine the `TupleInjectionTransform` and `TupleProjectionTransform` classes into a single class with a parameter to specify the operation (injection or projection) to reduce redundancy.
+8. Remove the `@SuppressWarnings({"rawtypes"})` annotation if it is not necessary, or specify the exact warnings to suppress for better clarity.
+9. Use `List.of()` instead of `ImmutableList.of()` for creating immutable lists where applicable to simplify the code.
+10. Consider using `assertThrows` instead of try-catch blocks in `testPipelineSDKExceptionHandling` for cleaner exception handling.
+11. Refactor the `testReplaceWithExistingName` method to extract the creation of `OriginalTransform`, `ReplacementTransform`, and their respective factories into separate methods to reduce complexity.
+12. Use `Optional` for nullable fields like `tag` in `TupleProjectionTransform` and `TupleInjectionTransform` to avoid potential null pointer exceptions.
+13. Consider using a more descriptive name for the `testStableUniqueNameOffextracted` method to clarify its purpose.
+14. Remove redundant comments that do not add value or context to the code.

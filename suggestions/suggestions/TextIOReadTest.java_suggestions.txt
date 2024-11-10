@@ -1,0 +1,15 @@
+1. Replace the `switch` statement in the `writeToFile` method with a `Map<Compression, Function<OutputStream, OutputStream>>` to eliminate the need for multiple case statements and improve readability.
+2. Extract the logic for creating the `OutputStream` based on compression into a separate method to reduce complexity in `writeToFile`.
+3. Use `try-with-resources` in the `createZipFile` method to ensure that `ZipOutputStream` and `PrintStream` are closed properly, reducing the risk of resource leaks.
+4. Consolidate the two `getTextSource` methods into a single method that accepts an optional parameter for `skipHeaderLines`, using method overloading to handle the default case.
+5. Replace the `for` loop in `makeLines` with `IntStream.range(0, n).mapToObj(i -> "word" + i).collect(Collectors.toList())` for a more functional approach.
+6. In the `assertReadingCompressedFileMatchesExpected` method, consider using a helper method to reduce code duplication for the multiple `PAssert.that` calls.
+7. Use `List.of()` instead of `Arrays.asList()` for creating immutable lists in the `LARGE` and `TINY` constants for better readability and performance.
+8. Replace the `PrintStream` in `writeToStreamAndClose` with a `BufferedWriter` to improve performance when writing multiple lines.
+9. In the `testReadLinesWithDefaultDelimiterAndSlowReadChannel` method, consider using `Files.readAllLines(path)` to simplify reading the file contents.
+10. Use `Stream.of()` instead of `ImmutableList.<Object[]>builder()` for creating parameterized test data to improve readability.
+11. In the `testReadLinesWithDefaultDelimiterOnSplittingSourceAndSlowReadChannel`, extract the logic for creating the `FileBasedReader` into a separate method to reduce duplication.
+12. Consider using `assertThat` with `Matchers` directly instead of converting lists to arrays in assertions for better readability.
+13. In the `testInitialSplitAutoModeGz`, use `assertTrue` instead of `assertThat` for checking the size of splits for better clarity.
+14. Use `@SuppressWarnings("unchecked")` for the `data` method in parameterized tests to avoid unchecked warnings when returning `Iterable<Object[]>`.
+15. Replace `new Object[]` with `new Object[][]` in parameterized test data to improve readability and reduce verbosity.

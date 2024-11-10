@@ -1,0 +1,6 @@
+1. Extract the magic number `10000` into a named constant for better readability and maintainability.
+2. Move the `DoFn` implementation for stripping IDs to a separate static class or method to improve readability and reduce the complexity of the `expand` method.
+3. Use a lambda expression instead of an anonymous inner class for the `DoFn` to simplify the code.
+4. Consider adding Javadoc comments to the class and methods to provide context and usage information.
+5. Use a more descriptive name for the `processElement` method to clarify its purpose, if applicable.
+6. Validate the input collection before processing to handle potential null values or empty collections gracefully.

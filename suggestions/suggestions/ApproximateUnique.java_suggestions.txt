@@ -1,0 +1,10 @@
+1. Remove the duplicate validation logic for `sampleSize` in the `Globally` and `PerKey` constructors. Consider creating a private helper method to validate the sample size.
+2. Consolidate the two constructors in `Globally` and `PerKey` that accept `double` parameters for maximum estimation error into a single constructor that accepts both `sampleSize` and `maximumEstimationError`, and handle the logic accordingly.
+3. Use `Optional<Double>` instead of `@Nullable Double` for `maximumEstimationError` to better express the optional nature of this parameter.
+4. Replace the `TreeSet<Long>` in `LargestUnique` with a more efficient data structure if possible, or consider using a priority queue to manage the unique values more effectively.
+5. Extract the logic for estimating the sample space size in `LargestUnique.getEstimate()` into a separate method for better readability and maintainability.
+6. Consider using a more descriptive name for the `hash` method to clarify its purpose, such as `hashElement`.
+7. Handle the `IOException` in the `hash` method more gracefully instead of wrapping it in a `RuntimeException`.
+8. Add JavaDoc comments to public methods and classes to improve code documentation and understanding.
+9. Consider using a logging framework instead of throwing a generic `RuntimeException` in the `addInput` method to provide more context about the error.
+10. Review the usage of `@SuppressWarnings("unchecked")` in `PerKey.expand` and ensure that it is necessary or find a way to avoid it.

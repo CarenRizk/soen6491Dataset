@@ -1,0 +1,10 @@
+1. Remove unused imports to improve code readability and reduce clutter.
+2. Consider extracting repeated logic for creating file patterns and matching files into a separate method to reduce duplication.
+3. Replace magic numbers (like `0` and `1` in `processElement`) with named constants to improve code clarity.
+4. Consider using a more descriptive name for the `CopyFilesFn` class to better convey its purpose.
+5. Move the `sourcePathStr` and `watchPathStr` variables to be final and initialize them directly in the constructor to ensure immutability.
+6. Extract the logic for writing files in the `testRead` method into a separate helper method to improve readability.
+7. Consider using a more descriptive name for the `metadata` method to clarify its purpose.
+8. Refactor the `testRead` method to reduce the number of assertions in the loop by creating a helper method that encapsulates the assertion logic.
+9. Consider using a parameterized test for the `testMatchAndMatchAll` method to reduce code duplication for similar assertions.
+10. Add comments to complex logic or non-obvious parts of the code to improve maintainability and understanding for future developers.
