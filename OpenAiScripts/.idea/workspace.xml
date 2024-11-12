@@ -6,80 +6,22 @@
   <component name="ChangeListManager">
     <list default="true" id="dce2c249-3740-43f9-967d-3277eeef5c23" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/output.log" beforeDir="false" afterPath="$PROJECT_DIR$/output.log" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/refactor_files.py" beforeDir="false" afterPath="$PROJECT_DIR$/refactor_files.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../apacheSubProjectJava/src/main/java/org/apache/beam/runners/dataflow/StreamingShardedWriteFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/../apacheSubProjectJava/src/main/java/org/apache/beam/runners/dataflow/StreamingShardedWriteFactory.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/Accumulator.java_suggestions.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/ApproximateQuantiles.java_suggestions.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/ApproximateQuantilesTest.java_suggestions.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/ApproximateUnique.java_suggestions.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/ApproximateUniqueTest.java_suggestions.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/Audience.java_suggestions.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/BigtableIO.java_suggestions.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/BigtableIOTest.java_suggestions.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/Coder.java_suggestions.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/CoderTest.java_suggestions.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/Combine.java_suggestions.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/CombineGloballyAsSingletonViewOverrideFactory.java_suggestions.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/CombineGroupedValues.java_suggestions.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/CombineTest.java_suggestions.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/Context.java_suggestions.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/Counter.java_suggestions.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/DataflowRunner.java_suggestions.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/DataflowRunnerTest.java_suggestions.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/Deduplicate.java_suggestions.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/DirectRunner.java_suggestions.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/DirectRunnerTest.java_suggestions.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/Environment.java_suggestions.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/ErrorHandlingTestUtils.java_suggestions.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/ExpectedLogs.java_suggestions.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/FakeServiceFactory.java_suggestions.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/FileIO.java_suggestions.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/FileIOTest.java_suggestions.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/FileSystems.java_suggestions.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/FileSystemsTest.java_suggestions.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/Flatten.java_suggestions.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/FlattenTest.java_suggestions.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/Histogram.java_suggestions.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/IdentityMessageFn.java_suggestions.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/ImpulseTranslator.java_suggestions.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/MultiOutputExpandableTransformTranslator.java_suggestions.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/NetworkTestHelper.java_suggestions.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/Pipeline.java_suggestions.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/PipelineTest.java_suggestions.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/PrimitiveCombineGroupedValuesOverrideFactory.java_suggestions.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/PubsubIO.java_suggestions.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/PubsubIOTest.java_suggestions.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/ReflectiveOneToOneOverrideFactory.java_suggestions.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/ReflectiveViewOverrideFactory.java_suggestions.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/Schema.java_suggestions.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/SchemaTest.java_suggestions.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/SingleOutputExpandableTransformTranslator.java_suggestions.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/SpannerIO.java_suggestions.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/SpannerIOReadChangeStreamTest.java_suggestions.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/SpannerIOReadTest.java_suggestions.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/SpannerIOWriteTest.java_suggestions.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/StreamingBoundedRead.java_suggestions.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/StreamingBoundedReadOverrideFactory.java_suggestions.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/StreamingPCollectionViewWriterFn.java_suggestions.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/StreamingPubsubIORead.java_suggestions.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/StreamingPubsubIOReadOverrideFactory.java_suggestions.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/StreamingPubsubIOReadTranslator.java_suggestions.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/StreamingPubsubIOWrite.java_suggestions.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/StreamingPubsubIOWriteOverrideFactory.java_suggestions.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/StreamingPubsubSinkTranslators.java_suggestions.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/StreamingShardedWriteFactory.java_suggestions.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/StreamingUnboundedRead.java_suggestions.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/StreamingUnboundedReadOverrideFactory.java_suggestions.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/TestCredential.java_suggestions.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/TextIO.java_suggestions.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/TextIOReadTest.java_suggestions.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/TextIOWriteTest.java_suggestions.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/Timer.java_suggestions.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/Trigger.java_suggestions.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/TriggerTest.java_suggestions.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/Window.java_suggestions.txt" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../outputs/suggestions/WindowingTest.java_suggestions.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../apacheSubProjectJava/apacheSubProjectJava.und/codecheck/configs/dup + func too long.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../apacheSubProjectJava/apacheSubProjectJava.und/local/CCFileAnalysis.dat" beforeDir="false" afterPath="$PROJECT_DIR$/../apacheSubProjectJava/apacheSubProjectJava.und/local/CCFileAnalysis.dat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../apacheSubProjectJava/apacheSubProjectJava.und/local/CCResults.dat" beforeDir="false" afterPath="$PROJECT_DIR$/../apacheSubProjectJava/apacheSubProjectJava.und/local/CCResults.dat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../apacheSubProjectJava/apacheSubProjectJava.und/local/CCSettings.dat" beforeDir="false" afterPath="$PROJECT_DIR$/../apacheSubProjectJava/apacheSubProjectJava.und/local/CCSettings.dat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../apacheSubProjectJava/apacheSubProjectJava.und/local/index/_c.cfs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../apacheSubProjectJava/apacheSubProjectJava.und/local/index/_d.cfs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../apacheSubProjectJava/apacheSubProjectJava.und/local/index/segments.gen" beforeDir="false" afterPath="$PROJECT_DIR$/../apacheSubProjectJava/apacheSubProjectJava.und/local/index/segments.gen" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../apacheSubProjectJava/apacheSubProjectJava.und/local/issues.cbor" beforeDir="false" afterPath="$PROJECT_DIR$/../apacheSubProjectJava/apacheSubProjectJava.und/local/issues.cbor" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../apacheSubProjectJava/apacheSubProjectJava.und/local/parse.udb" beforeDir="false" afterPath="$PROJECT_DIR$/../apacheSubProjectJava/apacheSubProjectJava.und/local/parse.udb" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../apacheSubProjectJava/apacheSubProjectJava.und/local/projectmetrics.dat" beforeDir="false" afterPath="$PROJECT_DIR$/../apacheSubProjectJava/apacheSubProjectJava.und/local/projectmetrics.dat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../apacheSubProjectJava/apacheSubProjectJava.und/local/session.json" beforeDir="false" afterPath="$PROJECT_DIR$/../apacheSubProjectJava/apacheSubProjectJava.und/local/session.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../apacheSubProjectJava/apacheSubProjectJava.und/local/settings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../apacheSubProjectJava/apacheSubProjectJava.und/local/settings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../apacheSubProjectJava/apacheSubProjectJava.und/settings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../apacheSubProjectJava/apacheSubProjectJava.und/settings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../apacheSubProjectPython/apacheSubProjectPython.und/local/projectmetrics.dat" beforeDir="false" afterPath="$PROJECT_DIR$/../apacheSubProjectPython/apacheSubProjectPython.und/local/projectmetrics.dat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../apacheSubProjectPython/apacheSubProjectPython.und/local/session.json" beforeDir="false" afterPath="$PROJECT_DIR$/../apacheSubProjectPython/apacheSubProjectPython.und/local/session.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -96,27 +38,128 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 7
-}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 7
+}</component>
   <component name="ProjectId" id="2oeyuOl6xImi4afM0KMGeCSEfPa" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "main",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/carenrizk/repos/soen6491Dataset/OpenAiScripts",
-    "node.js.detected.package.eslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/carenrizk/repos/soen6491Dataset/OpenAiScripts&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
+  <component name="RunManager">
+    <configuration default="true" type="JetRunConfigurationType">
+      <module name="OpenAiScripts" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="KotlinStandaloneScriptRunConfigurationType">
+      <module name="OpenAiScripts" />
+      <option name="filePath" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="PythonConfigurationType" factoryName="Python">
+      <module name="OpenAiScripts" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration default="true" type="Python.FlaskServer">
+      <module name="OpenAiScripts" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="launchJavascriptDebuger" value="false" />
+      <method v="2" />
+    </configuration>
+    <configuration default="true" type="Tox" factoryName="Tox">
+      <module name="OpenAiScripts" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <method v="2" />
+    </configuration>
+    <configuration default="true" type="tests" factoryName="Autodetect">
+      <module name="OpenAiScripts" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="_new_additionalArguments" value="&quot;&quot;" />
+      <option name="_new_target" value="&quot;&quot;" />
+      <option name="_new_targetType" value="&quot;PATH&quot;" />
+      <method v="2" />
+    </configuration>
+    <configuration default="true" type="tests" factoryName="Doctests">
+      <module name="OpenAiScripts" />
+      <option name="ENV_FILES" value="" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="" />
+      <option name="CLASS_NAME" value="" />
+      <option name="METHOD_NAME" value="" />
+      <option name="FOLDER_NAME" value="" />
+      <option name="TEST_TYPE" value="TEST_SCRIPT" />
+      <option name="PATTERN" value="" />
+      <option name="USE_PATTERN" value="false" />
+      <method v="2" />
+    </configuration>
+  </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
@@ -133,7 +176,8 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1731244558413</updated>
-      <workItem from="1731244559425" duration="3564000" />
+      <workItem from="1731244559425" duration="4758000" />
+      <workItem from="1731445799390" duration="23000" />
     </task>
     <servers />
   </component>

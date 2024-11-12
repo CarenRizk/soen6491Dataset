@@ -3,6 +3,40 @@
     "Sessions": {
         "default": {
             "SessionData": {
+                "1_1920x1080": {
+                    "EntityFilter": {
+                        "Dock Area": 1,
+                        "Dock In Drawer Mode": false,
+                        "Dock Is Floating": false,
+                        "Dock Tab Group": [
+                            "ProjectOverviewWidget"
+                        ]
+                    },
+                    "Locator": {
+                        "Dock Area": 8,
+                        "Dock In Drawer Mode": false,
+                        "Dock Is Floating": false,
+                        "Dock Tab Group": [
+                            "ProjectMetricsWidget"
+                        ]
+                    },
+                    "ProjectMetricsWidget": {
+                        "Dock Area": 8,
+                        "Dock In Drawer Mode": false,
+                        "Dock Is Floating": false,
+                        "Dock Tab Group": [
+                            "Locator"
+                        ]
+                    },
+                    "ProjectOverviewWidget": {
+                        "Dock Area": 1,
+                        "Dock In Drawer Mode": false,
+                        "Dock Is Floating": false,
+                        "Dock Tab Group": [
+                            "EntityFilter"
+                        ]
+                    }
+                },
                 "2_1920x1080_1536x864": {
                     "DockWidgets": {
                         "OpenWindows": {
@@ -157,27 +191,27 @@
                         ],
                         "OpenWindows": {
                             "00ProjectOverviewWidget": {
-                                "height": 693,
+                                "height": 457,
                                 "width": 250
                             },
                             "01SuggestionsBrowser": {
-                                "height": 953,
+                                "height": 512,
                                 "width": 250
                             },
                             "02EntityFilter": {
-                                "height": 715,
+                                "height": 479,
                                 "width": 250
                             },
                             "03ProjectMetricsWidget": {
-                                "height": 433,
-                                "width": 1644
+                                "height": 411,
+                                "width": 1646
                             },
                             "04Locator": {
-                                "height": 455,
-                                "width": 1644
+                                "height": 433,
+                                "width": 1646
                             },
                             "05InfoBrowserWidget_0": {
-                                "height": 713,
+                                "height": 486,
                                 "width": 270
                             }
                         },
@@ -546,93 +580,32 @@
                         "0"
                     ]
                 },
-                "LastAccessedPid": "33464",
-                "LastDisplayGroup": "3_1920x1080_2560x1440_2560x1440",
+                "LastAccessedPid": "24600",
+                "LastDisplayGroup": "2_1920x1080_3840x1600",
                 "Locator": {
                     "LastEntityFilterUsed": "All Entities"
                 },
                 "MaintainEditorHistory": {
                     "FileRanges": {
-                        "0": {
-                            "ColumnBegin": 0,
-                            "ColumnEnd": 0,
-                            "FilePath": "./src/main/java/org/apache/beam/runners/dataflow/DataflowRunner.java",
-                            "LineBegin": 186,
-                            "LineEnd": 186
-                        },
-                        "1": {
-                            "ColumnBegin": 0,
-                            "ColumnEnd": 0,
-                            "FilePath": "./src/main/java/org/apache/beam/runners/dataflow/DataflowRunner.java",
-                            "LineBegin": 921,
-                            "LineEnd": 921
-                        },
-                        "2": {
-                            "ColumnBegin": 0,
-                            "ColumnEnd": 0,
-                            "FilePath": "./target/generated-sources/annotations/org/apache/beam/sdk/extensions/avro/io/AutoValue_AvroIO_Read.java",
-                            "LineBegin": 102,
-                            "LineEnd": 102
-                        },
-                        "3": {
-                            "ColumnBegin": 0,
-                            "ColumnEnd": 4,
-                            "FilePath": "./src/main/java/org/apache/beam/runners/dataflow/DataflowRunner.java",
-                            "LineBegin": 921,
-                            "LineEnd": 921
-                        },
-                        "4": {
-                            "ColumnBegin": 0,
-                            "ColumnEnd": 0,
-                            "FilePath": "./target/generated-sources/annotations/org/apache/beam/sdk/extensions/avro/io/AutoValue_AvroIO_ReadFiles.java",
-                            "LineBegin": 101,
-                            "LineEnd": 101
-                        },
-                        "size": 5
+                        "size": 0
                     },
-                    "index": 4
+                    "index": -1
                 },
                 "MiscSaveStates": {
                     "entitySelected": "@lorg.apache.beam.sdk.coders.Coder.getEncodedTypeDescriptor.(Anon_1)@kj5org.apache.beam.sdk.coders.Coder.getEncodedTypeDescriptor.(Anon_1)@f./src/main/java/org/apache/beam/sdk/coders/Coder.java",
-                    "ib": "entity:||:@l./target/generated-sources/annotations/org/apache/beam/sdk/io/gcp/pubsub/AutoValue_PubsubIO_Write.java",
-                    "metricsBrowserExpansionAddresses": "Directory Structure,Directory Structure::src,Directory Structure::src::main,Directory Structure::src::main::java,Directory Structure::src::main::java::org,Directory Structure::src::main::java::org::apache,Directory Structure::src::main::java::org::apache::beam,Directory Structure::src::main::java::org::apache::beam::runners,Directory Structure::src::main::java::org::apache::beam::runners::dataflow",
-                    "metricsBrowserSelectionAddress": "Directory Structure::src::main::java::org::apache::beam::runners::dataflow::DataflowRunner.java (File)",
+                    "ib": "",
+                    "metricsBrowser": true,
+                    "metricsBrowserExpansionAddresses": "",
+                    "metricsBrowserSelectionAddress": "",
                     "metricsBrowserSplitterState": "AAAA/wAAAAEAAAABAAACAAH/////AQAAAAEA",
-                    "projectOverviewCharts": "true",
-                    "projectOverviewChartsPosition": 1,
-                    "projectOverviewChartsSelected": "false",
-                    "projectOverviewChartsWorkspace": 0,
-                    "selection": "Override"
+                    "selection": "(Anon_1)"
                 },
                 "ProjectMetricsBrowser": {
                     "Overwrite": false,
                     "SaveDirectory": "./."
                 },
                 "ProjectUI": {
-                    "projectview": [
-                        "src",
-                        "src/main",
-                        "src/main/java",
-                        "src/main/java/org",
-                        "src/main/java/org/apache",
-                        "src/main/java/org/apache/beam",
-                        "src/main/java/org/apache/beam/runners",
-                        "src/main/java/org/apache/beam/runners/dataflow",
-                        "target",
-                        "target/generated-sources",
-                        "target/generated-sources/annotations",
-                        "target/generated-sources/annotations/org",
-                        "target/generated-sources/annotations/org/apache",
-                        "target/generated-sources/annotations/org/apache/beam",
-                        "target/generated-sources/annotations/org/apache/beam/sdk",
-                        "target/generated-sources/annotations/org/apache/beam/sdk/extensions",
-                        "target/generated-sources/annotations/org/apache/beam/sdk/extensions/avro",
-                        "target/generated-sources/annotations/org/apache/beam/sdk/extensions/avro/io"
-                    ],
-                    "projectviewcuritem": "target/generated-sources/annotations/org/apache/beam/sdk/extensions/avro/io/AutoValue_AvroIO_ReadFiles.java",
-                    "projectviewselection": [
-                        "target/generated-sources/annotations/org/apache/beam/sdk/extensions/avro/io/AutoValue_AvroIO_ReadFiles.java"
-                    ]
+                    "projectviewcuritem": "main"
                 },
                 "SplittableWorkspace": {
                     "active workspace": 0,

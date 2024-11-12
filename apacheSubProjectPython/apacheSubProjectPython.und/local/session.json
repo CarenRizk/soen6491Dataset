@@ -52,7 +52,7 @@
                         ],
                         "OpenWindows": {
                             "00ProjectOverviewWidget": {
-                                "height": 694,
+                                "height": 672,
                                 "width": 250
                             },
                             "01SuggestionsBrowser": {
@@ -60,16 +60,16 @@
                                 "width": 250
                             },
                             "02EntityFilter": {
-                                "height": 716,
+                                "height": 694,
                                 "width": 250
                             },
                             "03ProjectMetricsWidget": {
-                                "height": 434,
-                                "width": 1644
+                                "height": 412,
+                                "width": 1646
                             },
                             "04Locator": {
-                                "height": 456,
-                                "width": 1644
+                                "height": 434,
+                                "width": 1646
                             },
                             "05AnalysisLog": {
                                 "height": 457,
@@ -150,6 +150,9 @@
                         "Dock Tab Group": [
                         ]
                     }
+                },
+                "CodeCheckFiles": {
+                    "lastSelectedFilterInt": 0
                 },
                 "EntityFilter": {
                     "LastEntityFilterUsed": "All Entities"

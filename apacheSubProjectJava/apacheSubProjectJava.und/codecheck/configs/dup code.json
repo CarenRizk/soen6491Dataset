@@ -1,0 +1,13 @@
+{
+    "automatic": true,
+    "checks": [
+        "RECOMMENDED_20"
+    ],
+    "excludes": [
+    ],
+    "name": "dup code",
+    "parents": [
+    ],
+    "tags": [
+    ]
+}
