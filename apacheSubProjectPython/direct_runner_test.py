@@ -1,21 +1,4 @@
-#
-# Licensed to the Apache Software Foundation (ASF) under one or more
-# contributor license agreements.  See the NOTICE file distributed with
-# this work for additional information regarding copyright ownership.
-# The ASF licenses this file to You under the Apache License, Version 2.0
-# (the "License"); you may not use this file except in compliance with
-# the License.  You may obtain a copy of the License at
-#
-#    http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-#
 
-# pytype: skip-file
 
 import threading
 import unittest
@@ -124,10 +107,6 @@ class DirectPipelineResultTest(unittest.TestCase):
     hc.assert_that(len(str_set_result.committed), hc.equal_to(4))
     hc.assert_that(len(str_set_result.attempted), hc.equal_to(4))
 
-  # def test_create_runner(self):
-  #   self.assertTrue(isinstance(create_runner('DirectRunner'), DirectRunner))
-  #   self.assertTrue(
-  #       isinstance(create_runner('TestDirectRunner'), TestDirectRunner))
 
 
 class BundleBasedRunnerTest(unittest.TestCase):
@@ -138,18 +117,12 @@ class BundleBasedRunnerTest(unittest.TestCase):
           | beam.Create([[]]).with_output_types(beam.typehints.List[int])
           | beam.combiners.Count.Globally())
 
-  # def test_impulse(self):
-  #   with test_pipeline.TestPipeline(runner='BundleBasedDirectRunner') as p:
-  #     assert_that(p | beam.Impulse(), equal_to([b'']))
 
 
 class DirectRunnerRetryTests(unittest.TestCase):
   def test_retry_fork_graph(self):
-    # TODO(https://github.com/apache/beam/issues/18640): The FnApiRunner
-    # currently does not currently support retries.
     p = beam.Pipeline(runner='BundleBasedDirectRunner')
 
-    # TODO(mariagh): Remove the use of globals from the test.
     global count_b, count_c  # pylint: disable=global-variable-undefined
     count_b, count_c = 0, 0
 
@@ -185,7 +158,6 @@ class DirectRunnerRetryTests(unittest.TestCase):
         state = self.step_context.get_keyed_state(k)
         state.add_state(None, _GroupByKeyOnlyEvaluator.ELEMENTS_TAG, v)
 
-    # Create instance and add key/value, key/value2
     evaluator = TestTransformEvaluator()
     evaluator.start_bundle()
     self.assertIsNone(evaluator.step_context.existing_keyed_state.get('key'))
@@ -211,7 +183,6 @@ class DirectRunnerRetryTests(unittest.TestCase):
             'elements': ['value', 'value2']
         }})
 
-    # Simulate an exception (redo key/value)
     evaluator._execution_context.reset()
     evaluator.start_bundle()
     evaluator.process_element(['key', 'value'])

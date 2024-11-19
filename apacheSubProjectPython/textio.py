@@ -1,23 +1,6 @@
-#
-# Licensed to the Apache Software Foundation (ASF) under one or more
-# contributor license agreements.  See the NOTICE file distributed with
-# this work for additional information regarding copyright ownership.
-# The ASF licenses this file to You under the Apache License, Version 2.0
-# (the "License"); you may not use this file except in compliance with
-# the License.  You may obtain a copy of the License at
-#
-#    http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-#
 
 """A source and a sink for reading from and writing to text files."""
 
-# pytype: skip-file
 
 import logging
 from functools import partial
@@ -71,8 +54,6 @@ class _TextSource(filebasedsource.FileBasedSource):
   DEFAULT_READ_BUFFER_SIZE = 8192
 
   class ReadBuffer(object):
-    # A buffer that gives the buffered data and next position in the
-    # buffer that should be read.
 
     def __init__(self, data, position):
       self._data = data
@@ -198,10 +179,6 @@ class _TextSource(filebasedsource.FileBasedSource):
           self._process_header(file_to_read, read_buffer))
       start_offset = max(start_offset, position_after_processing_header_lines)
       if start_offset > position_after_processing_header_lines:
-        # Seeking to one delimiter length before the start index and ignoring
-        # the current line. If start_position is at beginning of the line, that
-        # line belongs to the current bundle, hence ignoring that is incorrect.
-        # Seeking to one delimiter before prevents that.
 
         if self._delimiter is not None and start_offset >= len(self._delimiter):
           required_position = start_offset - len(self._delimiter)
@@ -209,8 +186,6 @@ class _TextSource(filebasedsource.FileBasedSource):
           required_position = start_offset - 1
 
         if self._escapechar is not None:
-          # Need more bytes to check if the delimiter is escaped.
-          # Seek until the first escapechar if any.
           while required_position > 0:
             file_to_read.seek(required_position - 1)
             if file_to_read.read(1) == self._escapechar:
@@ -222,8 +197,6 @@ class _TextSource(filebasedsource.FileBasedSource):
         read_buffer.reset()
         sep_bounds = self._find_separator_bounds(file_to_read, read_buffer)
         if not sep_bounds:
-          # Could not find a delimiter after required_position. This means that
-          # none of the records within the file belongs to the current source.
           return
 
         _, sep_end = sep_bounds
@@ -235,16 +208,9 @@ class _TextSource(filebasedsource.FileBasedSource):
       while range_tracker.try_claim(next_record_start_position):
         record, num_bytes_to_next_record = self._read_record(file_to_read,
                                                              read_buffer)
-        # For compressed text files that use an unsplittable OffsetRangeTracker
-        # with infinity as the end position, above 'try_claim()' invocation
-        # would pass for an empty record at the end of file that is not
-        # followed by a new line character. Since such a record is at the last
-        # position of a file, it should not be a part of the considered range.
-        # We do this check to ignore such records.
         if len(record) == 0 and num_bytes_to_next_record < 0:  # pylint: disable=len-as-condition
           break
 
-        # Record delimiter must be larger than zero bytes.
         assert num_bytes_to_next_record != 0
         if num_bytes_to_next_record > 0:
           next_record_start_position += num_bytes_to_next_record
@@ -254,9 +220,6 @@ class _TextSource(filebasedsource.FileBasedSource):
           break
 
   def _process_header(self, file_to_read, read_buffer):
-    # Returns a tuple containing the position in file after processing header
-    # records and a list of decoded header lines that match
-    # 'header_matcher'.
     header_lines = []
     position = self._skip_lines(
         file_to_read, read_buffer,
@@ -267,7 +230,6 @@ class _TextSource(filebasedsource.FileBasedSource):
                                                              read_buffer)
         decoded_line = self._coder.decode(record)
         if not self._header_matcher(decoded_line):
-          # We've read past the header section at this point, so go back a line.
           file_to_read.seek(position)
           read_buffer.reset()
           break
@@ -282,29 +244,18 @@ class _TextSource(filebasedsource.FileBasedSource):
     return position
 
   def _find_separator_bounds(self, file_to_read, read_buffer):
-    # Determines the start and end positions within 'read_buffer.data' of the
-    # next delimiter starting from position 'read_buffer.position'.
-    # Use the custom delimiter to be used in place of
-    # the default ones ('\n' or '\r\n')'
-    # This method may increase the size of buffer but it will not decrease the
-    # size of it.
 
     current_pos = read_buffer.position
 
-    # b'\n' use as default
     delimiter = self._delimiter or b'\n'
     delimiter_len = len(delimiter)
 
     while True:
       if current_pos >= len(read_buffer.data) - delimiter_len + 1:
-        # Ensuring that there are enough bytes to determine
-        # at current_pos.
         if not self._try_to_ensure_num_bytes_in_buffer(
             file_to_read, read_buffer, current_pos + delimiter_len):
           return
 
-      # Using find() here is more efficient than a linear scan
-      # of the byte array.
       next_delim = read_buffer.data.find(delimiter, current_pos)
 
       if next_delim >= 0:
@@ -312,28 +263,21 @@ class _TextSource(filebasedsource.FileBasedSource):
             read_buffer.data[next_delim - 1:next_delim] == b'\r'):
           if self._escapechar is not None and self._is_escaped(read_buffer,
                                                                next_delim - 1):
-            # Accept '\n' as a default delimiter, because '\r' is escaped.
             return (next_delim, next_delim + 1)
           else:
-            # Accept both '\r\n' and '\n' as a default delimiter.
             return (next_delim - 1, next_delim + 1)
         else:
           if self._escapechar is not None and self._is_escaped(read_buffer,
                                                                next_delim):
-            # Skip an escaped delimiter.
             current_pos = next_delim + delimiter_len + 1
             continue
           else:
-            # Found a delimiter. Accepting that as the next delimiter.
             return (next_delim, next_delim + delimiter_len)
 
       elif self._delimiter is not None:
-        # Corner case: custom delimiter is truncated at the end of the buffer.
         next_delim = read_buffer.data.find(
             delimiter[0], len(read_buffer.data) - delimiter_len + 1)
         if next_delim >= 0:
-          # Delimiters longer than 1 byte may cross the buffer boundary.
-          # Defer full matching till the next iteration.
           current_pos = next_delim
           continue
 
@@ -341,9 +285,6 @@ class _TextSource(filebasedsource.FileBasedSource):
 
   def _try_to_ensure_num_bytes_in_buffer(
       self, file_to_read, read_buffer, num_bytes):
-    # Tries to ensure that there are at least num_bytes bytes in the buffer.
-    # Returns True if this can be fulfilled, returned False if this cannot be
-    # fulfilled due to reaching EOF.
     while len(read_buffer.data) < num_bytes:
       read_data = file_to_read.read(self._buffer_size)
       if not read_data:
@@ -361,19 +302,13 @@ class _TextSource(filebasedsource.FileBasedSource):
     for _ in range(num_lines):
       _, num_bytes_to_next_record = self._read_record(file_to_read, read_buffer)
       if num_bytes_to_next_record < 0:
-        # We reached end of file. It is OK to just break here
-        # because subsequent _read_record will return same result.
         break
       position += num_bytes_to_next_record
     return position
 
   def _read_record(self, file_to_read, read_buffer):
-    # Returns a tuple containing the current_record and number of bytes to the
-    # next record starting from 'read_buffer.position'. If EOF is
-    # reached, returns a tuple containing the current record and -1.
 
     if read_buffer.position > self._buffer_size:
-      # read_buffer is too large. Truncating and adjusting it.
       read_buffer.data = read_buffer.data[read_buffer.position:]
       read_buffer.position = 0
 
@@ -383,33 +318,25 @@ class _TextSource(filebasedsource.FileBasedSource):
         read_buffer.data)
 
     if not sep_bounds:
-      # Reached EOF. Bytes up to the EOF is the next record. Returning '-1' for
-      # the starting position of the next record.
       return (read_buffer.data[record_start_position_in_buffer:], -1)
 
     if self._strip_trailing_newlines:
-      # Current record should not contain the delimiter.
       return (
           read_buffer.data[record_start_position_in_buffer:sep_bounds[0]],
           sep_bounds[1] - record_start_position_in_buffer)
     else:
-      # Current record should contain the delimiter.
       return (
           read_buffer.data[record_start_position_in_buffer:sep_bounds[1]],
           sep_bounds[1] - record_start_position_in_buffer)
 
   @staticmethod
   def _is_self_overlapping(delimiter):
-    # A delimiter self-overlaps if it has a prefix that is also its suffix.
     for i in range(1, len(delimiter)):
       if delimiter[0:i] == delimiter[len(delimiter) - i:]:
         return True
     return False
 
   def _is_escaped(self, read_buffer, position):
-    # Returns True if byte at position is preceded with an odd number
-    # of escapechar bytes or False if preceded by 0 or even escapes
-    # (the even number means that all the escapes are escaped themselves).
     escape_count = 0
     for current_pos in reversed(range(0, position)):
       if read_buffer.data[current_pos:current_pos + 1] != self._escapechar:
@@ -711,10 +638,8 @@ class ReadAllFromTextContinuously(ReadAllFromText):
     self._kwargs_for_match = kwargs_for_match
 
   def expand(self, pbegin):
-    # Importing locally to prevent circular dependency issues.
     from apache_beam.io.fileio import MatchContinuously
 
-    # TODO(BEAM-14497) always reshuffle once gbk always trigger works.
     return (
         pbegin
         | MatchContinuously(self._file_pattern, **self._kwargs_for_match)
@@ -920,7 +845,6 @@ try:
             skip = True
           if not skip:
             extra_lines.append(line[indent:])
-      # Expand title underline due to Parameters -> Pandas Parameters.
       extra_lines[1] += '-------'
       dest.__doc__ += '\n'.join(extra_lines)
       return dest
@@ -954,7 +878,6 @@ try:
       num_shards: Optional[int] = None,
       file_naming: Optional['fileio.FileNaming'] = None,
       **kwargs):
-    # pylint: disable=line-too-long
 
     """A PTransform for writing a schema'd PCollection as a (set of)
     comma-separated values (csv) files.
@@ -1018,7 +941,6 @@ try:
       orient: str = 'records',
       lines: Optional[bool] = None,
       **kwargs):
-    # pylint: disable=line-too-long
 
     """A PTransform for writing a PCollection as json values to files.
 

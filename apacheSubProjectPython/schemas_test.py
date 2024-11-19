@@ -1,23 +1,6 @@
-#
-# Licensed to the Apache Software Foundation (ASF) under one or more
-# contributor license agreements.  See the NOTICE file distributed with
-# this work for additional information regarding copyright ownership.
-# The ASF licenses this file to You under the Apache License, Version 2.0
-# (the "License"); you may not use this file except in compliance with
-# the License.  You may obtain a copy of the License at
-#
-#    http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-#
 
 """Tests for schemas."""
 
-# pytype: skip-file
 
 import typing
 import unittest
@@ -58,12 +41,6 @@ def matches_df(expected):
   return check_df_pcoll_equal
 
 
-# Test data for all supported types that can be easily tested.
-# Excludes bytes because it's difficult to create a series and dataframe bytes
-# dtype. For example:
-#   pd.Series([b'abc'], dtype=bytes).dtype != 'S'
-#   pd.Series([b'abc'], dtype=bytes).astype(bytes).dtype == 'S'
-# (test data, pandas_type, column_name, beam_type)
 COLUMNS: typing.List[typing.Tuple[typing.List[typing.Any],
                                   typing.Any,
                                   str,
@@ -138,22 +115,9 @@ INDEX_DF_TESTS = [(
 
 NOINDEX_DF_TESTS = [(NICE_TYPES_DF, DF_RESULT, BEAM_SCHEMA)]
 
-# Get major, minor, bugfix version
 PD_VERSION = tuple(map(int, pd.__version__.split('.')[0:3]))
 
 
-# def test_name_func(testcase_func, param_num, params):
-#   df_or_series, _, _ = params.args
-#   if isinstance(df_or_series, pd.Series):
-#     return f"{testcase_func.__name__}_Series[{df_or_series.dtype}]"
-#   elif isinstance(df_or_series, pd.DataFrame):
-#     return (
-#         f"{testcase_func.__name__}_DataFrame"
-#         f"[{','.join(str(dtype) for dtype in df_or_series.dtypes)}]")
-#   else:
-#     raise ValueError(
-#         f"Encountered unsupported param in {testcase_func.__name__}. "
-#         "Expected Series or DataFrame, got:\n" + str(df_or_series))
 
 
 class SchemasTest(unittest.TestCase):
@@ -241,12 +205,10 @@ class SchemasTest(unittest.TestCase):
           | schemas.BatchRowsAsDataFrame()
           | transforms.DataframeTransform(
               lambda df: df.groupby('animal').mean(),
-              # TODO: Generate proxy in this case as well
               proxy=schemas.generate_proxy(Animal),
               include_indexes=True))
       assert_that(res, equal_to([('Falcon', 375.), ('Parrot', 25.)]))
 
-    # Do the same thing, but use reset_index() to make sure 'animal' is included
     with TestPipeline() as p:
       with beam.dataframe.allow_non_parallel_operations():
         res = (
@@ -260,7 +222,6 @@ class SchemasTest(unittest.TestCase):
             | schemas.BatchRowsAsDataFrame()
             | transforms.DataframeTransform(
                 lambda df: df.groupby('animal').mean().reset_index(),
-                # TODO: Generate proxy in this case as well
                 proxy=schemas.generate_proxy(Animal)))
         assert_that(res, equal_to([('Falcon', 375.), ('Parrot', 25.)]))
 
@@ -280,50 +241,7 @@ class SchemasTest(unittest.TestCase):
     else:
       self.assertEqual(left, right)
 
-  # @parameterized.expand(
-  #     SERIES_TESTS + NOINDEX_DF_TESTS, name_func=test_name_func)
-  # def test_unbatch_no_index(self, df_or_series, rows, beam_type):
-  #   proxy = df_or_series[:0]
-  #
-  #   with TestPipeline() as p:
-  #     res = (
-  #         p | beam.Create([df_or_series[::2], df_or_series[1::2]])
-  #         | schemas.UnbatchPandas(proxy))
-  #
-  #     # Verify that the unbatched PCollection has the expected typehint
-  #     # TODO(https://github.com/apache/beam/issues/19923): typehints should
-  #     # support NamedTuple so we can use typehints.is_consistent_with here
-  #     # instead
-  #     self.assert_typehints_equal(res.element_type, beam_type)
-  #
-  #     assert_that(res, equal_to(rows))
 
-  # @parameterized.expand(SERIES_TESTS + INDEX_DF_TESTS, name_func=test_name_func)
-  # def test_unbatch_with_index(self, df_or_series, rows, _):
-  #   proxy = df_or_series[:0]
-  #
-  #   if (PD_VERSION < (1, 2) and
-  #       set(['i32_nullable', 'i64_nullable']).intersection(proxy.index.names)):
-  #     self.skipTest(
-  #         "pandas<1.2 incorrectly changes Int64Dtype to int64 when "
-  #         "moved to index.")
-  #
-  #   with TestPipeline() as p:
-  #     res = (
-  #         p | beam.Create([df_or_series[::2], df_or_series[1::2]])
-  #         | schemas.UnbatchPandas(proxy, include_indexes=True))
-  #
-  #     assert_that(res, equal_to(rows))
-  #
-  # @parameterized.expand(SERIES_TESTS, name_func=test_name_func)
-  # def test_unbatch_series_with_index_warns(
-  #     self, series, unused_rows, unused_type):
-  #   proxy = series[:0]
-  #
-  #   with TestPipeline() as p:
-  #     input_pc = p | beam.Create([series[::2], series[1::2]])
-  #     with self.assertWarns(UserWarning):
-  #       _ = input_pc | schemas.UnbatchPandas(proxy, include_indexes=True)
 
   def test_unbatch_include_index_unnamed_index_raises(self):
     df = pd.DataFrame({'foo': [1, 2, 3, 4]})

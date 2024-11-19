@@ -1,22 +1,5 @@
-#
-# Licensed to the Apache Software Foundation (ASF) under one or more
-# contributor license agreements.  See the NOTICE file distributed with
-# this work for additional information regarding copyright ownership.
-# The ASF licenses this file to You under the Apache License, Version 2.0
-# (the "License"); you may not use this file except in compliance with
-# the License.  You may obtain a copy of the License at
-#
-#    http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-#
 
 """Unit tests for our libraries of combine PTransforms."""
-# pytype: skip-file
 
 import itertools
 import random
@@ -85,89 +68,11 @@ class SortedConcatWithCounters(beam.CombineFn):
     return ''.join(accs)
 
   def extract_output(self, acc):
-    # The sorted acc became a list of characters
-    # and has to be converted back to a string using join.
     return ''.join(sorted(acc))
 
 
 class CombineTest(unittest.TestCase):
-  # def test_builtin_combines(self):
-  #   with TestPipeline() as pipeline:
-  #
-  #     vals = [6, 3, 1, 1, 9, 1, 5, 2, 0, 6]
-  #     mean = sum(vals) / float(len(vals))
-  #     size = len(vals)
-  #     timestamp = 0
-  #
-  #     # First for global combines.
-  #     pcoll = pipeline | 'start' >> Create(vals)
-  #     result_mean = pcoll | 'mean' >> combine.Mean.Globally()
-  #     result_count = pcoll | 'count' >> combine.Count.Globally()
-  #     assert_that(result_mean, equal_to([mean]), label='assert:mean')
-  #     assert_that(result_count, equal_to([size]), label='assert:size')
-  #
-  #     # Now for global combines without default
-  #     timestamped = pcoll | Map(lambda x: TimestampedValue(x, timestamp))
-  #     windowed = timestamped | 'window' >> WindowInto(FixedWindows(60))
-  #     result_windowed_mean = (
-  #         windowed
-  #         | 'mean-wo-defaults' >> combine.Mean.Globally().without_defaults())
-  #     assert_that(
-  #         result_windowed_mean,
-  #         equal_to([mean]),
-  #         label='assert:mean-wo-defaults')
-  #     result_windowed_count = (
-  #         windowed
-  #         | 'count-wo-defaults' >> combine.Count.Globally().without_defaults())
-  #     assert_that(
-  #         result_windowed_count,
-  #         equal_to([size]),
-  #         label='assert:count-wo-defaults')
-  #
-  #     # Again for per-key combines.
-  #     pcoll = pipeline | 'start-perkey' >> Create([('a', x) for x in vals])
-  #     result_key_mean = pcoll | 'mean-perkey' >> combine.Mean.PerKey()
-  #     result_key_count = pcoll | 'count-perkey' >> combine.Count.PerKey()
-  #     assert_that(result_key_mean, equal_to([('a', mean)]), label='key:mean')
-  #     assert_that(result_key_count, equal_to([('a', size)]), label='key:size')
 
-  # def test_top(self):
-  #   with TestPipeline() as pipeline:
-  #     timestamp = 0
-  #
-  #     # First for global combines.
-  #     pcoll = pipeline | 'start' >> Create([6, 3, 1, 1, 9, 1, 5, 2, 0, 6])
-  #     result_top = pcoll | 'top' >> combine.Top.Largest(5)
-  #     result_bot = pcoll | 'bot' >> combine.Top.Smallest(4)
-  #     assert_that(result_top, equal_to([[9, 6, 6, 5, 3]]), label='assert:top')
-  #     assert_that(result_bot, equal_to([[0, 1, 1, 1]]), label='assert:bot')
-  #
-  #     # Now for global combines without default
-  #     timestamped = pcoll | Map(lambda x: TimestampedValue(x, timestamp))
-  #     windowed = timestamped | 'window' >> WindowInto(FixedWindows(60))
-  #     result_windowed_top = windowed | 'top-wo-defaults' >> combine.Top.Largest(
-  #         5, has_defaults=False)
-  #     result_windowed_bot = (
-  #         windowed
-  #         | 'bot-wo-defaults' >> combine.Top.Smallest(4, has_defaults=False))
-  #     assert_that(
-  #         result_windowed_top,
-  #         equal_to([[9, 6, 6, 5, 3]]),
-  #         label='assert:top-wo-defaults')
-  #     assert_that(
-  #         result_windowed_bot,
-  #         equal_to([[0, 1, 1, 1]]),
-  #         label='assert:bot-wo-defaults')
-  #
-  #     # Again for per-key combines.
-  #     pcoll = pipeline | 'start-perkey' >> Create(
-  #         [('a', x) for x in [6, 3, 1, 1, 9, 1, 5, 2, 0, 6]])
-  #     result_key_top = pcoll | 'top-perkey' >> combine.Top.LargestPerKey(5)
-  #     result_key_bot = pcoll | 'bot-perkey' >> combine.Top.SmallestPerKey(4)
-  #     assert_that(
-  #         result_key_top, equal_to([('a', [9, 6, 6, 5, 3])]), label='key:top')
-  #     assert_that(
-  #         result_key_bot, equal_to([('a', [0, 1, 1, 1])]), label='key:bot')
 
   def test_empty_global_top(self):
     with TestPipeline() as p:
@@ -311,30 +216,6 @@ class CombineTest(unittest.TestCase):
       assert_that(result_ktop, equal_to([('a', [9, 6, 6, 5, 3])]), label='KTop')
       assert_that(result_kbot, equal_to([('a', [0, 1, 1, 1])]), label='KBot')
 
-  # def test_global_sample(self):
-  #   def is_good_sample(actual):
-  #     assert len(actual) == 1
-  #     assert sorted(actual[0]) in [[1, 1, 2], [1, 2, 2]], actual
-  #
-  #   with TestPipeline() as pipeline:
-  #     timestamp = 0
-  #     pcoll = pipeline | 'start' >> Create([1, 1, 2, 2])
-  #
-  #     # Now for global combines without default
-  #     timestamped = pcoll | Map(lambda x: TimestampedValue(x, timestamp))
-  #     windowed = timestamped | 'window' >> WindowInto(FixedWindows(60))
-  #
-  #     for ix in range(9):
-  #       assert_that(
-  #           pcoll | 'sample-%d' % ix >> combine.Sample.FixedSizeGlobally(3),
-  #           is_good_sample,
-  #           label='check-%d' % ix)
-  #       result_windowed = (
-  #           windowed
-  #           | 'sample-wo-defaults-%d' % ix >>
-  #           combine.Sample.FixedSizeGlobally(3).without_defaults())
-  #       assert_that(
-  #           result_windowed, is_good_sample, label='check-wo-defaults-%d' % ix)
 
   def test_per_key_sample(self):
     with TestPipeline() as pipeline:
@@ -386,7 +267,6 @@ class CombineTest(unittest.TestCase):
   def test_tuple_combine_fn_batched_merge(self):
     num_combine_fns = 10
     max_num_accumulators_in_memory = 30
-    # Maximum number of accumulator tuples in memory - 1 for the merge result.
     merge_accumulators_batch_size = (
         max_num_accumulators_in_memory // num_combine_fns - 1)
     num_accumulator_tuples_to_merge = 20
@@ -418,53 +298,7 @@ class CombineTest(unittest.TestCase):
         for _ in range(num_accumulator_tuples_to_merge))
     assert not CountedAccumulator.oom
 
-  # def test_to_list_and_to_dict1(self):
-  #   with TestPipeline() as pipeline:
-  #     the_list = [6, 3, 1, 1, 9, 1, 5, 2, 0, 6]
-  #     timestamp = 0
-  #     pcoll = pipeline | 'start' >> Create(the_list)
-  #     result = pcoll | 'to list' >> combine.ToList()
-  #
-  #     # Now for global combines without default
-  #     timestamped = pcoll | Map(lambda x: TimestampedValue(x, timestamp))
-  #     windowed = timestamped | 'window' >> WindowInto(FixedWindows(60))
-  #     result_windowed = (
-  #         windowed
-  #         | 'to list wo defaults' >> combine.ToList().without_defaults())
-  #
-  #     def matcher(expected):
-  #       def match(actual):
-  #         equal_to(expected[0])(actual[0])
-  #
-  #       return match
-  #
-  #     assert_that(result, matcher([the_list]))
-  #     assert_that(
-  #         result_windowed, matcher([the_list]), label='to-list-wo-defaults')
 
-  # def test_to_list_and_to_dict2(self):
-  #   with TestPipeline() as pipeline:
-  #     pairs = [(1, 2), (3, 4), (5, 6)]
-  #     timestamp = 0
-  #     pcoll = pipeline | 'start-pairs' >> Create(pairs)
-  #     result = pcoll | 'to dict' >> combine.ToDict()
-  #
-  #     # Now for global combines without default
-  #     timestamped = pcoll | Map(lambda x: TimestampedValue(x, timestamp))
-  #     windowed = timestamped | 'window' >> WindowInto(FixedWindows(60))
-  #     result_windowed = (
-  #         windowed
-  #         | 'to dict wo defaults' >> combine.ToDict().without_defaults())
-  #
-  #     def matcher():
-  #       def match(actual):
-  #         equal_to([1])([len(actual)])
-  #         equal_to(pairs)(actual[0].items())
-  #
-  #       return match
-  #
-  #     assert_that(result, matcher())
-  #     assert_that(result_windowed, matcher(), label='to-dict-wo-defaults')
 
   def test_to_set(self):
     pipeline = TestPipeline()
@@ -473,7 +307,6 @@ class CombineTest(unittest.TestCase):
     pcoll = pipeline | 'start' >> Create(the_list)
     result = pcoll | 'to set' >> combine.ToSet()
 
-    # Now for global combines without default
     timestamped = pcoll | Map(lambda x: TimestampedValue(x, timestamp))
     windowed = timestamped | 'window' >> WindowInto(FixedWindows(60))
     result_windowed = (
@@ -522,7 +355,6 @@ class CombineTest(unittest.TestCase):
       assert_that(result, equal_to([('hot', 4.5), ('cold', 4.5)]))
 
   def test_hot_key_fanout_sharded(self):
-    # Lots of elements with the same key with varying/no fanout.
     with TestPipeline() as p:
       elements = [(None, e) for e in range(1000)]
       random.shuffle(elements)
@@ -545,39 +377,6 @@ class CombineTest(unittest.TestCase):
           | beam.CombineGlobally(combine.MeanCombineFn()).with_fanout(11))
       assert_that(result, equal_to([49.5]))
 
-  # def test_combining_with_accumulation_mode_and_fanout(self):
-  #   # PCollection will contain elements from 1 to 5.
-  #   elements = [i for i in range(1, 6)]
-  #
-  #   ts = TestStream().advance_watermark_to(0)
-  #   for i in elements:
-  #     ts.add_elements([i])
-  #   ts.advance_watermark_to_infinity()
-  #
-  #   options = PipelineOptions()
-  #   options.view_as(StandardOptions).streaming = True
-  #   with TestPipeline(options=options) as p:
-  #     result = (
-  #         p
-  #         | ts
-  #         | beam.WindowInto(
-  #             GlobalWindows(),
-  #             accumulation_mode=trigger.AccumulationMode.ACCUMULATING,
-  #             trigger=AfterWatermark(early=AfterAll(AfterCount(1))))
-  #         | beam.CombineGlobally(sum).without_defaults().with_fanout(2))
-  #
-  #     def has_expected_values(actual):
-  #       from hamcrest.core import assert_that as hamcrest_assert
-  #       from hamcrest.library.collection import contains
-  #       from hamcrest.library.collection import only_contains
-  #       ordered = sorted(actual)
-  #       # Early firings.
-  #       hamcrest_assert(ordered[:4], contains(1, 3, 6, 10))
-  #       # Different runners have different number of 15s, but there should
-  #       # be at least one 15.
-  #       hamcrest_assert(ordered[4:], only_contains(15))
-  #
-  #     assert_that(result, has_expected_values)
 
   def test_combining_with_sliding_windows_and_fanout_raises_error(self):
     options = PipelineOptions()
@@ -605,13 +404,11 @@ class CombineTest(unittest.TestCase):
       input = (
           p
           | beam.Create([('a', 1), ('a', 1), ('a', 4), ('b', 1), ('b', 13)]))
-      # The mean of all values regardless of key.
       global_mean = (
           input
           | beam.Values()
           | beam.CombineGlobally(combine.MeanCombineFn()))
 
-      # The (key, mean) pairs for all keys.
       mean_per_key = (input | beam.CombinePerKey(combine.MeanCombineFn()))
 
       expected_mean_per_key = [('a', 2), ('b', 7)]
@@ -620,15 +417,10 @@ class CombineTest(unittest.TestCase):
           mean_per_key, equal_to(expected_mean_per_key), label='mean per key')
 
   def test_MeanCombineFn_combine_empty(self):
-    # For each element in a PCollection, if it is float('NaN'), then emits
-    # a string 'NaN', otherwise emits str(element).
 
     with TestPipeline() as p:
       input = (p | beam.Create([]))
 
-      # Compute the mean of all values in the PCollection,
-      # then format the mean. Since the Pcollection is empty,
-      # the mean is float('NaN'), and is formatted to be a string 'NaN'.
       global_mean = (
           input
           | beam.Values()
@@ -637,59 +429,11 @@ class CombineTest(unittest.TestCase):
 
       mean_per_key = (input | beam.CombinePerKey(combine.MeanCombineFn()))
 
-      # We can't compare one float('NaN') with another float('NaN'),
-      # but we can compare one 'nan' string with another string.
       assert_that(global_mean, equal_to(['nan']), label='global mean')
       assert_that(mean_per_key, equal_to([]), label='mean per key')
 
-  # def test_sessions_combine(self):
-  #   with TestPipeline() as p:
-  #     input = (
-  #         p
-  #         | beam.Create([('c', 1), ('c', 9), ('c', 12), ('d', 2), ('d', 4)])
-  #         | beam.MapTuple(lambda k, v: window.TimestampedValue((k, v), v))
-  #         | beam.WindowInto(window.Sessions(4)))
-  #
-  #     global_sum = (
-  #         input
-  #         | beam.Values()
-  #         | beam.CombineGlobally(sum).without_defaults())
-  #     sum_per_key = input | beam.CombinePerKey(sum)
-  #
-  #     # The first window has 3 elements: ('c', 1), ('d', 2), ('d', 4).
-  #     # The second window has 2 elements: ('c', 9), ('c', 12).
-  #     assert_that(global_sum, equal_to([7, 21]), label='global sum')
-  #     assert_that(
-  #         sum_per_key,
-  #         equal_to([('c', 1), ('c', 21), ('d', 6)]),
-  #         label='sum per key')
 
-  # def test_fixed_windows_combine(self):
-  #   with TestPipeline() as p:
-  #     input = (
-  #         p
-  #         | beam.Create([('c', 1), ('c', 2), ('c', 10), ('d', 5), ('d', 8),
-  #                        ('d', 9)])
-  #         | beam.MapTuple(lambda k, v: window.TimestampedValue((k, v), v))
-  #         | beam.WindowInto(window.FixedWindows(4)))
-  #
-  #     global_sum = (
-  #         input
-  #         | beam.Values()
-  #         | beam.CombineGlobally(sum).without_defaults())
-  #     sum_per_key = input | beam.CombinePerKey(sum)
-  #
-  #     # The first window has 2 elements: ('c', 1), ('c', 2).
-  #     # The second window has 1 elements: ('d', 5).
-  #     # The third window has 3 elements: ('c', 10), ('d', 8), ('d', 9).
-  #     assert_that(global_sum, equal_to([3, 5, 27]), label='global sum')
-  #     assert_that(
-  #         sum_per_key,
-  #         equal_to([('c', 3), ('c', 10), ('d', 5), ('d', 17)]),
-  #         label='sum per key')
 
-  # Test that three different kinds of metrics work with a customized
-  # SortedConcatWithCounters CombineFn.
   def test_custormized_counters_in_combine_fn(self):
     p = TestPipeline()
     input = (
@@ -697,16 +441,13 @@ class CombineTest(unittest.TestCase):
         | beam.Create([('key1', 'a'), ('key1', 'ab'), ('key1', 'abc'),
                        ('key2', 'uvxy'), ('key2', 'uvxyz')]))
 
-    # The result of concatenating all values regardless of key.
     global_concat = (
         input
         | beam.Values()
         | beam.CombineGlobally(SortedConcatWithCounters()))
 
-    # The (key, concatenated_string) pairs for all keys.
     concat_per_key = (input | beam.CombinePerKey(SortedConcatWithCounters()))
 
-    # Verify the concatenated strings are correct.
     expected_concat_per_key = [('key1', 'aaabbc'), ('key2', 'uuvvxxyyz')]
     assert_that(
         global_concat, equal_to(['aaabbcuuvvxxyyz']), label='global concat')
@@ -718,7 +459,6 @@ class CombineTest(unittest.TestCase):
     result = p.run()
     result.wait_until_finish()
 
-    # Verify the values of metrics are correct.
     word_counter_filter = MetricsFilter().with_name('word_counter')
     query_result = result.metrics().query(word_counter_filter)
     if query_result['counters']:
@@ -743,29 +483,23 @@ class CombineTest(unittest.TestCase):
       last_word_len = query_result['gauges'][0]
       self.assertIn(last_word_len.result.value, [1, 2, 3, 4, 5])
 
-  # Test that three different kinds of metrics work with the customized
-  # SortedConcatWithCounters CombineFn when the PCollection is empty.
   def test_custormized_counters_in_combine_fn_empty(self):
     p = TestPipeline()
     input = p | beam.Create([])
 
-    # The result of concatenating all values regardless of key.
     global_concat = (
         input
         | beam.Values()
         | beam.CombineGlobally(SortedConcatWithCounters()))
 
-    # The (key, concatenated_string) pairs for all keys.
     concat_per_key = (input | beam.CombinePerKey(SortedConcatWithCounters()))
 
-    # Verify the concatenated strings are correct.
     assert_that(global_concat, equal_to(['']), label='global concat')
     assert_that(concat_per_key, equal_to([]), label='concat per key')
 
     result = p.run()
     result.wait_until_finish()
 
-    # Verify the values of metrics are correct.
     word_counter_filter = MetricsFilter().with_name('word_counter')
     query_result = result.metrics().query(word_counter_filter)
     if query_result['counters']:
@@ -787,36 +521,10 @@ class CombineTest(unittest.TestCase):
     last_word_len_filter = MetricsFilter().with_name('last_word_len')
     query_result = result.metrics().query(last_word_len_filter)
 
-    # No element has ever been recorded.
     self.assertFalse(query_result['gauges'])
 
 
 class LatestTest(unittest.TestCase):
-  # def test_globally(self):
-  #   l = [
-  #       window.TimestampedValue(3, 100),
-  #       window.TimestampedValue(1, 200),
-  #       window.TimestampedValue(2, 300)
-  #   ]
-  #   with TestPipeline() as p:
-  #     # Map(lambda x: x) PTransform is added after Create here, because when
-  #     # a PCollection of TimestampedValues is created with Create PTransform,
-  #     # the timestamps are not assigned to it. Adding a Map forces the
-  #     # PCollection to go through a DoFn so that the PCollection consists of
-  #     # the elements with timestamps assigned to them instead of a PCollection
-  #     # of TimestampedValue(element, timestamp).
-  #     pcoll = p | Create(l) | Map(lambda x: x)
-  #     latest = pcoll | combine.Latest.Globally()
-  #     assert_that(latest, equal_to([2]))
-  #
-  #     # Now for global combines without default
-  #     windowed = pcoll | 'window' >> WindowInto(FixedWindows(180))
-  #     result_windowed = (
-  #         windowed
-  #         |
-  #         'latest wo defaults' >> combine.Latest.Globally().without_defaults())
-  #
-  #     assert_that(result_windowed, equal_to([3, 2]), label='latest-wo-defaults')
 
   def test_globally_empty(self):
     l = []
@@ -907,81 +615,11 @@ class CombineValuesTest(unittest.TestCase):
       assert_that(result, equal_to(['key1: foofoo', 'key2: bar']))
 
 
-#
-# Test cases for streaming.
-#
-# @pytest.mark.it_validatesrunner
-# class TimestampCombinerTest(unittest.TestCase):
-  # def test_combiner_earliest(self):
-  #   """Test TimestampCombiner with EARLIEST."""
-  #   options = PipelineOptions(streaming=True)
-  #   with TestPipeline(options=options) as p:
-  #     result = (
-  #         p
-  #         | TestStream().add_elements([window.TimestampedValue(
-  #             ('k', 100), 2)]).add_elements(
-  #                 [window.TimestampedValue(
-  #                     ('k', 400), 7)]).advance_watermark_to_infinity()
-  #         | beam.WindowInto(
-  #             window.FixedWindows(10),
-  #             timestamp_combiner=TimestampCombiner.OUTPUT_AT_EARLIEST)
-  #         | beam.CombinePerKey(sum))
-  #
-  #     records = (
-  #         result
-  #         | beam.Map(lambda e, ts=beam.DoFn.TimestampParam: (e, ts)))
-  #
-  #     # All the KV pairs are applied GBK using EARLIEST timestamp for the same
-  #     # key.
-  #     expected_window_to_elements = {
-  #         window.IntervalWindow(0, 10): [
-  #             (('k', 500), Timestamp(2)),
-  #         ],
-  #     }
-  #
-  #     assert_that(
-  #         records,
-  #         equal_to_per_window(expected_window_to_elements),
-  #         use_global_window=False,
-  #         label='assert per window')
 
-  # def test_combiner_latest(self):
-  #   """Test TimestampCombiner with LATEST."""
-  #   options = PipelineOptions(streaming=True)
-  #   with TestPipeline(options=options) as p:
-  #     result = (
-  #         p
-  #         | TestStream().add_elements([window.TimestampedValue(
-  #             ('k', 100), 2)]).add_elements(
-  #                 [window.TimestampedValue(
-  #                     ('k', 400), 7)]).advance_watermark_to_infinity()
-  #         | beam.WindowInto(
-  #             window.FixedWindows(10),
-  #             timestamp_combiner=TimestampCombiner.OUTPUT_AT_LATEST)
-  #         | beam.CombinePerKey(sum))
-  #
-  #     records = (
-  #         result
-  #         | beam.Map(lambda e, ts=beam.DoFn.TimestampParam: (e, ts)))
-  #
-  #     # All the KV pairs are applied GBK using LATEST timestamp for
-  #     # the same key.
-  #     expected_window_to_elements = {
-  #         window.IntervalWindow(0, 10): [
-  #             (('k', 500), Timestamp(7)),
-  #         ],
-  #     }
-  #
-  #     assert_that(
-  #         records,
-  #         equal_to_per_window(expected_window_to_elements),
-  #         use_global_window=False,
-  #         label='assert per window')
 
 
 class CombineGloballyTest(unittest.TestCase):
   def test_combine_globally_for_unbounded_source_with_default(self):
-    # this error is logged since the below combination is ill-defined.
     with self.assertLogs() as captured_logs:
       with TestPipeline() as p:
         _ = (
@@ -1002,7 +640,6 @@ class CombineGloballyTest(unittest.TestCase):
     self.assertIn('unbounded collections', '\n'.join(captured_logs.output))
 
   def test_combine_globally_for_unbounded_source_without_defaults(self):
-    # this is the supported case
     with TestPipeline() as p:
       _ = (
           p

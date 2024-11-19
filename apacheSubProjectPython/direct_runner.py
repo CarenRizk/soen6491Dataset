@@ -1,19 +1,3 @@
-#
-# Licensed to the Apache Software Foundation (ASF) under one or more
-# contributor license agreements.  See the NOTICE file distributed with
-# this work for additional information regarding copyright ownership.
-# The ASF licenses this file to You under the Apache License, Version 2.0
-# (the "License"); you may not use this file except in compliance with
-# the License.  You may obtain a copy of the License at
-#
-#    http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-#
 
 """DirectRunner, executing on the local machine.
 
@@ -21,7 +5,6 @@ The DirectRunner is a runner implementation that executes the entire
 graph of transformations belonging to a pipeline on the local machine.
 """
 
-# pytype: skip-file
 
 import itertools
 import logging
@@ -84,20 +67,16 @@ class SwitchingDirectRunner(PipelineRunner):
         return self.supported_by_fnapi_runner
 
       def enter_composite_transform(self, applied_ptransform):
-        # The FnApiRunner does not support streaming execution.
         if isinstance(applied_ptransform.transform,
                       (ReadFromPubSub, WriteToPubSub)):
           self.supported_by_fnapi_runner = False
 
       def visit_transform(self, applied_ptransform):
         transform = applied_ptransform.transform
-        # The FnApiRunner does not support streaming execution.
         if isinstance(transform, TestStream):
           self.supported_by_fnapi_runner = False
         if isinstance(transform, beam.ParDo):
           dofn = transform.dofn
-          # The FnApiRunner does not support execution of CombineFns with
-          # deferred side inputs.
           if isinstance(dofn, CombineValuesDoFn):
             args, kwargs = transform.raw_side_inputs
             args_to_check = itertools.chain(args, kwargs.values())
@@ -110,8 +89,6 @@ class SwitchingDirectRunner(PipelineRunner):
               if timer.time_domain == TimeDomain.REAL_TIME:
                 self.supported_by_fnapi_runner = False
 
-    # Check whether all transforms used in the pipeline are supported by the
-    # FnApiRunner, and the pipeline was not meant to be run as streaming.
     if _FnApiRunnerSupportVisitor().accept(pipeline):
       from apache_beam.portability.api import beam_provision_api_pb2
       from apache_beam.runners.portability.fn_api_runner import fn_runner
@@ -128,7 +105,6 @@ class SwitchingDirectRunner(PipelineRunner):
     return runner.run_pipeline(pipeline, options)
 
 
-# Type variables.
 K = typing.TypeVar('K')
 V = typing.TypeVar('V')
 
@@ -160,7 +136,6 @@ class _GroupAlsoByWindow(ParDo):
 
 
 class _GroupAlsoByWindowDoFn(DoFn):
-  # TODO(robertwb): Support combiner lifting.
 
   def __init__(self, windowing):
     super().__init__()
@@ -173,9 +148,7 @@ class _GroupAlsoByWindowDoFn(DoFn):
     return typehints.KV[key_type, typehints.Iterable[value_type]]
 
   def start_bundle(self):
-    # pylint: disable=wrong-import-order, wrong-import-position
     from apache_beam.transforms.trigger import create_trigger_driver
-    # pylint: enable=wrong-import-order, wrong-import-position
     self.driver = create_trigger_driver(self.windowing, True)
 
   def process(self, element):
@@ -189,7 +162,6 @@ class _StreamingGroupByKeyOnly(_GroupByKeyOnly):
   """Streaming GroupByKeyOnly placeholder for overriding in DirectRunner."""
   urn = "direct_runner:streaming_gbko:v0.1"
 
-  # These are needed due to apply overloads.
   def to_runner_api_parameter(self, unused_context):
     return _StreamingGroupByKeyOnly.urn, None
 
@@ -206,7 +178,6 @@ class _StreamingGroupAlsoByWindow(_GroupAlsoByWindow):
   """Streaming GroupAlsoByWindow placeholder for overriding in DirectRunner."""
   urn = "direct_runner:streaming_gabw:v0.1"
 
-  # These are needed due to apply overloads.
   def to_runner_api_parameter(self, context):
     return (
         _StreamingGroupAlsoByWindow.urn,
@@ -225,16 +196,11 @@ class _StreamingGroupAlsoByWindow(_GroupAlsoByWindow):
 class _GroupByKey(PTransform):
   """The DirectRunner GroupByKey implementation."""
   def expand(self, pcoll):
-    # Imported here to avoid circular dependencies.
-    # pylint: disable=wrong-import-order, wrong-import-position
     from apache_beam.coders import typecoders
 
     input_type = pcoll.element_type
     if input_type is not None:
-      # Initialize type-hints used below to enforce type-checking and to
-      # pass downstream to further PTransforms.
       key_type, value_type = trivial_inference.key_value_types(input_type)
-      # Enforce the input to a GBK has a KV element type.
       pcoll.element_type = typehints.typehints.coerce_to_kv_type(
           pcoll.element_type)
       typecoders.registry.verify_deterministic(
@@ -250,7 +216,6 @@ class _GroupByKey(PTransform):
                   value_type]]])
       gbk_output_type = typehints.KV[key_type, typehints.Iterable[value_type]]
 
-      # pylint: disable=bad-option-value
       return (
           pcoll
           | 'ReifyWindows' >> (
@@ -264,7 +229,6 @@ class _GroupByKey(PTransform):
               _GroupAlsoByWindow(pcoll.windowing).with_input_types(
                   gbk_input_type).with_output_types(gbk_output_type)))
     else:
-      # The input_type is None, run the default
       return (
           pcoll
           | 'ReifyWindows' >> ParDo(beam.GroupByKey.ReifyWindows())
@@ -273,13 +237,7 @@ class _GroupByKey(PTransform):
 
 
 def _get_transform_overrides(pipeline_options):
-  # A list of PTransformOverride objects to be applied before running a pipeline
-  # using DirectRunner.
-  # Currently this only works for overrides where the input and output types do
-  # not change.
-  # For internal use only; no backwards-compatibility guarantees.
 
-  # Importing following locally to avoid a circular dependency.
   from apache_beam.pipeline import PTransformOverride
   from apache_beam.runners.direct.helper_transforms import LiftedCombinePerKey
   from apache_beam.runners.direct.sdf_direct_runner import ProcessKeyedElementsViaKeyedWorkItemsOverride
@@ -292,9 +250,6 @@ def _get_transform_overrides(pipeline_options):
 
     def get_replacement_transform_for_applied_ptransform(
         self, applied_ptransform):
-      # TODO: Move imports to top. Pipeline <-> Runner dependency cause problems
-      # with resolving imports when they are at top.
-      # pylint: disable=wrong-import-position
       try:
         transform = applied_ptransform.transform
         return LiftedCombinePerKey(
@@ -304,18 +259,15 @@ def _get_transform_overrides(pipeline_options):
 
   class StreamingGroupByKeyOverride(PTransformOverride):
     def matches(self, applied_ptransform):
-      # Note: we match the exact class, since we replace it with a subclass.
       return applied_ptransform.transform.__class__ == _GroupByKeyOnly
 
     def get_replacement_transform_for_applied_ptransform(
         self, applied_ptransform):
-      # Use specialized streaming implementation.
       transform = _StreamingGroupByKeyOnly()
       return transform
 
   class StreamingGroupAlsoByWindowOverride(PTransformOverride):
     def matches(self, applied_ptransform):
-      # Note: we match the exact class, since we replace it with a subclass.
       transform = applied_ptransform.transform
       return (
           isinstance(applied_ptransform.transform, ParDo) and
@@ -324,7 +276,6 @@ def _get_transform_overrides(pipeline_options):
 
     def get_replacement_transform_for_applied_ptransform(
         self, applied_ptransform):
-      # Use specialized streaming implementation.
       transform = _StreamingGroupAlsoByWindow(
           applied_ptransform.transform.dofn.windowing)
       return transform
@@ -346,8 +297,6 @@ def _get_transform_overrides(pipeline_options):
     This replaces the Beam implementation as a primitive.
     """
     def matches(self, applied_ptransform):
-      # Imported here to avoid circular dependencies.
-      # pylint: disable=wrong-import-order, wrong-import-position
       from apache_beam.transforms.core import GroupByKey
       return isinstance(applied_ptransform.transform, GroupByKey)
 
@@ -356,9 +305,6 @@ def _get_transform_overrides(pipeline_options):
       return _GroupByKey()
 
   overrides = [
-      # This needs to be the first and the last override. Other overrides depend
-      # on the GroupByKey implementation to be composed of _GroupByKeyOnly and
-      # _GroupAlsoByWindow.
       GroupByKeyPTransformOverride(),
       SplittableParDoOverride(),
       ProcessKeyedElementsViaKeyedWorkItemsOverride(),
@@ -366,20 +312,16 @@ def _get_transform_overrides(pipeline_options):
       TestStreamOverride(),
   ]
 
-  # Add streaming overrides, if necessary.
   if pipeline_options.view_as(StandardOptions).streaming:
     overrides.append(StreamingGroupByKeyOverride())
     overrides.append(StreamingGroupAlsoByWindowOverride())
 
-  # Add PubSub overrides, if PubSub is available.
   try:
     from apache_beam.io.gcp import pubsub as unused_pubsub
     overrides += _get_pubsub_transform_overrides(pipeline_options)
   except ImportError:
     pass
 
-  # This also needs to be last because other transforms apply GBKs which need to
-  # be translated into a DirectRunner-compatible transform.
   overrides.append(GroupByKeyPTransformOverride())
 
   return overrides
@@ -399,7 +341,6 @@ class _DirectReadFromPubSub(PTransform):
     return beam.Windowing(beam.window.GlobalWindows())
 
   def expand(self, pvalue):
-    # This is handled as a native transform.
     return PCollection(self.pipeline, is_bounded=self._source.is_bounded())
 
 
@@ -414,8 +355,6 @@ class _DirectWriteToPubSubFn(DoFn):
     self.timestamp_attribute = transform.timestamp_attribute
     self.with_attributes = transform.with_attributes
 
-    # TODO(https://github.com/apache/beam/issues/18939): Add support for
-    # id_label and timestamp_attribute.
     if transform.id_label:
       raise NotImplementedError(
           'DirectRunner: id_label is not supported for '
@@ -497,9 +436,6 @@ class BundleBasedDirectRunner(PipelineRunner):
   def run_pipeline(self, pipeline, options):
     """Execute the entire pipeline and returns an DirectPipelineResult."""
 
-    # TODO: Move imports to top. Pipeline <-> Runner dependency cause problems
-    # with resolving imports when they are at top.
-    # pylint: disable=wrong-import-position
     from apache_beam.pipeline import PipelineVisitor
     from apache_beam.runners.direct.consumer_tracking_pipeline_visitor import \
       ConsumerTrackingPipelineVisitor
@@ -522,7 +458,6 @@ class BundleBasedDirectRunner(PipelineRunner):
 
     pipeline.visit(VerifyNoCrossLanguageTransforms())
 
-    # If the TestStream I/O is used, use a mock test clock.
     class TestStreamUsageVisitor(PipelineVisitor):
       """Visitor determining whether a Pipeline uses a TestStream."""
       def __init__(self):
@@ -536,7 +471,6 @@ class BundleBasedDirectRunner(PipelineRunner):
     pipeline.visit(visitor)
     clock = TestClock() if visitor.uses_test_stream else RealClock()
 
-    # Performing configured PTransform overrides.
     pipeline.replace_all(_get_transform_overrides(options))
 
     _LOGGER.info('Running pipeline with DirectRunner.')
@@ -558,18 +492,13 @@ class BundleBasedDirectRunner(PipelineRunner):
         self.consumer_tracking_visitor.value_to_consumers,
         TransformEvaluatorRegistry(evaluation_context),
         evaluation_context)
-    # DirectRunner does not support injecting
-    # PipelineOptions values at runtime
     RuntimeValueProvider.set_runtime_options({})
-    # Start the executor. This is a non-blocking call, it will start the
-    # execution in background threads and return.
     executor.start(self.consumer_tracking_visitor.root_transforms)
     result = DirectPipelineResult(executor, evaluation_context)
 
     return result
 
 
-# Use the SwitchingDirectRunner as the default.
 DirectRunner = SwitchingDirectRunner
 
 

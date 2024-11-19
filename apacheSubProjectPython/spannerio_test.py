@@ -1,19 +1,3 @@
-#
-# Licensed to the Apache Software Foundation (ASF) under one or more
-# contributor license agreements.  See the NOTICE file distributed with
-# this work for additional information regarding copyright ownership.
-# The ASF licenses this file to You under the Apache License, Version 2.0
-# (the "License"); you may not use this file except in compliance with
-# the License.  You may obtain a copy of the License at
-#
-#    http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-#
 
 import datetime
 import logging
@@ -30,9 +14,6 @@ from apache_beam.testing.test_pipeline import TestPipeline
 from apache_beam.testing.util import assert_that
 from apache_beam.testing.util import equal_to
 
-# Protect against environments where spanner library is not available.
-# pylint: disable=wrong-import-order, wrong-import-position, ungrouped-imports
-# pylint: disable=unused-import
 try:
   from google.cloud import spanner
   from spannerio import create_transaction
@@ -48,8 +29,6 @@ try:
   from apache_beam.metrics.metricbase import MetricName
 except ImportError:
   spanner = None
-# pylint: enable=wrong-import-order, wrong-import-position, ungrouped-imports
-# pylint: enable=unused-import
 
 MAX_DB_NAME_LENGTH = 30
 TEST_PROJECT_ID = 'apache-beam-testing'
@@ -92,7 +71,6 @@ class SpannerReadTest(unittest.TestCase):
     mock_snapshot_instance.to_dict.return_value = {}
 
     mock_batch_snapshot_instance = mock.MagicMock()
-    # Prepare process_query_batch return results for three pipelines
     mock_batch_snapshot_instance.process_query_batch.side_effect = [
         FAKE_ROWS[0:2], FAKE_ROWS[2:4], FAKE_ROWS[4:]
     ] * 3
@@ -130,10 +108,8 @@ class SpannerReadTest(unittest.TestCase):
               TEST_PROJECT_ID, TEST_INSTANCE_ID, _generate_database_name()))
       assert_that(readpipeline, equal_to(FAKE_ROWS), label='checkReadPipeline')
 
-    # three pipelines
     self.assertEqual(
         mock_snapshot_instance.generate_query_batches.call_count, 3)
-    # three pipelines, each called three times
     self.assertEqual(
         mock_batch_snapshot_instance.process_query_batch.call_count, 3 * 3)
 
@@ -154,7 +130,6 @@ class SpannerReadTest(unittest.TestCase):
     mock_snapshot_instance.to_dict.return_value = {}
 
     mock_batch_snapshot_instance = mock.MagicMock()
-    # Prepare process_read_batch return results for three pipelines
     mock_batch_snapshot_instance.process_read_batch.side_effect = [
         FAKE_ROWS[0:2], FAKE_ROWS[2:4], FAKE_ROWS[4:]
     ] * 3
@@ -194,15 +169,11 @@ class SpannerReadTest(unittest.TestCase):
               TEST_PROJECT_ID, TEST_INSTANCE_ID, _generate_database_name()))
       assert_that(readpipeline, equal_to(FAKE_ROWS), label='checkReadPipeline')
 
-    # three pipelines
     self.assertEqual(mock_snapshot_instance.generate_read_batches.call_count, 3)
-    # three pipelines, each called three times
     self.assertEqual(
         mock_batch_snapshot_instance.process_read_batch.call_count, 3 * 3)
 
     with TestPipeline() as pipeline, self.assertRaises(ValueError):
-      # Test the exception raised at pipeline construction time, when user
-      # passes the read operations in the constructor and also in the pipeline
       _ = (
           pipeline | 'reads error' >> ReadFromSpanner(
               project_id=TEST_PROJECT_ID,
@@ -225,7 +196,6 @@ class SpannerReadTest(unittest.TestCase):
     } for _ in range(3)]
 
     mock_batch_snapshot_instance = mock.MagicMock()
-    # Prepare process_read_batch return results for three pipelines
     mock_batch_snapshot_instance.process_read_batch.side_effect = [
         FAKE_ROWS[0:2], FAKE_ROWS[2:4], FAKE_ROWS[4:]
     ] * 3
@@ -267,15 +237,11 @@ class SpannerReadTest(unittest.TestCase):
               TEST_PROJECT_ID, TEST_INSTANCE_ID, _generate_database_name()))
       assert_that(readpipeline, equal_to(FAKE_ROWS), label='checkReadPipeline')
 
-    # three pipelines
     self.assertEqual(mock_snapshot_instance.generate_read_batches.call_count, 3)
-    # three pipelines, each called three times
     self.assertEqual(
         mock_batch_snapshot_instance.process_read_batch.call_count, 3 * 3)
 
     with TestPipeline() as pipeline, self.assertRaises(ValueError):
-      # Test the exception raised at pipeline construction time, when user
-      # passes the read operations in the constructor and also in the pipeline.
       _ = (
           pipeline | 'reads error' >> ReadFromSpanner(
               project_id=TEST_PROJECT_ID,
@@ -358,16 +324,11 @@ class SpannerReadTest(unittest.TestCase):
               transaction=transaction))
       assert_that(read_pipeline, equal_to(FAKE_ROWS), label='checkReadPipeline')
 
-    # transaction setup once
     self.assertEqual(mock_snapshot_instance.to_dict.call_count, 1)
-    # three pipelines called execute_sql
     self.assertEqual(mock_transaction_instance.execute_sql.call_count, 3)
-    # two pipelines called read
     self.assertEqual(mock_transaction_instance.read.call_count, 2)
 
     with TestPipeline() as p, self.assertRaises(ValueError):
-      # Test the exception raised at pipeline construction time, when user
-      # passes the read operations in the constructor and also in the pipeline.
       transaction = (
           p | create_transaction(
               project_id=TEST_PROJECT_ID,
@@ -386,7 +347,6 @@ class SpannerReadTest(unittest.TestCase):
 
   def test_invalid_transaction(
       self, mock_batch_snapshot_class, mock_client_class):
-    # test exception raises at pipeline execution time
     with self.assertRaises(ValueError), TestPipeline() as p:
       transaction = (
           p | beam.Create([{
@@ -536,7 +496,6 @@ class SpannerWriteTest(unittest.TestCase):
   def test_batch_byte_size(
       self, mock_batch_snapshot_class, mock_batch_checkout):
 
-    # each mutation group byte size is 58 bytes.
     mutation_group = [
         MutationGroup([
             WriteMutation.insert(
@@ -546,9 +505,6 @@ class SpannerWriteTest(unittest.TestCase):
     ] * 50
 
     with TestPipeline() as p:
-      # the total 50 mutation group size will be 2900 (58 * 50)
-      # if we want to make two batches, so batch size should be 1450 (2900 / 2)
-      # and each bach should contains 25 mutations.
       res = (
           p | beam.Create(mutation_group)
           | beam.ParDo(
@@ -570,8 +526,6 @@ class SpannerWriteTest(unittest.TestCase):
     ] * 4
 
     with TestPipeline() as p:
-      # to disable to batching, we need to set any of the batching parameters
-      # either to lower value or zero
       res = (
           p | beam.Create(mutation_group)
           | beam.ParDo(
@@ -596,10 +550,6 @@ class SpannerWriteTest(unittest.TestCase):
     ] * 50
 
     with TestPipeline() as p:
-      # There are total 50 mutation groups, each contains two rows.
-      # The total number of rows will be 100 (50 * 2).
-      # If each batch contains 10 rows max then batch count should be 10
-      # (contains 5 mutation groups each).
       res = (
           p | beam.Create(mutation_group)
           | beam.ParDo(
@@ -625,13 +575,6 @@ class SpannerWriteTest(unittest.TestCase):
     ] * 50
 
     with TestPipeline() as p:
-      # There are total 50 mutation groups, each contains two rows (or 4 cells).
-      # The total number of cells will be 200 (50 groups * 4 cells).
-      # If each batch contains 50 cells max then batch count should be 5.
-      # 4 batches contains 12 mutations groups and the fifth batch should be
-      # consists of 2 mutation group element.
-      # No. of mutations groups per batch = Max Cells / Cells per mutation group
-      # total_batches = Total Number of Cells / Max Cells
       res = (
           p | beam.Create(mutation_group)
           | beam.ParDo(
@@ -644,7 +587,6 @@ class SpannerWriteTest(unittest.TestCase):
 
   def test_write_mutation_error(self, *args):
     with self.assertRaises(ValueError):
-      # since `WriteMutation` only accept one operation.
       WriteMutation(insert="table-name", update="table-name")
 
   def test_display_data(self, *args):

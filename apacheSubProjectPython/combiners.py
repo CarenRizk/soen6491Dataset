@@ -1,23 +1,6 @@
-#
-# Licensed to the Apache Software Foundation (ASF) under one or more
-# contributor license agreements.  See the NOTICE file distributed with
-# this work for additional information regarding copyright ownership.
-# The ASF licenses this file to You under the Apache License, Version 2.0
-# (the "License"); you may not use this file except in compliance with
-# the License.  You may obtain a copy of the License at
-#
-#    http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-#
 
 """A library of basic combiner PTransform subclasses."""
 
-# pytype: skip-file
 
 import copy
 import heapq
@@ -65,7 +48,6 @@ __all__ = [
     'LatestCombineFn',
 ]
 
-# Type variables
 T = TypeVar('T')
 K = TypeVar('K')
 V = TypeVar('V')
@@ -103,8 +85,6 @@ class Mean(object):
       return pcoll | core.CombinePerKey(MeanCombineFn())
 
 
-# TODO(laolu): This type signature is overly restrictive. This should be
-# more general.
 @with_input_types(Union[float, int, np.int64, np.float64])
 @with_output_types(float)
 class MeanCombineFn(core.CombineFn):
@@ -191,7 +171,6 @@ class CountCombineFn(core.CombineFn):
 class Top(object):
   """Combiners for obtaining extremal elements."""
 
-  # pylint: disable=no-self-argument
   @with_input_types(T)
   @with_output_types(List[T])
   class Of(CombinerWithoutDefaults):
@@ -224,12 +203,8 @@ class Top(object):
 
     def expand(self, pcoll):
       if pcoll.windowing.is_default():
-        # This is a more efficient global algorithm.
         top_per_bundle = pcoll | core.ParDo(
             _TopPerBundle(self._n, self._key, self._reverse))
-        # If pcoll is empty, we can't guarantee that top_per_bundle
-        # won't be empty, so inject at least one empty accumulator
-        # so that downstream is guaranteed to produce non-empty output.
         empty_bundle = (
             pcoll.pipeline | core.Create([(None, [])]).with_output_types(
                 top_per_bundle.element_type))
@@ -342,13 +317,8 @@ class _TopPerBundle(core.DoFn):
       heapq.heappushpop(self._heap, element)
 
   def finish_bundle(self):
-    # Though sorting here results in more total work, this allows us to
-    # skip most elements in the reducer.
-    # Essentially, given s map bundles, we are trading about O(sn) compares in
-    # the (single) reducer for O(sn log n) compares across all mappers.
     self._heap.sort()
 
-    # Unwrap to avoid serialization via pickle.
     if self._compare or self._key:
       yield window.GlobalWindows.windowed_value(
           (None, [wrapper.value for wrapper in self._heap]))
@@ -372,8 +342,6 @@ class _MergeTopPerBundle(core.DoFn):
         heapq.heappush(hp, e)
         return False
       elif e < hp[0]:
-        # Because _TopPerBundle returns sorted lists, all other elements
-        # will also be smaller.
         return True
       else:
         heapq.heappushpop(hp, e)
@@ -388,9 +356,6 @@ class _MergeTopPerBundle(core.DoFn):
               for element in bundle
           ]
           continue
-        # TODO(https://github.com/apache/beam/issues/21205): Remove this
-        # workaround once legacy dataflow correctly handles coders with
-        # combiner packing and/or is deprecated.
         if not isinstance(bundle, list):
           bundle = list(bundle)
         for element in reversed(bundle):
@@ -405,9 +370,6 @@ class _MergeTopPerBundle(core.DoFn):
     else:
       heap = []
       for bundle in bundles:
-        # TODO(https://github.com/apache/beam/issues/21205): Remove this
-        # workaround once legacy dataflow correctly handles coders with
-        # combiner packing and/or is deprecated.
         if not isinstance(bundle, list):
           bundle = list(bundle)
         if not heap:
@@ -466,21 +428,10 @@ class TopCombineFn(core.CombineFn):
             self._compare.__class__.__name__).drop_if_none()
     }
 
-  # The accumulator type is a tuple
-  # (bool, Union[List[T], List[ComparableValue[T]])
-  # where the boolean indicates whether the second slot contains a List of T
-  # (False) or List of ComparableValue[T] (True). In either case, the List
-  # maintains heap invariance. When the contents of the List are
-  # ComparableValue[T] they either all 'requires_hydration' or none do.
-  # This accumulator representation allows us to minimize the data encoding
-  # overheads. Creation of ComparableValues is elided for performance reasons
-  # when there is no need for complicated comparison functions.
   def create_accumulator(self, *args, **kwargs):
     return (False, [])
 
   def add_input(self, accumulator, element, *args, **kwargs):
-    # Caching to avoid paying the price of variadic expansion of args / kwargs
-    # when it's not needed (for the 'if' case below).
     holds_comparables, heap = accumulator
     if self._compare is not operator.lt or self._key:
       heap = self._hydrated_heap(heap)
@@ -522,7 +473,6 @@ class TopCombineFn(core.CombineFn):
 
   def compact(self, accumulator, *args, **kwargs):
     holds_comparables, heap = accumulator
-    # Unwrap to avoid serialization via pickle.
     if holds_comparables:
       return (False, [comparable.value for comparable in heap])
     else:
@@ -561,7 +511,6 @@ class Smallest(TopCombineFn):
 class Sample(object):
   """Combiners for sampling n elements without replacement."""
 
-  # pylint: disable=no-self-argument
 
   @with_input_types(T)
   @with_output_types(List[T])
@@ -607,10 +556,6 @@ class SampleCombineFn(core.CombineFn):
   """CombineFn for all Sample transforms."""
   def __init__(self, n):
     super().__init__()
-    # Most of this combiner's work is done by a TopCombineFn. We could just
-    # subclass TopCombineFn to make this class, but since sampling is not
-    # really a kind of Top operation, we use a TopCombineFn instance as a
-    # helper instead.
     self._top_combiner = TopCombineFn(n)
 
   def setup(self):
@@ -620,9 +565,6 @@ class SampleCombineFn(core.CombineFn):
     return self._top_combiner.create_accumulator()
 
   def add_input(self, heap, element):
-    # Before passing elements to the Top combiner, we pair them with random
-    # numbers. The elements with the n largest random number "keys" will be
-    # selected for the output.
     return self._top_combiner.add_input(heap, (random.random(), element))
 
   def merge_accumulators(self, heaps):
@@ -632,7 +574,6 @@ class SampleCombineFn(core.CombineFn):
     return self._top_combiner.compact(heap)
 
   def extract_output(self, heap):
-    # Here we strip off the random number keys we added in add_input.
     return [e for _, e in self._top_combiner.extract_output(heap)]
 
   def teardown(self):
@@ -643,9 +584,6 @@ class _TupleCombineFnBase(core.CombineFn):
   def __init__(self, *combiners, merge_accumulators_batch_size=None):
     self._combiners = [core.CombineFn.maybe_from_callable(c) for c in combiners]
     self._named_combiners = combiners
-    # If the `merge_accumulators_batch_size` value is not specified, we chose a
-    # bounded default that is inversely proportional to the number of
-    # accumulators in merged tuples.
     num_combiners = max(1, len(combiners))
     self._merge_accumulators_batch_size = (
         merge_accumulators_batch_size or max(10, 1000 // num_combiners))
@@ -668,13 +606,9 @@ class _TupleCombineFnBase(core.CombineFn):
     return [c.create_accumulator(*args, **kwargs) for c in self._combiners]
 
   def merge_accumulators(self, accumulators, *args, **kwargs):
-    # Make sure that `accumulators` is an iterator (so that the position is
-    # remembered).
     accumulators = iter(accumulators)
     result = next(accumulators)
     while True:
-      # Load accumulators into memory and merge in batches to decrease peak
-      # memory usage.
       accumulators_batch = [result] + list(
           itertools.islice(accumulators, self._merge_accumulators_batch_size))
       if len(accumulators_batch) == 1:

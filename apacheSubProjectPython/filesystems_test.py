@@ -1,24 +1,6 @@
-# -*- coding: utf-8 -*-
-#
-# Licensed to the Apache Software Foundation (ASF) under one or more
-# contributor license agreements.  See the NOTICE file distributed with
-# this work for additional information regarding copyright ownership.
-# The ASF licenses this file to You under the Apache License, Version 2.0
-# (the "License"); you may not use this file except in compliance with
-# the License.  You may obtain a copy of the License at
-#
-#    http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-#
 
 """Unit tests for LocalFileSystem."""
 
-# pytype: skip-file
 
 import filecmp
 import logging
@@ -68,7 +50,6 @@ class FileSystemsTest(unittest.TestCase):
 
   @mock.patch('apache_beam.io.localfilesystem.os')
   def test_unix_path_join(self, *unused_mocks):
-    # Test joining of Unix paths.
     localfilesystem.os.path.join.side_effect = _gen_fake_join('/')
     self.assertEqual(
         '/tmp/path/to/file', FileSystems.join('/tmp/path', 'to', 'file'))
@@ -81,7 +62,6 @@ class FileSystemsTest(unittest.TestCase):
 
   @mock.patch('apache_beam.io.localfilesystem.os')
   def test_windows_path_join(self, *unused_mocks):
-    # Test joining of Windows paths.
     localfilesystem.os.path.join.side_effect = _gen_fake_join('\\')
     self.assertEqual(
         r'C:\tmp\path\to\file', FileSystems.join(r'C:\tmp\path', 'to', 'file'))
@@ -100,7 +80,6 @@ class FileSystemsTest(unittest.TestCase):
     path = os.path.join(self.tmpdir, 't1/t2')
     FileSystems.mkdirs(path)
 
-    # Check IOError if existing directory is created
     with self.assertRaises(IOError):
       FileSystems.mkdirs(path)
 
@@ -111,7 +90,6 @@ class FileSystemsTest(unittest.TestCase):
     path = os.path.join(self.tmpdir, 'f1')
     open(path, 'a').close()
 
-    # Match files in the temp directory
     result = FileSystems.match([path])[0]
     files = [f.path for f in result.metadata_list]
     self.assertEqual(files, [path])
@@ -119,13 +97,11 @@ class FileSystemsTest(unittest.TestCase):
   def test_match_file_empty(self):
     path = os.path.join(self.tmpdir, 'f2')  # Does not exist
 
-    # Match files in the temp directory
     result = FileSystems.match([path])[0]
     files = [f.path for f in result.metadata_list]
     self.assertEqual(files, [])
 
   def test_match_file_exception(self):
-    # Match files with None so that it throws an exception
     with self.assertRaisesRegex(BeamIOError,
                                 r'^Unable to get the Filesystem') as error:
       FileSystems.match([None])
@@ -137,7 +113,6 @@ class FileSystemsTest(unittest.TestCase):
     open(path1, 'a').close()
     open(path2, 'a').close()
 
-    # Match both the files in the directory
     path = os.path.join(self.tmpdir, '*')
     result = FileSystems.match([path])[0]
     files = [f.path for f in result.metadata_list]

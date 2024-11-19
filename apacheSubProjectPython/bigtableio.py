@@ -1,19 +1,3 @@
-#
-# Licensed to the Apache Software Foundation (ASF) under one or more
-# contributor license agreements.  See the NOTICE file distributed with
-# this work for additional information regarding copyright ownership.
-# The ASF licenses this file to You under the Apache License, Version 2.0
-# (the "License"); you may not use this file except in compliance with
-# the License.  You may obtain a copy of the License at
-#
-#    http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-#
 
 """BigTable connector
 
@@ -35,7 +19,6 @@ those generated rows in the table.
                                   instance_id,
                                   table_id))
 """
-# pytype: skip-file
 
 import logging
 import struct
@@ -120,7 +103,6 @@ class _BigTableWriteFn(beam.DoFn):
         project_id, instance_id, table_id)
     labels = {
         monitoring_infos.SERVICE_LABEL: 'BigTable',
-        # TODO(JIRA-11985): Add Ptransform label.
         monitoring_infos.METHOD_LABEL: 'google.bigtable.v2.MutateRows',
         monitoring_infos.RESOURCE_LABEL: resource,
         monitoring_infos.BIGTABLE_PROJECT_ID_LABEL: (
@@ -149,21 +131,12 @@ class _BigTableWriteFn(beam.DoFn):
 
   def process(self, row):
     self.written.inc()
-    # You need to set the timestamp in the cells in this row object,
-    # when we do a retry we will mutating the same object, but, with this
-    # we are going to set our cell with new values.
-    # Example:
-    # direct_row.set_cell('cf1',
-    #                     'field1',
-    #                     'value1',
-    #                     timestamp=datetime.now())
     self.batcher.mutate(row)
 
   def finish_bundle(self):
     if self.batcher:
       self.batcher.close()
       self.batcher = None
-      # Report Lineage metrics on write
       Lineage.sinks().add(
           'bigtable',
           self.beam_options['project_id'],
@@ -255,7 +228,6 @@ class WriteToBigTable(beam.PTransform):
   class _DirectRowMutationsToBeamRow(beam.DoFn):
     def process(self, direct_row):
       args = {"key": direct_row.row_key, "mutations": []}
-      # start accumulating mutations in a list
       for mutation in direct_row._get_mutations():
         if mutation.__contains__("set_cell"):
           mutation_dict = {
@@ -342,21 +314,16 @@ class ReadFromBigtable(PTransform):
         | external_read
         | beam.ParDo(self._BeamRowToPartialRowData()))
 
-  # PartialRowData has some useful methods for querying data within a row.
-  # To make use of those methods and to give Python users a more familiar
-  # object, we process each Beam Row and return a PartialRowData equivalent.
   class _BeamRowToPartialRowData(beam.DoFn):
     def process(self, row):
       key = row.key
       families = row.column_families
 
-      # initialize PartialRowData object
       partial_row: PartialRowData = PartialRowData(key)
       for fam_name, col_fam in families.items():
         if fam_name not in partial_row.cells:
           partial_row.cells[fam_name] = {}
         for col_qualifier, cells in col_fam.items():
-          # store column qualifier as bytes to follow PartialRowData behavior
           col_qualifier_bytes = col_qualifier.encode()
           if col_qualifier not in partial_row.cells[fam_name]:
             partial_row.cells[fam_name][col_qualifier_bytes] = []

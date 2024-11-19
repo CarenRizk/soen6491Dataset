@@ -1,22 +1,5 @@
-#
-# Licensed to the Apache Software Foundation (ASF) under one or more
-# contributor license agreements.  See the NOTICE file distributed with
-# this work for additional information regarding copyright ownership.
-# The ASF licenses this file to You under the Apache License, Version 2.0
-# (the "License"); you may not use this file except in compliance with
-# the License.  You may obtain a copy of the License at
-#
-#    http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-#
 
 """Tests for textio module."""
-# pytype: skip-file
 
 import bz2
 import glob
@@ -36,7 +19,6 @@ from apache_beam.io.filesystem import CompressionTypes
 from apache_beam.io.filesystems import FileSystems
 from textio import _TextSink as TextSink
 from textio import _TextSource as TextSource
-# Importing following private classes for testing.
 from textio import ReadAllFromText
 from textio import ReadAllFromTextContinuously
 from textio import ReadFromText
@@ -161,7 +143,6 @@ def write_pattern(lines_per_file, no_data=False, return_filenames=False):
 
 class TextSourceTest(unittest.TestCase):
 
-  # Number of records that will be written by most tests.
   DEFAULT_NUM_RECORDS = 100
 
   def _run_read_test(
@@ -172,9 +153,6 @@ class TextSourceTest(unittest.TestCase):
       compression=CompressionTypes.UNCOMPRESSED,
       delimiter=None,
       escapechar=None):
-    # Since each record usually takes more than 1 byte, default buffer size is
-    # smaller than the total size of the file. This is done to
-    # increase test coverage for cases that hit the buffer boundary.
     kwargs = {}
     if delimiter:
       kwargs['delimiter'] = delimiter
@@ -253,9 +231,6 @@ class TextSourceTest(unittest.TestCase):
         1, no_data=True, eol=EOL.LF_WITH_NOTHING_AT_LAST_LINE)
 
     assert len(written_data) == 1
-    # written data has a single entry with an empty string. Reading the source
-    # should not produce anything since we only wrote a single empty string
-    # without an end of line character.
     self._run_read_test(file_name, [])
 
   def test_read_single_file_last_line_no_eol_gzip(self):
@@ -292,9 +267,6 @@ class TextSourceTest(unittest.TestCase):
       dst.writelines(src)
 
     assert len(written_data) == 1
-    # written data has a single entry with an empty string. Reading the source
-    # should not produce anything since we only wrote a single empty string
-    # without an end of line character.
     self._run_read_test(gzip_file_name, [], compression=CompressionTypes.GZIP)
 
   def test_read_single_file_with_empty_lines(self):
@@ -420,8 +392,6 @@ class TextSourceTest(unittest.TestCase):
                                      iobase.RangeTracker.SPLIT_POINTS_UNKNOWN)
                                     for i in range(1, 10)]
 
-    # At last split point, the remaining split points callback returns 1 since
-    # the expected position of next record becomes equal to the stop position.
     expected_split_points_report.append((9, 1))
 
     self.assertEqual(expected_split_points_report, split_points_report)
@@ -573,7 +543,6 @@ class TextSourceTest(unittest.TestCase):
           f.write('second A\nsecond B')
         with open(FileSystems.join(self.temp_path, 'file2'), 'w') as f:
           f.write('first')
-      # convert dumb key to basename in output
       basename = FileSystems.split(element[1][0])[1]
       content = element[1][1]
       yield basename, content
@@ -581,7 +550,6 @@ class TextSourceTest(unittest.TestCase):
   def test_read_all_continuously_new(self):
     with TempDir() as tempdir, TestPipeline() as pipeline:
       temp_path = tempdir.get_path()
-      # create a temp file at the beginning
       with open(FileSystems.join(temp_path, 'file1'), 'w') as f:
         f.write('first')
       match_pattern = FileSystems.join(temp_path, '*')
@@ -607,7 +575,6 @@ class TextSourceTest(unittest.TestCase):
   def test_read_all_continuously_update(self):
     with TempDir() as tempdir, TestPipeline() as pipeline:
       temp_path = tempdir.get_path()
-      # create a temp file at the beginning
       with open(FileSystems.join(temp_path, 'file1'), 'w') as f:
         f.write('first')
       match_pattern = FileSystems.join(temp_path, '*')
@@ -1283,7 +1250,6 @@ class TextSourceTest(unittest.TestCase):
       line_value=b'a' * 4,
       custom_delimiter=write_delimiter)
 
-    # In this case check, that the line won't be splitted
     write_delimiter_encode = write_delimiter.decode('utf-8')
     expected_data_str = [
         write_delimiter_encode.join(expected_data) + write_delimiter_encode
@@ -1576,20 +1542,6 @@ class TextSinkTest(unittest.TestCase):
 
     self.assertEqual(sorted(read_result), sorted(self.lines))
 
-  # def test_write_pipeline_non_globalwindow_input(self):
-  #   with TestPipeline() as p:
-  #     _ = (
-  #         p
-  #         | beam.core.Create(self.lines)
-  #         | beam.WindowInto(beam.transforms.window.FixedWindows(1))
-  #         | 'Write' >> WriteToText(self.path))
-  #
-  #   read_result = []
-  #   for file_name in glob.glob(self.path + '*'):
-  #     with open(file_name, 'rb') as f:
-  #       read_result.extend(f.read().splitlines())
-  #
-  #   self.assertEqual(sorted(read_result), sorted(self.lines))
 
   def test_write_pipeline_auto_compression(self):
     with TestPipeline() as pipeline:
@@ -1630,7 +1582,6 @@ class TextSinkTest(unittest.TestCase):
     for file_name in glob.glob(self.path + '*'):
       with gzip.GzipFile(file_name, 'rb') as f:
         read_result.extend(f.read().splitlines())
-    # header_text is automatically encoded in WriteToText
     self.assertEqual(read_result[0], header_text.encode('utf-8'))
     self.assertEqual(sorted(read_result[1:]), sorted(self.lines))
 
@@ -1652,7 +1603,6 @@ class TextSinkTest(unittest.TestCase):
 
   def test_write_empty(self):
     with TestPipeline() as p:
-      # pylint: disable=expression-not-assigned
       p | beam.core.Create([]) | WriteToText(self.path)
 
     outputs = glob.glob(self.path + '*')
@@ -1662,7 +1612,6 @@ class TextSinkTest(unittest.TestCase):
 
   def test_write_empty_skipped(self):
     with TestPipeline() as p:
-      # pylint: disable=expression-not-assigned
       p | beam.core.Create([]) | WriteToText(self.path, skip_if_empty=True)
 
     outputs = list(glob.glob(self.path + '*'))
@@ -1672,7 +1621,6 @@ class TextSinkTest(unittest.TestCase):
     records_per_shard = 13
     lines = [str(i).encode('utf-8') for i in range(100)]
     with TestPipeline() as p:
-      # pylint: disable=expression-not-assigned
       p | beam.core.Create(lines) | WriteToText(
           self.path, max_records_per_shard=records_per_shard)
 
@@ -1691,7 +1639,6 @@ class TextSinkTest(unittest.TestCase):
     header = b'a' * 20
     footer = b'b' * 30
     with TestPipeline() as p:
-      # pylint: disable=expression-not-assigned
       p | beam.core.Create(lines) | WriteToText(
           self.path,
           header=header,
@@ -1711,109 +1658,9 @@ class TextSinkTest(unittest.TestCase):
     self.assertEqual(sorted(read_result), sorted(lines))
 
 
-# class CsvTest(unittest.TestCase):
-#   def test_csv_read_write(self):
-#     records = [beam.Row(a='str', b=ix) for ix in range(3)]
-#     with tempfile.TemporaryDirectory() as dest:
-#       with TestPipeline() as p:
-#         # pylint: disable=expression-not-assigned
-#         p | beam.Create(records) | beam.io.WriteToCsv(os.path.join(dest, 'out'))
-#       with TestPipeline() as p:
-#         pcoll = (
-#             p
-#             | beam.io.ReadFromCsv(os.path.join(dest, 'out*'))
-#             | beam.Map(lambda t: beam.Row(**dict(zip(type(t)._fields, t)))))
-#
-#         assert_that(pcoll, equal_to(records))
-
-  # def test_non_utf8_csv_read_write(self):
-  #   content = b"\xe0,\xe1,\xe2\n0,1,2\n1,2,3\n"
-  #
-  #   with tempfile.TemporaryDirectory() as dest:
-  #     input_fn = os.path.join(dest, 'input.csv')
-  #     with open(input_fn, 'wb') as f:
-  #       f.write(content)
-  #
-  #     with TestPipeline() as p:
-  #       r1 = (
-  #           p
-  #           | 'Read' >> beam.io.ReadFromCsv(input_fn, encoding="latin1")
-  #           | 'ToDict' >> beam.Map(lambda x: x._asdict()))
-  #       assert_that(
-  #           r1,
-  #           equal_to([{
-  #               "\u00e0": 0, "\u00e1": 1, "\u00e2": 2
-  #           }, {
-  #               "\u00e0": 1, "\u00e1": 2, "\u00e2": 3
-  #           }]))
-  #
-  #     with TestPipeline() as p:
-  #       _ = (
-  #           p
-  #           | 'Read' >> beam.io.ReadFromCsv(input_fn, encoding="latin1")
-  #           | 'Write' >> beam.io.WriteToCsv(
-  #               os.path.join(dest, 'out'), encoding="latin1"))
-  #
-  #     with TestPipeline() as p:
-  #       r2 = (
-  #           p
-  #           | 'Read' >> beam.io.ReadFromCsv(
-  #               os.path.join(dest, 'out*'), encoding="latin1")
-  #           | 'ToDict' >> beam.Map(lambda x: x._asdict()))
-  #       assert_that(
-  #           r2,
-  #           equal_to([{
-  #               "\u00e0": 0, "\u00e1": 1, "\u00e2": 2
-  #           }, {
-  #               "\u00e0": 1, "\u00e1": 2, "\u00e2": 3
-  #           }]))
 
 
-# class JsonTest(unittest.TestCase):
-#   def test_json_read_write(self):
-#     records = [beam.Row(a='str', b=ix) for ix in range(3)]
-#     with tempfile.TemporaryDirectory() as dest:
-#       with TestPipeline() as p:
-#         # pylint: disable=expression-not-assigned
-#         p | beam.Create(records) | beam.io.WriteToJson(
-#             os.path.join(dest, 'out'))
-#       with TestPipeline() as p:
-#         pcoll = (
-#             p
-#             | beam.io.ReadFromJson(os.path.join(dest, 'out*'))
-#             | beam.Map(lambda t: beam.Row(**dict(zip(type(t)._fields, t)))))
-#
-#         assert_that(pcoll, equal_to(records))
-#
-#   def test_numeric_strings_preserved(self):
-#     records = [
-#         beam.Row(
-#             as_string=str(ix),
-#             as_float_string=str(float(ix)),
-#             as_int=ix,
-#             as_float=float(ix)) for ix in range(3)
-#     ]
-#     with tempfile.TemporaryDirectory() as dest:
-#       with TestPipeline() as p:
-#         # pylint: disable=expression-not-assigned
-#         p | beam.Create(records) | beam.io.WriteToJson(
-#             os.path.join(dest, 'out'))
-#       with TestPipeline() as p:
-#         pcoll = (
-#             p
-#             | beam.io.ReadFromJson(os.path.join(dest, 'out*'))
-#             | beam.Map(lambda t: beam.Row(**dict(zip(type(t)._fields, t)))))
-#
-#         assert_that(pcoll, equal_to(records))
-#
-#         # This test should be redundant as Python equality does not equate
-#         # numeric values with their string representations, but this is much
-#         # more explicit about what we're asserting here.
-#         def check_types(element):
-#           for a, b in zip(element, records[0]):
-#             assert type(a) == type(b), (a, b, type(a), type(b))
-#
-#         _ = pcoll | beam.Map(check_types)
+
 
 
 if __name__ == '__main__':

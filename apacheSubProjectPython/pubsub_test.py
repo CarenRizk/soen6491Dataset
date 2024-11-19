@@ -1,24 +1,6 @@
-# coding=utf-8
-#
-# Licensed to the Apache Software Foundation (ASF) under one or more
-# contributor license agreements.  See the NOTICE file distributed with
-# this work for additional information regarding copyright ownership.
-# The ASF licenses this file to You under the Apache License, Version 2.0
-# (the "License"); you may not use this file except in compliance with
-# the License.  You may obtain a copy of the License at
-#
-#    http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-#
 
 """Unit tests for PubSub sources and sinks."""
 
-# pytype: skip-file
 
 import logging
 import unittest
@@ -60,7 +42,6 @@ from apache_beam.transforms.display_test import DisplayDataItemMatcher
 from apache_beam.utils import proto_utils
 from apache_beam.utils import timestamp
 
-# Protect against environments where the PubSub library is not available.
 try:
   from google.cloud import pubsub
 except ImportError:
@@ -151,15 +132,11 @@ class TestReadFromPubSubOverride(unittest.TestCase):
         | beam.Map(lambda x: x))
     self.assertEqual(bytes, pcoll.element_type)
 
-    # Apply the necessary PTransformOverrides.
     overrides = _get_transform_overrides(options)
     p.replace_all(overrides)
 
-    # Note that the direct output of ReadFromPubSub will be replaced
-    # by a PTransformOverride, so we use a no-op Map.
     read_transform = pcoll.producer.inputs[0].producer.transform
 
-    # Ensure that the properties passed through correctly
     source = read_transform._source
     self.assertEqual('a_topic', source.topic_name)
     self.assertEqual('a_label', source.id_label)
@@ -179,15 +156,11 @@ class TestReadFromPubSubOverride(unittest.TestCase):
         | beam.Map(lambda x: x))
     self.assertEqual(bytes, pcoll.element_type)
 
-    # Apply the necessary PTransformOverrides.
     overrides = _get_transform_overrides(options)
     p.replace_all(overrides)
 
-    # Note that the direct output of ReadFromPubSub will be replaced
-    # by a PTransformOverride, so we use a no-op Map.
     read_transform = pcoll.producer.inputs[0].producer.transform
 
-    # Ensure that the properties passed through correctly
     source = read_transform._source
     self.assertEqual('a_subscription', source.subscription_name)
     self.assertEqual('a_label', source.id_label)
@@ -227,15 +200,11 @@ class TestReadFromPubSubOverride(unittest.TestCase):
         | beam.Map(lambda x: x))
     self.assertEqual(PubsubMessage, pcoll.element_type)
 
-    # Apply the necessary PTransformOverrides.
     overrides = _get_transform_overrides(options)
     p.replace_all(overrides)
 
-    # Note that the direct output of ReadFromPubSub will be replaced
-    # by a PTransformOverride, so we use a no-op Map.
     read_transform = pcoll.producer.inputs[0].producer.transform
 
-    # Ensure that the properties passed through correctly
     source = read_transform._source
     self.assertTrue(source.with_attributes)
     self.assertEqual('time', source.timestamp_attribute)
@@ -258,13 +227,11 @@ class TestMultiReadFromPubSubOverride(unittest.TestCase):
     ]
     pcoll = (p | MultipleReadFromPubSub(pubsub_sources) | beam.Map(lambda x: x))
 
-    # Apply the necessary PTransformOverrides.
     overrides = _get_transform_overrides(options)
     p.replace_all(overrides)
 
     self.assertEqual(bytes, pcoll.element_type)
 
-    # Ensure that the sources are passed through correctly
     read_transforms = pcoll.producer.inputs[0].producer.inputs
     topics_list = []
     subscription_list = []
@@ -294,13 +261,11 @@ class TestMultiReadFromPubSubOverride(unittest.TestCase):
         p | MultipleReadFromPubSub(pubsub_sources, with_attributes=True)
         | beam.Map(lambda x: x))
 
-    # Apply the necessary PTransformOverrides.
     overrides = _get_transform_overrides(options)
     p.replace_all(overrides)
 
     self.assertEqual(PubsubMessage, pcoll.element_type)
 
-    # Ensure that the sources are passed through correctly
     read_transforms = pcoll.producer.inputs[0].producer.inputs
     topics_list = []
     subscription_list = []
@@ -336,13 +301,11 @@ class TestMultiReadFromPubSubOverride(unittest.TestCase):
 
     pcoll = (p | MultipleReadFromPubSub(pubsub_sources) | beam.Map(lambda x: x))
 
-    # Apply the necessary PTransformOverrides.
     overrides = _get_transform_overrides(options)
     p.replace_all(overrides)
 
     self.assertEqual(bytes, pcoll.element_type)
 
-    # Ensure that the sources are passed through correctly
     read_transforms = pcoll.producer.inputs[0].producer.inputs
     for i, read_transform in enumerate(read_transforms):
       id_label = id_labels[i]
@@ -374,15 +337,11 @@ class TestWriteStringsToPubSubOverride(unittest.TestCase):
         | WriteStringsToPubSub('projects/fakeprj/topics/a_topic')
         | beam.Map(lambda x: x))
 
-    # Apply the necessary PTransformOverrides.
     overrides = _get_transform_overrides(options)
     p.replace_all(overrides)
 
-    # Note that the direct output of ReadFromPubSub will be replaced
-    # by a PTransformOverride, so we use a no-op Map.
     write_transform = pcoll.producer.inputs[0].producer.transform
 
-    # Ensure that the properties passed through correctly
     self.assertEqual('a_topic', write_transform.dofn.short_topic_name)
 
   def test_expand(self):
@@ -397,19 +356,13 @@ class TestWriteStringsToPubSubOverride(unittest.TestCase):
             'projects/fakeprj/topics/a_topic', with_attributes=True)
         | beam.Map(lambda x: x))
 
-    # Apply the necessary PTransformOverrides.
     overrides = _get_transform_overrides(options)
     p.replace_all(overrides)
 
-    # Note that the direct output of ReadFromPubSub will be replaced
-    # by a PTransformOverride, so we use a no-op Map.
     write_transform = pcoll.producer.inputs[0].producer.transform
 
-    # Ensure that the properties passed through correctly
     self.assertEqual('a_topic', write_transform.dofn.short_topic_name)
     self.assertEqual(True, write_transform.dofn.with_attributes)
-    # TODO(https://github.com/apache/beam/issues/18939): These properties
-    # aren't supported yet in direct runner.
     self.assertEqual(None, write_transform.dofn.id_label)
     self.assertEqual(None, write_transform.dofn.timestamp_attribute)
 
@@ -709,7 +662,6 @@ class TestReadFromPubSub(unittest.TestCase):
     mock_pubsub.return_value.close.assert_has_calls([mock.call()])
 
   def test_read_message_id_label_unsupported(self, unused_mock_pubsub):
-    # id_label is unsupported in DirectRunner.
     options = PipelineOptions([])
     options.view_as(StandardOptions).streaming = True
     with self.assertRaisesRegex(NotImplementedError,
@@ -757,7 +709,6 @@ class TestReadFromPubSub(unittest.TestCase):
     self.assertTrue(transform_from_proto.source.with_attributes)
 
   def test_runner_api_transformation_properties_none(self, unused_mock_pubsub):
-    # Confirming that properties stay None after a runner API transformation.
     source = _PubSubSource(
         topic='projects/fakeprj/topics/a_topic', with_attributes=True)
     transform = Read(source)
@@ -833,8 +784,6 @@ class TestReadFromPubSub(unittest.TestCase):
     options.view_as(StandardOptions).streaming = True
     for test_case in ('topic', 'subscription'):
       with TestPipeline(options=options) as p:
-        # Direct runner currently overwrites the whole ReadFromPubSub transform.
-        # This test part of composite transform without overwrite.
         pcoll = p | beam.Create([b'apache', b'beam']) | beam.Map(
             lambda x: window.TimestampedValue(x, 1520861820.234567 + len(x)))
         args = {test_case: f'projects/fakeprj/{test_case}s/topic_or_sub'}
@@ -896,7 +845,6 @@ class TestWriteToPubSub(unittest.TestCase):
 
   def test_write_messages_with_attributes_error(self, mock_pubsub):
     data = 'data'
-    # Sending raw data when WriteToPubSub expects a PubsubMessage object.
     payloads = [data]
 
     options = PipelineOptions([])
@@ -944,7 +892,6 @@ class TestWriteToPubSub(unittest.TestCase):
     sink = _PubSubSink(
         topic='projects/fakeprj/topics/a_topic',
         id_label=None,
-        # We expect encoded PubSub write transform to always return attributes.
         timestamp_attribute=None)
     transform = Write(sink)
 
@@ -972,11 +919,9 @@ class TestWriteToPubSub(unittest.TestCase):
         'projects/fakeprj/topics/a_topic', transform_from_proto.sink.full_topic)
 
   def test_runner_api_transformation_properties_none(self, unused_mock_pubsub):
-    # Confirming that properties stay None after a runner API transformation.
     sink = _PubSubSink(
         topic='projects/fakeprj/topics/a_topic',
         id_label=None,
-        # We expect encoded PubSub write transform to always return attributes.
         timestamp_attribute=None)
     transform = Write(sink)
 
@@ -1023,7 +968,6 @@ class TestWriteToPubSub(unittest.TestCase):
     options.view_as(StandardOptions).streaming = True
     with TestPipeline(options=options) as p:
       pcoll = p | Create(payloads)
-      # Avoid direct runner overwrites WriteToPubSub
       WriteToPubSub(
           'projects/fakeprj/topics/a_topic',
           with_attributes=True).expand(pcoll)

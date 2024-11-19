@@ -1,6 +1,5 @@
 """Unit tests for the Pipeline class."""
 
-# pytype: skip-file
 
 import copy
 import platform
@@ -63,15 +62,11 @@ class DoubleParDo(beam.PTransform):
 
 class TripleParDo(beam.PTransform):
   def expand(self, input):
-    # Keeping labels the same intentionally to make sure that there is no label
-    # conflict due to replacement.
     return input | 'Inner' >> beam.Map(lambda a: a * 3)
 
 
 class ToStringParDo(beam.PTransform):
   def expand(self, input):
-    # We use copy.copy() here to make sure the typehint mechanism doesn't
-    # automatically infer that the output type is str.
     return input | 'Inner' >> beam.Map(lambda a: copy.copy(str(a)))
 
 
@@ -130,7 +125,6 @@ class PipelineTest(unittest.TestCase):
       pcoll = pipeline | 'label1' >> Create([1, 2, 3])
       assert_that(pcoll, equal_to([1, 2, 3]))
 
-      # Test if initial value is an iterator object.
       pcoll2 = pipeline | 'label2' >> Create(iter((4, 5, 6)))
       pcoll3 = pcoll2 | 'do' >> FlatMap(lambda x: [x + 10])
       assert_that(pcoll3, equal_to([14, 15, 16]), label='pcoll3')
@@ -156,8 +150,6 @@ class PipelineTest(unittest.TestCase):
       side1 = beam.pvalue.AsSingleton(pipeline | 'side1' >> Create(['s1']))
       side2 = beam.pvalue.AsSingleton(pipeline | 'side2' >> Create(['s2']))
 
-      # A test function with a tuple input, an auxiliary parameter,
-      # and some side inputs.
       fn = lambda e1, e2, t=DoFn.TimestampParam, s1=None, s2=None: (
           e1, e2, t, s1, s2)
       assert_that(
@@ -379,11 +371,6 @@ class PipelineTest(unittest.TestCase):
       letters = multi.letters | 'MyLetters' >> beam.Map(lambda x: x)
       numbers = multi.numbers | 'MyNumbers' >> beam.Map(lambda x: x)
 
-      # Assert that the PCollection replacement worked correctly and that
-      # elements are flowing through. The replacement transform first
-      # multiples by 2 then the leaf nodes inside the composite multiply by
-      # an additional 3 and 5. Use prime numbers to ensure that each
-      # transform is getting executed once.
       assert_that(
           letters,
           equal_to(['a' * 2 * 3, 'b' * 2 * 3, 'c' * 2 * 3]),
@@ -393,17 +380,13 @@ class PipelineTest(unittest.TestCase):
           equal_to([1 * 2 * 5, 2 * 2 * 5, 3 * 2 * 5]),
           label='assert numbers')
 
-      # Do the replacement and run the element assertions.
       p.replace_all([MultiOutputOverride()])
 
-    # The following checks the graph to make sure the replacement occurred.
     visitor = PipelineTest.Visitor(visited=[])
     p.visit(visitor)
     pcollections = visitor.visited
     composites = visitor.enter_composite
 
-    # Assert the replacement is in the composite list and retrieve the
-    # AppliedPTransform.
     self.assertIn(
         MultiOutputComposite, [t.transform.__class__ for t in composites])
     multi_output_composite = list(
@@ -411,19 +394,15 @@ class PipelineTest(unittest.TestCase):
             lambda t: t.transform.__class__ == MultiOutputComposite,
             composites))[0]
 
-    # Assert that all of the replacement PCollections are in the graph.
     for output in multi_output_composite.outputs.values():
       self.assertIn(output, pcollections)
 
-    # Assert that all of the "old"/replaced PCollections are not in the graph.
     self.assertNotIn(multi[None], visitor.visited)
     self.assertNotIn(multi.letters, visitor.visited)
     self.assertNotIn(multi.numbers, visitor.visited)
 
   def test_kv_ptransform_honor_type_hints(self):
 
-    # The return type of this DoFn cannot be inferred by the default
-    # Beam type inference
     class StatefulDoFn(DoFn):
       BYTES_STATE = BagStateSpec('bytes', BytesCoder())
 
@@ -577,39 +556,7 @@ class DoFnTest(unittest.TestCase):
     assert_that(pcoll, equal_to(['a', 'b']))
     pipeline.run()
 
-  # def test_window_param(self):
-  #   class TestDoFn(DoFn):
-  #     def process(self, element, window=DoFn.WindowParam):
-  #       yield (element, (float(window.start), float(window.end)))
-  #
-  #   with TestPipeline() as pipeline:
-  #     pcoll = (
-  #         pipeline
-  #         | Create([1, 7])
-  #         | Map(lambda x: TimestampedValue(x, x))
-  #         | WindowInto(windowfn=SlidingWindows(10, 5))
-  #         | ParDo(TestDoFn()))
-  #     assert_that(
-  #         pcoll,
-  #         equal_to([(1, (-5, 5)), (1, (0, 10)), (7, (0, 10)), (7, (5, 15))]))
-  #     pcoll2 = pcoll | 'Again' >> ParDo(TestDoFn())
-  #     assert_that(
-  #         pcoll2,
-  #         equal_to([((1, (-5, 5)), (-5, 5)), ((1, (0, 10)), (0, 10)),
-  #                   ((7, (0, 10)), (0, 10)), ((7, (5, 15)), (5, 15))]),
-  #         label='doubled windows')
 
-  # def test_windowed_value_param(self):
-  #   with TestPipeline() as pipeline:
-  #     pcoll = (
-  #         pipeline
-  #         | Create([1, 7])
-  #         | Map(lambda x: TimestampedValue(x, x))
-  #         | WindowInto(windowfn=FixedWindows(5))
-  #         | Map(lambda _, wv=DoFn.WindowedValueParam: (wv.value, wv.windows)))
-  #     assert_that(
-  #         pcoll,
-  #         equal_to([(1, [IntervalWindow(0, 5)]), (7, [IntervalWindow(5, 10)])]))  # pylint: disable=too-many-function-args
 
   def test_timestamp_param(self):
     class TestDoFn(DoFn):
@@ -626,24 +573,6 @@ class DoFnTest(unittest.TestCase):
           p | Create([1, 2]) | beam.Map(lambda _, t=DoFn.TimestampParam: t),
           equal_to([MIN_TIMESTAMP, MIN_TIMESTAMP]))
 
-  # def test_pane_info_param(self):
-  #   with TestPipeline() as p:
-  #     pc = p | Create([(None, None)])
-  #     assert_that(
-  #         pc | beam.Map(lambda _, p=DoFn.PaneInfoParam: p),
-  #         equal_to([windowed_value.PANE_INFO_UNKNOWN]),
-  #         label='CheckUngrouped')
-  #     assert_that(
-  #         pc | beam.GroupByKey() | beam.Map(lambda _, p=DoFn.PaneInfoParam: p),
-  #         equal_to([
-  #             windowed_value.PaneInfo(
-  #                 is_first=True,
-  #                 is_last=True,
-  #                 timing=windowed_value.PaneInfoTiming.ON_TIME,
-  #                 index=0,
-  #                 nonspeculative_index=0)
-  #         ]),
-  #         label='CheckGrouped')
 
   def test_context_params(self):
     def test_map(
@@ -670,8 +599,6 @@ class DoFnTest(unittest.TestCase):
       def __hash__(self):
         raise RuntimeError()
 
-    # Ensure that we don't use default values in a context where they must be
-    # comparable (see BEAM-8301).
     with TestPipeline() as pipeline:
       pcoll = (
           pipeline
@@ -873,105 +800,6 @@ class RunnerApiTest(unittest.TestCase):
     else:
       self.fail('Unable to find transform.')
 
-  # def test_display_data(self):
-  #   class MyParentTransform(beam.PTransform):
-  #     def expand(self, p):
-  #       self.p = p
-  #       return p | beam.Create([None])
-  #
-  #     def display_data(self):  # type: () -> dict
-  #       parent_dd = super().display_data()
-  #       parent_dd['p_dd_string'] = DisplayDataItem(
-  #           'p_dd_string_value', label='p_dd_string_label')
-  #       parent_dd['p_dd_string_2'] = DisplayDataItem('p_dd_string_value_2')
-  #       parent_dd['p_dd_bool'] = DisplayDataItem(True, label='p_dd_bool_label')
-  #       parent_dd['p_dd_int'] = DisplayDataItem(1, label='p_dd_int_label')
-  #       return parent_dd
-  #
-  #   class MyPTransform(MyParentTransform):
-  #     def expand(self, p):
-  #       self.p = p
-  #       return p | beam.Create([None])
-  #
-  #     def display_data(self):  # type: () -> dict
-  #       parent_dd = super().display_data()
-  #       parent_dd['dd_string'] = DisplayDataItem(
-  #           'dd_string_value', label='dd_string_label')
-  #       parent_dd['dd_string_2'] = DisplayDataItem('dd_string_value_2')
-  #       parent_dd['dd_bool'] = DisplayDataItem(False, label='dd_bool_label')
-  #       parent_dd['dd_double'] = DisplayDataItem(1.1, label='dd_double_label')
-  #       return parent_dd
-  #
-  #   p = beam.Pipeline()
-  #   p | MyPTransform()  # pylint: disable=expression-not-assigned
-  #
-  #   proto_pipeline = Pipeline.to_runner_api(p, use_fake_coders=True)
-  #   my_transform, = [
-  #       transform
-  #       for transform in proto_pipeline.components.transforms.values()
-  #       if transform.unique_name == 'MyPTransform'
-  #   ]
-  #   self.assertIsNotNone(my_transform)
-  #   self.assertListEqual(
-  #       list(my_transform.display_data),
-  #       [
-  #           beam_runner_api_pb2.DisplayData(
-  #               urn=common_urns.StandardDisplayData.DisplayData.LABELLED.urn,
-  #               payload=beam_runner_api_pb2.LabelledPayload(
-  #                   label='p_dd_string_label',
-  #                   key='p_dd_string',
-  #                   namespace='apache_beam.pipeline_test.MyPTransform',
-  #                   string_value='p_dd_string_value').SerializeToString()),
-  #           beam_runner_api_pb2.DisplayData(
-  #               urn=common_urns.StandardDisplayData.DisplayData.LABELLED.urn,
-  #               payload=beam_runner_api_pb2.LabelledPayload(
-  #                   label='p_dd_string_2',
-  #                   key='p_dd_string_2',
-  #                   namespace='apache_beam.pipeline_test.MyPTransform',
-  #                   string_value='p_dd_string_value_2').SerializeToString()),
-  #           beam_runner_api_pb2.DisplayData(
-  #               urn=common_urns.StandardDisplayData.DisplayData.LABELLED.urn,
-  #               payload=beam_runner_api_pb2.LabelledPayload(
-  #                   label='p_dd_bool_label',
-  #                   key='p_dd_bool',
-  #                   namespace='apache_beam.pipeline_test.MyPTransform',
-  #                   bool_value=True).SerializeToString()),
-  #           beam_runner_api_pb2.DisplayData(
-  #               urn=common_urns.StandardDisplayData.DisplayData.LABELLED.urn,
-  #               payload=beam_runner_api_pb2.LabelledPayload(
-  #                   label='p_dd_int_label',
-  #                   key='p_dd_int',
-  #                   namespace='apache_beam.pipeline_test.MyPTransform',
-  #                   int_value=1).SerializeToString()),
-  #           beam_runner_api_pb2.DisplayData(
-  #               urn=common_urns.StandardDisplayData.DisplayData.LABELLED.urn,
-  #               payload=beam_runner_api_pb2.LabelledPayload(
-  #                   label='dd_string_label',
-  #                   key='dd_string',
-  #                   namespace='apache_beam.pipeline_test.MyPTransform',
-  #                   string_value='dd_string_value').SerializeToString()),
-  #           beam_runner_api_pb2.DisplayData(
-  #               urn=common_urns.StandardDisplayData.DisplayData.LABELLED.urn,
-  #               payload=beam_runner_api_pb2.LabelledPayload(
-  #                   label='dd_string_2',
-  #                   key='dd_string_2',
-  #                   namespace='apache_beam.pipeline_test.MyPTransform',
-  #                   string_value='dd_string_value_2').SerializeToString()),
-  #           beam_runner_api_pb2.DisplayData(
-  #               urn=common_urns.StandardDisplayData.DisplayData.LABELLED.urn,
-  #               payload=beam_runner_api_pb2.LabelledPayload(
-  #                   label='dd_bool_label',
-  #                   key='dd_bool',
-  #                   namespace='apache_beam.pipeline_test.MyPTransform',
-  #                   bool_value=False).SerializeToString()),
-  #           beam_runner_api_pb2.DisplayData(
-  #               urn=common_urns.StandardDisplayData.DisplayData.LABELLED.urn,
-  #               payload=beam_runner_api_pb2.LabelledPayload(
-  #                   label='dd_double_label',
-  #                   key='dd_double',
-  #                   namespace='apache_beam.pipeline_test.MyPTransform',
-  #                   double_value=1.1).SerializeToString()),
-  #       ])
 
   def test_runner_api_roundtrip_preserves_resource_hints(self):
     p = beam.Pipeline()
@@ -984,8 +812,6 @@ class RunnerApiTest(unittest.TestCase):
         {common_urns.resource_hints.ACCELERATOR.urn: b'gpu'})
 
     for _ in range(3):
-      # Verify that DEFAULT environments are recreated during multiple RunnerAPI
-      # translation and hints don't get lost.
       p = Pipeline.from_runner_api(Pipeline.to_runner_api(p), None, None)
       self.assertEqual(
           p.transforms_stack[0].parts[1].transform.get_resource_hints(),
@@ -1192,18 +1018,14 @@ class RunnerApiTest(unittest.TestCase):
                 for ix in range(8)
             },
             environments={
-                # Same hash and destination.
                 'e1': beam_runner_api_pb2.Environment(
                     dependencies=[file_artifact('a1', 'x', 'dest')]),
                 'e2': beam_runner_api_pb2.Environment(
                     dependencies=[file_artifact('a2', 'x', 'dest')]),
-                # Different hash.
                 'e3': beam_runner_api_pb2.Environment(
                     dependencies=[file_artifact('a3', 'y', 'dest')]),
-                # Different destination.
                 'e4': beam_runner_api_pb2.Environment(
                     dependencies=[file_artifact('a4', 'y', 'dest2')]),
-                # Multiple files with same hash and destinations.
                 'e5': beam_runner_api_pb2.Environment(
                     dependencies=[
                         file_artifact('a1', 'x', 'dest'),
@@ -1214,20 +1036,17 @@ class RunnerApiTest(unittest.TestCase):
                         file_artifact('a2', 'x', 'dest'),
                         file_artifact('b2', 'xb', 'destB')
                     ]),
-                # Overlapping, but not identical, files.
                 'e7': beam_runner_api_pb2.Environment(
                     dependencies=[
                         file_artifact('a1', 'x', 'dest'),
                         file_artifact('b2', 'y', 'destB')
                     ]),
-                # Same files as first, but differing other properties.
                 'e0': beam_runner_api_pb2.Environment(
                     resource_hints={'hint': b'value'},
                     dependencies=[file_artifact('a1', 'x', 'dest')]),
             }))
     Pipeline.merge_compatible_environments(proto)
 
-    # These environments are equivalent.
     self.assertEqual(
         proto.components.transforms['transform1'].environment_id,
         proto.components.transforms['transform2'].environment_id)
@@ -1236,7 +1055,6 @@ class RunnerApiTest(unittest.TestCase):
         proto.components.transforms['transform5'].environment_id,
         proto.components.transforms['transform6'].environment_id)
 
-    # These are not.
     self.assertNotEqual(
         proto.components.transforms['transform1'].environment_id,
         proto.components.transforms['transform3'].environment_id)

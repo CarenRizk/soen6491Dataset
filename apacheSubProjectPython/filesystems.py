@@ -1,23 +1,6 @@
-#
-# Licensed to the Apache Software Foundation (ASF) under one or more
-# contributor license agreements.  See the NOTICE file distributed with
-# this work for additional information regarding copyright ownership.
-# The ASF licenses this file to You under the Apache License, Version 2.0
-# (the "License"); you may not use this file except in compliance with
-# the License.  You may obtain a copy of the License at
-#
-#    http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-#
 
 """FileSystems interface class for accessing the correct filesystem"""
 
-# pytype: skip-file
 
 import logging
 import re
@@ -31,16 +14,9 @@ from apache_beam.options.value_provider import RuntimeValueProvider
 
 _LOGGER = logging.getLogger(__name__)
 
-# All filesystem implements should be added here as
-# best effort imports. We don't want to force loading
-# a module if the user doesn't supply the correct
-# packages that these filesystems rely on.
-#
-# pylint: disable=wrong-import-position, unused-import
 try:
   from apache_beam.io.hadoopfilesystem import HadoopFileSystem
 except ModuleNotFoundError:
-  # optional file system packages are not installed.
   pass
 except ImportError as e:
   _LOGGER.warning(
@@ -54,7 +30,6 @@ try:
 except ModuleNotFoundError:
   pass
 except ImportError as e:
-  # optional file system packages are installed but failed to load.
   _LOGGER.warning(
       'Failed to import LocalFileSystem; '
       'loading of this filesystem will be skipped. '
@@ -94,7 +69,6 @@ except ImportError as e:
       'Error details: %s',
       e)
 
-# pylint: enable=wrong-import-position, unused-import
 
 __all__ = ['FileSystems']
 
@@ -125,7 +99,6 @@ class FileSystems(object):
 
   @staticmethod
   def get_filesystem(path):
-    # type: (str) -> FileSystems
 
     """Get the correct filesystem for the specified path
     """
@@ -141,8 +114,6 @@ class FileSystems(object):
             'correct path or ensure the required dependency is installed, '
             'e.g., pip install apache-beam[gcp]. Path specified: %s' % path)
       elif len(systems) == 1:
-        # Pipeline options could come either from the Pipeline itself (using
-        # direct runner), or via RuntimeValueProvider (other runners).
         options = (
             FileSystems._pipeline_options or
             RuntimeValueProvider.runtime_options)
@@ -156,7 +127,6 @@ class FileSystems(object):
 
   @staticmethod
   def join(basepath, *paths):
-    # type: (str, *str) -> str
 
     """Join two or more pathname components for the filesystem
 
@@ -244,7 +214,6 @@ class FileSystems(object):
       path,
       mime_type='application/octet-stream',
       compression_type=CompressionTypes.AUTO):
-    # type: (...) -> BinaryIO
 
     """Returns a write channel for the given file path.
 
@@ -264,7 +233,6 @@ class FileSystems(object):
       path,
       mime_type='application/octet-stream',
       compression_type=CompressionTypes.AUTO):
-    # type: (...) -> BinaryIO
 
     """Returns a read channel for the given file path.
 

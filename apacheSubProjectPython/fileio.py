@@ -1,19 +1,3 @@
-#
-# Licensed to the Apache Software Foundation (ASF) under one or more
-# contributor license agreements.  See the NOTICE file distributed with
-# this work for additional information regarding copyright ownership.
-# The ASF licenses this file to You under the Apache License, Version 2.0
-# (the "License"); you may not use this file except in compliance with
-# the License.  You may obtain a copy of the License at
-#
-#    http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-#
 
 """``PTransforms`` for manipulating files in Apache Beam.
 
@@ -86,7 +70,6 @@ sink will be used for each destination. The return type of the `destination`
 parameter can be anything, as long as elements can be grouped by it.
 """
 
-# pytype: skip-file
 
 import collections
 import logging
@@ -168,7 +151,6 @@ class _MatchAllFn(beam.DoFn):
     self._empty_match_treatment = empty_match_treatment
 
   def process(self, file_pattern: str) -> List[filesystem.FileMetadata]:
-    # TODO: Should we batch the lookups?
     match_results = filesystems.FileSystems.match([file_pattern])
     match_result = match_results[0]
 
@@ -254,7 +236,6 @@ class _ReadMatchesFn(beam.DoFn):
           'Directories are not allowed in ReadMatches transform.'
           'Found %s.' % metadata.path)
 
-    # TODO: Mime type? Other arguments? Maybe arguments passed in to transform?
     yield ReadableFile(metadata, self._compression)
 
 
@@ -313,21 +294,17 @@ class MatchContinuously(beam.PTransform):
         'if possible')
 
   def expand(self, pbegin) -> beam.PCollection[filesystem.FileMetadata]:
-    # invoke periodic impulse
     impulse = pbegin | PeriodicImpulse(
         start_timestamp=self.start_ts,
         stop_timestamp=self.stop_ts,
         fire_interval=self.interval)
 
-    # match file pattern periodically
     match_files = (
         impulse
         | 'GetFilePattern' >> beam.Map(lambda x: self.file_pattern)
         | MatchAll(self.empty_match_treatment))
 
-    # apply deduplication strategy if required
     if self.has_deduplication:
-      # Making a Key Value so each file has its own state.
       match_files = match_files | 'ToKV' >> beam.Map(lambda x: (x.path, x))
       if self.match_upd:
         match_files = match_files | 'RemoveOldAlreadyRead' >> beam.ParDo(
@@ -336,8 +313,6 @@ class MatchContinuously(beam.PTransform):
         match_files = match_files | 'RemoveAlreadyRead' >> beam.ParDo(
             _RemoveDuplicates())
 
-    # apply windowing if required. Apply at last because deduplication relies on
-    # the global window.
     if self.apply_windowing:
       match_files = match_files | beam.WindowInto(FixedWindows(self.interval))
 
@@ -383,7 +358,6 @@ class FileSink(object):
         compression_type=CompressionTypes.AUTO)
 
   def open(self, fh):
-    # type: (BinaryIO) -> None
     raise NotImplementedError
 
   def write(self, record):
@@ -442,10 +416,6 @@ def _format_shard(
     kwargs['start'] = window.start.to_utc_datetime().isoformat()
     kwargs['end'] = window.end.to_utc_datetime().isoformat()
 
-  # TODO(https://github.com/apache/beam/issues/18721): Add support for PaneInfo
-  # If the PANE is the ONLY firing in the window, we don't add it.
-  #if pane and not (pane.is_first and pane.is_last):
-  #  kwargs['pane'] = pane.index
 
   if suffix:
     kwargs['suffix'] = suffix
@@ -453,7 +423,6 @@ def _format_shard(
   if compression:
     kwargs['compression'] = '.%s' % compression
 
-  # Remove separators for unused template parts.
   format = _DEFAULT_FILE_NAME_TEMPLATE
   if shard_index is None:
     format = format.replace('-{shard:05d}', '')
@@ -506,7 +475,6 @@ _FileResult = collections.namedtuple(
     ])
 
 
-# Adding a class to contain PyDoc.
 class FileResult(_FileResult):
   """A descriptor of a file that has been written."""
   pass
@@ -522,8 +490,6 @@ class WriteToFiles(beam.PTransform):
   their destination, and window, at the moment).
   """
 
-  # We allow up to 20 different destinations to be written in a single bundle.
-  # Too many files will add memory pressure to the worker, so we let it be 20.
   MAX_NUM_WRITERS_PER_BUNDLE = 20
 
   DEFAULT_SHARDING = 5
@@ -576,7 +542,6 @@ class WriteToFiles(beam.PTransform):
 
   @staticmethod
   def _get_sink_fn(input_sink):
-    # type: (...) -> Callable[[Any], FileSink]
     if isinstance(input_sink, type) and issubclass(input_sink, FileSink):
       return lambda x: input_sink()
     elif isinstance(input_sink, FileSink):
@@ -589,7 +554,6 @@ class WriteToFiles(beam.PTransform):
 
   @staticmethod
   def _get_destination_fn(destination):
-    # type: (...) -> Callable[[Any], str]
     if isinstance(destination, ValueProvider):
       return lambda elm: destination.get()
     elif callable(destination):
@@ -639,8 +603,6 @@ class WriteToFiles(beam.PTransform):
         | beam.Map(lambda file_result: (file_result.destination, file_result))
         | "GroupTempFilesByDestination" >> beam.GroupByKey())
 
-    # Now we should take the temporary files, and write them to the final
-    # destination, with their proper names.
 
     file_results = (
         files_by_destination_pc
@@ -659,13 +621,10 @@ def _create_writer(
   try:
     filesystems.FileSystems.mkdirs(base_path)
   except IOError:
-    # Directory already exists.
     pass
 
   destination = writer_key[0]
 
-  # The file name has a prefix determined by destination+window, along with
-  # a random string. This allows us to retrieve orphaned files later on.
   file_name = '%s_%s' % (abs(hash(writer_key)), uuid.uuid4())
   full_file_name = filesystems.FileSystems.join(base_path, file_name)
   metadata = create_metadata_fn(destination, full_file_name)
@@ -682,13 +641,10 @@ class _MoveTempFilesIntoFinalDestinationFn(beam.DoFn):
 
   def process(self, element, w=beam.DoFn.WindowParam):
     destination = element[0]
-    # list of FileResult objects for temp files
     temp_file_results = list(element[1])
-    # list of FileResult objects for final files
     final_file_results = []
 
     for i, r in enumerate(temp_file_results):
-      # TODO(pabloem): Handle compression for files.
       final_file_name = self.file_naming_fn(
           r.window, r.pane, i, len(temp_file_results), '', destination)
 
@@ -715,7 +671,6 @@ class _MoveTempFilesIntoFinalDestinationFn(beam.DoFn):
     except IOError as e:
       cause = repr(e)
       if 'FileExistsError' not in cause:
-        # Usually harmless. Especially if see FileExistsError so no need to log
         _LOGGER.debug('Fail to create dir for final destination: %s', cause)
 
     try:
@@ -723,8 +678,6 @@ class _MoveTempFilesIntoFinalDestinationFn(beam.DoFn):
           move_from,
           [filesystems.FileSystems.join(self.path.get(), f) for f in move_to])
     except BeamIOError:
-      # This error is not serious, because it may happen on a retry of the
-      # bundle. We simply log it.
       _LOGGER.debug(
           'Exception occurred during moving files: %s. This may be due to a'
           ' bundle being retried.',
@@ -813,7 +766,6 @@ class _AppendShardedDestination(beam.DoFn):
     self.destination_fn = destination
     self.shards = shards
 
-    # We start the shards for a single destination at an arbitrary point.
     self._shard_counter = collections.defaultdict(
         lambda: random.randrange(self.shards))  # type: DefaultDict[str, int]
 
@@ -870,10 +822,8 @@ class _WriteUnshardedRecordsFn(beam.DoFn):
     if writer_key in self._writers_and_sinks:
       return self._writers_and_sinks.get(writer_key)
     elif len(self._writers_and_sinks) >= self.max_num_writers_per_bundle:
-      # The writer does not exist, and we have too many writers already.
       return None, None
     else:
-      # The writer does not exist, but we can still create a new one.
       sink = self.sink_fn(destination)
 
       full_file_name, writer = _create_writer(

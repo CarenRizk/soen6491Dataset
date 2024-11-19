@@ -1,19 +1,3 @@
-#
-# Licensed to the Apache Software Foundation (ASF) under one or more
-# contributor license agreements.  See the NOTICE file distributed with
-# this work for additional information regarding copyright ownership.
-# The ASF licenses this file to You under the Apache License, Version 2.0
-# (the "License"); you may not use this file except in compliance with
-# the License.  You may obtain a copy of the License at
-#
-#    http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-#
 
 """Google Cloud PubSub sources and sinks.
 
@@ -29,7 +13,6 @@ corresponding code reviewers mentioned in
 https://github.com/apache/beam/blob/master/sdks/python/OWNERS
 """
 
-# pytype: skip-file
 
 import re
 from typing import Any
@@ -125,7 +108,6 @@ class PubsubMessage(object):
       A new PubsubMessage object.
     """
     msg = pubsub.types.PubsubMessage.deserialize(proto_msg)
-    # Convert ScalarMapContainer to dict.
     attributes = dict((key, msg.attributes[key]) for key in msg.attributes)
     return PubsubMessage(
         msg.data,
@@ -192,7 +174,6 @@ class PubsubMessage(object):
 
     https://googleapis.github.io/google-cloud-python/latest/pubsub/subscriber/api/message.html
     """
-    # Convert ScalarMapContainer to dict.
     attributes = dict((key, msg.attributes[key]) for key in msg.attributes)
     pubsubmessage = PubsubMessage(msg.data, attributes)
     if msg.message_id:
@@ -207,7 +188,6 @@ class PubsubMessage(object):
 class ReadFromPubSub(PTransform):
   """A ``PTransform`` for reading from Cloud Pub/Sub."""
 
-  # Implementation note: This ``PTransform`` is overridden by Directrunner.
 
   def __init__(
       self,
@@ -258,9 +238,7 @@ class ReadFromPubSub(PTransform):
         timestamp_attribute=timestamp_attribute)
 
   def expand(self, pvalue):
-    # TODO(BEAM-27443): Apply a proper transform rather than Read.
     pcoll = pvalue.pipeline | Read(self._source)
-    # explicit element_type required after native read, otherwise coder error
     pcoll.element_type = bytes
     return self.expand_continued(pcoll)
 
@@ -276,8 +254,6 @@ class ReadFromPubSub(PTransform):
     return pcoll
 
   def to_runner_api_parameter(self, context):
-    # Required as this is identified by type in PTransformOverrides.
-    # TODO(https://github.com/apache/beam/issues/18713): Use an actual URN here.
     return self.to_runner_api_pickled(context)
 
 
@@ -374,7 +350,6 @@ class _AddMetricsAndMap(DoFn):
 class WriteToPubSub(PTransform):
   """A ``PTransform`` for writing messages to Cloud Pub/Sub."""
 
-  # Implementation note: This ``PTransform`` is overridden by Directrunner.
 
   def __init__(
       self,
@@ -434,8 +409,6 @@ class WriteToPubSub(PTransform):
     return pcoll | Write(self._sink)
 
   def to_runner_api_parameter(self, context):
-    # Required as this is identified by type in PTransformOverrides.
-    # TODO(https://github.com/apache/beam/issues/18713): Use an actual URN here.
     return self.to_runner_api_pickled(context)
 
   def display_data(self):
@@ -478,7 +451,6 @@ def parse_subscription(full_subscription):
   return project, subscription_name
 
 
-# TODO(BEAM-27443): Remove (or repurpose as a proper PTransform).
 class _PubSubSource(iobase.SourceBase):
   """Source for a Cloud Pub/Sub topic or subscription.
 
@@ -504,7 +476,6 @@ class _PubSubSource(iobase.SourceBase):
     self.with_attributes = with_attributes
     self.timestamp_attribute = timestamp_attribute
 
-    # Perform some validation on the topic and subscription.
     if not (topic or subscription):
       raise ValueError('Either a topic or subscription must be provided.')
     if topic and subscription:
@@ -537,7 +508,6 @@ class _PubSubSource(iobase.SourceBase):
     return False
 
 
-# TODO(BEAM-27443): Remove in favor of a proper WriteToPubSub transform.
 class _PubSubSink(object):
   """Sink for a Cloud Pub/Sub topic.
 

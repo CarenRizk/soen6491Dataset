@@ -1,22 +1,5 @@
-#
-# Licensed to the Apache Software Foundation (ASF) under one or more
-# contributor license agreements.  See the NOTICE file distributed with
-# this work for additional information regarding copyright ownership.
-# The ASF licenses this file to You under the Apache License, Version 2.0
-# (the "License"); you may not use this file except in compliance with
-# the License.  You may obtain a copy of the License at
-#
-#    http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-#
 
 """Unit tests for the DataflowRunner class."""
-# pytype: skip-file
 
 import unittest
 
@@ -48,27 +31,18 @@ from apache_beam.transforms import combiners
 from apache_beam.transforms import environments
 from apache_beam.typehints import typehints
 
-# Protect against environments where apitools library is not available.
-# pylint: disable=wrong-import-order, wrong-import-position
 try:
   from apache_beam.runners.dataflow.internal import apiclient
 except ImportError:
   apiclient = None  # type: ignore
-# pylint: enable=wrong-import-order, wrong-import-position
 
 
-# SpecialParDo and SpecialDoFn are used in test_remote_runner_display_data.
-# Due to https://github.com/apache/beam/issues/19848, these need to be declared
-# outside of the test method.
-# TODO: Should not subclass ParDo. Switch to PTransform as soon as
-# composite transforms support display data.
 class SpecialParDo(beam.ParDo):
   def __init__(self, fn, now):
     super().__init__(fn)
     self.fn = fn
     self.now = now
 
-  # Make this a list to be accessible within closure
   def display_data(self):
     return {
         'asubcomponent': self.fn, 'a_class': SpecialParDo, 'a_time': self.now
@@ -126,7 +100,6 @@ class DataflowRunnerTest(unittest.TestCase, ExtraAssertionsMixin):
       failed_result = DataflowPipelineResult(failed_runner.job, failed_runner)
       failed_result.wait_until_finish()
 
-    # check the second call can still triggers the exception
     with self.assertRaisesRegex(DataflowRuntimeException,
                                 'Dataflow pipeline failed. State: FAILED'):
       failed_result.wait_until_finish()
@@ -137,8 +110,6 @@ class DataflowRunnerTest(unittest.TestCase, ExtraAssertionsMixin):
     result = succeeded_result.wait_until_finish()
     self.assertEqual(result, PipelineState.DONE)
 
-    # Time array has duplicate items, because some logging implementations also
-    # call time.
     with mock.patch('time.time', mock.MagicMock(side_effect=[1, 1, 2, 2, 3])):
       duration_succeeded_runner = MockDataflowRunner(
           [values_enum.JOB_STATE_RUNNING, values_enum.JOB_STATE_DONE])
@@ -334,15 +305,11 @@ class DataflowRunnerTest(unittest.TestCase, ExtraAssertionsMixin):
     flat = (none_str_pc, none_int_pc) | beam.Flatten()
     _ = flat | beam.GroupByKey()
 
-    # This may change if type inference changes, but we assert it here
-    # to make sure the check below is not vacuous.
     self.assertNotIsInstance(flat.element_type, typehints.TupleConstraint)
 
     p.visit(common.group_by_key_input_visitor())
     p.visit(DataflowRunner.flatten_input_visitor())
 
-    # The dataflow runner requires gbk input to be tuples *and* flatten
-    # inputs to be equal to their outputs. Assert both hold.
     self.assertIsInstance(flat.element_type, typehints.TupleConstraint)
     self.assertEqual(flat.element_type, none_str_pc.element_type)
     self.assertEqual(flat.element_type, none_int_pc.element_type)
