@@ -5,7 +5,7 @@ import random
 from openai import OpenAI
 
 # Configure OpenAI API
-api_key = ''
+api_key = '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'
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 

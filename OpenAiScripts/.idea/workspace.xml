@@ -7,21 +7,10 @@
     <list default="true" id="dce2c249-3740-43f9-967d-3277eeef5c23" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/refactor_files.py" beforeDir="false" afterPath="$PROJECT_DIR$/refactor_files.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../apacheSubProjectJava/apacheSubProjectJava.und/codecheck/configs/dup + func too long.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../apacheSubProjectJava/apacheSubProjectJava.und/local/CCFileAnalysis.dat" beforeDir="false" afterPath="$PROJECT_DIR$/../apacheSubProjectJava/apacheSubProjectJava.und/local/CCFileAnalysis.dat" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../apacheSubProjectJava/apacheSubProjectJava.und/local/CCResults.dat" beforeDir="false" afterPath="$PROJECT_DIR$/../apacheSubProjectJava/apacheSubProjectJava.und/local/CCResults.dat" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../apacheSubProjectJava/apacheSubProjectJava.und/local/CCSettings.dat" beforeDir="false" afterPath="$PROJECT_DIR$/../apacheSubProjectJava/apacheSubProjectJava.und/local/CCSettings.dat" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../apacheSubProjectJava/apacheSubProjectJava.und/local/index/_c.cfs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../apacheSubProjectJava/apacheSubProjectJava.und/local/index/_d.cfs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../apacheSubProjectJava/apacheSubProjectJava.und/local/index/segments.gen" beforeDir="false" afterPath="$PROJECT_DIR$/../apacheSubProjectJava/apacheSubProjectJava.und/local/index/segments.gen" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../apacheSubProjectJava/apacheSubProjectJava.und/local/issues.cbor" beforeDir="false" afterPath="$PROJECT_DIR$/../apacheSubProjectJava/apacheSubProjectJava.und/local/issues.cbor" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../apacheSubProjectJava/apacheSubProjectJava.und/local/parse.udb" beforeDir="false" afterPath="$PROJECT_DIR$/../apacheSubProjectJava/apacheSubProjectJava.und/local/parse.udb" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../apacheSubProjectJava/apacheSubProjectJava.und/local/projectmetrics.dat" beforeDir="false" afterPath="$PROJECT_DIR$/../apacheSubProjectJava/apacheSubProjectJava.und/local/projectmetrics.dat" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../apacheSubProjectJava/apacheSubProjectJava.und/local/session.json" beforeDir="false" afterPath="$PROJECT_DIR$/../apacheSubProjectJava/apacheSubProjectJava.und/local/session.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../apacheSubProjectJava/apacheSubProjectJava.und/local/settings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../apacheSubProjectJava/apacheSubProjectJava.und/local/settings.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../apacheSubProjectJava/apacheSubProjectJava.und/settings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../apacheSubProjectJava/apacheSubProjectJava.und/settings.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../apacheSubProjectPython/apacheSubProjectPython.und/local/projectmetrics.dat" beforeDir="false" afterPath="$PROJECT_DIR$/../apacheSubProjectPython/apacheSubProjectPython.und/local/projectmetrics.dat" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/translate.py" beforeDir="false" afterPath="$PROJECT_DIR$/translate.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../apacheSubProjectPython/apacheSubProjectPython.und/local/session.json" beforeDir="false" afterPath="$PROJECT_DIR$/../apacheSubProjectPython/apacheSubProjectPython.und/local/session.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../apacheSubProjectPython/pipeline.py" beforeDir="false" afterPath="$PROJECT_DIR$/../apacheSubProjectPython/pipeline.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../apacheSubProjectPython/pipeline_test.py" beforeDir="false" afterPath="$PROJECT_DIR$/../apacheSubProjectPython/pipeline_test.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -51,7 +40,7 @@
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;git-widget-placeholder&quot;: &quot;main&quot;,
     &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/carenrizk/repos/soen6491Dataset/OpenAiScripts&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/carenrizk/repos/soen6491Dataset/apacheSubProjectPythonTranslated&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
@@ -178,6 +167,9 @@
       <updated>1731244558413</updated>
       <workItem from="1731244559425" duration="4758000" />
       <workItem from="1731445799390" duration="23000" />
+      <workItem from="1731446374752" duration="3671000" />
+      <workItem from="1731461259674" duration="7483000" />
+      <workItem from="1732043393784" duration="7052000" />
     </task>
     <servers />
   </component>

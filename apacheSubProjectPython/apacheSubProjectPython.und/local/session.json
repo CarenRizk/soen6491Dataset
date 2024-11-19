@@ -3,6 +3,40 @@
     "Sessions": {
         "default": {
             "SessionData": {
+                "1_1920x1080": {
+                    "EntityFilter": {
+                        "Dock Area": 1,
+                        "Dock In Drawer Mode": false,
+                        "Dock Is Floating": false,
+                        "Dock Tab Group": [
+                            "ProjectOverviewWidget"
+                        ]
+                    },
+                    "Locator": {
+                        "Dock Area": 8,
+                        "Dock In Drawer Mode": false,
+                        "Dock Is Floating": false,
+                        "Dock Tab Group": [
+                            "ProjectMetricsWidget"
+                        ]
+                    },
+                    "ProjectMetricsWidget": {
+                        "Dock Area": 8,
+                        "Dock In Drawer Mode": false,
+                        "Dock Is Floating": false,
+                        "Dock Tab Group": [
+                            "Locator"
+                        ]
+                    },
+                    "ProjectOverviewWidget": {
+                        "Dock Area": 1,
+                        "Dock In Drawer Mode": false,
+                        "Dock Is Floating": false,
+                        "Dock Tab Group": [
+                            "EntityFilter"
+                        ]
+                    }
+                },
                 "1_3840x1600": {
                     "EntityFilter": {
                         "Dock Area": 1,
@@ -157,13 +191,27 @@
                 "EntityFilter": {
                     "LastEntityFilterUsed": "All Entities"
                 },
+                "InfoBrowserWindowManager": {
+                    "InfoBrowserFileSyncInst": -1,
+                    "InfoBrowserSyncInst": [
+                        "0"
+                    ]
+                },
+                "LastAccessedPid": "24600",
                 "Locator": {
                     "LastEntityFilterUsed": "All Entities"
                 },
                 "MiscSaveStates": {
                     "entitySelected": "@ldataflow_runner_test.DataflowRunnerTest._test_flatten_input_visitor._@p@ldataflow_runner_test.DataflowRunnerTest._test_flatten_input_visitor@kydataflow_runner_test.DataflowRunnerTest._test_flatten_input_visitor:./dataflow_runner_test.py@f./dataflow_runner_test.py",
+                    "metricsBrowser": true,
+                    "metricsBrowserExpansionAddresses": "",
+                    "metricsBrowserSelectionAddress": "",
+                    "metricsBrowserSplitterState": "AAAA/wAAAAEAAAABAAACAAH/////AQAAAAEA",
                     "projectOverviewCharts": "true",
-                    "projectOverviewChartsSelected": "true"
+                    "projectOverviewChartsPosition": 1,
+                    "projectOverviewChartsSelected": "false",
+                    "projectOverviewChartsWorkspace": 0,
+                    "selection": "_"
                 },
                 "ProjectMetricsBrowser": {
                     "Overwrite": false,

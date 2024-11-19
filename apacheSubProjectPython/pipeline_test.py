@@ -1,20 +1,3 @@
-#
-# Licensed to the Apache Software Foundation (ASF) under one or more
-# contributor license agreements.  See the NOTICE file distributed with
-# this work for additional information regarding copyright ownership.
-# The ASF licenses this file to You under the Apache License, Version 2.0
-# (the "License"); you may not use this file except in compliance with
-# the License.  You may obtain a copy of the License at
-#
-#    http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-#
-
 """Unit tests for the Pipeline class."""
 
 # pytype: skip-file
@@ -123,10 +106,6 @@ class PipelineTest(unittest.TestCase):
   def custom_callable(pcoll):
     return pcoll | '+1' >> FlatMap(lambda x: [x + 1])
 
-  # Some of these tests designate a runner by name, others supply a runner.
-  # This variation is just to verify that both means of runner specification
-  # work and is not related to other aspects of the tests.
-
   class CustomTransform(PTransform):
     def expand(self, pcoll):
       return pcoll | '+1' >> FlatMap(lambda x: [x + 1])
@@ -204,8 +183,6 @@ class PipelineTest(unittest.TestCase):
       side1 = beam.pvalue.AsSingleton(pipeline | 'side1' >> Create(['s1']))
       side2 = beam.pvalue.AsSingleton(pipeline | 'side2' >> Create(['s2']))
 
-      # A test function with a tuple input, an auxiliary parameter,
-      # and some side inputs.
       fn = lambda e1, e2, t=DoFn.TimestampParam, s1=None, s2=None: (
           e1, e2, t, s1, s2)
       assert_that(
@@ -231,58 +208,11 @@ class PipelineTest(unittest.TestCase):
       pcoll = pipeline | 'label' >> Create([[1, 2, 3]])
       assert_that(pcoll, equal_to([[1, 2, 3]]))
 
-  # def test_visit_entire_graph(self):
-  #   pipeline = Pipeline()
-  #   pcoll1 = pipeline | 'pcoll' >> beam.Impulse()
-  #   pcoll2 = pcoll1 | 'do1' >> FlatMap(lambda x: [x + 1])
-  #   pcoll3 = pcoll2 | 'do2' >> FlatMap(lambda x: [x + 1])
-  #   pcoll4 = pcoll2 | 'do3' >> FlatMap(lambda x: [x + 1])
-  #   transform = PipelineTest.CustomTransform()
-  #   pcoll5 = pcoll4 | transform
-  #
-  #   visitor = PipelineTest.Visitor(visited=[])
-  #   pipeline.visit(visitor)
-  #   self.assertEqual({pcoll1, pcoll2, pcoll3, pcoll4, pcoll5},
-  #                    set(visitor.visited))
-  #   self.assertEqual(set(visitor.enter_composite), set(visitor.leave_composite))
-  #   self.assertEqual(2, len(visitor.enter_composite))
-  #   self.assertEqual(visitor.enter_composite[1].transform, transform)
-  #   self.assertEqual(visitor.leave_composite[0].transform, transform)
-
   def test_apply_custom_transform(self):
     with TestPipeline() as pipeline:
       pcoll = pipeline | 'pcoll' >> Create([1, 2, 3])
       result = pcoll | PipelineTest.CustomTransform()
       assert_that(result, equal_to([2, 3, 4]))
-
-  # def test_reuse_custom_transform_instance(self):
-  #   pipeline = Pipeline()
-  #   pcoll1 = pipeline | 'pcoll1' >> Create([1, 2, 3])
-  #   pcoll2 = pipeline | 'pcoll2' >> Create([4, 5, 6])
-  #   transform = PipelineTest.CustomTransform()
-  #   pcoll1 | transform
-  #   with self.assertRaises(RuntimeError) as cm:
-  #     pipeline.apply(transform, pcoll2)
-  #   self.assertEqual(
-  #       cm.exception.args[0],
-  #       'A transform with label "CustomTransform" already exists in the '
-  #       'pipeline. To apply a transform with a specified label, write '
-  #       'pvalue | "label" >> transform or use the option '
-  #       '"auto_unique_labels" to automatically generate unique '
-  #       'transform labels. Note "auto_unique_labels" '
-  #       'could cause data loss when updating a pipeline or '
-  #       'reloading the job state. This is not recommended for '
-  #       'streaming jobs.')
-
-  # @mock.patch('logging.info')  # Mock the logging.info function
-  # def test_no_wait_until_finish(self, mock_info):
-  #   with Pipeline(runner='DirectRunner',
-  #                 options=PipelineOptions(["--no_wait_until_finish"])) as p:
-  #     _ = p | beam.Create(['test'])
-  #   mock_info.assert_called_once_with(
-  #       'Job execution continues without waiting for completion. '
-  #       'Use "wait_until_finish" in PipelineResult to block until finished.')
-  #   p.result.wait_until_finish()
 
   def test_auto_unique_labels(self):
 
@@ -306,7 +236,6 @@ class PipelineTest(unittest.TestCase):
         for label in pipeline.applied_labels if "Map(identity)" in label
     }
     map_id_leaf_labels = {label.split(":")[-1] for label in map_id_full_labels}
-    # Only the first 6 chars of the UUID hex should be used
     assert map_id_leaf_labels == set(
         ["Map(identity)", "Map(identity)_UUID01", "Map(identity)_UUID02"])
 
@@ -323,7 +252,6 @@ class PipelineTest(unittest.TestCase):
   def test_transform_no_super_init(self):
     class AddSuffix(PTransform):
       def __init__(self, suffix):
-        # No call to super(...).__init__
         self.suffix = suffix
 
       def expand(self, pcoll):
@@ -337,11 +265,8 @@ class PipelineTest(unittest.TestCase):
     try:
       import resource
     except ImportError:
-      # Skip the test if resource module is not available (e.g. non-Unix os).
       self.skipTest('resource module not available.')
     if platform.mac_ver()[0]:
-      # Skip the test on macos, depending on version it returns ru_maxrss in
-      # different units.
       self.skipTest('ru_maxrss is not in standard units.')
 
     def get_memory_usage_in_bytes():
@@ -358,15 +283,12 @@ class PipelineTest(unittest.TestCase):
     num_elements = 10
     num_maps = 100
 
-    # TODO(robertwb): reduce memory usage of FnApiRunner so that this test
-    # passes.
+
     with TestPipeline(runner='BundleBasedDirectRunner') as pipeline:
 
-      # Consumed memory should not be proportional to the number of maps.
       memory_threshold = (
           get_memory_usage_in_bytes() + (5 * len_elements * num_elements))
 
-      # Plus small additional slack for memory fluctuations during the test.
       memory_threshold += 10 * (2**20)
 
       biglist = pipeline | 'oom:create' >> Create(
@@ -381,34 +303,6 @@ class PipelineTest(unittest.TestCase):
   def test_aggregator_empty_input(self):
     actual = [] | CombineGlobally(max).without_defaults()
     self.assertEqual(actual, [])
-
-  # def test_pipeline_as_context(self):
-  #   def raise_exception(exn):
-  #     raise exn
-  #
-  #   with self.assertRaises(ValueError):
-  #     with Pipeline() as p:
-  #       # pylint: disable=expression-not-assigned
-  #       p | Create([ValueError('msg')]) | Map(raise_exception)
-
-  # def test_ptransform_overrides(self):
-  #   class MyParDoOverride(PTransformOverride):
-  #     def matches(self, applied_ptransform):
-  #       return isinstance(applied_ptransform.transform, DoubleParDo)
-  #
-  #     def get_replacement_transform_for_applied_ptransform(
-  #         self, applied_ptransform):
-  #       ptransform = applied_ptransform.transform
-  #       if isinstance(ptransform, DoubleParDo):
-  #         return TripleParDo()
-  #       raise ValueError('Unsupported type of transform: %r' % ptransform)
-  #
-  #   p = Pipeline()
-  #   pcoll = p | beam.Create([1, 2, 3]) | 'Multiply' >> DoubleParDo()
-  #   assert_that(pcoll, equal_to([3, 6, 9]))
-  #
-  #   p.replace_all([MyParDoOverride()])
-  #   p.run()
 
   def test_ptransform_override_type_hints(self):
     class NoTypeHintOverride(PTransformOverride):
@@ -438,74 +332,6 @@ class PipelineTest(unittest.TestCase):
 
       p.replace_all([override])
       self.assertEqual(pcoll.producer.inputs[0].element_type, expected_type)
-
-  # def test_ptransform_override_multiple_inputs(self):
-  #   class MyParDoOverride(PTransformOverride):
-  #     def matches(self, applied_ptransform):
-  #       return isinstance(applied_ptransform.transform, FlattenAndDouble)
-  #
-  #     def get_replacement_transform(self, applied_ptransform):
-  #       return FlattenAndTriple()
-  #
-  #   p = Pipeline()
-  #   pcoll1 = p | 'pc1' >> beam.Create([1, 2, 3])
-  #   pcoll2 = p | 'pc2' >> beam.Create([4, 5, 6])
-  #   pcoll3 = (pcoll1, pcoll2) | 'FlattenAndMultiply' >> FlattenAndDouble()
-  #   assert_that(pcoll3, equal_to([3, 6, 9, 12, 15, 18]))
-  #
-  #   p.replace_all([MyParDoOverride()])
-  #   p.run()
-
-  # def test_ptransform_override_side_inputs(self):
-  #   class MyParDoOverride(PTransformOverride):
-  #     def matches(self, applied_ptransform):
-  #       return (
-  #           isinstance(applied_ptransform.transform, ParDo) and
-  #           isinstance(applied_ptransform.transform.fn, AddWithProductDoFn))
-  #
-  #     def get_replacement_transform(self, transform):
-  #       return AddThenMultiply()
-  #
-  #   p = Pipeline()
-  #   pcoll1 = p | 'pc1' >> beam.Create([2])
-  #   pcoll2 = p | 'pc2' >> beam.Create([3])
-  #   pcoll3 = p | 'pc3' >> beam.Create([4, 5, 6])
-  #   result = pcoll3 | 'Operate' >> beam.ParDo(
-  #       AddWithProductDoFn(), AsSingleton(pcoll1), AsSingleton(pcoll2))
-  #   assert_that(result, equal_to([18, 21, 24]))
-  #
-  #   p.replace_all([MyParDoOverride()])
-  #   p.run()
-
-  # def test_ptransform_override_replacement_inputs(self):
-  #   class MyParDoOverride(PTransformOverride):
-  #     def matches(self, applied_ptransform):
-  #       return (
-  #           isinstance(applied_ptransform.transform, ParDo) and
-  #           isinstance(applied_ptransform.transform.fn, AddWithProductDoFn))
-  #
-  #     def get_replacement_transform(self, transform):
-  #       return AddThenMultiply()
-  #
-  #     def get_replacement_inputs(self, applied_ptransform):
-  #       assert len(applied_ptransform.inputs) == 1
-  #       assert len(applied_ptransform.side_inputs) == 2
-  #       # Swap the order of the two side inputs
-  #       return (
-  #           applied_ptransform.inputs[0],
-  #           applied_ptransform.side_inputs[1].pvalue,
-  #           applied_ptransform.side_inputs[0].pvalue)
-  #
-  #   p = Pipeline()
-  #   pcoll1 = p | 'pc1' >> beam.Create([2])
-  #   pcoll2 = p | 'pc2' >> beam.Create([3])
-  #   pcoll3 = p | 'pc3' >> beam.Create([4, 5, 6])
-  #   result = pcoll3 | 'Operate' >> beam.ParDo(
-  #       AddWithProductDoFn(), AsSingleton(pcoll1), AsSingleton(pcoll2))
-  #   assert_that(result, equal_to([14, 16, 18]))
-  #
-  #   p.replace_all([MyParDoOverride()])
-  #   p.run()
 
   def test_ptransform_override_multiple_outputs(self):
     class MultiOutputComposite(PTransform):
