@@ -7,6 +7,7 @@
     <list default="true" id="dce2c249-3740-43f9-967d-3277eeef5c23" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/outputTranslate.log" beforeDir="false" afterPath="$PROJECT_DIR$/outputTranslate.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/refactor_files.py" beforeDir="false" afterPath="$PROJECT_DIR$/refactor_files.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/translate.py" beforeDir="false" afterPath="$PROJECT_DIR$/translate.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -166,7 +167,7 @@
       <workItem from="1731445799390" duration="23000" />
       <workItem from="1731446374752" duration="3671000" />
       <workItem from="1731461259674" duration="7483000" />
-      <workItem from="1732043393784" duration="9450000" />
+      <workItem from="1732043393784" duration="9812000" />
     </task>
     <servers />
   </component>
