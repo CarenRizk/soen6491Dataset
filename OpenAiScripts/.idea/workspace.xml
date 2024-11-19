@@ -5,43 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="dce2c249-3740-43f9-967d-3277eeef5c23" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/python_strip_comments.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../apacheSubProjectJava/.classpath" beforeDir="false" afterPath="$PROJECT_DIR$/../apacheSubProjectJava/.classpath" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../apacheSubProjectJava/.project" beforeDir="false" afterPath="$PROJECT_DIR$/../apacheSubProjectJava/.project" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../apacheSubProjectJava/.settings/org.eclipse.jdt.core.prefs" beforeDir="false" afterPath="$PROJECT_DIR$/../apacheSubProjectJava/.settings/org.eclipse.jdt.core.prefs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../apacheSubProjectJavaRefactored/.classpath" beforeDir="false" afterPath="$PROJECT_DIR$/../apacheSubProjectJavaRefactored/.classpath" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../apacheSubProjectJavaRefactored/.project" beforeDir="false" afterPath="$PROJECT_DIR$/../apacheSubProjectJavaRefactored/.project" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../apacheSubProjectJavaRefactored/.settings/org.eclipse.jdt.core.prefs" beforeDir="false" afterPath="$PROJECT_DIR$/../apacheSubProjectJavaRefactored/.settings/org.eclipse.jdt.core.prefs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../apacheSubProjectPython/approximatequantiles.py" beforeDir="false" afterPath="$PROJECT_DIR$/../apacheSubProjectPython/approximatequantiles.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../apacheSubProjectPython/approximatequantiles_test.py" beforeDir="false" afterPath="$PROJECT_DIR$/../apacheSubProjectPython/approximatequantiles_test.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../apacheSubProjectPython/approximateunique.py" beforeDir="false" afterPath="$PROJECT_DIR$/../apacheSubProjectPython/approximateunique.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../apacheSubProjectPython/approximateunique_test.py" beforeDir="false" afterPath="$PROJECT_DIR$/../apacheSubProjectPython/approximateunique_test.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../apacheSubProjectPython/bigtableio.py" beforeDir="false" afterPath="$PROJECT_DIR$/../apacheSubProjectPython/bigtableio.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../apacheSubProjectPython/bigtableio_test.py" beforeDir="false" afterPath="$PROJECT_DIR$/../apacheSubProjectPython/bigtableio_test.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../apacheSubProjectPython/coders.py" beforeDir="false" afterPath="$PROJECT_DIR$/../apacheSubProjectPython/coders.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../apacheSubProjectPython/coders_test.py" beforeDir="false" afterPath="$PROJECT_DIR$/../apacheSubProjectPython/coders_test.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../apacheSubProjectPython/combiners.py" beforeDir="false" afterPath="$PROJECT_DIR$/../apacheSubProjectPython/combiners.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../apacheSubProjectPython/combiners_test.py" beforeDir="false" afterPath="$PROJECT_DIR$/../apacheSubProjectPython/combiners_test.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../apacheSubProjectPython/dataflow_runner.py" beforeDir="false" afterPath="$PROJECT_DIR$/../apacheSubProjectPython/dataflow_runner.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../apacheSubProjectPython/dataflow_runner_test.py" beforeDir="false" afterPath="$PROJECT_DIR$/../apacheSubProjectPython/dataflow_runner_test.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../apacheSubProjectPython/direct_runner.py" beforeDir="false" afterPath="$PROJECT_DIR$/../apacheSubProjectPython/direct_runner.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../apacheSubProjectPython/direct_runner_test.py" beforeDir="false" afterPath="$PROJECT_DIR$/../apacheSubProjectPython/direct_runner_test.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../apacheSubProjectPython/fileio.py" beforeDir="false" afterPath="$PROJECT_DIR$/../apacheSubProjectPython/fileio.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../apacheSubProjectPython/fileio_test.py" beforeDir="false" afterPath="$PROJECT_DIR$/../apacheSubProjectPython/fileio_test.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../apacheSubProjectPython/filesystems.py" beforeDir="false" afterPath="$PROJECT_DIR$/../apacheSubProjectPython/filesystems.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../apacheSubProjectPython/filesystems_test.py" beforeDir="false" afterPath="$PROJECT_DIR$/../apacheSubProjectPython/filesystems_test.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../apacheSubProjectPython/flatten_test.py" beforeDir="false" afterPath="$PROJECT_DIR$/../apacheSubProjectPython/flatten_test.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../apacheSubProjectPython/pipeline.py" beforeDir="false" afterPath="$PROJECT_DIR$/../apacheSubProjectPython/pipeline.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../apacheSubProjectPython/pipeline_test.py" beforeDir="false" afterPath="$PROJECT_DIR$/../apacheSubProjectPython/pipeline_test.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../apacheSubProjectPython/pubsub.py" beforeDir="false" afterPath="$PROJECT_DIR$/../apacheSubProjectPython/pubsub.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../apacheSubProjectPython/pubsub_test.py" beforeDir="false" afterPath="$PROJECT_DIR$/../apacheSubProjectPython/pubsub_test.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../apacheSubProjectPython/schemas.py" beforeDir="false" afterPath="$PROJECT_DIR$/../apacheSubProjectPython/schemas.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../apacheSubProjectPython/schemas_test.py" beforeDir="false" afterPath="$PROJECT_DIR$/../apacheSubProjectPython/schemas_test.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../apacheSubProjectPython/spanner.py" beforeDir="false" afterPath="$PROJECT_DIR$/../apacheSubProjectPython/spanner.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../apacheSubProjectPython/spannerio_test.py" beforeDir="false" afterPath="$PROJECT_DIR$/../apacheSubProjectPython/spannerio_test.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../apacheSubProjectPython/textio.py" beforeDir="false" afterPath="$PROJECT_DIR$/../apacheSubProjectPython/textio.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../apacheSubProjectPython/textio_test.py" beforeDir="false" afterPath="$PROJECT_DIR$/../apacheSubProjectPython/textio_test.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/outputTranslate.log" beforeDir="false" afterPath="$PROJECT_DIR$/outputTranslate.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/translate.py" beforeDir="false" afterPath="$PROJECT_DIR$/translate.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -200,7 +166,7 @@
       <workItem from="1731445799390" duration="23000" />
       <workItem from="1731446374752" duration="3671000" />
       <workItem from="1731461259674" duration="7483000" />
-      <workItem from="1732043393784" duration="8806000" />
+      <workItem from="1732043393784" duration="9450000" />
     </task>
     <servers />
   </component>

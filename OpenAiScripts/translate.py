@@ -82,8 +82,18 @@ def extract_imports(directory_path):
 
     return sorted(imports)
 
+def extract_relevant_sections(python_code, max_lines=200):
+    """
+    Extracts the first few lines of the Python reference code, including imports and the beginning of the main logic.
+    """
+    lines = python_code.strip().split('\n')
+    return "\n".join(lines[:max_lines])
+
 def translate_to_python(java_code, allowed_imports, python_reference):
     allowed_imports_text = "\n".join(allowed_imports)
+
+    relevant_python_reference = extract_relevant_sections(python_reference)
+
     prompt = f"""
     Translate the following Java code into Python using the Apache Beam Python SDK.
     - Maintain all refactorings (e.g., method renaming, modularization, improved readability) present in the Java code.
@@ -99,7 +109,7 @@ def translate_to_python(java_code, allowed_imports, python_reference):
     - Ensure the translated code preserves the same functionality and structure of the original Java code, with adjustments for Python idioms where applicable.
 
     Here are some Python code examples for inspiration:
-    {python_reference}
+    {relevant_python_reference}
     
     Java Code:
     {java_code}
