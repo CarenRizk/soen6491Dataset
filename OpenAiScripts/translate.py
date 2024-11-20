@@ -66,19 +66,19 @@ def chatgpt_response_with_backoff(**kwargs):
     client = OpenAI(api_key=api_key)
     return client.chat.completions.create(**kwargs)
 
-def extract_imports(directory_path):
+def extract_imports_from_file(file_path):
     imports = set()
     import_pattern = re.compile(r'^\s*(import .+|from .+ import .+)')
 
-    for root, _, files in os.walk(directory_path):
-        for file in files:
-            if file.endswith('.py'):
-                file_path = os.path.join(root, file)
-                with open(file_path, 'r', encoding='utf-8') as f:
-                    for line in f:
-                        match = import_pattern.match(line)
-                        if match:
-                            imports.add(match.group(0).strip())
+    if not file_path or not os.path.isfile(file_path):
+        logging.warning(f"No valid Python file found at {file_path}")
+        return []
+
+    with open(file_path, 'r', encoding='utf-8') as f:
+        for line in f:
+            match = import_pattern.match(line)
+            if match:
+                imports.add(match.group(0).strip())
 
     return sorted(imports)
 
@@ -92,30 +92,28 @@ def extract_relevant_sections(python_code, max_lines=200):
 def translate_to_python(java_code, allowed_imports, python_reference):
     allowed_imports_text = "\n".join(allowed_imports)
 
+    if isinstance(python_reference, list):
+        python_reference = "\n".join(python_reference)
+
     relevant_python_reference = extract_relevant_sections(python_reference)
 
     prompt = f"""
     Translate the following Java code into Python using the Apache Beam Python SDK.
     - Maintain all refactorings (e.g., method renaming, modularization, improved readability) present in the Java code.
-    - Use the provided Python examples as style inspiration while translating the structure and logic directly from the Java code.
-    - Replace any Java library dependencies with equivalent Python libraries where necessary.
     - Use only the following Python imports in the translation:
       {allowed_imports_text}
-    - Strictly avoid using imports or libraries not listed above.
-    - Handle Python's reserved keywords like `from` (e.g., `GenerateSequence.from(0)` → `GenerateSequence(start=0)`).
+    - Replace any Java library dependencies with equivalent Python libraries where necessary.
+    - Handle Python's reserved keywords like `from` or `and` (e.g., `GenerateSequence.from(0)` → `GenerateSequence(start=0)`).
     - Ensure all translated methods are syntactically valid Python code and runnable with the allowed imports.
-    - Retain all comments that start with "// Optimized by LLM" and translate them to Python as "# Optimized by LLM" in the corresponding locations.
+    - Keep all comments that start with "// Optimized by LLM" and translate them to Python as "# Optimized by LLM" in the corresponding locations.
     - The output must be runnable Python code without any Markdown formatting, explanations, or unnecessary imports.
     - Ensure the translated code preserves the same functionality and structure of the original Java code, with adjustments for Python idioms where applicable.
-
-    Here are some Python code examples for inspiration:
-    {relevant_python_reference}
-    
+        
     Java Code:
     {java_code}
     """
 
-    logging.info("Sending translation prompt to GPT")
+    logging.info(f"Sending translation prompt to GPT {prompt}")
 
     try:
         start_time = time.time()
@@ -174,70 +172,53 @@ def clean_refactored_code(refactored_code):
     return cleaned_refactored_code
 
 def process_files():
-    allowed_imports = extract_imports(PYTHON_PATH)
-
+    """Process main Java files and their corresponding Python test files."""
     for file_group in SPECIFIC_FILES_TO_TRANSLATE:
         main_file, *test_files = file_group
-        process_file_group(main_file, test_files, allowed_imports)
+        process_file_group(main_file, test_files)
 
-def process_file_group(main_file, test_files, allowed_imports):
-    # Find the paths for the main Java file and its test files
+def process_file_group(main_file, test_files):
+    """Process each main Java file and its test files."""
     main_file_path = find_file_path(main_file, REFACTORED_PATH)
-    test_file_paths = [find_file_path(test_file, REFACTORED_PATH) for test_file in test_files]
 
-    # Get the main Python file as a reference
+    # Get the corresponding Python file for the main Java file
     main_python_reference = PYTHON_FILE_MAPPING.get(main_file, [None])[0]
-    main_python_code = (
-        read_file(find_file_path(main_python_reference, PYTHON_PATH))
-        if main_python_reference and find_file_path(main_python_reference, PYTHON_PATH)
-        else ""
-    )
 
-    if main_file_path:
-        # Process main Java file
+    if main_file_path and main_python_reference:
         main_code = read_file(main_file_path)
-        translated_main_code = translate_to_python(main_code, allowed_imports, main_python_code)
-        cleaned_main_code = clean_imports(translated_main_code, allowed_imports)
-        save_translated_code(main_file, cleaned_main_code)
+        save_translated_code(main_python_reference, main_code)
     else:
-        logging.warning(f"Could not find main file: {main_file}")
+        logging.warning(f"Could not find main file or mapping for: {main_file}")
 
     for test_file in test_files:
-        # Get the corresponding Python test file as a reference
+        # Get the corresponding Python test file
         test_python_reference = PYTHON_FILE_MAPPING.get(main_file, [None, None])[1]
-        test_python_code = (
-            read_file(find_file_path(test_python_reference, PYTHON_PATH))
-            if test_python_reference and find_file_path(test_python_reference, PYTHON_PATH)
-            else ""
-        )
+        test_python_path = find_file_path(test_python_reference, PYTHON_PATH)
 
-        test_file_path = find_file_path(test_file, REFACTORED_PATH)
-        if test_file_path:
-            # Process Java test file
-            test_code = read_file(test_file_path)
-            translated_test_code = translate_to_python(test_code, allowed_imports, test_python_code)
-            cleaned_test_code = clean_imports(translated_test_code, allowed_imports)
-            save_translated_code(test_file, cleaned_test_code)
+        if test_python_path and test_python_reference:
+            test_code = read_file(test_python_path)
+            save_translated_code(test_python_reference, test_code)
         else:
-            logging.warning(f"Could not find test file: {test_file}")
+            logging.warning(f"Could not find Python test file for: {test_file}")
 
 def find_file_path(filename, path):
+    """Find the full file path given a directory and filename."""
     for root, _, files in os.walk(path):
         if filename in files:
             return os.path.join(root, filename)
     return None
 
 def read_file(path):
-    with open(path, 'r') as file:
+    """Read the contents of a file."""
+    with open(path, "r", encoding="utf-8") as file:
         return file.read()
 
 def save_translated_code(filename, code):
-    python_filename = filename.replace(".java", ".py")
-    python_file_path = os.path.join(PYTHON_OUTPUT_PATH, python_filename)
-    with open(python_file_path, 'w') as python_file:
+    """Save code to the output directory using the specified filename."""
+    python_file_path = os.path.join(PYTHON_OUTPUT_PATH, filename)
+    with open(python_file_path, "w", encoding="utf-8") as python_file:
         python_file.write(code)
-    logging.info(f"Translated code saved to: {python_file_path}")
-
+    logging.info(f"Saved file: {python_file_path}")
 
 if __name__ == "__main__":
     process_files()

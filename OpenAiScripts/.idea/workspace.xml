@@ -7,8 +7,16 @@
     <list default="true" id="dce2c249-3740-43f9-967d-3277eeef5c23" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/outputTranslate.log" beforeDir="false" afterPath="$PROJECT_DIR$/outputTranslate.log" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/refactor_files.py" beforeDir="false" afterPath="$PROJECT_DIR$/refactor_files.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/translate.py" beforeDir="false" afterPath="$PROJECT_DIR$/translate.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../apacheSubProjectPythonTranslated/env/Lib/site-packages/bs4/tests/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/../apacheSubProjectPythonTranslated/env/Lib/site-packages/bs4/tests/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../apacheSubProjectPythonTranslated/env/Lib/site-packages/bs4/tests/test_css.py" beforeDir="false" afterPath="$PROJECT_DIR$/../apacheSubProjectPythonTranslated/env/Lib/site-packages/bs4/tests/test_css.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../apacheSubProjectPythonTranslated/env/Lib/site-packages/bs4/tests/test_dammit.py" beforeDir="false" afterPath="$PROJECT_DIR$/../apacheSubProjectPythonTranslated/env/Lib/site-packages/bs4/tests/test_dammit.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../apacheSubProjectPythonTranslated/env/Lib/site-packages/bs4/tests/test_docs.py" beforeDir="false" afterPath="$PROJECT_DIR$/../apacheSubProjectPythonTranslated/env/Lib/site-packages/bs4/tests/test_docs.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../apacheSubProjectPythonTranslated/env/Lib/site-packages/bs4/tests/test_fuzz.py" beforeDir="false" afterPath="$PROJECT_DIR$/../apacheSubProjectPythonTranslated/env/Lib/site-packages/bs4/tests/test_fuzz.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../apacheSubProjectPythonTranslated/env/Lib/site-packages/bs4/tests/test_lxml.py" beforeDir="false" afterPath="$PROJECT_DIR$/../apacheSubProjectPythonTranslated/env/Lib/site-packages/bs4/tests/test_lxml.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../apacheSubProjectPythonTranslated/env/Lib/site-packages/bs4/tests/test_soup.py" beforeDir="false" afterPath="$PROJECT_DIR$/../apacheSubProjectPythonTranslated/env/Lib/site-packages/bs4/tests/test_soup.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../apacheSubProjectPythonTranslated/env/Lib/site-packages/bs4/tests/test_tag.py" beforeDir="false" afterPath="$PROJECT_DIR$/../apacheSubProjectPythonTranslated/env/Lib/site-packages/bs4/tests/test_tag.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../apacheSubProjectPythonTranslated/env/Lib/site-packages/bs4/tests/test_tree.py" beforeDir="false" afterPath="$PROJECT_DIR$/../apacheSubProjectPythonTranslated/env/Lib/site-packages/bs4/tests/test_tree.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -167,7 +175,7 @@
       <workItem from="1731445799390" duration="23000" />
       <workItem from="1731446374752" duration="3671000" />
       <workItem from="1731461259674" duration="7483000" />
-      <workItem from="1732043393784" duration="9812000" />
+      <workItem from="1732043393784" duration="15427000" />
     </task>
     <servers />
   </component>
