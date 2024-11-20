@@ -3,10 +3,9 @@
 
 import unittest
 
-import mock
-
 import apache_beam as beam
 import apache_beam.transforms as ptransform
+import mock
 from apache_beam.options.pipeline_options import DebugOptions
 from apache_beam.options.pipeline_options import PipelineOptions
 from apache_beam.pipeline import AppliedPTransform
@@ -19,10 +18,6 @@ from apache_beam.runners import DataflowRunner
 from apache_beam.runners import TestDataflowRunner
 from apache_beam.runners import common
 from apache_beam.runners import create_runner
-from dataflow_runner import DataflowPipelineResult
-from dataflow_runner import DataflowRuntimeException
-from dataflow_runner import _check_and_add_missing_options
-from dataflow_runner import _check_and_add_missing_streaming_options
 from apache_beam.runners.dataflow.internal.clients import dataflow as dataflow_api
 from apache_beam.runners.runner import PipelineState
 from apache_beam.testing.extra_assertions import ExtraAssertionsMixin
@@ -30,6 +25,11 @@ from apache_beam.testing.test_pipeline import TestPipeline
 from apache_beam.transforms import combiners
 from apache_beam.transforms import environments
 from apache_beam.typehints import typehints
+
+from dataflow_runner import DataflowPipelineResult
+from dataflow_runner import DataflowRuntimeException
+from dataflow_runner import _check_and_add_missing_options
+from dataflow_runner import _check_and_add_missing_streaming_options
 
 try:
   from apache_beam.runners.dataflow.internal import apiclient

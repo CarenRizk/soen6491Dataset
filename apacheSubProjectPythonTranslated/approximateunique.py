@@ -1,297 +1,156 @@
-package org.apache.beam.sdk.transforms;
+import random
 
-import java.io.IOException;
-import java.io.Serializable;
-import java.util.Iterator;
-import java.util.TreeSet;
-import java.util.Optional;
-import org.apache.beam.sdk.coders.Coder;
-import org.apache.beam.sdk.coders.Coder.Context;
-import org.apache.beam.sdk.coders.CoderRegistry;
-import org.apache.beam.sdk.coders.KvCoder;
-import org.apache.beam.sdk.coders.SerializableCoder;
-import org.apache.beam.sdk.transforms.Combine.CombineFn;
-import org.apache.beam.sdk.transforms.display.DisplayData;
-import org.apache.beam.sdk.values.KV;
-import org.apache.beam.sdk.values.PCollection;
-import org.apache.beam.vendor.guava.v32_1_2_jre.com.google.common.base.Objects;
-import org.apache.beam.vendor.guava.v32_1_2_jre.com.google.common.collect.Iterables;
-import org.apache.beam.vendor.guava.v32_1_2_jre.com.google.common.collect.Lists;
-import org.apache.beam.vendor.guava.v32_1_2_jre.com.google.common.hash.Hashing;
-import org.apache.beam.vendor.guava.v32_1_2_jre.com.google.common.hash.HashingOutputStream;
-import org.apache.beam.vendor.guava.v32_1_2_jre.com.google.common.io.ByteStreams;
-import org.checkerframework.checker.nullness.qual.Nullable;
+import apache_beam as beam
 
-@Deprecated
-public class ApproximateUnique {
 
-  
-  public static <T> Globally<T> globally(int sampleSize) {
-    return new Globally<>(sampleSize);
-  }
+# Deprecated
+class ApproximateUnique:
 
-  
-  public static <T> Globally<T> globally(double maximumEstimationError) {
-    return new Globally<>(maximumEstimationError);
-  }
+    @staticmethod
+    def globally(sampleSize):
+        return ApproximateUnique.Globally(sampleSize)
 
-  
-  public static <K, V> PerKey<K, V> perKey(int sampleSize) {
-    return new PerKey<>(sampleSize);
-  }
+    @staticmethod
+    def globally(maximumEstimationError):
+        return ApproximateUnique.Globally(maximumEstimationError)
 
-  
-  public static <K, V> PerKey<K, V> perKey(double maximumEstimationError) {
-    return new PerKey<>(maximumEstimationError);
-  }
+    @staticmethod
+    def perKey(sampleSize):
+        return ApproximateUnique.PerKey(sampleSize)
 
-  
+    @staticmethod
+    def perKey(maximumEstimationError):
+        return ApproximateUnique.PerKey(maximumEstimationError)
 
-  
-  public static final class Globally<T> extends PTransform<PCollection<T>, PCollection<Long>> {
+    class Globally(beam.PTransform):
 
-    
-    private final long sampleSize;
+        def __init__(self, sampleSize):
+            self.validateSampleSize(sampleSize)
+            self.sampleSize = sampleSize
+            self.maximumEstimationError = None  # Placeholder for Optional<Double>
 
-    
-    private final Optional<Double> maximumEstimationError;
+        def validateSampleSize(sampleSize):
+            if sampleSize < 16:
+                raise ValueError(
+                    "ApproximateUnique needs a sampleSize "
+                    + ">= 16 for an estimation error <= 50%.  "
+                    + "In general, the estimation "
+                    + "error is about 2 / sqrt(sampleSize)."
+                )
 
-    // Optimized by LLM: Created a private helper method to validate sample size
-    private static void validateSampleSize(int sampleSize) {
-      if (sampleSize < 16) {
-        throw new IllegalArgumentException(
-            "ApproximateUnique needs a sampleSize "
-                + ">= 16 for an estimation error <= 50%.  "
-                + "In general, the estimation "
-                + "error is about 2 / sqrt(sampleSize).");
-      }
-    }
+        def expand(self, input):
+            coder = input.getCoder()  # Placeholder for Coder<T>
+            return input | beam.CombineGlobally(ApproximateUnique.ApproximateUniqueCombineFn(self.sampleSize, coder))
 
-    // Optimized by LLM: Consolidated constructors
-    public Globally(int sampleSize) {
-      validateSampleSize(sampleSize);
-      this.sampleSize = sampleSize;
-      this.maximumEstimationError = Optional.empty();
-    }
+        def populateDisplayData(self, builder):
+            super().populateDisplayData(builder)
+            ApproximateUnique.populateDisplayData(builder, self.sampleSize, None)  # Placeholder for Optional<Double>
 
-    public Globally(double maximumEstimationError) {
-      if (maximumEstimationError < 0.01 || maximumEstimationError > 0.5) {
-        throw new IllegalArgumentException(
-            "ApproximateUnique needs an " + "estimation error between 1% (0.01) and 50% (0.5).");
-      }
-      this.sampleSize = sampleSizeFromEstimationError(maximumEstimationError);
-      this.maximumEstimationError = Optional.of(maximumEstimationError);
-    }
+    class PerKey(beam.PTransform):
 
-    @Override
-    public PCollection<Long> expand(PCollection<T> input) {
-      Coder<T> coder = input.getCoder();
-      return input.apply(Combine.globally(new ApproximateUniqueCombineFn<>(sampleSize, coder)));
-    }
+        def __init__(self, sampleSize):
+            self.validateSampleSize(sampleSize)
+            self.sampleSize = sampleSize
+            self.maximumEstimationError = None  # Placeholder for Optional<Double>
 
-    @Override
-    public void populateDisplayData(DisplayData.Builder builder) {
-      super.populateDisplayData(builder);
-      ApproximateUnique.populateDisplayData(builder, sampleSize, maximumEstimationError.orElse(null));
-    }
-  }
+        def validateSampleSize(sampleSize):
+            if sampleSize < 16:
+                raise ValueError(
+                    "ApproximateUnique needs a "
+                    + "sampleSize >= 16 for an estimation error <= 50%.  In general, "
+                    + "the estimation error is about 2 / sqrt(sampleSize)."
+                )
 
-  
-  public static final class PerKey<K, V>
-      extends PTransform<PCollection<KV<K, V>>, PCollection<KV<K, Long>>> {
+        def expand(self, input):
+            inputCoder = input.getCoder()  # Placeholder for Coder<KV<K, V>>
+            if not isinstance(inputCoder, beam.coders.KvCoder):  # Placeholder for KvCoder
+                raise ValueError(
+                    "ApproximateUnique.PerKey requires its input to use KvCoder"
+                )
+            coder = inputCoder.getValueCoder()  # Placeholder for Coder<V>
 
-    
-    private final long sampleSize;
+            return input | beam.CombinePerKey(ApproximateUnique.ApproximateUniqueCombineFn(self.sampleSize, coder))
 
-    
-    private final Optional<Double> maximumEstimationError;
+        def populateDisplayData(self, builder):
+            super().populateDisplayData(builder)
+            ApproximateUnique.populateDisplayData(builder, self.sampleSize, None)  # Placeholder for Optional<Double>
 
-    // Optimized by LLM: Reused the sample size validation method
-    private static void validateSampleSize(int sampleSize) {
-      if (sampleSize < 16) {
-        throw new IllegalArgumentException(
-            "ApproximateUnique needs a "
-                + "sampleSize >= 16 for an estimation error <= 50%.  In general, "
-                + "the estimation error is about 2 / sqrt(sampleSize).");
-      }
-    }
+    class ApproximateUniqueCombineFn(beam.CombineFn):
 
-    // Optimized by LLM: Consolidated constructors
-    public PerKey(int sampleSize) {
-      validateSampleSize(sampleSize);
-      this.sampleSize = sampleSize;
-      this.maximumEstimationError = Optional.empty();
-    }
+        HASH_SPACE_SIZE = float('inf')  # Placeholder for Long.MAX_VALUE - (double) Long.MIN_VALUE
 
-    public PerKey(double estimationError) {
-      if (estimationError < 0.01 || estimationError > 0.5) {
-        throw new IllegalArgumentException(
-            "ApproximateUnique.PerKey needs an "
-                + "estimation error between 1% (0.01) and 50% (0.5).");
-      }
-      this.sampleSize = sampleSizeFromEstimationError(estimationError);
-      this.maximumEstimationError = Optional.of(estimationError);
-    }
+        class LargestUnique:
 
-    @Override
-    public PCollection<KV<K, Long>> expand(PCollection<KV<K, V>> input) {
-      Coder<KV<K, V>> inputCoder = input.getCoder();
-      if (!(inputCoder instanceof KvCoder)) {
-        throw new IllegalStateException(
-            "ApproximateUnique.PerKey requires its input to use KvCoder");
-      }
-      @SuppressWarnings("unchecked")
-      final Coder<V> coder = ((KvCoder<K, V>) inputCoder).getValueCoder();
+            def __init__(self, sampleSize):
+                self.heap = set()  # Placeholder for TreeSet<Long>
+                self.minHash = float('inf')  # Placeholder for Long.MAX_VALUE
+                self.sampleSize = sampleSize
 
-      return input.apply(Combine.perKey(new ApproximateUniqueCombineFn<>(sampleSize, coder)));
-    }
+            def add(self, value):
+                if len(self.heap) >= self.sampleSize and value < self.minHash:
+                    return
+                if value not in self.heap:
+                    self.heap.add(value)
+                    if len(self.heap) > self.sampleSize:
+                        self.heap.remove(self.minHash)
+                        self.minHash = min(self.heap)
+                    elif value < self.minHash:
+                        self.minHash = value
 
-    @Override
-    public void populateDisplayData(DisplayData.Builder builder) {
-      super.populateDisplayData(builder);
-      ApproximateUnique.populateDisplayData(builder, sampleSize, maximumEstimationError.orElse(null));
-    }
-  }
+            def calculateSampleSpaceSize(self):
+                return float('inf') - self.minHash  # Placeholder for Long.MAX_VALUE
 
-  
+            def getEstimate(self):
+                if len(self.heap) < self.sampleSize:
+                    return len(self.heap)
+                else:
+                    sampleSpaceSize = self.calculateSampleSpaceSize()
+                    estimate = (
+                        (1 - (self.sampleSize / sampleSpaceSize)) /
+                        (1 - (1 / sampleSpaceSize)) *
+                        self.HASH_SPACE_SIZE /
+                        sampleSpaceSize
+                    )
+                    return round(estimate)
 
-  
-  public static class ApproximateUniqueCombineFn<T>
-      extends CombineFn<T, ApproximateUniqueCombineFn.LargestUnique, Long> {
+        def __init__(self, sampleSize, coder):
+            self.sampleSize = sampleSize
+            self.coder = coder  # Placeholder for Coder<T>
 
-    
-    static final double HASH_SPACE_SIZE = Long.MAX_VALUE - (double) Long.MIN_VALUE;
+        def createAccumulator(self):
+            return ApproximateUnique.ApproximateUniqueCombineFn.LargestUnique(self.sampleSize)
 
-    
-    public static class LargestUnique implements Serializable {
-      private final TreeSet<Long> heap = new TreeSet<>();
-      private long minHash = Long.MAX_VALUE;
-      private final long sampleSize;
+        def addInput(self, heap, input):
+            try:
+                heap.add(self.hashElement(input, self.coder))  # Optimized by LLM: Renamed hash to hashElement
+                return heap
+            except Exception as e:  # Optimized by LLM: Handled IOException gracefully
+                print("Error hashing input: " + str(e))
+                return heap  # Return the heap unchanged
 
-      
-      public LargestUnique(long sampleSize) {
-        this.sampleSize = sampleSize;
-      }
+        def mergeAccumulators(self, heaps):
+            accumulator = next(iter(heaps))
+            for h in heaps:
+                accumulator.heap.update(h.heap)
+            return accumulator
 
-      
-      public void add(long value) {
-        if (heap.size() >= sampleSize && value < minHash) {
-          return; 
-        }
-        if (heap.add(value)) {
-          if (heap.size() > sampleSize) {
-            heap.remove(minHash);
-            minHash = heap.first();
-          } else if (value < minHash) {
-            minHash = value;
-          }
-        }
-      }
+        def extractOutput(self, heap):
+            return heap.getEstimate()
 
-      // Optimized by LLM: Extracted estimate logic into a separate method
-      private double calculateSampleSpaceSize() {
-        return Long.MAX_VALUE - (double) minHash;
-      }
+        def getAccumulatorCoder(self, registry, inputCoder):
+            return None  # Placeholder for SerializableCoder.of(LargestUnique.class)
 
-      long getEstimate() {
-        if (heap.size() < sampleSize) {
-          return heap.size();
-        } else {
-          double sampleSpaceSize = calculateSampleSpaceSize();
-          double estimate =
-              Math.log1p(-sampleSize / sampleSpaceSize)
-                  / Math.log1p(-1 / sampleSpaceSize)
-                  * HASH_SPACE_SIZE
-                  / sampleSpaceSize;
-          return Math.round(estimate);
-        }
-      }
+        @staticmethod
+        def hashElement(element, coder):  # Optimized by LLM: Renamed hash to hashElement
+            # Placeholder for HashingOutputStream and ByteStreams
+            return random.getrandbits(64)  # Placeholder for hash logic
 
-      @Override
-      public boolean equals(@Nullable Object o) {
-        if (this == o) {
-          return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-          return false;
-        }
-        LargestUnique that = (LargestUnique) o;
+    @staticmethod
+    def sampleSizeFromEstimationError(estimationError):
+        return round(4.0 / (estimationError ** 2))
 
-        return sampleSize == that.sampleSize && Iterables.elementsEqual(heap, that.heap);
-      }
-
-      @Override
-      public int hashCode() {
-        return Objects.hashCode(Lists.newArrayList(heap), sampleSize);
-      }
-    }
-
-    private final long sampleSize;
-    private final Coder<T> coder;
-
-    public ApproximateUniqueCombineFn(long sampleSize, Coder<T> coder) {
-      this.sampleSize = sampleSize;
-      this.coder = coder;
-    }
-
-    @Override
-    public LargestUnique createAccumulator() {
-      return new LargestUnique(sampleSize);
-    }
-
-    @Override
-    public LargestUnique addInput(LargestUnique heap, T input) {
-      try {
-        heap.add(hashElement(input, coder)); // Optimized by LLM: Renamed hash to hashElement
-        return heap;
-      } catch (IOException e) { // Optimized by LLM: Handled IOException gracefully
-        // Log the error instead of throwing a RuntimeException
-        System.err.println("Error hashing input: " + e.getMessage());
-        return heap; // Return the heap unchanged
-      }
-    }
-
-    @Override
-    public LargestUnique mergeAccumulators(Iterable<LargestUnique> heaps) {
-      Iterator<LargestUnique> iterator = heaps.iterator();
-      LargestUnique accumulator = iterator.next();
-      while (iterator.hasNext()) {
-        iterator.next().heap.forEach(h -> accumulator.add(h));
-      }
-      return accumulator;
-    }
-
-    @Override
-    public Long extractOutput(LargestUnique heap) {
-      return heap.getEstimate();
-    }
-
-    @Override
-    public Coder<LargestUnique> getAccumulatorCoder(CoderRegistry registry, Coder<T> inputCoder) {
-      return SerializableCoder.of(LargestUnique.class);
-    }
-
-    
-    static <T> long hashElement(T element, Coder<T> coder) throws IOException { // Optimized by LLM: Renamed hash to hashElement
-      try (HashingOutputStream stream =
-          new HashingOutputStream(Hashing.murmur3_128(), ByteStreams.nullOutputStream())) {
-        coder.encode(element, stream, Context.OUTER);
-        return stream.hash().asLong();
-      }
-    }
-  }
-
-  
-  static long sampleSizeFromEstimationError(double estimationError) {
-    return Math.round(Math.ceil(4.0 / Math.pow(estimationError, 2.0)));
-  }
-
-  private static void populateDisplayData(
-      DisplayData.Builder builder, long sampleSize, @Nullable Double maxEstimationError) {
-    builder
-        .add(DisplayData.item("sampleSize", sampleSize).withLabel("Sample Size"))
-        .addIfNotNull(
-            DisplayData.item("maximumEstimationError", maxEstimationError)
-                .withLabel("Maximum Estimation Error"));
-  }
-}
+    @staticmethod
+    def populateDisplayData(builder, sampleSize, maxEstimationError):
+        builder.add("sampleSize", sampleSize)  # Placeholder for DisplayData.item
+        if maxEstimationError is not None:
+            builder.add("maximumEstimationError", maxEstimationError)  # Placeholder for DisplayData.item

@@ -1,168 +1,106 @@
-package org.apache.beam.sdk.coders;
+from typing import TypeVar
 
-import static java.util.Objects.requireNonNull; // Optimized by LLM: Suggestion 2
-import static org.apache.beam.vendor.guava.v32_1_2_jre.com.google.common.base.Preconditions.checkArgument;
+T = TypeVar('T')
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.Serializable;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import org.apache.beam.sdk.util.common.ElementByteSizeObserver;
-import org.apache.beam.sdk.values.TypeDescriptor;
-import org.apache.beam.vendor.guava.v32_1_2_jre.com.google.common.base.Joiner;
-import org.apache.beam.vendor.guava.v32_1_2_jre.com.google.common.base.MoreObjects;
-import org.apache.beam.vendor.guava.v32_1_2_jre.com.google.common.io.ByteStreams;
-import org.apache.beam.vendor.guava.v32_1_2_jre.com.google.common.io.CountingOutputStream;
-import org.checkerframework.checker.nullness.qual.Nullable;
+class Coder:
+    """Base class for coders."""
+    class Context:
+        OUTER = None  # Placeholder for Context.OUTER
+        NESTED = None  # Placeholder for Context.NESTED
 
-public abstract class Coder<T> implements Serializable {
-  @Deprecated
-  public static class Context {
-    public static final Context OUTER = new Context(true);
-    public static final Context NESTED = new Context(false);
-    public final boolean isWholeStream;
+        def __init__(self, is_whole_stream):
+            self.is_whole_stream = is_whole_stream
 
-    public Context(boolean isWholeStream) {
-      this.isWholeStream = isWholeStream;
-    }
+        def nested(self):
+            return Coder.Context.NESTED
 
-    public Context nested() {
-      return NESTED;
-    }
+        def __eq__(self, obj):
+            if not isinstance(obj, Coder.Context):
+                return False
+            return self.is_whole_stream == obj.is_whole_stream  # Optimized by LLM
 
-    @Override
-    public boolean equals(@Nullable Object obj) {
-      if (!(obj instanceof Context)) {
-        return false;
-      }
-      return requireNonNull(isWholeStream).equals(((Context) obj).isWholeStream); // Optimized by LLM: Suggestion 2
-    }
+        def __hash__(self):
+            return hash(self.is_whole_stream)  # Optimized by LLM
 
-    @Override
-    public int hashCode() {
-      return requireNonNull(isWholeStream).hashCode(); // Optimized by LLM: Suggestion 2
-    }
+        def __str__(self):
+            return "OUTER" if self.is_whole_stream else "NESTED"
 
-    @Override
-    public String toString() {
-      return MoreObjects.toStringHelper(Context.class)
-          .addValue(isWholeStream ? "OUTER" : "NESTED")
-          .toString();
-    }
-  }
-  public abstract void encode(T value, OutputStream outStream) throws CoderException, IOException;
+    def encode(self, value, out_stream):
+        """Encodes the given object into a byte string."""
+        raise NotImplementedError('Encode not implemented: %s.' % self)
 
-  @Deprecated
-  public void encode(T value, OutputStream outStream, Context context)
-      throws CoderException, IOException {
-    encode(value, outStream);
-  }
+    def encode_with_context(self, value, out_stream, context):
+        self.encode(value, out_stream)
 
-  public abstract T decode(InputStream inStream) throws CoderException, IOException;
+    def decode(self, in_stream):
+        """Decodes the given byte string into the corresponding object."""
+        raise NotImplementedError('Decode not implemented: %s.' % self)
 
-  @Deprecated
-  public T decode(InputStream inStream, Context context) throws CoderException, IOException {
-    return decode(inStream);
-  }
+    def decode_with_context(self, in_stream, context):
+        return self.decode(in_stream)
 
-  public abstract List<? extends Coder<?>> getCoderArguments();
+    def get_coder_arguments(self):
+        """Returns the coder arguments."""
+        raise NotImplementedError('getCoderArguments not implemented: %s.' % self)
 
-  public abstract void verifyDeterministic() throws Coder.NonDeterministicException;
+    def verify_deterministic(self):
+        """Verifies if the coder is deterministic."""
+        raise NotImplementedError('verifyDeterministic not implemented: %s.' % self)
 
-  public static void verifyDeterministic(Coder<?> target, String message, Iterable<Coder<?>> coders)
-      throws NonDeterministicException {
-    for (Coder<?> coder : coders) {
-      try {
-        coder.verifyDeterministic();
-      } catch (Coder.NonDeterministicException e) { // Optimized by LLM: Suggestion 3
-        throw new NonDeterministicException(target, message, e);
-      }
-    }
-  }
+    @staticmethod
+    def verify_deterministic_static(target, message, coders):
+        for coder in coders:
+            try:
+                coder.verify_deterministic()
+            except Coder.NonDeterministicException as e:  # Optimized by LLM
+                raise Coder.NonDeterministicException(target, message, e)
 
-  public static void verifyDeterministic(Coder<?> target, String message, Coder<?>... coders)
-      throws NonDeterministicException {
-    verifyDeterministic(target, message, Arrays.asList(coders));
-  }
+    @staticmethod
+    def verify_deterministic_static_varargs(target, message, *coders):
+        Coder.verify_deterministic_static(target, message, list(coders))
 
-  public boolean consistentWithEquals() {
-    return false;
-  }
+    def consistent_with_equals(self):
+        return False
 
-  public Object structuralValue(T value) throws CoderException, IOException {
-    if (value != null && consistentWithEquals()) {
-      return value;
-    } else {
-      try {
-        ByteArrayOutputStream os = new ByteArrayOutputStream();
-        encode(value, os, Context.OUTER);
-        return new StructuralByteArray(os.toByteArray());
-      } catch (IllegalArgumentException exn) { // Optimized by LLM: Suggestion 3
-        throw new IllegalArgumentException(
-            "Unable to encode element '" + value + "' with coder '" + this + "'.", exn);
-      }
-    }
-  }
-  public boolean isRegisterByteSizeObserverCheap(T value) {
-    return false;
-  }
+    def structural_value(self, value):
+        if value is not None and self.consistent_with_equals():
+            return value
+        else:
+            try:
+                os = bytearray()
+                self.encode(value, os, Coder.Context.OUTER)
+                return os
+            except ValueError as exn:  # Optimized by LLM
+                raise ValueError(
+                    "Unable to encode element '" + str(value) + "' with coder '" + str(self) + "'.", exn)
 
-  public void registerByteSizeObserver(T value, ElementByteSizeObserver observer) throws Exception {
-    observer.update(getEncodedElementByteSize(value));
-  }
+    def is_register_byte_size_observer_cheap(self, value):
+        return False
 
-  protected long getEncodedElementByteSize(T value) throws IOException {
-    try (CountingOutputStream os = new CountingOutputStream(ByteStreams.nullOutputStream())) {
-      encode(value, os);
-      return os.getCount();
-    } catch (IllegalArgumentException exn) { // Optimized by LLM: Suggestion 3
-      throw new IllegalArgumentException(
-          "Unable to encode element '" + value + "' with coder '" + this + "'.", exn);
-    }
-  }
+    def register_byte_size_observer(self, value, observer):
+        observer.update(self.get_encoded_element_byte_size(value))
 
-  public TypeDescriptor<T> getEncodedTypeDescriptor() {
-    return (TypeDescriptor<T>)
-        TypeDescriptor.of(getClass()).resolveType(new TypeDescriptor<T>() {}.getType());
-  }
+    def get_encoded_element_byte_size(self, value):
+        try:
+            os = bytearray()
+            self.encode(value, os)
+            return len(os)
+        except ValueError as exn:  # Optimized by LLM
+            raise ValueError(
+                "Unable to encode element '" + str(value) + "' with coder '" + str(self) + "'.", exn)
 
-  public static class NonDeterministicException extends Exception {
-    private final Coder<?> coder;
-    private final List<String> reasons;
+    def get_encoded_type_descriptor(self):
+        return TypeDescriptor.of(type(self)).resolve_type(TypeDescriptor[T]())
 
-    public NonDeterministicException(
-        Coder<?> coder, String reason, @Nullable NonDeterministicException e) {
-      this(coder, Collections.singletonList(reason), e);
-    }
+    class NonDeterministicException(Exception):
+        def __init__(self, coder, reason, e=None):
+            super().__init__(e)
+            self.coder = coder
+            self.reasons = [reason]
 
-    public NonDeterministicException(Coder<?> coder, String reason) {
-      this(coder, Collections.singletonList(reason), null); // Optimized by LLM: Suggestion 4
-    }
+        def get_reasons(self):
+            return self.reasons
 
-    public NonDeterministicException(Coder<?> coder, List<String> reasons) {
-      this(coder, reasons, null);
-    }
-
-    public NonDeterministicException(
-        Coder<?> coder, List<String> reasons, @Nullable NonDeterministicException cause) {
-      super(cause);
-      checkArgument(!reasons.isEmpty(), "Reasons must not be empty.");
-      this.reasons = reasons;
-      this.coder = coder;
-    }
-
-    public Iterable<String> getReasons() {
-      return reasons;
-    }
-
-    @Override
-    public String getMessage() {
-      String reasonsStr = Joiner.on("\n\t").join(reasons);
-      return coder + " is not deterministic because:\n\t" + reasonsStr;
-    }
-  }
-}
+        def get_message(self):
+            reasons_str = "\n\t".join(self.reasons)
+            return str(self.coder) + " is not deterministic because:\n\t" + reasons_str

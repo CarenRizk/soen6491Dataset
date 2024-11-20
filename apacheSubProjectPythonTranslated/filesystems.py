@@ -1,458 +1,212 @@
-package org.apache.beam.sdk.io;
+import logging
+import re
+from collections import defaultdict
+from typing import List, Collection, Map, Any
 
-import static org.apache.beam.vendor.guava.v32_1_2_jre.com.google.common.base.Preconditions.checkArgument;
-import static org.apache.beam.vendor.guava.v32_1_2_jre.com.google.common.base.Preconditions.checkNotNull;
-import static org.apache.beam.vendor.guava.v32_1_2_jre.com.google.common.base.Verify.verify;
+from apache_beam.io.filesystem import BeamIOError
+from apache_beam.io.localfilesystem import LocalFileSystem
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.nio.channels.ReadableByteChannel;
-import java.nio.channels.WritableByteChannel;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.ServiceLoader;
-import java.util.Set;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+_LOGGER = logging.getLogger(__name__)
 
-import javax.annotation.Nonnull;
-import org.apache.beam.sdk.annotations.Internal;
-import org.apache.beam.sdk.io.fs.CreateOptions;
-import org.apache.beam.sdk.io.fs.CreateOptions.StandardCreateOptions;
-import org.apache.beam.sdk.io.fs.EmptyMatchTreatment;
-import org.apache.beam.sdk.io.fs.MatchResult;
-import org.apache.beam.sdk.io.fs.MatchResult.Metadata;
-import org.apache.beam.sdk.io.fs.MatchResult.Status;
-import org.apache.beam.sdk.io.fs.MoveOptions;
-import org.apache.beam.sdk.io.fs.MoveOptions.StandardMoveOptions;
-import org.apache.beam.sdk.io.fs.ResolveOptions.StandardResolveOptions;
-import org.apache.beam.sdk.io.fs.ResourceId;
-import org.apache.beam.sdk.metrics.Lineage;
-import org.apache.beam.sdk.options.PipelineOptions;
-import org.apache.beam.sdk.util.common.ReflectHelpers;
-import org.apache.beam.sdk.values.KV;
-import org.apache.beam.vendor.guava.v32_1_2_jre.com.google.common.annotations.VisibleForTesting;
-import org.apache.beam.vendor.guava.v32_1_2_jre.com.google.common.base.Function;
-import org.apache.beam.vendor.guava.v32_1_2_jre.com.google.common.base.Joiner;
-import org.apache.beam.vendor.guava.v32_1_2_jre.com.google.common.collect.FluentIterable;
-import org.apache.beam.vendor.guava.v32_1_2_jre.com.google.common.collect.ImmutableMap;
-import org.apache.beam.vendor.guava.v32_1_2_jre.com.google.common.collect.Iterables;
-import org.apache.beam.vendor.guava.v32_1_2_jre.com.google.common.collect.Lists;
-import org.apache.beam.vendor.guava.v32_1_2_jre.com.google.common.collect.Multimap;
-import org.apache.beam.vendor.guava.v32_1_2_jre.com.google.common.collect.Ordering;
-import org.apache.beam.vendor.guava.v32_1_2_jre.com.google.common.collect.Sets;
-import org.apache.beam.vendor.guava.v32_1_2_jre.com.google.common.collect.TreeMultimap;
+DEFAULT_SCHEME = "file"
+FILE_SCHEME_PATTERN = re.compile(r"(?P<scheme>[a-zA-Z][-a-zA-Z0-9+.]*):/.*")
+GLOB_PATTERN = re.compile(r"[*?{}]")
 
-@SuppressWarnings({
-  "nullness", 
-  "rawtypes"
-})
-public class FileSystems {
+FILESYSTEM_REVISION = None
+SCHEME_TO_FILESYSTEM = {DEFAULT_SCHEME: LocalFileSystem()}
 
-  public static final String DEFAULT_SCHEME = "file";
-  private static final Pattern FILE_SCHEME_PATTERN =
-      Pattern.compile("(?<scheme>[a-zA-Z][-a-zA-Z0-9+.]*):/.*");
-  private static final Pattern GLOB_PATTERN = Pattern.compile("[*?{}]");
+def has_glob_wildcard(spec: str) -> bool:
+    return GLOB_PATTERN.search(spec) is not None
 
-  private static final AtomicReference<KV<Long, Integer>> FILESYSTEM_REVISION =
-      new AtomicReference<>();
+def match(specs: List[str]) -> List[Any]:  # Placeholder for MatchResult
+    return get_file_system_internal(get_only_scheme(specs)).match(specs)
 
-  private static final AtomicReference<Map<String, FileSystem>> SCHEME_TO_FILESYSTEM =
-      new AtomicReference<>(ImmutableMap.of(DEFAULT_SCHEME, new LocalFileSystem()));
+def match_with_empty_treatment(specs: List[str], empty_match_treatment: Any) -> List[Any]:  # Placeholder for MatchResult
+    matches = get_file_system_internal(get_only_scheme(specs)).match(specs)
+    res = []
+    for i in range(len(matches)):
+        res.append(maybe_adjust_empty_match_result(specs[i], matches[i], empty_match_treatment))
+    return res
 
-  
-  public static boolean hasGlobWildcard(String spec) {
-    return GLOB_PATTERN.matcher(spec).find();
-  }
+def match_single(spec: str) -> Any:  # Placeholder for MatchResult
+    matches = match([spec])
+    if len(matches) != 1:
+        raise ValueError(f"FileSystem implementation for {spec} did not return exactly one MatchResult: {matches}")
+    return matches[0]
 
-  
-  public static List<MatchResult> match(List<String> specs) throws IOException {
-    return getFileSystemInternal(getOnlyScheme(specs)).match(specs);
-  }
+def match_single_with_empty_treatment(spec: str, empty_match_treatment: Any) -> Any:  # Placeholder for MatchResult
+    res = match_single(spec)
+    return maybe_adjust_empty_match_result(spec, res, empty_match_treatment)
 
-  
-  public static List<MatchResult> match(List<String> specs, EmptyMatchTreatment emptyMatchTreatment)
-      throws IOException {
-    List<MatchResult> matches = getFileSystemInternal(getOnlyScheme(specs)).match(specs);
-    List<MatchResult> res = Lists.newArrayListWithExpectedSize(matches.size());
-    for (int i = 0; i < matches.size(); i++) {
-      res.add(maybeAdjustEmptyMatchResult(specs.get(i), matches.get(i), emptyMatchTreatment));
-    }
-    return res;
-  }
+def maybe_adjust_empty_match_result(spec: str, res: Any, empty_match_treatment: Any) -> Any:  # Placeholder for MatchResult
+    if res.status() == "NOT_FOUND" or (res.status() == "OK" and not res.metadata()):
+        not_found_allowed = empty_match_treatment == "ALLOW" or (has_glob_wildcard(spec) and empty_match_treatment == "ALLOW_IF_WILDCARD")
+        return {"status": "OK", "metadata": []} if not_found_allowed else BeamIOError(f"No files matched spec: {spec}")
+    return res
 
-  
-  public static MatchResult match(String spec) throws IOException {
-    List<MatchResult> matches = match(Collections.singletonList(spec));
-    verify(
-        matches.size() == 1,
-        "FileSystem implementation for %s did not return exactly one MatchResult: %s",
-        spec,
-        matches);
-    return matches.get(0);
-  }
+def match_single_file_spec(spec: str) -> Any:  # Placeholder for Metadata
+    matches = match([spec])
+    match_result = matches[0]
+    if match_result.status() == "NOT_FOUND":
+        raise FileNotFoundError(f"File spec {spec} not found")
+    elif match_result.status() != "OK":
+        raise IOError(f"Error matching file spec {spec}: status {match_result.status()}")
+    elif len(match_result.metadata()) != 1:
+        raise IOError(f"Expecting spec {spec} to match exactly one file, but matched {len(match_result.metadata())}: {match_result.metadata()}")
+    return match_result.metadata()[0]
 
-  
-  public static MatchResult match(String spec, EmptyMatchTreatment emptyMatchTreatment)
-      throws IOException {
-    MatchResult res = match(spec);
-    return maybeAdjustEmptyMatchResult(spec, res, emptyMatchTreatment);
-  }
+def create(resource_id: Any, mime_type: str) -> Any:  # Placeholder for WritableByteChannel
+    return create_with_options(resource_id, {"mimeType": mime_type})
 
-  private static MatchResult maybeAdjustEmptyMatchResult(
-      String spec, MatchResult res, EmptyMatchTreatment emptyMatchTreatment) throws IOException {
-    if (res.status() == Status.NOT_FOUND
-        || (res.status() == Status.OK && res.metadata().isEmpty())) {
-      boolean notFoundAllowed =
-          emptyMatchTreatment == EmptyMatchTreatment.ALLOW
-              || (hasGlobWildcard(spec)
-                  && emptyMatchTreatment == EmptyMatchTreatment.ALLOW_IF_WILDCARD);
-      return notFoundAllowed
-          ? MatchResult.create(Status.OK, Collections.emptyList())
-          : MatchResult.create(
-              Status.NOT_FOUND, new FileNotFoundException("No files matched spec: " + spec));
-    }
-    return res;
-  }
+def create_with_options(resource_id: Any, create_options: Any) -> Any:  # Placeholder for WritableByteChannel
+    return get_file_system_internal(resource_id.get_scheme()).create(resource_id, create_options)
 
-  
-  public static Metadata matchSingleFileSpec(String spec) throws IOException {
-    List<MatchResult> matches = FileSystems.match(Collections.singletonList(spec));
-    MatchResult matchResult = Iterables.getOnlyElement(matches);
-    if (matchResult.status() == Status.NOT_FOUND) {
-      throw new FileNotFoundException(String.format("File spec %s not found", spec));
-    } else if (matchResult.status() != Status.OK) {
-      throw new IOException(
-          String.format("Error matching file spec %s: status %s", spec, matchResult.status()));
-    } else {
-      List<Metadata> metadata = matchResult.metadata();
-      if (metadata.size() != 1) {
-        throw new IOException(
-            String.format(
-                "Expecting spec %s to match exactly one file, but matched %s: %s",
-                spec, metadata.size(), metadata));
-      }
-      return metadata.get(0);
-    }
-  }
+def open(resource_id: Any) -> Any:  # Placeholder for ReadableByteChannel
+    return get_file_system_internal(resource_id.get_scheme()).open(resource_id)
 
-  
-  // Optimized by LLM: Replace FluentIterable with Java Streams
-  public static List<MatchResult> matchResources(List<ResourceId> resourceIds) throws IOException {
-    return match(resourceIds.stream().map(ResourceId::toString).toList());
-  }
+def copy(src_resource_ids: List[Any], dest_resource_ids: List[Any], *move_options: Any) -> None:  # Placeholder for MoveOptions
+    validate_src_dest_lists(src_resource_ids, dest_resource_ids)
+    if not src_resource_ids:
+        return
+    file_system = get_file_system_internal(src_resource_ids[0].get_scheme())
+    filtered = filter_files(file_system, src_resource_ids, dest_resource_ids, *move_options)
+    if filtered.result_sources:
+        file_system.copy(filtered.result_sources, filtered.result_destinations)
 
-  
-  public static WritableByteChannel create(ResourceId resourceId, String mimeType)
-      throws IOException {
-    return create(resourceId, StandardCreateOptions.builder().setMimeType(mimeType).build());
-  }
+def rename(src_resource_ids: List[Any], dest_resource_ids: List[Any], *move_options: Any) -> None:  # Placeholder for MoveOptions
+    validate_src_dest_lists(src_resource_ids, dest_resource_ids)
+    if not src_resource_ids:
+        return
+    rename_internal(get_file_system_internal(src_resource_ids[0].get_scheme()), src_resource_ids, dest_resource_ids, *move_options)
 
-  
-  public static WritableByteChannel create(ResourceId resourceId, CreateOptions createOptions)
-      throws IOException {
-    return getFileSystemInternal(resourceId.getScheme()).create(resourceId, createOptions);
-  }
+def rename_internal(file_system: Any, src_resource_ids: List[Any], dest_resource_ids: List[Any], *move_options: Any) -> None:  # Placeholder for MoveOptions
+    try:
+        file_system.rename(src_resource_ids, dest_resource_ids, *move_options)
+    except Exception:  # Placeholder for UnsupportedOperationException
+        filtered = filter_files(file_system, src_resource_ids, dest_resource_ids, *move_options)
+        if filtered.result_sources:
+            file_system.rename(filtered.result_sources, filtered.result_destinations)
+        if filtered.filtered_existing_srcs:
+            file_system.delete(filtered.filtered_existing_srcs)
 
-  
-  public static ReadableByteChannel open(ResourceId resourceId) throws IOException {
-    return getFileSystemInternal(resourceId.getScheme()).open(resourceId);
-  }
+def delete(resource_ids: Collection[Any], *move_options: Any) -> None:  # Placeholder for MoveOptions
+    if not resource_ids:
+        return
 
-  
-  public static void copy(
-      List<ResourceId> srcResourceIds, List<ResourceId> destResourceIds, MoveOptions... moveOptions)
-      throws IOException {
-    validateSrcDestLists(srcResourceIds, destResourceIds);
-    if (srcResourceIds.isEmpty()) {
-      return;
-    }
-    FileSystem fileSystem = getFileSystemInternal(srcResourceIds.iterator().next().getScheme());
-    FilterResult filtered = filterFiles(fileSystem, srcResourceIds, destResourceIds, moveOptions);
-    if (!filtered.resultSources.isEmpty()) {
-      fileSystem.copy(filtered.resultSources, filtered.resultDestinations);
-    }
-  }
-
-  
-  public static void rename(
-      List<ResourceId> srcResourceIds, List<ResourceId> destResourceIds, MoveOptions... moveOptions)
-      throws IOException {
-    validateSrcDestLists(srcResourceIds, destResourceIds);
-    if (srcResourceIds.isEmpty()) {
-      return;
-    }
-    renameInternal(
-        getFileSystemInternal(srcResourceIds.iterator().next().getScheme()),
-        srcResourceIds,
-        destResourceIds,
-        moveOptions);
-  }
-
-  @VisibleForTesting
-  static void renameInternal(
-      FileSystem fileSystem,
-      List<ResourceId> srcResourceIds,
-      List<ResourceId> destResourceIds,
-      MoveOptions... moveOptions)
-      throws IOException {
-    try {
-      fileSystem.rename(srcResourceIds, destResourceIds, moveOptions);
-    } catch (UnsupportedOperationException e) {
-      
-      
-      FilterResult filtered = filterFiles(fileSystem, srcResourceIds, destResourceIds, moveOptions);
-      if (!filtered.resultSources.isEmpty()) {
-        fileSystem.rename(filtered.resultSources, filtered.resultDestinations);
-      }
-      if (!filtered.filteredExistingSrcs.isEmpty()) {
-        fileSystem.delete(filtered.filteredExistingSrcs);
-      }
-    }
-  }
-
-  
-  public static void delete(Collection<ResourceId> resourceIds, MoveOptions... moveOptions)
-      throws IOException {
-    if (resourceIds.isEmpty()) {
-      
-      return;
-    }
-
-    Collection<ResourceId> resourceIdsToDelete;
-    if (Sets.newHashSet(moveOptions)
-        .contains(MoveOptions.StandardMoveOptions.IGNORE_MISSING_FILES)) {
-      resourceIdsToDelete =
-          matchResources(Lists.newArrayList(resourceIds)).stream()
-              .filter(matchResult -> !matchResult.status().equals(Status.NOT_FOUND))
-              .flatMap(matchResult -> {
-                try {
-                  return matchResult.metadata().stream().map(Metadata::resourceId);
-                } catch (IOException e) {
-                  throw new RuntimeException(
-                      String.format("Failed to get metadata from MatchResult: %s.", matchResult),
-                      e);
-                }
-              })
-              .toList();
-    } else {
-      resourceIdsToDelete = resourceIds;
-    }
-    if (resourceIdsToDelete.isEmpty()) {
-      return;
-    }
-    getFileSystemInternal(resourceIdsToDelete.iterator().next().getScheme())
-        .delete(resourceIdsToDelete);
-  }
-
-  private static class FilterResult {
-    public List<ResourceId> resultSources = new ArrayList<>(0);
-    public List<ResourceId> resultDestinations = new ArrayList<>(0);
-    public List<ResourceId> filteredExistingSrcs = new ArrayList<>(0);
-  };
-
-  private static FilterResult filterFiles(
-      FileSystem fileSystem,
-      List<ResourceId> srcResourceIds,
-      List<ResourceId> destResourceIds,
-      MoveOptions... moveOptions)
-      throws IOException {
-    FilterResult result = new FilterResult();
-    if (moveOptions.length == 0 || srcResourceIds.isEmpty()) {
-      
-      result.resultSources = srcResourceIds;
-      result.resultDestinations = destResourceIds;
-      return result;
-    }
-    Set<MoveOptions> moveOptionSet = Sets.newHashSet(moveOptions);
-    final boolean ignoreMissingSrc =
-        moveOptionSet.contains(StandardMoveOptions.IGNORE_MISSING_FILES);
-    final boolean skipExistingDest =
-        moveOptionSet.contains(StandardMoveOptions.SKIP_IF_DESTINATION_EXISTS);
-    final int size = srcResourceIds.size();
-
+    resource_ids_to_delete = resource_ids
+    if "IGNORE_MISSING_FILES" in move_options:
+        resource_ids_to_delete = [match_result.metadata() for match_result in match_resources(list(resource_ids)) if match_result.status() != "NOT_FOUND"]
     
-    List<ResourceId> matchResources = new ArrayList<>();
-    if (ignoreMissingSrc) {
-      matchResources.addAll(srcResourceIds);
-    }
-    if (skipExistingDest) {
-      matchResources.addAll(destResourceIds);
-    }
-    List<MatchResult> matchResults =
-        fileSystem.match(
-            matchResources.stream().map(ResourceId::toString).toList());
-    List<MatchResult> matchSrcResults = ignoreMissingSrc ? matchResults.subList(0, size) : null;
-    List<MatchResult> matchDestResults =
-        skipExistingDest
-            ? matchResults.subList(matchResults.size() - size, matchResults.size())
-            : null;
+    if not resource_ids_to_delete:
+        return
+    get_file_system_internal(resource_ids_to_delete[0].get_scheme()).delete(resource_ids_to_delete)
 
-    for (int i = 0; i < size; ++i) {
-      if (matchSrcResults != null && matchSrcResults.get(i).status().equals(Status.NOT_FOUND)) {
-        
-        continue;
-      }
-      if (matchDestResults != null
-          && matchSrcResults != null
-          && matchDestResults.get(i).status().equals(Status.OK)
-          && checksumMatch(
-              matchDestResults.get(i).metadata().get(0),
-              matchSrcResults.get(i).metadata().get(0))) {
-        
-        
-        result.filteredExistingSrcs.add(srcResourceIds.get(i));
-        continue;
-      }
-      result.resultSources.add(srcResourceIds.get(i));
-      result.resultDestinations.add(destResourceIds.get(i));
-    }
-    return result;
-  }
+class FilterResult:
+    def __init__(self):
+        self.result_sources = []
+        self.result_destinations = []
+        self.filtered_existing_srcs = []
 
-  private static boolean checksumMatch(MatchResult.Metadata first, MatchResult.Metadata second) {
-    return first.checksum() != null && first.checksum().equals(second.checksum());
-  }
+def filter_files(file_system: Any, src_resource_ids: List[Any], dest_resource_ids: List[Any], *move_options: Any) -> FilterResult:
+    result = FilterResult()
+    if not move_options or not src_resource_ids:
+        result.result_sources = src_resource_ids
+        result.result_destinations = dest_resource_ids
+        return result
 
-  private static void validateSrcDestLists(
-      List<ResourceId> srcResourceIds, List<ResourceId> destResourceIds) {
-    checkArgument(
-        srcResourceIds.size() == destResourceIds.size(),
-        "Number of source resource ids %s must equal number of destination resource ids %s",
-        srcResourceIds.size(),
-        destResourceIds.size());
+    ignore_missing_src = "IGNORE_MISSING_FILES" in move_options
+    skip_existing_dest = "SKIP_IF_DESTINATION_EXISTS" in move_options
+    size = len(src_resource_ids)
 
-    if (srcResourceIds.isEmpty()) {
-      
-      return;
-    }
+    match_resources = []
+    if ignore_missing_src:
+        match_resources.extend(src_resource_ids)
+    if skip_existing_dest:
+        match_resources.extend(dest_resource_ids)
 
-    Set<String> schemes =
-        Stream.concat(srcResourceIds.stream(), destResourceIds.stream())
-            .map(ResourceId::getScheme)
-            .collect(Collectors.toSet());
-    checkArgument(
-        schemes.size() == 1,
-        String.format(
-            "Expect srcResourceIds and destResourceIds have the same scheme, but received %s.",
-            Joiner.on(", ").join(schemes)));
-  }
+    match_results = file_system.match([resource_id.to_string() for resource_id in match_resources])
+    match_src_results = match_results[:size] if ignore_missing_src else None
+    match_dest_results = match_results[-size:] if skip_existing_dest else None
 
-  private static String getOnlyScheme(List<String> specs) {
-    checkArgument(!specs.isEmpty(), "Expect specs are not empty.");
-    Set<String> schemes = specs.stream().map(FileSystems::parseScheme).collect(Collectors.toSet());
-    return Iterables.getOnlyElement(schemes);
-  }
+    for i in range(size):
+        if match_src_results and match_src_results[i].status() == "NOT_FOUND":
+            continue
+        if match_dest_results and match_src_results and match_dest_results[i].status() == "OK" and checksum_match(match_dest_results[i].metadata()[0], match_src_results[i].metadata()[0]):
+            result.filtered_existing_srcs.append(src_resource_ids[i])
+            continue
+        result.result_sources.append(src_resource_ids[i])
+        result.result_destinations.append(dest_resource_ids[i])
+    return result
 
-  private static String parseScheme(String spec) {
+def checksum_match(first: Any, second: Any) -> bool:  # Placeholder for MatchResult.Metadata
+    return first.checksum() is not None and first.checksum() == second.checksum()
+
+def validate_src_dest_lists(src_resource_ids: List[Any], dest_resource_ids: List[Any]) -> None:
+    if len(src_resource_ids) != len(dest_resource_ids):
+        raise ValueError(f"Number of source resource ids {len(src_resource_ids)} must equal number of destination resource ids {len(dest_resource_ids)}")
     
-    
-    
-    
-    
-    Matcher matcher = FILE_SCHEME_PATTERN.matcher(spec);
+    if not src_resource_ids:
+        return
 
-    if (!matcher.matches()) {
-      return DEFAULT_SCHEME;
-    } else {
-      return matcher.group("scheme").toLowerCase();
-    }
-  }
+    schemes = {resource_id.get_scheme() for resource_id in src_resource_ids + dest_resource_ids}
+    if len(schemes) != 1:
+        raise ValueError(f"Expect src_resource_ids and dest_resource_ids have the same scheme, but received {schemes}.")
 
-  
-  @VisibleForTesting
-  static FileSystem getFileSystemInternal(String scheme) {
-    String lowerCaseScheme = scheme.toLowerCase();
-    Map<String, FileSystem> schemeToFileSystem = SCHEME_TO_FILESYSTEM.get();
-    FileSystem rval = schemeToFileSystem.get(lowerCaseScheme);
-    if (rval == null) {
-      throw new IllegalArgumentException("No filesystem found for scheme " + scheme);
-    }
-    return rval;
-  }
+def get_only_scheme(specs: List[str]) -> str:
+    if not specs:
+        raise ValueError("Expect specs are not empty.")
+    schemes = {parse_scheme(spec) for spec in specs}
+    return next(iter(schemes))
 
-  
+def parse_scheme(spec: str) -> str:
+    matcher = FILE_SCHEME_PATTERN.match(spec)
+    if not matcher:
+        return DEFAULT_SCHEME
+    return matcher.group("scheme").lower()
 
-  
-  @Internal
-  public static void setDefaultPipelineOptions(PipelineOptions options) {
-    checkNotNull(options, "options");
-    long id = options.getOptionsId();
-    int nextRevision = options.revision();
+def get_file_system_internal(scheme: str) -> Any:  # Placeholder for FileSystem
+    lower_case_scheme = scheme.lower()
+    file_system = SCHEME_TO_FILESYSTEM.get(lower_case_scheme)
+    if file_system is None:
+        raise ValueError(f"No filesystem found for scheme {scheme}")
+    return file_system
 
-    while (true) {
-      KV<Long, Integer> revision = FILESYSTEM_REVISION.get();
-      
-      if (revision != null && revision.getKey().equals(id) && revision.getValue() >= nextRevision) {
-        return;
-      }
+def set_default_pipeline_options(options: Any) -> None:  # Placeholder for PipelineOptions
+    if options is None:
+        raise ValueError("options")
+    id = options.get_options_id()
+    next_revision = options.revision()
 
-      if (FILESYSTEM_REVISION.compareAndSet(revision, KV.of(id, nextRevision))) {
-        Set<FileSystemRegistrar> registrars =
-            Sets.newTreeSet(ReflectHelpers.ObjectsClassComparator.INSTANCE);
-        registrars.addAll(
-            Lists.newArrayList(
-                ServiceLoader.load(FileSystemRegistrar.class, ReflectHelpers.findClassLoader())));
+    while True:
+        revision = FILESYSTEM_REVISION
+        if revision is not None and revision[0] == id and revision[1] >= next_revision:
+            return
 
-        SCHEME_TO_FILESYSTEM.set(verifySchemesAreUnique(options, registrars));
-        return;
-      }
-    }
-  }
+        if FILESYSTEM_REVISION is None:  # Placeholder for atomic reference
+            FILESYSTEM_REVISION = (id, next_revision)
+            registrars = set()  # Placeholder for Set<FileSystemRegistrar>
+            SCHEME_TO_FILESYSTEM.update(verify_schemes_are_unique(options, registrars))
+            return
 
-  @VisibleForTesting
-  static Map<String, FileSystem> verifySchemesAreUnique(
-      PipelineOptions options, Set<FileSystemRegistrar> registrars) {
-    Multimap<String, FileSystem> fileSystemsBySchemes =
-        TreeMultimap.create(Ordering.<String>natural(), Ordering.arbitrary());
+def verify_schemes_are_unique(options: Any, registrars: set) -> Map[str, Any]:  # Placeholder for Map<String, FileSystem>
+    file_systems_by_schemes = defaultdict(list)
 
-    for (FileSystemRegistrar registrar : registrars) {
-      for (FileSystem fileSystem : registrar.fromOptions(options)) {
-        fileSystemsBySchemes.put(fileSystem.getScheme(), fileSystem);
-      }
-    }
-    for (Entry<String, Collection<FileSystem>> entry : fileSystemsBySchemes.asMap().entrySet()) {
-      if (entry.getValue().size() > 1) {
-        String conflictingFileSystems =
-            Joiner.on(", ")
-                .join(
-                    FluentIterable.from(entry.getValue())
-                        .transform(input -> input.getClass().getName())
-                        .toSortedList(Ordering.natural()));
-        throw new IllegalStateException(
-            String.format(
-                "Scheme: [%s] has conflicting filesystems: [%s]",
-                entry.getKey(), conflictingFileSystems));
-      }
-    }
+    for registrar in registrars:
+        for file_system in registrar.from_options(options):
+            file_systems_by_schemes[file_system.get_scheme()].append(file_system)
 
-    ImmutableMap.Builder<String, FileSystem> schemeToFileSystem = ImmutableMap.builder();
-    for (Entry<String, FileSystem> entry : fileSystemsBySchemes.entries()) {
-      schemeToFileSystem.put(entry.getKey(), entry.getValue());
-    }
-    return schemeToFileSystem.build();
-  }
+    for entry in file_systems_by_schemes.items():
+        if len(entry[1]) > 1:
+            conflicting_file_systems = ", ".join([fs.__class__.__name__ for fs in entry[1]])
+            raise ValueError(f"Scheme: [{entry[0]}] has conflicting filesystems: [{conflicting_file_systems}]")
 
-  
-  public static ResourceId matchNewResource(String singleResourceSpec, boolean isDirectory) {
-    return getFileSystemInternal(parseScheme(singleResourceSpec))
-        .matchNewResource(singleResourceSpec, isDirectory);
-  }
+    return {entry[0]: entry[1][0] for entry in file_systems_by_schemes.items()}
 
-  
-  public static ResourceId matchNewDirectory(String singleResourceSpec, String... baseNames) {
-    ResourceId currentDir = matchNewResource(singleResourceSpec, true);
-    for (String dir : baseNames) {
-      currentDir = currentDir.resolve(dir, StandardResolveOptions.RESOLVE_DIRECTORY);
-    }
-    return currentDir;
-  }
-}
+def match_new_resource(single_resource_spec: str, is_directory: bool) -> Any:  # Placeholder for ResourceId
+    return get_file_system_internal(parse_scheme(single_resource_spec)).match_new_resource(single_resource_spec, is_directory)
+
+def match_new_directory(single_resource_spec: str, *base_names: str) -> Any:  # Placeholder for ResourceId
+    current_dir = match_new_resource(single_resource_spec, True)
+    for dir in base_names:
+        current_dir = current_dir.resolve(dir, "RESOLVE_DIRECTORY")  # Placeholder for StandardResolveOptions.RESOLVE_DIRECTORY
+    return current_dir

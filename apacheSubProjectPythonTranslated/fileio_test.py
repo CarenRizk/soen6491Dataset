@@ -11,27 +11,20 @@ import unittest
 import uuid
 import warnings
 
-import pytest
-from hamcrest.library.text import stringmatches
-
 import apache_beam as beam
-import fileio
+import pytest
 from apache_beam.io.filebasedsink_test import _TestCaseWithTempDirCleanUp
 from apache_beam.io.filesystem import CompressionTypes
 from apache_beam.io.filesystems import FileSystems
-from apache_beam.options.pipeline_options import PipelineOptions
-from apache_beam.options.pipeline_options import StandardOptions
 from apache_beam.testing.test_pipeline import TestPipeline
-from apache_beam.testing.test_stream import TestStream
 from apache_beam.testing.test_utils import compute_hash
 from apache_beam.testing.util import assert_that
 from apache_beam.testing.util import equal_to
-from apache_beam.testing.util import matches_all
-from apache_beam.transforms import trigger
-from window import FixedWindows
+from apache_beam.utils.timestamp import Timestamp
+
+import fileio
 from window import GlobalWindow
 from window import IntervalWindow
-from apache_beam.utils.timestamp import Timestamp
 
 warnings.filterwarnings(
     'ignore', category=FutureWarning, module='apache_beam.io.fileio_test')

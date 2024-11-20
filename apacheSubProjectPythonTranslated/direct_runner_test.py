@@ -4,9 +4,8 @@ import threading
 import unittest
 from collections import defaultdict
 
-import hamcrest as hc
-
 import apache_beam as beam
+import hamcrest as hc
 from apache_beam.metrics.cells import DistributionData
 from apache_beam.metrics.cells import DistributionResult
 from apache_beam.metrics.execution import MetricKey
@@ -15,15 +14,14 @@ from apache_beam.metrics.metric import Metrics
 from apache_beam.metrics.metric import MetricsFilter
 from apache_beam.metrics.metricbase import MetricName
 from apache_beam.pipeline import Pipeline
-from direct_runner import DirectRunner
-from apache_beam.runners import TestDirectRunner
-from apache_beam.runners import create_runner
 from apache_beam.runners.direct.evaluation_context import _ExecutionContext
 from apache_beam.runners.direct.transform_evaluator import _GroupByKeyOnlyEvaluator
 from apache_beam.runners.direct.transform_evaluator import _TransformEvaluator
 from apache_beam.testing import test_pipeline
 from apache_beam.testing.util import assert_that
 from apache_beam.testing.util import equal_to
+
+from direct_runner import DirectRunner
 
 
 class DirectPipelineResultTest(unittest.TestCase):

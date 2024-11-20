@@ -17,13 +17,6 @@ from apache_beam.io import iobase
 from apache_beam.io import source_test_utils
 from apache_beam.io.filesystem import CompressionTypes
 from apache_beam.io.filesystems import FileSystems
-from textio import _TextSink as TextSink
-from textio import _TextSource as TextSource
-from textio import ReadAllFromText
-from textio import ReadAllFromTextContinuously
-from textio import ReadFromText
-from textio import ReadFromTextWithFilename
-from textio import WriteToText
 from apache_beam.testing.test_pipeline import TestPipeline
 from apache_beam.testing.test_utils import TempDir
 from apache_beam.testing.util import assert_that
@@ -31,6 +24,14 @@ from apache_beam.testing.util import equal_to
 from apache_beam.transforms.core import Create
 from apache_beam.transforms.userstate import CombiningValueStateSpec
 from apache_beam.utils.timestamp import Timestamp
+
+from textio import ReadAllFromText
+from textio import ReadAllFromTextContinuously
+from textio import ReadFromText
+from textio import ReadFromTextWithFilename
+from textio import WriteToText
+from textio import _TextSink as TextSink
+from textio import _TextSource as TextSource
 
 
 class DummyCoder(coders.Coder):

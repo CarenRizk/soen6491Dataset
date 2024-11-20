@@ -20,37 +20,27 @@
 
 import unittest
 
-import apache_beam as beam
 from apache_beam.coders import coders
-from apache_beam.runners import pipeline_context
 from apache_beam.testing.test_pipeline import TestPipeline
 from apache_beam.testing.util import assert_that
 from apache_beam.testing.util import equal_to
-from apache_beam.transforms import CombinePerKey
 from apache_beam.transforms import Create
-from apache_beam.transforms import FlatMapTuple
 from apache_beam.transforms import GroupByKey
 from apache_beam.transforms import Map
 from apache_beam.transforms import MapTuple
 from apache_beam.transforms import WindowInto
-from apache_beam.transforms import combiners
 from apache_beam.transforms import core
-from apache_beam.transforms.core import Windowing
-from trigger import AccumulationMode
-from trigger import AfterCount
-from window import FixedWindows
-from window import GlobalWindow
-from window import GlobalWindows
-from window import IntervalWindow
-from window import NonMergingWindowFn
-from window import Sessions
-from window import SlidingWindows
-from window import TimestampCombiner
-from window import TimestampedValue
-from window import WindowedValue
-from window import WindowFn
 from apache_beam.utils.timestamp import MAX_TIMESTAMP
 from apache_beam.utils.timestamp import MIN_TIMESTAMP
+
+from window import FixedWindows
+from window import GlobalWindow
+from window import IntervalWindow
+from window import NonMergingWindowFn
+from window import SlidingWindows
+from window import TimestampedValue
+from window import WindowFn
+from window import WindowedValue
 
 
 def context(element, timestamp):

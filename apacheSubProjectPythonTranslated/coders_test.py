@@ -5,12 +5,12 @@ import unittest
 
 import proto
 import pytest
-
 from apache_beam import typehints
 from apache_beam.coders import proto2_coder_test_messages_pb2 as test_message
-import coders
 from apache_beam.coders.avro_record import AvroRecord
 from apache_beam.coders.typecoders import registry as coders_registry
+
+import coders
 
 
 class PickleCoderTest(unittest.TestCase):

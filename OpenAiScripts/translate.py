@@ -19,23 +19,23 @@ REFACTORED_PATH = r"..\apacheSubProjectJavaRefactored"
 PYTHON_OUTPUT_PATH = r"..\apacheSubProjectPythonTranslated"
 PYTHON_PATH = r"..\apacheSubProjectPython"
 SPECIFIC_FILES_TO_TRANSLATE = [
-    ["Pipeline.java", "PipelineTest.java"],
-    ["Trigger.java", "TriggerTest.java"],
-    ["Window.java", "WindowingTest.java"],
-    ["ApproximateQuantiles.java", "ApproximateQuantilesTest.java"],
-    ["ApproximateUnique.java", "ApproximateUniqueTest.java"],
-    ["Combine.java", "CombineTest.java"],
-    ["TextIO.java", "TextIOReadTest.java", "TextIOWriteTest.java"],
-    ["Coder.java", "CoderTest.java"],
-    ["Schema.java", "SchemaTest.java"],
-    ["PubsubIO.java", "PubsubIOTest.java"],
-    ["FileIO.java", "FileIOTest.java"],
-    ["DataflowRunner.java", "DataflowRunnerTest.java"],
-    ["DirectRunner.java", "DirectRunnerTest.java"],
-    ["FileSystems.java", "FileSystemsTest.java"],
-    ["BigtableIO.java", "BigtableIOTest.java"],
-    ["SpannerIO.java", "SpannerIOWriteTest.java", "SpannerIOReadTest.java", "SpannerIOReadChangeStreamTest.java"],
-    ["Flatten.java", "FlattenTest.java"]
+    "Pipeline.java",
+    "Trigger.java",
+    "Window.java",
+    "ApproximateQuantiles.java",
+    "ApproximateUnique.java",
+    "Combine.java",
+    "TextIO.java",
+    "Coder.java",
+    "Schema.java",
+    "PubsubIO.java",
+    "FileIO.java",
+    "DataflowRunner.java",
+    "DirectRunner.java",
+    "FileSystems.java",
+    "BigtableIO.java",
+    "SpannerIO.java",
+    "Flatten.java"
 ]
 
 PYTHON_FILE_MAPPING = {
@@ -98,20 +98,43 @@ def translate_to_python(java_code, allowed_imports, python_reference):
     relevant_python_reference = extract_relevant_sections(python_reference)
 
     prompt = f"""
-    Translate the following Java code into Python using the Apache Beam Python SDK.
-    - Maintain all refactorings (e.g., method renaming, modularization, improved readability) present in the Java code.
-    - Use only the following Python imports in the translation:
-      {allowed_imports_text}
-    - Replace any Java library dependencies with equivalent Python libraries where necessary.
-    - Handle Python's reserved keywords like `from` or `and` (e.g., `GenerateSequence.from(0)` → `GenerateSequence(start=0)`).
-    - Ensure all translated methods are syntactically valid Python code and runnable with the allowed imports.
-    - Keep all comments that start with "// Optimized by LLM" and translate them to Python as "# Optimized by LLM" in the corresponding locations.
-    - The output must be runnable Python code without any Markdown formatting, explanations, or unnecessary imports.
-    - Ensure the translated code preserves the same functionality and structure of the original Java code, with adjustments for Python idioms where applicable.
+        Translate the following Java code into Python using the Apache Beam Python SDK. Follow these guidelines strictly:
         
-    Java Code:
-    {java_code}
+        1. **Strict and Literal Translation**: Perform a one-to-one mapping of the Java code into Python. Do not optimize, refactor, simplify, or alter the functionality, structure, or logic in any way.
+        
+        2. **Use of Allowed Imports**: Use only the provided Python imports for the translation:
+           {allowed_imports_text}
+           If a specific Java import has no direct Python equivalent, leave a placeholder with a comment (e.g., `# Placeholder for <Java import>`).
+        
+        3. **Comments**:
+           - Retain all comments from the Java code, translating them into Python as-is.
+           - For any comments starting with "// Optimized by LLM" in the Java code, translate them into Python as "# Optimized by LLM" at the corresponding location.
+           - Do not add any new comments, explanations, or justifications not present in the original Java code.
+        
+        4. **Python Syntax Handling**:
+           - Handle Python's reserved keywords and syntax differences (e.g., `GenerateSequence.from(0)` → `GenerateSequence(start=0)`).
+           - Replace Java-specific constructs or features with their equivalent Python constructs while maintaining strict functionality.
+        
+        5. **Output Format**:
+           - Ensure the output is runnable Python code, compatible with Python 3.8+.
+           - Do not include any Markdown formatting, explanations, or extraneous text (e.g., no "```python" or "```").
+           - The translated code must be self-contained and syntactically valid.
+        
+        6. **Preserve Functionality**: The translated code must preserve the same behavior and functionality as the original Java code, adjusting only for Python-specific idioms where strictly necessary.
+        
+        7. **Reference File**:
+           - Use the provided Python reference code to guide your translation where relevant:
+             {relevant_python_reference}
+        
+        8. Replace Java-specific placeholders, such as `PCollection`, with equivalent Python constructs. For example:
+           - Use `typing.Any` as a generic placeholder type.
+           - Use `typing.TypeVar` or `typing.Generic` for generics like `<T>`.
+        ---
+        
+        **Java Code**:
+        {java_code}
     """
+
 
     logging.info(f"Sending translation prompt to GPT {prompt}")
 
@@ -173,33 +196,45 @@ def clean_refactored_code(refactored_code):
 
 def process_files():
     """Process main Java files and their corresponding Python test files."""
-    for file_group in SPECIFIC_FILES_TO_TRANSLATE:
-        main_file, *test_files = file_group
-        process_file_group(main_file, test_files)
+    for file in SPECIFIC_FILES_TO_TRANSLATE:
+        process_file_group(file)
 
-def process_file_group(main_file, test_files):
+def process_file_group(main_file):
     """Process each main Java file and its test files."""
     main_file_path = find_file_path(main_file, REFACTORED_PATH)
+    if not main_file_path:
+        logging.warning(f"Main file not found: {main_file}")
+        return
 
-    # Get the corresponding Python file for the main Java file
-    main_python_reference = PYTHON_FILE_MAPPING.get(main_file, [None])[0]
+    # Extract the corresponding Python file name
+    main_python_reference_name = PYTHON_FILE_MAPPING.get(main_file, [None])[0]
+    if not main_python_reference_name:
+        logging.warning(f"No Python file mapping found for: {main_file}")
+        return
 
-    if main_file_path and main_python_reference:
-        main_code = read_file(main_file_path)
-        save_translated_code(main_python_reference, main_code)
-    else:
-        logging.warning(f"Could not find main file or mapping for: {main_file}")
+    # Extract allowed imports from the reference file
+    main_python_path = find_file_path(main_python_reference_name, PYTHON_PATH)
+    allowed_imports = extract_imports_from_file(main_python_path) if main_python_path else []
 
-    for test_file in test_files:
-        # Get the corresponding Python test file
-        test_python_reference = PYTHON_FILE_MAPPING.get(main_file, [None, None])[1]
-        test_python_path = find_file_path(test_python_reference, PYTHON_PATH)
+    # Read Java code
+    main_code = read_file(main_file_path)
 
-        if test_python_path and test_python_reference:
-            test_code = read_file(test_python_path)
-            save_translated_code(test_python_reference, test_code)
-        else:
-            logging.warning(f"Could not find Python test file for: {test_file}")
+    # Read Python reference code
+    main_python_reference = read_file(main_python_path) if main_python_path else ""
+
+    # Translate Java code to Python
+    translated_main = translate_to_python(main_code, allowed_imports, main_python_reference)
+
+    # Save the translated code using the mapped Python filename
+    save_translated_code(main_python_reference_name, translated_main)
+
+def save_translated_code(filename, code):
+    """Save code to the output directory using the specified filename."""
+    python_file_path = os.path.join(PYTHON_OUTPUT_PATH, filename)
+    os.makedirs(os.path.dirname(python_file_path), exist_ok=True)  # Ensure the directory exists
+    with open(python_file_path, "w", encoding="utf-8") as python_file:
+        python_file.write(code)
+    logging.info(f"Saved file: {python_file_path}")
 
 def find_file_path(filename, path):
     """Find the full file path given a directory and filename."""
@@ -212,13 +247,6 @@ def read_file(path):
     """Read the contents of a file."""
     with open(path, "r", encoding="utf-8") as file:
         return file.read()
-
-def save_translated_code(filename, code):
-    """Save code to the output directory using the specified filename."""
-    python_file_path = os.path.join(PYTHON_OUTPUT_PATH, filename)
-    with open(python_file_path, "w", encoding="utf-8") as python_file:
-        python_file.write(code)
-    logging.info(f"Saved file: {python_file_path}")
 
 if __name__ == "__main__":
     process_files()

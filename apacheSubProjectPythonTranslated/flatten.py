@@ -1,104 +1,77 @@
-package org.apache.beam.sdk.transforms;
-
-import org.apache.beam.sdk.coders.Coder;
-import org.apache.beam.sdk.coders.IterableLikeCoder;
-import org.apache.beam.sdk.transforms.windowing.WindowFn;
-import org.apache.beam.sdk.values.PCollection;
-import org.apache.beam.sdk.values.PCollection.IsBounded;
-import org.apache.beam.sdk.values.PCollectionList;
-import org.apache.beam.sdk.values.WindowingStrategy;
+from apache_beam import PTransform
+from apache_beam import PTransform
+from apache_beam import WindowingStrategy
+from apache_beam.coders import IterableLikeCoder
+from apache_beam.transforms import FlatMapElements
+from apache_beam.transforms import SimpleFunction
 
 
-public class Flatten {
+class Flatten:
 
-  
-  public static <T> PCollections<T> pCollections() {
-    return new PCollections<>();
-  }
+    @staticmethod
+    def pCollections():
+        return Flatten.PCollections()
 
-  
-  public static <T> Iterables<T> iterables() {
-    return new Iterables<>();
-  }
+    @staticmethod
+    def iterables():
+        return Flatten.Iterables()
 
-  
-  public static class PCollections<T> extends PTransform<PCollectionList<T>, PCollection<T>> {
+    class PCollections(PTransform):
+        def __init__(self):
+            super().__init__()
 
-    private PCollections() {}
+        def validateWindowCompatibility(self, windowingStrategy, input):
+            # Optimized by LLM: Extracted compatibility check into a separate method
+            other = input.getWindowingStrategy()
+            if not windowingStrategy.getWindowFn().isCompatible(other.getWindowFn()):
+                raise Exception(
+                    "Inputs to Flatten had incompatible window windowFns: "
+                    + str(windowingStrategy.getWindowFn())
+                    + ", "
+                    + str(other.getWindowFn()))
 
-    private void validateWindowCompatibility(WindowingStrategy<?, ?> windowingStrategy, PCollection<?> input) {
-      // Optimized by LLM: Extracted compatibility check into a separate method
-      WindowingStrategy<?, ?> other = input.getWindowingStrategy();
-      if (!windowingStrategy.getWindowFn().isCompatible(other.getWindowFn())) {
-        throw new IllegalStateException(
-            "Inputs to Flatten had incompatible window windowFns: "
-                + windowingStrategy.getWindowFn()
-                + ", "
-                + other.getWindowFn());
-      }
+            if not windowingStrategy.getTrigger().isCompatible(other.getTrigger()):
+                raise Exception(
+                    "Inputs to Flatten had incompatible triggers: "
+                    + str(windowingStrategy.getTrigger())
+                    + ", "
+                    + str(other.getTrigger()))
 
-      if (!windowingStrategy.getTrigger().isCompatible(other.getTrigger())) {
-        throw new IllegalStateException(
-            "Inputs to Flatten had incompatible triggers: "
-                + windowingStrategy.getTrigger()
-                + ", "
-                + other.getTrigger());
-      }
-    }
+        def expand(self, inputs):
+            windowingStrategy = None
+            isBounded = PCollection.IsBounded.UNBOUNDED  # Optimized by LLM: Initialized to UNBOUNDED
+            if inputs.getAll():
+                windowingStrategy = inputs.get(0).getWindowingStrategy()
+                for input in inputs.getAll():
+                    self.validateWindowCompatibility(windowingStrategy, input)  # Optimized by LLM: Using extracted method
+                    isBounded = isBounded.and(input.isBounded())
+            else:
+                windowingStrategy = WindowingStrategy.globalDefault()
 
-    @Override
-    public PCollection<T> expand(PCollectionList<T> inputs) {
-      WindowingStrategy<?, ?> windowingStrategy;
-      IsBounded isBounded = IsBounded.UNBOUNDED; // Optimized by LLM: Initialized to UNBOUNDED
-      if (!inputs.getAll().isEmpty()) {
-        windowingStrategy = inputs.get(0).getWindowingStrategy();
-        for (PCollection<?> input : inputs.getAll()) {
-          validateWindowCompatibility(windowingStrategy, input); // Optimized by LLM: Using extracted method
-          isBounded = isBounded.and(input.isBounded());
-        }
-      } else {
-        windowingStrategy = WindowingStrategy.globalDefault();
-      }
+            return PCollection.createPrimitiveOutputInternal(
+                inputs.getPipeline(),
+                windowingStrategy,
+                isBounded,
+                inputs.getAll() if inputs.getAll() else None)
 
-      return PCollection.createPrimitiveOutputInternal(
-          inputs.getPipeline(),
-          windowingStrategy,
-          isBounded,
-          
-          inputs.getAll().isEmpty() ? null : inputs.get(0).getCoder());
-    }
-  }
+    class Iterables(PTransform):
+        def __init__(self):
+            super().__init__()
 
-  
-  public static class Iterables<T>
-      extends PTransform<PCollection<? extends Iterable<T>>, PCollection<T>> {
-    private Iterables() {}
+        def isIterableLikeCoder(self, inCoder):
+            # Optimized by LLM: Extracted coder check into a separate method
+            return isinstance(inCoder, IterableLikeCoder)
 
-    private boolean isIterableLikeCoder(Coder<?> inCoder) {
-      // Optimized by LLM: Extracted coder check into a separate method
-      return inCoder instanceof IterableLikeCoder;
-    }
+        def expand(self, in):
+            inCoder = in.getCoder()
+            if not self.isIterableLikeCoder(inCoder):  # Optimized by LLM: Using extracted method
+                raise Exception(
+                    "expecting the input Coder<Iterable> to be an IterableLikeCoder")
+            elemCoder = inCoder.getElemCoder()  # type: ignore
 
-    @Override
-    public PCollection<T> expand(PCollection<? extends Iterable<T>> in) {
-      Coder<? extends Iterable<T>> inCoder = in.getCoder();
-      if (!isIterableLikeCoder(inCoder)) { // Optimized by LLM: Using extracted method
-        throw new IllegalArgumentException(
-            "expecting the input Coder<Iterable> to be an IterableLikeCoder");
-      }
-      @SuppressWarnings("unchecked")
-      Coder<T> elemCoder = ((IterableLikeCoder<T, ?>) inCoder).getElemCoder();
-
-      return in.apply(
-              "FlattenIterables",
-              FlatMapElements.via(
-                  new SimpleFunction<Iterable<T>, Iterable<T>>() {
-                    @Override
-                    public Iterable<T> apply(Iterable<T> iterable) { // Optimized by LLM: Renamed parameter for clarity
-                      return iterable;
-                    }
-                  }))
-          .setCoder(elemCoder);
-    }
-  }
-}
+            return in.apply(
+                "FlattenIterables",
+                FlatMapElements.via(
+                    SimpleFunction(lambda iterable: iterable)  # Optimized by LLM: Renamed parameter for clarity
+                )
+            ).setCoder(elemCoder)

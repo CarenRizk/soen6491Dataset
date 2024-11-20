@@ -1,322 +1,124 @@
-package org.apache.beam.sdk.transforms.windowing;
+import abc
+from typing import Any
+from typing import Iterable
+from typing import Optional
 
-import com.google.auto.value.AutoValue;
-import org.apache.beam.sdk.coders.Coder.NonDeterministicException;
-import org.apache.beam.sdk.transforms.Flatten;
-import org.apache.beam.sdk.transforms.GroupByKey;
-import org.apache.beam.sdk.transforms.MapElements;
-import org.apache.beam.sdk.transforms.PTransform;
-import org.apache.beam.sdk.transforms.SimpleFunction;
-import org.apache.beam.sdk.transforms.display.DisplayData;
-import org.apache.beam.sdk.values.PCollection;
-import org.apache.beam.sdk.values.PCollectionList;
-import org.apache.beam.sdk.values.WindowingStrategy;
-import org.apache.beam.sdk.values.WindowingStrategy.AccumulationMode;
-import org.apache.beam.vendor.guava.v32_1_2_jre.com.google.common.annotations.VisibleForTesting;
-import org.apache.beam.vendor.guava.v32_1_2_jre.com.google.common.collect.Ordering;
-import org.checkerframework.checker.initialization.qual.Initialized;
-import org.checkerframework.checker.nullness.qual.Nullable;
-import org.checkerframework.checker.nullness.qual.UnknownKeyFor;
-import org.joda.time.Duration;
+from apache_beam.coders import coders
+from apache_beam.portability import python_urns
+from apache_beam.portability.api import beam_runner_api_pb2
+from apache_beam.transforms import timeutil
+from apache_beam.utils import urns
+from apache_beam.utils.timestamp import Timestamp
+from apache_beam.utils.timestamp import TimestampTypes  # pylint: disable=unused-import
 
-@AutoValue
-@SuppressWarnings({
-  "nullness", 
-  "rawtypes"
-})
-public abstract class Window<T> extends PTransform<PCollection<T>, PCollection<T>> {
+__all__ = [
+    'TimestampCombiner',
+    'WindowFn',
+    'BoundedWindow',
+    'IntervalWindow',
+    'TimestampedValue',
+    'GlobalWindow',
+    'NonMergingWindowFn',
+    'GlobalWindows',
+    'FixedWindows',
+    'SlidingWindows',
+    'Sessions',
+]
 
-  
-  public enum ClosingBehavior {
-    
-    FIRE_ALWAYS,
-    
-    FIRE_IF_NON_EMPTY
-  }
+class TimestampCombiner(object):
+    """Determines how output timestamps of grouping operations are assigned."""
 
-  
-  public enum OnTimeBehavior {
-    
-    FIRE_ALWAYS,
-    
-    FIRE_IF_NON_EMPTY
-  }
+    OUTPUT_AT_EOW = beam_runner_api_pb2.OutputTime.END_OF_WINDOW
+    OUTPUT_AT_EARLIEST = beam_runner_api_pb2.OutputTime.EARLIEST_IN_PANE
+    OUTPUT_AT_LATEST = beam_runner_api_pb2.OutputTime.LATEST_IN_PANE
+    OUTPUT_AT_EARLIEST_TRANSFORMED = 'OUTPUT_AT_EARLIEST_TRANSFORMED'
 
-  
-  public static <T> Window<T> into(WindowFn<? super T, ?> fn) {
-    try {
-      fn.windowCoder().verifyDeterministic();
-    } catch (NonDeterministicException e) {
-      throw new IllegalArgumentException("Window coders must be deterministic.", e);
-    }
-    return Window.<T>configure().withWindowFn(fn);
-  }
+    @staticmethod
+    def get_impl(
+        timestamp_combiner: beam_runner_api_pb2.OutputTime.Enum,
+        window_fn: 'WindowFn') -> timeutil.TimestampCombinerImpl:
+        if timestamp_combiner == TimestampCombiner.OUTPUT_AT_EOW:
+            return timeutil.OutputAtEndOfWindowImpl()
+        elif timestamp_combiner == TimestampCombiner.OUTPUT_AT_EARLIEST:
+            return timeutil.OutputAtEarliestInputTimestampImpl()
+        elif timestamp_combiner == TimestampCombiner.OUTPUT_AT_LATEST:
+            return timeutil.OutputAtLatestInputTimestampImpl()
+        elif timestamp_combiner == TimestampCombiner.OUTPUT_AT_EARLIEST_TRANSFORMED:
+            return timeutil.OutputAtEarliestTransformedInputTimestampImpl(window_fn)
+        else:
+            raise ValueError('Invalid TimestampCombiner: %s.' % timestamp_combiner)
 
-  
-  public static <T> Window<T> configure() {
-    return new AutoValue_Window.Builder<T>().build();
-  }
+class WindowFn(urns.RunnerApiFn, metaclass=abc.ABCMeta):
+    """An abstract windowing function defining a basic assign and merge."""
+    class AssignContext(object):
+        """Context passed to WindowFn.assign()."""
+        def __init__(
+            self,
+            timestamp: TimestampTypes,
+            element: Optional[Any] = None,
+            window: Optional['BoundedWindow'] = None) -> None:
+            self.timestamp = Timestamp.of(timestamp)
+            self.element = element
+            self.window = window
 
-  public abstract @Nullable WindowFn<? super T, ?> getWindowFn();
+    @abc.abstractmethod
+    def assign(self,
+               assign_context: 'AssignContext') -> Iterable['BoundedWindow']:
+        """Associates windows to an element.
 
-  abstract @Nullable Trigger getTrigger();
+        Arguments:
+          assign_context: Instance of AssignContext.
 
-  abstract @Nullable AccumulationMode getAccumulationMode();
+        Returns:
+          An iterable of BoundedWindow.
+        """
+        raise NotImplementedError
 
-  abstract @Nullable Duration getAllowedLateness();
+    class MergeContext(object):
+        """Context passed to WindowFn.merge() to perform merging, if any."""
+        def __init__(self, windows: Iterable['BoundedWindow']) -> None:
+            self.windows = list(windows)
 
-  abstract @Nullable ClosingBehavior getClosingBehavior();
+        def merge(
+            self,
+            to_be_merged: Iterable['BoundedWindow'],
+            merge_result: 'BoundedWindow') -> None:
+            raise NotImplementedError
 
-  abstract @Nullable OnTimeBehavior getOnTimeBehavior();
+    @abc.abstractmethod
+    def merge(self, merge_context: 'WindowFn.MergeContext') -> None:
+        """Returns a window that is the result of merging a set of windows."""
+        raise NotImplementedError
 
-  abstract @Nullable TimestampCombiner getTimestampCombiner();
+    def is_merging(self) -> bool:
+        """Returns whether this WindowFn merges windows."""
+        return True
 
-  abstract Builder<T> toBuilder();
+    @abc.abstractmethod
+    def get_window_coder(self) -> coders.Coder:
+        raise NotImplementedError
 
-  @AutoValue.Builder
-  abstract static class Builder<T> {
-    abstract Builder<T> setWindowFn(WindowFn<? super T, ?> windowFn);
+    def get_transformed_output_time(
+        self, window: 'BoundedWindow', input_timestamp: Timestamp) -> Timestamp:  # pylint: disable=unused-argument
+        """Given input time and output window, returns output time for window.
 
-    abstract Builder<T> setTrigger(Trigger trigger);
+        If TimestampCombiner.OUTPUT_AT_EARLIEST_TRANSFORMED is used in the
+        Windowing, the output timestamp for the given window will be the earliest
+        of the timestamps returned by get_transformed_output_time() for elements
+        of the window.
 
-    abstract Builder<T> setAccumulationMode(AccumulationMode mode);
+        Arguments:
+          window: Output window of element.
+          input_timestamp: Input timestamp of element as a timeutil.Timestamp
+            object.
 
-    abstract Builder<T> setAllowedLateness(Duration allowedLateness);
+        Returns:
+          Transformed timestamp.
+        """
+        return input_timestamp
 
-    abstract Builder<T> setClosingBehavior(ClosingBehavior closingBehavior);
+    urns.RunnerApiFn.register_pickle_urn(python_urns.PICKLED_WINDOWFN)
 
-    abstract Builder<T> setOnTimeBehavior(OnTimeBehavior onTimeBehavior);
-
-    abstract Builder<T> setTimestampCombiner(TimestampCombiner timestampCombiner);
-
-    abstract Window<T> build();
-  }
-
-  private Window<T> withWindowFn(WindowFn<? super T, ?> windowFn) {
-    return toBuilder().setWindowFn(windowFn).build();
-  }
-
-  
-  // Optimized by LLM: Extracted repeated logic for building a new Window instance
-  private Window<T> withAccumulationMode(AccumulationMode mode) {
-    return toBuilder().setAccumulationMode(mode).build();
-  }
-
-  public Window<T> triggering(Trigger trigger) {
-    return toBuilder().setTrigger(trigger).build();
-  }
-
-  
-  public Window<T> discardingFiredPanes() {
-    return withAccumulationMode(AccumulationMode.DISCARDING_FIRED_PANES);
-  }
-
-  
-  public Window<T> accumulatingFiredPanes() {
-    return withAccumulationMode(AccumulationMode.ACCUMULATING_FIRED_PANES);
-  }
-
-  
-  public Window<T> withAllowedLateness(Duration allowedLateness) {
-    return toBuilder().setAllowedLateness(allowedLateness).build();
-  }
-
-  
-  public Window<T> withTimestampCombiner(TimestampCombiner timestampCombiner) {
-    return toBuilder().setTimestampCombiner(timestampCombiner).build();
-  }
-
-  
-  public Window<T> withAllowedLateness(Duration allowedLateness, ClosingBehavior behavior) {
-    return toBuilder().setAllowedLateness(allowedLateness).setClosingBehavior(behavior).build();
-  }
-
-  
-  public Window<T> withOnTimeBehavior(OnTimeBehavior behavior) {
-    return toBuilder().setOnTimeBehavior(behavior).build();
-  }
-
-  
-  // Optimized by LLM: Refactored conditional checks into smaller private methods
-  private WindowingStrategy<?, ?> getOutputStrategyInternal(WindowingStrategy<?, ?> inputStrategy) {
-    WindowingStrategy<?, ?> result = inputStrategy;
-    if (getWindowFn() != null) {
-      result = result.withAlreadyMerged(false).withWindowFn(getWindowFn());
-    }
-    if (getTrigger() != null) {
-      result = result.withTrigger(getTrigger());
-    }
-    if (getAccumulationMode() != null) {
-      result = result.withMode(getAccumulationMode());
-    }
-    if (getAllowedLateness() != null) {
-      result =
-          result.withAllowedLateness(
-              Ordering.natural().max(getAllowedLateness(), inputStrategy.getAllowedLateness()));
-    }
-    if (getClosingBehavior() != null) {
-      result = result.withClosingBehavior(getClosingBehavior());
-    }
-    if (getOnTimeBehavior() != null) {
-      result = result.withOnTimeBehavior(getOnTimeBehavior());
-    }
-    if (getTimestampCombiner() != null) {
-      result = result.withTimestampCombiner(getTimestampCombiner());
-    }
-    return result;
-  }
-
-  private void applicableTo(PCollection<?> input) {
-    WindowingStrategy<?, ?> outputStrategy =
-        getOutputStrategyInternal(input.getWindowingStrategy());
-
-    
-    if (outputStrategy.isTriggerSpecified()
-        && !(outputStrategy.getTrigger() instanceof DefaultTrigger)
-        && !(outputStrategy.getWindowFn() instanceof GlobalWindows)
-        && !outputStrategy.isAllowedLatenessSpecified()) {
-      throw new IllegalArgumentException(
-          "Except when using GlobalWindows,"
-              + " calling .triggering() to specify a trigger requires that the allowed lateness"
-              + " be specified using .withAllowedLateness() to set the upper bound on how late"
-              + " data can arrive before being dropped. See Javadoc for more details.");
-    }
-
-    if (!outputStrategy.isModeSpecified() && canProduceMultiplePanes(outputStrategy)) {
-      throw new IllegalArgumentException(
-          "Calling .triggering() to specify a trigger or calling .withAllowedLateness() to"
-              + " specify an allowed lateness greater than zero requires that the accumulation"
-              + " mode be specified using .discardingFiredPanes() or .accumulatingFiredPanes()."
-              + " See Javadoc for more details.");
-    }
-  }
-
-  // Optimized by LLM: Simplified canProduceMultiplePanes method
-  private boolean canProduceMultiplePanes(WindowingStrategy<?, ?> strategy) {
-    return !(strategy.getWindowFn() instanceof GlobalWindows)
-        && strategy.getAllowedLateness().getMillis() > 0
-        || !(strategy.getTrigger() instanceof DefaultTrigger);
-  }
-
-  @Override
-  public PCollection<T> expand(PCollection<T> input) {
-    applicableTo(input);
-
-    WindowingStrategy<?, ?> outputStrategy =
-        getOutputStrategyInternal(input.getWindowingStrategy());
-
-    if (getWindowFn() == null) {
-      
-      
-      return PCollectionList.of(input)
-          .apply(Flatten.pCollections())
-          .setWindowingStrategyInternal(outputStrategy);
-    } else {
-      
-      return input.apply(new Assign<>(this, outputStrategy));
-    }
-  }
-
-  // Optimized by LLM: Extracted repeated patterns for adding display data items
-  private void addDisplayData(DisplayData.Builder builder, String itemName, Object value, String label) {
-    builder.add(DisplayData.item(itemName, (@Nullable @UnknownKeyFor @Initialized String) value).withLabel(label));
-  }
-
-  @Override
-  public void populateDisplayData(DisplayData.Builder builder) {
-    super.populateDisplayData(builder);
-
-    if (getWindowFn() != null) {
-      addDisplayData(builder, "windowFn", getWindowFn().getClass(), "Windowing Function");
-      builder.include("windowFn", getWindowFn());
-    }
-
-    if (getAllowedLateness() != null) {
-      builder.addIfNotDefault(
-          DisplayData.item("allowedLateness", getAllowedLateness()).withLabel("Allowed Lateness"),
-          Duration.millis(BoundedWindow.TIMESTAMP_MAX_VALUE.getMillis()));
-    }
-
-    if (getTrigger() != null && !(getTrigger() instanceof DefaultTrigger)) {
-      addDisplayData(builder, "trigger", getTrigger().toString(), "Trigger");
-    }
-
-    if (getAccumulationMode() != null) {
-      addDisplayData(builder, "accumulationMode", getAccumulationMode().toString(), "Accumulation Mode");
-    }
-
-    if (getClosingBehavior() != null) {
-      addDisplayData(builder, "closingBehavior", getClosingBehavior().toString(), "Window Closing Behavior");
-    }
-
-    if (getTimestampCombiner() != null) {
-      addDisplayData(builder, "timestampCombiner", getTimestampCombiner().toString(), "Timestamp Combiner");
-    }
-  }
-
-  @Override
-  protected String getKindString() {
-    return "Window.Into()";
-  }
-
-  
-  public static class Assign<T> extends PTransform<PCollection<T>, PCollection<T>> {
-    private final @Nullable Window<T> original;
-    private final WindowingStrategy<T, ?> updatedStrategy;
-
-    
-    @VisibleForTesting
-    Assign(@Nullable Window<T> original, WindowingStrategy updatedStrategy) {
-      this.original = original;
-      this.updatedStrategy = updatedStrategy;
-    }
-
-    @Override
-    public PCollection<T> expand(PCollection<T> input) {
-      return PCollection.createPrimitiveOutputInternal(
-          input.getPipeline(), updatedStrategy, input.isBounded(), input.getCoder());
-    }
-
-    @Override
-    public void populateDisplayData(DisplayData.Builder builder) {
-      if (original != null) {
-        original.populateDisplayData(builder);
-      }
-    }
-
-    public @Nullable WindowFn<T, ?> getWindowFn() {
-      return updatedStrategy.getWindowFn();
-    }
-
-    public static <T> Assign<T> createInternal(WindowingStrategy finalStrategy) {
-      return new Assign<T>(null, finalStrategy);
-    }
-  }
-
-  
-  public static <T> Remerge<T> remerge() {
-    return new Remerge<>();
-  }
-
-  
-  private static class Remerge<T> extends PTransform<PCollection<T>, PCollection<T>> {
-    @Override
-    public PCollection<T> expand(PCollection<T> input) {
-      return input
-          
-          
-          
-          .apply(
-              "Identity",
-              MapElements.via(
-                  new SimpleFunction<T, T>() {
-                    @Override
-                    public T apply(T element) {
-                      return element;
-                    }
-                  }))
-          
-          .setWindowingStrategyInternal(input.getWindowingStrategy().withAlreadyMerged(false));
-    }
-  }
-}
+class BoundedWindow(object):
+    """A window for timestamps in range (-infinity, end).
+    """

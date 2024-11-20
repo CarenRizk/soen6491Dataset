@@ -6,20 +6,16 @@ import random
 import time
 import unittest
 
+import apache_beam as beam
 import hamcrest as hc
 import pytest
-
-import apache_beam as beam
-import combiners as combine
 from apache_beam.metrics import Metrics
 from apache_beam.metrics import MetricsFilter
 from apache_beam.options.pipeline_options import PipelineOptions
 from apache_beam.options.pipeline_options import StandardOptions
 from apache_beam.testing.test_pipeline import TestPipeline
-from apache_beam.testing.test_stream import TestStream
 from apache_beam.testing.util import assert_that
 from apache_beam.testing.util import equal_to
-from apache_beam.testing.util import equal_to_per_window
 from apache_beam.transforms import WindowInto
 from apache_beam.transforms import trigger
 from apache_beam.transforms import window
@@ -30,15 +26,12 @@ from apache_beam.transforms.display import DisplayData
 from apache_beam.transforms.display_test import DisplayDataItemMatcher
 from apache_beam.transforms.periodicsequence import PeriodicImpulse
 from apache_beam.transforms.ptransform import PTransform
-from apache_beam.transforms.trigger import AfterAll
-from apache_beam.transforms.trigger import AfterCount
-from apache_beam.transforms.trigger import AfterWatermark
 from apache_beam.transforms.window import FixedWindows
-from apache_beam.transforms.window import GlobalWindows
-from apache_beam.transforms.window import TimestampCombiner
 from apache_beam.transforms.window import TimestampedValue
 from apache_beam.typehints import TypeCheckError
 from apache_beam.utils.timestamp import Timestamp
+
+import combiners as combine
 
 
 class SortedConcatWithCounters(beam.CombineFn):

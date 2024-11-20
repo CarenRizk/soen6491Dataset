@@ -6,19 +6,17 @@ import platform
 import unittest
 import uuid
 
+import apache_beam as beam
 import mock
 import pytest
-
-import apache_beam as beam
 from apache_beam import typehints
 from apache_beam.coders import BytesCoder
 from apache_beam.io import Read
 from apache_beam.io.iobase import SourceBase
 from apache_beam.options.pipeline_options import PortableOptions
-from pipeline import Pipeline
+from apache_beam.pipeline import PTransformOverride
 from apache_beam.pipeline import PipelineOptions
 from apache_beam.pipeline import PipelineVisitor
-from apache_beam.pipeline import PTransformOverride
 from apache_beam.portability import common_urns
 from apache_beam.portability.api import beam_runner_api_pb2
 from apache_beam.pvalue import AsSingleton
@@ -31,19 +29,14 @@ from apache_beam.transforms import Create
 from apache_beam.transforms import DoFn
 from apache_beam.transforms import FlatMap
 from apache_beam.transforms import Map
-from apache_beam.transforms import ParDo
 from apache_beam.transforms import PTransform
-from apache_beam.transforms import WindowInto
-from apache_beam.transforms.display import DisplayDataItem
+from apache_beam.transforms import ParDo
 from apache_beam.transforms.environments import ProcessEnvironment
 from apache_beam.transforms.resources import ResourceHint
 from apache_beam.transforms.userstate import BagStateSpec
-from window import FixedWindows
-from window import IntervalWindow
-from window import SlidingWindows
-from window import TimestampedValue
-from apache_beam.utils import windowed_value
 from apache_beam.utils.timestamp import MIN_TIMESTAMP
+
+from pipeline import Pipeline
 
 
 class FakeUnboundedSource(SourceBase):

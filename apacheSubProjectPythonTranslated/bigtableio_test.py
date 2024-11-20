@@ -9,17 +9,17 @@ from datetime import datetime
 from datetime import timezone
 from random import choice
 
-from mock import MagicMock
-from mock import patch
-
 import apache_beam as beam
 from apache_beam.internal.metrics.metric import ServiceCallMetric
-import bigtableio
 from apache_beam.io.gcp import resource_identifiers
 from apache_beam.metrics import monitoring_infos
 from apache_beam.metrics.execution import MetricsEnvironment
 from apache_beam.metrics.metric import Lineage
 from apache_beam.testing.test_pipeline import TestPipeline
+from mock import MagicMock
+from mock import patch
+
+import bigtableio
 
 _LOGGER = logging.getLogger(__name__)
 

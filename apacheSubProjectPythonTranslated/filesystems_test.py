@@ -10,9 +10,9 @@ import tempfile
 import unittest
 
 import mock
-
 from apache_beam.io import localfilesystem
 from apache_beam.io.filesystem import BeamIOError
+
 from filesystems import FileSystems
 
 

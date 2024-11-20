@@ -26,24 +26,25 @@ import pickle
 import random
 import unittest
 
-import yaml
-
 import apache_beam as beam
+import yaml
 from apache_beam import coders
-from apache_beam.options.pipeline_options import PipelineOptions
 from apache_beam.options.pipeline_options import StandardOptions
 from apache_beam.options.pipeline_options import TypeOptions
 from apache_beam.portability import common_urns
-from apache_beam.runners import pipeline_context
 from apache_beam.runners.direct.clock import TestClock
 from apache_beam.testing.test_pipeline import TestPipeline
 from apache_beam.testing.test_stream import TestStream
 from apache_beam.testing.util import assert_that
-from apache_beam.testing.util import equal_to
 from apache_beam.transforms import WindowInto
 from apache_beam.transforms import ptransform
 from apache_beam.transforms import trigger
 from apache_beam.transforms.core import Windowing
+from apache_beam.utils.timestamp import Duration
+from apache_beam.utils.timestamp import MAX_TIMESTAMP
+from apache_beam.utils.timestamp import MIN_TIMESTAMP
+from apache_beam.utils.windowed_value import PaneInfoTiming
+
 from trigger import AccumulationMode
 from trigger import AfterAll
 from trigger import AfterAny
@@ -57,20 +58,14 @@ from trigger import DefaultTrigger
 from trigger import GeneralTriggerDriver
 from trigger import InMemoryUnmergedState
 from trigger import Repeatedly
-from trigger import TriggerFn
-from trigger import _Never
 from window import FixedWindows
 from window import GlobalWindows
 from window import IntervalWindow
 from window import Sessions
 from window import TimestampCombiner
 from window import TimestampedValue
-from window import WindowedValue
 from window import WindowFn
-from apache_beam.utils.timestamp import MAX_TIMESTAMP
-from apache_beam.utils.timestamp import MIN_TIMESTAMP
-from apache_beam.utils.timestamp import Duration
-from apache_beam.utils.windowed_value import PaneInfoTiming
+from window import WindowedValue
 
 
 class CustomTimestampingFixedWindowsWindowFn(FixedWindows):

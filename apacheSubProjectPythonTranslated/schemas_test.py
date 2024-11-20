@@ -5,14 +5,11 @@
 import typing
 import unittest
 
+import apache_beam as beam
 import numpy as np
 import pandas as pd
-from parameterized import parameterized
-
-import apache_beam as beam
 from apache_beam.coders import RowCoder
 from apache_beam.coders.typecoders import registry as coders_registry
-import schemas
 from apache_beam.dataframe import transforms
 from apache_beam.testing.test_pipeline import TestPipeline
 from apache_beam.testing.util import assert_that
@@ -20,6 +17,8 @@ from apache_beam.testing.util import equal_to
 from apache_beam.typehints import row_type
 from apache_beam.typehints import typehints
 from apache_beam.typehints.native_type_compatibility import match_is_named_tuple
+
+import schemas
 
 Simple = typing.NamedTuple(
     'Simple', [('name', str), ('id', int), ('height', float)])

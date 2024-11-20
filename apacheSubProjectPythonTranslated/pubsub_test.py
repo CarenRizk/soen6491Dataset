@@ -5,21 +5,11 @@
 import logging
 import unittest
 
+import apache_beam as beam
 import hamcrest as hc
 import mock
-
-import apache_beam as beam
 from apache_beam.io import Read
 from apache_beam.io import Write
-from pubsub import MultipleReadFromPubSub
-from pubsub import PubsubMessage
-from pubsub import PubSubSourceDescriptor
-from pubsub import ReadFromPubSub
-from pubsub import ReadStringsFromPubSub
-from pubsub import WriteStringsToPubSub
-from pubsub import WriteToPubSub
-from pubsub import _PubSubSink
-from pubsub import _PubSubSource
 from apache_beam.metrics.metric import Lineage
 from apache_beam.options.pipeline_options import PipelineOptions
 from apache_beam.options.pipeline_options import StandardOptions
@@ -41,6 +31,16 @@ from apache_beam.transforms.display import DisplayData
 from apache_beam.transforms.display_test import DisplayDataItemMatcher
 from apache_beam.utils import proto_utils
 from apache_beam.utils import timestamp
+
+from pubsub import MultipleReadFromPubSub
+from pubsub import PubSubSourceDescriptor
+from pubsub import PubsubMessage
+from pubsub import ReadFromPubSub
+from pubsub import ReadStringsFromPubSub
+from pubsub import WriteStringsToPubSub
+from pubsub import WriteToPubSub
+from pubsub import _PubSubSink
+from pubsub import _PubSubSource
 
 try:
   from google.cloud import pubsub
