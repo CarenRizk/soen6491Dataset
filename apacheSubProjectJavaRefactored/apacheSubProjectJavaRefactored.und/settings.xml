@@ -174,11 +174,33 @@
   <metrics
     declared_in_file_display_mode="no_path"
     file_display_mode="no_path"
+    output_file="./apacheSubProjectJavaRefactored.csv"
     show_declared_in_file="false"
     show_function_parameter_types="false"
     write_column_titles="true"
     add_uniquename_column="false"
-    metric_filter="28532"/>
+    metric_filter="28532">
+    <metric
+      name="AvgCyclomatic"/>
+    <metric
+      name="MaxCyclomatic"/>
+    <metric
+      name="AvgCountLineCode"/>
+    <metric
+      name="CountLineCode"/>
+    <metric
+      name="RatioCommentToCode"/>
+    <metric
+      name="CountLineComment"/>
+    <metric
+      name="CountDeclClass"/>
+    <metric
+      name="CountDeclClassMethod"/>
+    <metric
+      name="CountLineCodeExe"/>
+    <metric
+      name="MaxNesting"/>
+  </metrics>
   <reports
     date_stamping="false"
     display_parameters="false"

@@ -122,11 +122,7 @@ def translate_to_python(java_code, allowed_imports, python_reference):
         
         6. **Preserve Functionality**: The translated code must preserve the same behavior and functionality as the original Java code, adjusting only for Python-specific idioms where strictly necessary.
         
-        7. **Reference File**:
-           - Use the provided Python reference code to guide your translation where relevant:
-             {relevant_python_reference}
-        
-        8. Replace Java-specific placeholders, such as `PCollection`, with equivalent Python constructs. For example:
+        7. Replace Java-specific placeholders, such as `PCollection`, with equivalent Python constructs. For example:
            - Use `typing.Any` as a generic placeholder type.
            - Use `typing.TypeVar` or `typing.Generic` for generics like `<T>`.
         ---

@@ -71,6 +71,70 @@
                         ]
                     }
                 },
+                "2_1920x1080_1920x1080": {
+                    "DockWidgets": {
+                        "FloatingWidgetOrder": [
+                        ],
+                        "OpenWindows": {
+                            "00ProjectOverviewWidget": {
+                                "height": 438,
+                                "width": 250
+                            },
+                            "01SuggestionsBrowser": {
+                                "height": 921,
+                                "width": 250
+                            },
+                            "02EntityFilter": {
+                                "height": 460,
+                                "width": 250
+                            },
+                            "03InfoBrowserWidget_0": {
+                                "height": 457,
+                                "width": 270
+                            }
+                        },
+                        "TabGroupFrontWidgets": [
+                            "ProjectOverviewWidget"
+                        ]
+                    },
+                    "EntityFilter": {
+                        "Dock Area": 1,
+                        "Dock In Drawer Mode": false,
+                        "Dock Is Floating": false,
+                        "Dock Tab Group": [
+                            "ProjectOverviewWidget"
+                        ]
+                    },
+                    "InfoBrowserWidget_0": {
+                        "Dock Area": 1,
+                        "Dock In Drawer Mode": false,
+                        "Dock Is Floating": false,
+                        "Dock Tab Group": [
+                        ]
+                    },
+                    "IssueBrowser": {
+                        "Dock Area": 8,
+                        "Dock In Drawer Mode": false,
+                        "Dock Is Floating": false,
+                        "Dock Tab Group": [
+                        ]
+                    },
+                    "ProjectOverviewWidget": {
+                        "Dock Area": 1,
+                        "Dock In Drawer Mode": false,
+                        "Dock Is Floating": false,
+                        "Dock Tab Group": [
+                            "EntityFilter"
+                        ]
+                    },
+                    "SuggestionsBrowser": {
+                        "Dock Area": 2,
+                        "Dock In Drawer Mode": false,
+                        "Dock Is Floating": false,
+                        "Dock Tab Group": [
+                        ]
+                    }
+                },
                 "2_1920x1080_3840x1600": {
                     "AnalysisLog": {
                         "Dock Area": 8,
@@ -191,31 +255,44 @@
                 "EntityFilter": {
                     "LastEntityFilterUsed": "All Entities"
                 },
+                "GraphicFilterSettings": {
+                    "Enabled": false
+                },
                 "InfoBrowserWindowManager": {
                     "InfoBrowserFileSyncInst": -1,
                     "InfoBrowserSyncInst": [
                         "0"
                     ]
                 },
-                "LastAccessedPid": "24600",
+                "LastAccessedPid": "7936",
+                "LastDisplayGroup": "2_1920x1080_1920x1080",
                 "Locator": {
                     "LastEntityFilterUsed": "All Entities"
                 },
+                "MaintainEditorHistory": {
+                    "FileRanges": {
+                        "size": 0
+                    },
+                    "index": -1
+                },
                 "MiscSaveStates": {
                     "entitySelected": "@ldataflow_runner_test.DataflowRunnerTest._test_flatten_input_visitor._@p@ldataflow_runner_test.DataflowRunnerTest._test_flatten_input_visitor@kydataflow_runner_test.DataflowRunnerTest._test_flatten_input_visitor:./dataflow_runner_test.py@f./dataflow_runner_test.py",
-                    "metricsBrowser": true,
                     "metricsBrowserExpansionAddresses": "",
                     "metricsBrowserSelectionAddress": "",
                     "metricsBrowserSplitterState": "AAAA/wAAAAEAAAABAAACAAH/////AQAAAAEA",
-                    "projectOverviewCharts": "true",
-                    "projectOverviewChartsPosition": 1,
-                    "projectOverviewChartsSelected": "false",
-                    "projectOverviewChartsWorkspace": 0,
                     "selection": "_"
                 },
                 "ProjectMetricsBrowser": {
                     "Overwrite": false,
                     "SaveDirectory": "./."
+                },
+                "ProjectUI": {
+                    "projectviewcuritem": "approximatequantiles.py"
+                },
+                "SplittableWorkspace": {
+                    "active workspace": 0,
+                    "primary ws size": 1392,
+                    "split orientation": -1
                 }
             }
         }

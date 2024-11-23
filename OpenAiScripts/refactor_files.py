@@ -14,9 +14,9 @@ TEMPERATURE = 0.2
 TOKEN_LIMIT = 12000
 MAX_LIMIT = 16100
 MODEL = "gpt-4o-mini"
-PROJECT_PATH = r"C:\Users\carenrizk\repos\soen6491Dataset\apacheSubProjectJava\src"
-REFACTORED_PATH = r"C:\Users\carenrizk\repos\soen6491Dataset\apacheSubProjectJavaRefactored"
-SUGGESTIONS_PATH = r"C:\Users\carenrizk\repos\soen6491Dataset\suggestions"
+PROJECT_PATH = r"..\apacheSubProjectJava\src"
+REFACTORED_PATH = r"..\apacheSubProjectJavaRefactored"
+SUGGESTIONS_PATH = r"..\suggestions"
 OUTPUT_SUGGESTIONS_PATH = os.path.join(SUGGESTIONS_PATH, "suggestions")
 OUTPUT_REFACTORED_PATH = os.path.join(REFACTORED_PATH)
 
